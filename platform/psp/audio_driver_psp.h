@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  godot_server.cpp                                                     */
+/*  audio_driver_psp.h                                                   */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -26,37 +26,58 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#include "main/main.h"
-#include "os_psp.h"
+#ifndef AUDIO_DRIVER_PSP_H
+#define AUDIO_DRIVER_PSP_H
 
-#include <psptypes.h>
-#include <pspiofilemgr.h>
-#include <pspmodulemgr.h>
-#include <pspsysmem.h>
+#include "servers/audio/audio_server_sw.h"
+
+#include "core/os/thread.h"
+#include "core/os/mutex.h"
+
+#include <pspaudio.h>
+#include <pspaudiolib.h>
 #include <pspthreadman.h>
-#include <psputils.h>
-#include <psputility.h>
+#include <pspkerneltypes.h>
+
+class AudioDriverPSP : public AudioDriverSW {
+
+	Thread *thread;
+	Mutex *mutex;
+	int32_t* samples_in;
+	int16_t* samples_out;
+
+	static void thread_func(void *p_udata);
 
 
+	int buffer_size;
 
-PSP_MODULE_INFO("FUSION", PSP_MODULE_USER, 1, 1);
-PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-PSP_HEAP_SIZE_KB(-1);
+	unsigned int mix_rate;
+	OutputFormat output_format;
 
-int main(int argc, char* argv[]) {
-	OS_PSP os;
-	
-	char* args[] = {"-path", "."};
+	int channels;
 
-	Error err = Main::setup("psp", 2, args, true);
-	if (err!=OK)
-		return 255;
-		
-	if (Main::start()) {
-		printf("game running\n");
-		os.run(); // it is actually the OS that decides how to run
-	}
-	Main::cleanup();
-	
-	return 0;
-}
+	bool active;
+	bool thread_exited;
+	bool exit_thread;
+	bool pcm_open;
+
+public:
+
+	const char* get_name() const {
+		return "PSP Audio";
+	};
+
+	virtual Error init();
+	virtual void start();
+	virtual int get_mix_rate() const;
+	virtual OutputFormat get_output_format() const;
+
+	virtual void lock();
+	virtual void unlock();
+	virtual void finish();
+
+	AudioDriverPSP();
+	~AudioDriverPSP();
+};
+
+#endif

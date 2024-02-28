@@ -1,0 +1,13 @@
+import shlex
+from SCons.Node import NodeList
+
+Import('env')
+
+
+common_3ds=[\
+	"os_3ds.cpp",\
+	"rasterizer_3ds.cpp",\
+	#"thread_3ds.cpp",\
+]
+
+prog = env.Program('#bin/godot_3ds',['godot_3ds.cpp']+common_3ds)

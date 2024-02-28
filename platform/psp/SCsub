@@ -7,6 +7,7 @@ Import('env')
 common_psp=[\
 	"os_psp.cpp",\
 	"rasterizer_psp.cpp",\
+	"audio_driver_psp.cpp",\
 ]
 
 prog = env.Program('#bin/godot_psp',['godot_psp.cpp']+common_psp)

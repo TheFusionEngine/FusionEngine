@@ -27,28 +27,25 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 #include "main/main.h"
-#include "os_psp.h"
-
-#include <psptypes.h>
-#include <pspiofilemgr.h>
-#include <pspmodulemgr.h>
-#include <pspsysmem.h>
-#include <pspthreadman.h>
-#include <psputils.h>
-#include <psputility.h>
+#include "os_3ds.h"
 
 
-
-PSP_MODULE_INFO("FUSION", PSP_MODULE_USER, 1, 1);
-PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-PSP_HEAP_SIZE_KB(-1);
+extern "C" {
+#include <3ds/gfx.h>
+#include <3ds/console.h>
+u32 __stacksize__ = 1024 * 128;
+};
 
 int main(int argc, char* argv[]) {
-	OS_PSP os;
 	
-	char* args[] = {"-path", "."};
+	gfxInitDefault();
+	consoleInit(GFX_BOTTOM, NULL);
+	
+	OS_3DS os;
+	
+	char* args[] = {"-path", "./fe"};
 
-	Error err = Main::setup("psp", 2, args, true);
+	Error err = Main::setup("3ds", 2, args, true);
 	if (err!=OK)
 		return 255;
 		

@@ -55,7 +55,7 @@ def configure(env):
 		env.Append(CCFLAGS=['-g2', '-Wall','-DDEBUG_ENABLED','-DDEBUG_MEMORY_ENABLED'])
 
 	env.Append(CPPFLAGS=['-DNEED_LONG_INT', '-DPSP_ENABLED', '-DGLES1_ENABLED', '-DNO_THREADS'])
-	env.Append(LIBS=['pthread', 'z', 'pspdisplay', 'pspge', 'pspgu', 'pspgum', 'pspvfpu', 'pspctrl']) #TODO detect linux/BSD!
+	env.Append(LIBS=['pthread', 'z', 'pspdisplay', 'pspge', 'pspgu', 'pspgum', 'pspvfpu', 'pspctrl', 'pspaudio']) #TODO detect linux/BSD!
 
 	if (env["CXX"]=="clang++"):
 		env.Append(CPPFLAGS=['-DTYPED_METHOD_BIND'])

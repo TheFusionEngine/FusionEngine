@@ -26,10 +26,9 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef OS_PSP_H
-#define OS_PSP_H
+#ifndef OS_3DS_H
+#define OS_3DS_H
 
-#include "audio_driver_psp.h"
 #include "os/input.h"
 #include "drivers/unix/os_unix.h"
 #include "servers/visual_server.h"
@@ -45,7 +44,7 @@
 
 #undef CursorShape
 
-class OS_PSP : public OS {
+class OS_3DS : public OS {
 
 	Rasterizer *rasterizer;
 	VisualServer *visual_server;
@@ -54,7 +53,7 @@ class OS_PSP : public OS {
 	MainLoop *main_loop;	
 	
 	
-	AudioDriverDummy driver_psp;
+	AudioDriverDummy driver_3ds;
 	bool grab;
 	uint64_t ticks_start;
 	
@@ -128,7 +127,7 @@ public:
 
 	void run();
 
-	OS_PSP();
+	OS_3DS();
 };
 
 #endif

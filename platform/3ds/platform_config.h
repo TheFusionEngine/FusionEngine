@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  godot_server.cpp                                                     */
+/*  platform_config.h                                                    */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -26,37 +26,5 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#include "main/main.h"
-#include "os_psp.h"
+#include <alloca.h>
 
-#include <psptypes.h>
-#include <pspiofilemgr.h>
-#include <pspmodulemgr.h>
-#include <pspsysmem.h>
-#include <pspthreadman.h>
-#include <psputils.h>
-#include <psputility.h>
-
-
-
-PSP_MODULE_INFO("FUSION", PSP_MODULE_USER, 1, 1);
-PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-PSP_HEAP_SIZE_KB(-1);
-
-int main(int argc, char* argv[]) {
-	OS_PSP os;
-	
-	char* args[] = {"-path", "."};
-
-	Error err = Main::setup("psp", 2, args, true);
-	if (err!=OK)
-		return 255;
-		
-	if (Main::start()) {
-		printf("game running\n");
-		os.run(); // it is actually the OS that decides how to run
-	}
-	Main::cleanup();
-	
-	return 0;
-}
