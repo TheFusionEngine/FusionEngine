@@ -3,6 +3,7 @@ from SCons.Node import NodeList
 
 Import('env')
 
+SConscript("shaders/SCsub")
 
 common_3ds=[\
 	"os_3ds.cpp",\

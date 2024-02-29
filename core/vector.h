@@ -69,10 +69,26 @@ class Vector {
  		
  	}
  	
-	_FORCE_INLINE_ int _get_alloc_size(int p_elements) const {
- 	
- 		return  nearest_power_of_2(p_elements*sizeof(T)+sizeof(SafeRefCount)+sizeof(int));
+	_FORCE_INLINE_ size_t _get_alloc_size(size_t p_elements) const {
+
+		return nearest_power_of_2_templated(p_elements*sizeof(T)+sizeof(SafeRefCount)+sizeof(int));
  	}
+
+	_FORCE_INLINE_ bool _get_alloc_size_checked(size_t p_elements, size_t *out) const {
+#if defined(_add_overflow) && defined(_mul_overflow)
+		size_t o;
+		size_t p;
+		if (_mul_overflow(p_elements, sizeof(T), &o)) return false;
+		if (_add_overflow(o, sizeof(SafeRefCount)+sizeof(int), &p)) return false;
+		*out = nearest_power_of_2_templated(p);
+		return true;
+#else
+		// Speed is more important than correctness here, do the operations unchecked
+		// and hope the best
+		*out = _get_alloc_size(p_elements);
+		return true;
+#endif
+	}
  	
 	void _unref(void *p_data);
 	
@@ -247,18 +263,21 @@ Error Vector<T>::resize(int p_size) {
 	// possibly changing size, copy on write
 	_copy_on_write();
 	
+	size_t alloc_size;
+	ERR_FAIL_COND_V(!_get_alloc_size_checked(p_size, &alloc_size), ERR_OUT_OF_MEMORY);
+	
 	if (p_size>size()) {
 
 		if (size()==0) {
 			// alloc from scratch
-			_ptr = (T*)memalloc(_get_alloc_size(p_size));
+			_ptr = (T*)memalloc(alloc_size);
 			ERR_FAIL_COND_V( !_ptr ,ERR_OUT_OF_MEMORY);
 			_get_refcount()->init(); // init refcount
 			*_get_size()=0; // init size (currently, none)
 
 		} else {
 			
-			void *_ptrnew = (T*)memrealloc(_ptr,_get_alloc_size(p_size));
+			void *_ptrnew = (T*)memrealloc(_ptr, alloc_size);
 			ERR_FAIL_COND_V( !_ptrnew ,ERR_OUT_OF_MEMORY);
 			_ptr=_ptrnew;
 		}
@@ -282,7 +301,7 @@ Error Vector<T>::resize(int p_size) {
 			t->~T();
 		}
 
-		void *_ptrnew = (T*)memrealloc(_ptr,_get_alloc_size(p_size));
+		void *_ptrnew = (T*)memrealloc(_ptr, alloc_size);
 		ERR_FAIL_COND_V( !_ptrnew ,ERR_OUT_OF_MEMORY);
 		
 		_ptr=_ptrnew;

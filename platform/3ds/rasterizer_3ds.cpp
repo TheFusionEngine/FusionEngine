@@ -27,7 +27,73 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 #include "rasterizer_3ds.h"
+#include "shaders/simple_3d.h"
+#include "shaders/simple_2d.h"
 
+static const vertex3ds vertex_list[] =
+{
+	// First face (PZ)
+	// First triangle
+	{ {-0.5f, -0.5f, +0.5f}, {0.0f, 0.0f}, {0.0f, 0.0f, +1.0f} },
+	{ {+0.5f, -0.5f, +0.5f}, {1.0f, 0.0f}, {0.0f, 0.0f, +1.0f} },
+	{ {+0.5f, +0.5f, +0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, +1.0f} },
+	// Second triangle
+	{ {+0.5f, +0.5f, +0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, +1.0f} },
+	{ {-0.5f, +0.5f, +0.5f}, {0.0f, 1.0f}, {0.0f, 0.0f, +1.0f} },
+	{ {-0.5f, -0.5f, +0.5f}, {0.0f, 0.0f}, {0.0f, 0.0f, +1.0f} },
+
+	// Second face (MZ)
+	// First triangle
+	{ {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f} },
+	{ {-0.5f, +0.5f, -0.5f}, {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f} },
+	{ {+0.5f, +0.5f, -0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, -1.0f} },
+	// Second triangle
+	{ {+0.5f, +0.5f, -0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, -1.0f} },
+	{ {+0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}, {0.0f, 0.0f, -1.0f} },
+	{ {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f} },
+
+	// Third face (PX)
+	// First triangle
+	{ {+0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {+1.0f, 0.0f, 0.0f} },
+	{ {+0.5f, +0.5f, -0.5f}, {1.0f, 0.0f}, {+1.0f, 0.0f, 0.0f} },
+	{ {+0.5f, +0.5f, +0.5f}, {1.0f, 1.0f}, {+1.0f, 0.0f, 0.0f} },
+	// Second triangle
+	{ {+0.5f, +0.5f, +0.5f}, {1.0f, 1.0f}, {+1.0f, 0.0f, 0.0f} },
+	{ {+0.5f, -0.5f, +0.5f}, {0.0f, 1.0f}, {+1.0f, 0.0f, 0.0f} },
+	{ {+0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {+1.0f, 0.0f, 0.0f} },
+
+	// Fourth face (MX)
+	// First triangle
+	{ {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f} },
+	{ {-0.5f, -0.5f, +0.5f}, {1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f} },
+	{ {-0.5f, +0.5f, +0.5f}, {1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f} },
+	// Second triangle
+	{ {-0.5f, +0.5f, +0.5f}, {1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f} },
+	{ {-0.5f, +0.5f, -0.5f}, {0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f} },
+	{ {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f} },
+
+	// Fifth face (PY)
+	// First triangle
+	{ {-0.5f, +0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, +1.0f, 0.0f} },
+	{ {-0.5f, +0.5f, +0.5f}, {1.0f, 0.0f}, {0.0f, +1.0f, 0.0f} },
+	{ {+0.5f, +0.5f, +0.5f}, {1.0f, 1.0f}, {0.0f, +1.0f, 0.0f} },
+	// Second triangle
+	{ {+0.5f, +0.5f, +0.5f}, {1.0f, 1.0f}, {0.0f, +1.0f, 0.0f} },
+	{ {+0.5f, +0.5f, -0.5f}, {0.0f, 1.0f}, {0.0f, +1.0f, 0.0f} },
+	{ {-0.5f, +0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, +1.0f, 0.0f} },
+
+	// Sixth face (MY)
+	// First triangle
+	{ {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, -1.0f, 0.0f} },
+	{ {+0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}, {0.0f, -1.0f, 0.0f} },
+	{ {+0.5f, -0.5f, +0.5f}, {1.0f, 1.0f}, {0.0f, -1.0f, 0.0f} },
+	// Second triangle
+	{ {+0.5f, -0.5f, +0.5f}, {1.0f, 1.0f}, {0.0f, -1.0f, 0.0f} },
+	{ {-0.5f, -0.5f, +0.5f}, {0.0f, 1.0f}, {0.0f, -1.0f, 0.0f} },
+	{ {-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, -1.0f, 0.0f} },
+};
+
+#define vertex_list_count (sizeof(vertex_list)/sizeof(vertex_list[0]))
 
 #define DISPLAY_TRANSFER_FLAGS \
 	(GX_TRANSFER_FLIP_VERT(0) | GX_TRANSFER_OUT_TILED(0) | GX_TRANSFER_RAW_COPY(0) | \
@@ -70,6 +136,7 @@ void Rasterizer3DS::texture_set_data(RID p_texture,const Image& p_image,VS::Cube
 	const u32* buffer = reinterpret_cast<const u32*>(d.read().ptr());
 	
 	C3D_TexUpload(&texture->texture, buffer);
+	C3D_TexBind(0, &texture->texture);
 }
 
 Image Rasterizer3DS::texture_get_data(RID p_texture,VS::CubeMapSide p_cube_side) const {
@@ -165,38 +232,70 @@ static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vecto
 	C3D_DrawArrays(GPU_TRIANGLE_FAN, 0, 4);
 };
 
-static void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h=false,bool p_flip_v=false ) {
-	Vector3 texcoords[4]= {
-		Vector3( p_src_region.pos.x/p_tex_size.width,
+void Rasterizer3DS::_draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h=false,bool p_flip_v=false ) {
+	VertexArray dscoords[4]= {
+		{Vector3( p_src_region.pos.x/p_tex_size.width,
 		p_src_region.pos.y/p_tex_size.height, 0),
-
-		Vector3((p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
+		Vector2( p_rect.pos.x, p_rect.pos.y )},
+		
+		
+		{Vector3((p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
 		p_src_region.pos.y/p_tex_size.height, 0),
+		Vector2( p_rect.pos.x+p_rect.size.width, p_rect.pos.y )},
 
-		Vector3( (p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
+		{Vector3( (p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
 		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0),
+		Vector2( p_rect.pos.x+p_rect.size.width, p_rect.pos.y+p_rect.size.height )},
 
-		Vector3( p_src_region.pos.x/p_tex_size.width,
-		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0)
+		{Vector3( p_src_region.pos.x/p_tex_size.width,
+		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0),
+		Vector2( p_rect.pos.x,p_rect.pos.y+p_rect.size.height )}
 	};
 
 
 	if (p_flip_h) {
-		SWAP( texcoords[0], texcoords[1] );
-		SWAP( texcoords[2], texcoords[3] );
+		SWAP( dscoords[0], dscoords[1] );
+		SWAP( dscoords[2], dscoords[3] );
 	}
 	if (p_flip_v) {
-		SWAP( texcoords[1], texcoords[2] );
-		SWAP( texcoords[0], texcoords[3] );
+		SWAP( dscoords[1], dscoords[2] );
+		SWAP( dscoords[0], dscoords[3] );
 	}
 
 	Vector3 coords[4]= {
-		Vector3( p_rect.pos.x, p_rect.pos.y, 0 ),
-		Vector3( p_rect.pos.x+p_rect.size.width, p_rect.pos.y, 0 ),
-		Vector3( p_rect.pos.x+p_rect.size.width, p_rect.pos.y+p_rect.size.height, 0 ),
-		Vector3( p_rect.pos.x,p_rect.pos.y+p_rect.size.height, 0 )
-	};
 
+	};
+	/*
+	void* vbo_data = linearAlloc(sizeof(dscoords));
+	memcpy(vbo_data, dscoords, sizeof(dscoords));
+	// memcpy(vbo_data+sizeof(coords), texcoords, sizeof(texcoords));
+	
+	C3D_BufInfo* bufInfo = C3D_GetBufInfo();
+	BufInfo_Init(bufInfo);
+	BufInfo_Add(bufInfo, vbo_data, sizeof(VertexArray), 2, 0x10);*/
+
+	
+	// Mtx_Identity(&modelView);
+	
+	// Mtx_Translate(&modelView, 0.0, 0.0, -2.5, true);
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uLoc_projection, &projection);
+	// C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uLoc_modelView,  &modelView);
+
+	// Draw the triangle directly
+	C3D_ImmDrawBegin(GPU_TRIANGLE_STRIP);
+		C3D_ImmSendAttrib(p_src_region.pos.x/p_tex_size.width, p_src_region.pos.y/p_tex_size.height, 0.5f, 0.0f); // v0=position
+		C3D_ImmSendAttrib(p_rect.pos.x, p_rect.pos.y, 0.0f, 0.0f);     // v1=color
+
+		C3D_ImmSendAttrib((p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width, p_src_region.pos.y/p_tex_size.height, 0.5f, 0.0f);
+		C3D_ImmSendAttrib(p_rect.pos.x+p_rect.size.width, p_rect.pos.y, 0.0f, 0.0f);
+
+		C3D_ImmSendAttrib((p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width, (p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0.5f, 0.0f);
+		C3D_ImmSendAttrib(p_rect.pos.x+p_rect.size.width, p_rect.pos.y+p_rect.size.height, 0.0f, 0.0f);
+		
+		C3D_ImmSendAttrib(p_src_region.pos.x/p_tex_size.width, (p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0.5f, 0.0f);
+		C3D_ImmSendAttrib(p_rect.pos.x, p_rect.pos.y+p_rect.size.height, 0.0f, 0.0f);
+		
+	C3D_ImmDrawEnd();
 	// _draw_primitive(4,coords,0,0,texcoords);
 }
 
@@ -1972,6 +2071,28 @@ void Rasterizer3DS::init() {
 	
 	top_rt->target = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
 	C3D_RenderTargetSetOutput(top_rt->target, GFX_TOP, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
+	
+	
+	simple_2ds = DVLB_ParseFile((u32*)shader_builtin_simple_2d, sizeof(shader_builtin_simple_2d));
+	shaderProgramInit(&program);
+	shaderProgramSetVsh(&program, &simple_2ds->DVLE[0]);
+	C3D_BindProgram(&program);
+	
+	uLoc_projection = shaderInstanceGetUniformLocation(program.vertexShader, "projection");
+	
+	// Configure attributes for use with the vertex shader
+	C3D_AttrInfo* attrInfo = C3D_GetAttrInfo();
+	AttrInfo_Init(attrInfo);
+	AttrInfo_AddLoader(attrInfo, 0, GPU_FLOAT, 3); // v0=position
+	AttrInfo_AddLoader(attrInfo, 1, GPU_FLOAT, 3); // v1=color
+	
+	// Mtx_PerspTilt(&projection, C3D_AngleFromDegrees(80.0f), C3D_AspectRatioTop, 0.01f, 1000.0f, false);
+	Mtx_OrthoTilt(&projection, 0.0, 400.0, 0.0, 240.0, 0.0, 1.0, true);
+	
+	C3D_TexEnv* env = C3D_GetTexEnv(0);
+	C3D_TexEnvInit(env);
+	C3D_TexEnvSrc(env, C3D_Both, GPU_PRIMARY_COLOR, (GPU_TEVSRC)0, (GPU_TEVSRC)0);
+	C3D_TexEnvFunc(env, C3D_Both, GPU_REPLACE);
 }
 
 void Rasterizer3DS::finish() {
@@ -2002,6 +2123,8 @@ Rasterizer3DS::Rasterizer3DS() {
 };
 
 Rasterizer3DS::~Rasterizer3DS() {
+	shaderProgramFree(&program);
+	DVLB_Free(simple_2ds);
 	C3D_Fini();
 };
 

@@ -68,9 +68,25 @@ static uint32_t convert_color(const Color* ic) {
 
 	return c;
 }
+typedef struct { float position[3]; float texcoord[2]; float normal[3]; } vertex3ds;
+
+typedef struct {
+	Vector3 position;
+	Vector2 texcoord;
+} VertexArray;
 
 class Rasterizer3DS : public Rasterizer {
-
+	
+	
+	void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h,bool p_flip_v );
+	DVLB_s* simple_3ds;
+	DVLB_s* simple_2ds;
+	shaderProgram_s program;
+	
+	C3D_Mtx projection;
+	C3D_Mtx modelView;
+	int uLoc_projection, uLoc_modelView;
+	
 	struct Texture {
 
 		uint32_t flags;
