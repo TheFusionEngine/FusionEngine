@@ -100,6 +100,67 @@ static const vertex3ds vertex_list[] =
 	GX_TRANSFER_IN_FORMAT(GX_TRANSFER_FMT_RGBA8) | GX_TRANSFER_OUT_FORMAT(GX_TRANSFER_FMT_RGB8) | \
 	GX_TRANSFER_SCALING(GX_TRANSFER_SCALE_NO))
 
+
+#define TEXTURE_TRANSFER_FLAGS (GX_TRANSFER_FLIP_VERT(1) | GX_TRANSFER_OUT_TILED(1) | GX_TRANSFER_RAW_COPY(0) |  GX_TRANSFER_IN_FORMAT(GX_TRANSFER_FMT_RGBA8) | \
+		GX_TRANSFER_OUT_FORMAT(GX_TRANSFER_FMT_RGBA8) |  GX_TRANSFER_SCALING(GX_TRANSFER_SCALE_NO))
+	
+
+void _set_uniform(int uniform_location, const Matrix32& p_transform)
+{
+	const Matrix32& tr = p_transform;
+	
+	C3D_Mtx mtx;
+	
+	float matrix[16] = { /* build a 16x16 matrix */
+		tr.elements[2][0], 0, tr.elements[1][0], tr.elements[0][0],
+		tr.elements[2][1], 0, tr.elements[1][1], tr.elements[0][1],
+		0, 1, 0, 0,
+		1, 0, 0, 0,
+	};
+	
+	memcpy(mtx.m, matrix, sizeof(matrix));
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uniform_location, &mtx);
+}
+
+void _set_uniform(int uniform_location, const CameraMatrix& p_matrix)
+{
+	// Swap X/Y axis due to 3DS screens being sideways
+	// and adjust clipping range from [-1, 1] to [-1, 0]
+	float m[16] = {
+		0, -1, 0, 0,
+		1, 0, 0, 0,
+		0, 0, 0.5, 0,
+		0, 0, -0.5, 1,
+	};
+	
+	CameraMatrix p = *reinterpret_cast<CameraMatrix*>(m) * p_matrix;
+	
+	C3D_Mtx mtx;
+	float *to = mtx.m;
+	const float *from = reinterpret_cast<const float*>(p.matrix);
+
+	
+	to[0] = from[12];
+	to[1] = from[8];
+	to[2] = from[4];
+	to[3] = from[0];
+	to[4] = from[13];
+	to[5] = from[9];
+	to[6] = from[5];
+	to[7] = from[1];
+	to[8] = from[14];
+	to[9] = from[10];
+	to[10] = from[6];
+	to[11] = from[2];
+	to[12] = from[15];
+	to[13] = from[11];
+	to[14] = from[7];
+	to[15] = from[3];
+	
+
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uniform_location, &mtx);
+}
+
 /* TEXTURE API */
 
 
@@ -134,9 +195,30 @@ void Rasterizer3DS::texture_set_data(RID p_texture,const Image& p_image,VS::Cube
 
 	DVector<uint8_t> d = p_image.get_data();
 	const u32* buffer = reinterpret_cast<const u32*>(d.read().ptr());
+	u8 * gpuBuffer = (u8 *)linearAlloc(texture->width * texture->height * 4);
 	
-	C3D_TexUpload(&texture->texture, buffer);
+	u32 * src = (u32 *)buffer;
+	u32 * dst = (u32 *)gpuBuffer;
+
+	for (unsigned y = 0; y < texture->height; y++)
+	{
+		for (unsigned x = 0; x < texture->width; x++)
+		{
+			u32 clr = *src;
+			*dst = __builtin_bswap32(clr);
+		}
+		dst += 4;
+	}
+	
+	GSPGPU_FlushDataCache((u32 *)gpuBuffer, texture->width * texture->height * 4);
+
+	C3D_SyncDisplayTransfer((u32 *)gpuBuffer, GX_BUFFER_DIM(texture->width, texture->height), (u32 *)texture->texture.data, GX_BUFFER_DIM(texture->width, texture->height), TEXTURE_TRANSFER_FLAGS);
+
+	// gspWaitForPPF();
+	C3D_TexSetFilter(&texture->texture, GPU_LINEAR, GPU_NEAREST);
 	C3D_TexBind(0, &texture->texture);
+	
+	linearFree(gpuBuffer);
 }
 
 Image Rasterizer3DS::texture_get_data(RID p_texture,VS::CubeMapSide p_cube_side) const {
@@ -266,22 +348,25 @@ void Rasterizer3DS::_draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_
 
 	};
 	/*
-	void* vbo_data = linearAlloc(sizeof(dscoords));
-	memcpy(vbo_data, dscoords, sizeof(dscoords));
+	void* vbo_data = linearAlloc(sizeof(vertex_list));
+	memcpy(vbo_data, vertex_list, sizeof(vertex_list));
 	// memcpy(vbo_data+sizeof(coords), texcoords, sizeof(texcoords));
 	
 	C3D_BufInfo* bufInfo = C3D_GetBufInfo();
 	BufInfo_Init(bufInfo);
-	BufInfo_Add(bufInfo, vbo_data, sizeof(VertexArray), 2, 0x10);*/
+	BufInfo_Add(bufInfo, vbo_data, sizeof(vertex3ds), 3, 0x210);
+	
+	C3D_DrawArrays(GPU_TRIANGLES, 0, vertex_list_count);;*/
 
 	
 	// Mtx_Identity(&modelView);
 	
 	// Mtx_Translate(&modelView, 0.0, 0.0, -2.5, true);
-	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uLoc_projection, &projection);
+	
 	// C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uLoc_modelView,  &modelView);
 
 	// Draw the triangle directly
+	
 	C3D_ImmDrawBegin(GPU_TRIANGLE_STRIP);
 		C3D_ImmSendAttrib(p_src_region.pos.x/p_tex_size.width, p_src_region.pos.y/p_tex_size.height, 0.5f, 0.0f); // v0=position
 		C3D_ImmSendAttrib(p_rect.pos.x, p_rect.pos.y, 0.0f, 0.0f);     // v1=color
@@ -1632,8 +1717,15 @@ void Rasterizer3DS::set_render_target(RID p_render_target, bool p_transparent_bg
 
 
 void Rasterizer3DS::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug) {
+	C3D_TexEnv* env = C3D_GetTexEnv(0);
+	C3D_TexEnvSrc(env, C3D_Both, GPU_FRAGMENT_PRIMARY_COLOR, GPU_FRAGMENT_SECONDARY_COLOR, (GPU_TEVSRC)0);
+	// C3D_TexEnvOp(env, C3D_Both, 0, 0, 0);
+	C3D_TexEnvFunc(env, C3D_Both, GPU_ADD);
+	
+	C3D_TexBind(0, NULL);
 
-
+	C3D_BindProgram(&program);
+	_set_uniform(uLoc_modelView, Matrix32());
 };
 
 void Rasterizer3DS::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) {
@@ -1642,7 +1734,7 @@ void Rasterizer3DS::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) 
 
 void Rasterizer3DS::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
 
-
+	_set_uniform(uLoc_projection, p_projection);
 }
 
 void Rasterizer3DS::add_light( RID p_light_instance ) {
@@ -1675,7 +1767,7 @@ void Rasterizer3DS::add_particles( const RID& p_particle_instance, const Instanc
 
 
 void Rasterizer3DS::end_scene() {
-
+	// C3D_Flush();
 
 }
 void Rasterizer3DS::end_shadow_map() {
@@ -1686,15 +1778,24 @@ void Rasterizer3DS::end_shadow_map() {
 void Rasterizer3DS::end_frame() {
 
 	C3D_FrameEnd(0);
+	C3D_FrameBufTransfer(&top_rt->target->frameBuf, top_rt->target->screen, top_rt->target->side, top_rt->target->transferFlags);
+	gfxSwapBuffersGpu();
 }
 
 /* CANVAS API */
 
 
 void Rasterizer3DS::canvas_begin() {
-
-
-
+	// C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uLoc_projection, &projection);
+	C3D_AttrInfo* attrInfo = C3D_GetAttrInfo();
+	AttrInfo_Init(attrInfo);
+	AttrInfo_AddLoader(attrInfo, 0, GPU_FLOAT, 3); // v0=position
+	AttrInfo_AddLoader(attrInfo, 1, GPU_FLOAT, 3); // v1=color
+	
+	Mtx_OrthoTilt(&projection, 0.0, 800.0, 480.0, 0.0, 0.0, 1.0, true);
+	
+	C3D_BindProgram(&program);
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uLoc_projection, &projection);
 }
 void Rasterizer3DS::canvas_disable_blending() {
 
@@ -1714,9 +1815,7 @@ void Rasterizer3DS::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 
 
 void Rasterizer3DS::canvas_begin_rect(const Matrix32& p_transform) {
-
-
-
+	_set_uniform(uLoc_modelView, p_transform);
 }
 
 void Rasterizer3DS::canvas_set_clip(bool p_clip, const Rect2& p_rect) {
@@ -2079,6 +2178,7 @@ void Rasterizer3DS::init() {
 	C3D_BindProgram(&program);
 	
 	uLoc_projection = shaderInstanceGetUniformLocation(program.vertexShader, "projection");
+	uLoc_modelView = shaderInstanceGetUniformLocation(program.vertexShader, "modelView");
 	
 	// Configure attributes for use with the vertex shader
 	C3D_AttrInfo* attrInfo = C3D_GetAttrInfo();
@@ -2087,7 +2187,7 @@ void Rasterizer3DS::init() {
 	AttrInfo_AddLoader(attrInfo, 1, GPU_FLOAT, 3); // v1=color
 	
 	// Mtx_PerspTilt(&projection, C3D_AngleFromDegrees(80.0f), C3D_AspectRatioTop, 0.01f, 1000.0f, false);
-	Mtx_OrthoTilt(&projection, 0.0, 400.0, 0.0, 240.0, 0.0, 1.0, true);
+	Mtx_OrthoTilt(&projection, 0.0, 800.0, 0.0, 440.0, 0.0, 1.0, true);
 	
 	C3D_TexEnv* env = C3D_GetTexEnv(0);
 	C3D_TexEnvInit(env);
