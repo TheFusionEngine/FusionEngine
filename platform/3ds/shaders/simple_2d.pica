@@ -11,11 +11,12 @@
 
 ; Outputs
 .out outpos position
-.out outclr color
+; .out outclr color
+.out outtc0 texcoord0
 
 ; Inputs (defined as aliases for convenience)
 .alias inpos v0
-.alias inclr v1
+.alias intex v1
 
 .bool test
 
@@ -42,7 +43,7 @@
 	dp4 outpos.w, projection[3], r2
 
 	; outclr = inclr
-	mov outclr, inclr
+	mov outtc0, intex
 
 	; We're finished
 	end

@@ -23,10 +23,10 @@ def get_flags():
 		('lua', 'no'),
 		('tools', 'no'),
 		('nedmalloc', 'no'),
-		('theora', 'no'),
+		('theora', 'yes'),
 		('tools', 'no'),
 		('nedmalloc', 'no'),
-		('vorbis', 'no'),
+		('vorbis', 'yes'),
 		('musepack', 'no'),
 		('squirrel', 'no'),
 		('squish', 'no'),
@@ -44,14 +44,14 @@ def configure(env):
 
 	env.Append(CPPPATH=['#platform/javascript'])
 	
-	em_path=os.environ["EMSCRIPTEN_ROOT"]
+	#em_path=os.environ["EMSCRIPTEN_ROOT"]
 	
-	env['ENV']['PATH'] = em_path+":"+env['ENV']['PATH']
+	#env['ENV']['PATH'] = em_path+":"+env['ENV']['PATH']
 
-	env['CC'] = em_path+'/emcc'
-	env['CXX'] = em_path+'/emcc'
-	env['AR'] = em_path+"/emar"
-	env['RANLIB'] = em_path+"/emranlib"
+	env['CC'] = 'emcc'
+	env['CXX'] = 'emcc'
+	env['AR'] = "emar"
+	env['RANLIB'] = "emranlib"
 
 #	env.Append(LIBS=['c','m','stdc++','log','GLESv1_CM','GLESv2'])
 
@@ -69,12 +69,13 @@ def configure(env):
 		env.Append(CCFLAGS=['-D_DEBUG', '-Wall', '-O2', '-DDEBUG_ENABLED'])
 		env.Append(CPPFLAGS=['-DDEBUG_MEMORY_ALLOC'])
 
-	env.Append(CPPFLAGS=["-fno-exceptions",'-DNO_SAFE_CAST','-fno-rtti'])
+	env.Append(CPPFLAGS=['-DNO_SAFE_CAST','-fno-rtti'])
 	env.Append(CPPFLAGS=['-DJAVASCRIPT_ENABLED', '-DUNIX_ENABLED', '-DNO_FCNTL','-DMPC_FIXED_POINT','-DTYPED_METHOD_BIND','-DNO_THREADS'])
 	env.Append(CPPFLAGS=['-DGLES2_ENABLED'])
 	env.Append(CPPFLAGS=['-DGLES_NO_CLIENT_ARRAYS'])
-	env.Append(CPPFLAGS=['-s','ASM_JS=1'])
+	env.Append(CPPFLAGS=['-s','FORCE_FILESYSTEM=1'])
 	env.Append(CPPFLAGS=['-s','FULL_ES2=1'])
+	env.Append(CXXFLAGS=['-std=gnu++03'])
 #	env.Append(CPPFLAGS=['-DANDROID_ENABLED', '-DUNIX_ENABLED','-DMPC_FIXED_POINT'])
 	if (env["compress"]=="yes"):
 		lzma_binpath = em_path+"/third_party/lzma.js/lzma-native"
