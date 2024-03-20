@@ -109,14 +109,13 @@ def configure(env):
 
 
 	env.ParseConfig('pkg-config freetype2 --cflags --libs')
-	env.Append(CCFLAGS=['-DFREETYPE_ENABLED', '-fsanitize=address'])
+	env.Append(CCFLAGS=['-DFREETYPE_ENABLED'])
 
 	
 	env.Append(CPPFLAGS=['-DOPENGL_ENABLED'])
 	env.Append(CPPFLAGS=["-DALSA_ENABLED"])
 	env.Append(CPPFLAGS=['-DX11_ENABLED','-DUNIX_ENABLED','-DGLES1_ENABLED', '-DGL_DLL_IMPORTS', '-DUSE_MGL_NAMESPACE'])
 	env.Append(LIBS=['OSMesa32', 'glu', 'SDL', 'pthread','asound','z']) #TODO detect linux/BSD!
-	env.Append(LINKFLAGS=['-fsanitize=address'])
 
 #host compiler is default..
 
