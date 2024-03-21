@@ -330,8 +330,8 @@ void RasterizerGLES1::texture_allocate(RID p_texture,int p_width, int p_height,I
 	GLenum format;
 	bool compressed;
 
-	int po2_width =  nearest_power_of_2(p_width);
-	int po2_height =  nearest_power_of_2(p_height);
+	int po2_width = (p_width && !(p_width & (p_width - 1))) ? p_width : nearest_power_of_2(p_width);
+	int po2_height = (p_height && !(p_height & (p_height - 1))) ? p_height : nearest_power_of_2(p_height);
 
 	Texture *texture = texture_owner.get( p_texture );
 	ERR_FAIL_COND(!texture);
@@ -345,9 +345,11 @@ void RasterizerGLES1::texture_allocate(RID p_texture,int p_width, int p_height,I
 
 
 	if (scale_textures) {
-		texture->alloc_width = po2_width;
-		texture->alloc_height = po2_height;
+		texture->alloc_width = po2_width < 256 ? po2_width : 256;
+		texture->alloc_height = po2_height < 256 ? po2_height : 256;
 	} else {
+
+		ERR_FAIL();
 
 		texture->alloc_width = texture->width;
 		texture->alloc_height = texture->height;
@@ -460,6 +462,8 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 		glTexImage2D(blit_target, i, format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
 		tsize+=size;
 
+		//printf("mip: %i x %i\n",w,h);
+
 		w = MAX(1,w>>1);
 		h = MAX(1,h>>1);
 
@@ -469,7 +473,7 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 	texture->total_data_size=tsize;
 	_rinfo.texture_mem+=texture->total_data_size;
 
-	printf("texture: %i x %i - size: %i - total: %i\n",texture->width,texture->height,tsize,_rinfo.texture_mem);
+	printf("texture: %i x %i (resize to %i x %i) - size: %i - total: %i\n",texture->width,texture->height,texture->alloc_width,texture->alloc_height,tsize,_rinfo.texture_mem);
 
 
 	if (mipmaps==1 && texture->flags&VS::TEXTURE_FLAG_MIPMAPS) {
