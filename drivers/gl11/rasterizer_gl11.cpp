@@ -273,132 +273,22 @@ Image RasterizerGLES1::_get_gl_image_and_format(const Image& p_image, Image::For
 			r_gl_format=GL_RGBA;
 			r_has_alpha_cache=true;
 		} break;
-		case Image::FORMAT_BC1: {
-
-			r_gl_components=1; //doesn't matter much
-			r_gl_format=_EXT_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-			r_compressed=true;
-
-		} break;
-		case Image::FORMAT_BC2: {
-			r_gl_components=1; //doesn't matter much
-			r_gl_format=_EXT_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-			r_has_alpha_cache=true;
-			r_compressed=true;
-
-		} break;
-		case Image::FORMAT_BC3: {
-
-			r_gl_components=1; //doesn't matter much
-			r_gl_format=_EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-			r_has_alpha_cache=true;
-			r_compressed=true;
-
-		} break;
-		case Image::FORMAT_BC4: {
-
-			r_gl_format=_EXT_COMPRESSED_RED_RGTC1;
-			r_gl_components=1; //doesn't matter much
-			r_compressed=true;
-
-		} break;
-		case Image::FORMAT_BC5: {
-
-			r_gl_format=_EXT_COMPRESSED_RG_RGTC2;
-			r_gl_components=1; //doesn't matter much
-			r_compressed=true;
-		} break;
-		case Image::FORMAT_PVRTC2: {
-
-			if (!pvr_supported) {
-
-				if (!image.empty())
-					image.decompress();
-				r_gl_components=4;
-				r_gl_format=GL_RGBA;
-				r_has_alpha_cache=true;
-				print_line("Load Compat PVRTC2");
-
-			} else {
-
-				r_gl_format=_EXT_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
-				r_gl_components=1; //doesn't matter much
-				r_compressed=true;
-				print_line("Load Normal PVRTC2");
-			}
-
-		} break;
-		case Image::FORMAT_PVRTC2_ALPHA: {
-
-			if (!pvr_supported) {
-
-				if (!image.empty())
-					image.decompress();
-				r_gl_components=4;
-				r_gl_format=GL_RGBA;
-				r_has_alpha_cache=true;
-				print_line("Load Compat PVRTC2A");
-
-			} else {
-
-				r_gl_format=_EXT_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
-				r_gl_components=1; //doesn't matter much
-				r_compressed=true;
-				print_line("Load Normal PVRTC2A");
-			}
-
-		} break;
-		case Image::FORMAT_PVRTC4: {
-
-			if (!pvr_supported) {
-
-				if (!image.empty())
-					image.decompress();
-				r_gl_components=4;
-				r_gl_format=GL_RGBA;
-				r_has_alpha_cache=true;
-				print_line("Load Compat PVRTC4");
-			} else {
-
-				r_gl_format=_EXT_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
-				r_gl_components=1; //doesn't matter much
-				r_compressed=true;
-				print_line("Load Normal PVRTC4");
-			}
-
-		} break;
-		case Image::FORMAT_PVRTC4_ALPHA: {
-
-			if (!pvr_supported) {
-
-				if (!image.empty())
-					image.decompress();
-				r_gl_components=4;
-				r_gl_format=GL_RGBA;
-				r_has_alpha_cache=true;
-				print_line("Load Compat PVRTC4A");
-
-			} else {
-
-				r_gl_format=_EXT_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-				r_gl_components=1; //doesn't matter much
-				r_compressed=true;
-				print_line("Load Normal PVRTC4A");
-			}
-
-		} break;
+		case Image::FORMAT_BC1:
+		case Image::FORMAT_BC2:
+		case Image::FORMAT_BC3:
+		case Image::FORMAT_BC4:
+		case Image::FORMAT_BC5:
+		case Image::FORMAT_PVRTC2:
+		case Image::FORMAT_PVRTC2_ALPHA:
+		case Image::FORMAT_PVRTC4:
+		case Image::FORMAT_PVRTC4_ALPHA:
 		case Image::FORMAT_ETC: {
 
-			if (!pvr_supported) {
-
-				if (!image.empty())
-					image.decompress();
-			} else {
-
-				r_gl_format=_EXT_ETC1_RGB8_OES;
-				r_gl_components=1; //doesn't matter much
-				r_compressed=true;
-			}
+			if (!image.empty())
+				image.decompress();
+			r_gl_components=4;
+			r_gl_format=GL_RGBA;
+			r_has_alpha_cache=true;
 
 		} break;
 		case Image::FORMAT_YUV_422:
@@ -540,6 +430,7 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 
 
 	Image img = _get_gl_image_and_format(p_image, p_image.get_format(),texture->flags,format,components,alpha,compressed);
+	ERR_FAIL_COND(compressed);
 	if (texture->alloc_width != img.get_width() || texture->alloc_height != img.get_height()) {
 
 		img.resize(texture->alloc_width, texture->alloc_height, Image::INTERPOLATE_BILINEAR);
@@ -565,16 +456,8 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 		int size,ofs;
 		img.get_mipmap_offset_and_size(i,ofs,size);
 
-		if (texture->compressed) {
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-			// glCompressedTexImage2D( blit_target, i, format,w,h,0,size,&read[ofs] );
-
-		} else {
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-//			glTexImage2D(blit_target, i, format==GL_RGB?GL_RGB8:format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
-			glTexImage2D(blit_target, i, format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
-			//glTexSubImage2D( blit_target, i, 0,0,w,h,format,GL_UNSIGNED_BYTE,&read[ofs] );
-		}
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexImage2D(blit_target, i, format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
 		tsize+=size;
 
 		w = MAX(1,w>>1);
@@ -615,154 +498,6 @@ Image RasterizerGLES1::texture_get_data(RID p_texture,VS::CubeMapSide p_cube_sid
 	ERR_FAIL_COND_V(!texture->active,Image());
 
 	return texture->image[p_cube_side];
-#if 0
-
-	Texture * texture = texture_owner.get(p_texture);
-
-	ERR_FAIL_COND_V(!texture,Image());
-	ERR_FAIL_COND_V(!texture->active,Image());
-	ERR_FAIL_COND_V(texture->data_size==0,Image());
-
-	DVector<uint8_t> data;
-	GLenum format,type=GL_UNSIGNED_BYTE;
-	Image::Format fmt;
-	int pixelsize=0;
-	int pixelshift=0;
-	int minw=1,minh=1;
-	bool compressed=false;
-
-	fmt=texture->format;
-
-	switch(texture->format) {
-
-		case Image::FORMAT_GRAYSCALE: {
-
-			format=GL_LUMINANCE;
-			type=GL_UNSIGNED_BYTE;
-			data.resize(texture->alloc_width*texture->alloc_height);
-			pixelsize=1;
-
-		} break;
-		case Image::FORMAT_INTENSITY: {
-			return Image();
-		} break;
-		case Image::FORMAT_GRAYSCALE_ALPHA: {
-
-			format=GL_LUMINANCE_ALPHA;
-			type=GL_UNSIGNED_BYTE;
-			pixelsize=2;
-
-		} break;
-		case Image::FORMAT_RGB: {
-			format=GL_RGB;
-			type=GL_UNSIGNED_BYTE;
-			pixelsize=3;
-		} break;
-		case Image::FORMAT_RGBA: {
-
-			format=GL_RGBA;
-			type=GL_UNSIGNED_BYTE;
-			pixelsize=4;
-		} break;
-		case Image::FORMAT_INDEXED: {
-
-			format=GL_RGB;
-			type=GL_UNSIGNED_BYTE;
-			fmt=Image::FORMAT_RGB;
-			pixelsize=3;
-		} break;
-		case Image::FORMAT_INDEXED_ALPHA: {
-
-			format=GL_RGBA;
-			type=GL_UNSIGNED_BYTE;
-			fmt=Image::FORMAT_RGBA;
-			pixelsize=4;
-
-		} break;
-		case Image::FORMAT_BC1: {
-
-			pixelsize=1; //doesn't matter much
-			format=GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-			compressed=true;
-			pixelshift=1;
-			minw=minh=4;
-
-		} break;
-		case Image::FORMAT_BC2: {
-			pixelsize=1; //doesn't matter much
-			format=GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-			compressed=true;
-			minw=minh=4;
-
-		} break;
-		case Image::FORMAT_BC3: {
-
-			pixelsize=1; //doesn't matter much
-			format=GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-			compressed=true;
-			minw=minh=4;
-
-		} break;
-		case Image::FORMAT_BC4: {
-
-			format=GL_COMPRESSED_RED_RGTC1;
-			pixelsize=1; //doesn't matter much
-			compressed=true;
-			pixelshift=1;
-			minw=minh=4;
-
-		} break;
-		case Image::FORMAT_BC5: {
-
-			format=GL_COMPRESSED_RG_RGTC2;
-			pixelsize=1; //doesn't matter much
-			compressed=true;
-			minw=minh=4;
-
-		} break;
-
-		default:{}
-	}
-
-	data.resize(texture->data_size);
-	DVector<uint8_t>::Write wb = data.write();
-
-	glActiveTexture(GL_TEXTURE0);
-	int ofs=0;
-	glBindTexture(texture->target,texture->tex_id);
-
-	int w=texture->alloc_width;
-	int h=texture->alloc_height;
-	for(int i=0;i<texture->mipmaps+1;i++) {
-
-		if (compressed) {
-
-			glPixelStorei(GL_PACK_ALIGNMENT, 4);
-			glGetCompressedTexImage(texture->target,i,&wb[ofs]);
-
-		} else {
-			glPixelStorei(GL_PACK_ALIGNMENT, 1);
-			glGetTexImage(texture->target,i,format,type,&wb[ofs]);
-		}
-
-		int size = (w*h*pixelsize)>>pixelshift;
-		ofs+=size;
-
-		w=MAX(minw,w>>1);
-		h=MAX(minh,h>>1);
-
-	}
-
-
-	wb=DVector<uint8_t>::Write();
-
-	Image img(texture->alloc_width,texture->alloc_height,texture->mipmaps,fmt,data);
-
-	if (texture->format<Image::FORMAT_INDEXED && (texture->alloc_width!=texture->width || texture->alloc_height!=texture->height))
-		img.resize(texture->width,texture->height);
-
-	return img;
-#endif
 }
 
 void RasterizerGLES1::texture_set_flags(RID p_texture,uint32_t p_flags) {

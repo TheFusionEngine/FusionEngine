@@ -13,5 +13,5 @@ common_win=[
 
 prog = env.Program('#bin/godot',['godot_win.cpp']+common_win,PROGSUFFIX=env["PROGSUFFIX"])
 
-if env['pdb']:
+if env['pdb'] == 'yes':
 	env.Command(["${SOURCE.base}.windbg.pdb", "${SOURCE.base}.windbg.exe"], prog, "cv2pdb $SOURCE ${SOURCE.base}.windbg.exe ${SOURCE.base}.windbg.pdb")
