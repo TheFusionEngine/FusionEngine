@@ -154,6 +154,8 @@ class OS_Windows : public OS {
 
 	InputDefault *input;
 
+	bool unicode;
+
 #ifdef RTAUDIO_ENABLED
 	AudioDriverRtAudio driver_rtaudio;
 #endif
@@ -261,6 +263,14 @@ public:
 	void run();
 
 	virtual bool get_swap_ok_cancel() { return true; }
+
+	Charset get_charset() const override {
+#ifdef _UNICODE
+		return OS_CHARSET_UNICODE;
+#else
+		return OS_CHARSET_ANSI;
+#endif
+	}
 
 	OS_Windows(HINSTANCE _hInstance);	
 	~OS_Windows();

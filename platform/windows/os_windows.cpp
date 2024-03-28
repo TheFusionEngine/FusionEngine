@@ -26,14 +26,15 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-//#include "drivers/gles2/rasterizer_gles2.h"
 #include "drivers/gles1/rasterizer_gles1.h"
+//#include "drivers/gles2/rasterizer_gles2.h"
 #include "os_windows.h"
 #include "drivers/nedmalloc/memory_pool_static_nedmalloc.h"
 #include "drivers/unix/memory_pool_static_malloc.h"
 #include "os/memory_pool_dynamic_static.h"
 #include "drivers/windows/thread_windows.h"
 #include "drivers/windows/semaphore_windows.h"
+#include "core/os/thread_dummy.h"
 #include "drivers/windows/mutex_windows.h"
 #include "main/main.h"
 #include "drivers/windows/file_access_windows.h"
@@ -42,6 +43,7 @@
 
 #include "servers/visual/visual_server_raster.h"
 #include "servers/audio/audio_server_sw.h"
+#include "servers/audio/audio_driver_dummy.h"
 #include "servers/visual/visual_server_wrap_mt.h"
 
 #include "tcp_server_winsock.h"
@@ -53,6 +55,15 @@
 #include "globals.h"
 #include "io/marshalls.h"
 
+#include "tchar.h"
+#ifndef _tpopen
+#ifdef _UNICODE
+#define _tpopen _wpopen
+#else
+#define _tpopen _popen
+#endif
+#endif
+
 #include "shlobj.h"
 static const WORD MAX_CONSOLE_LINES = 1500;
 
@@ -61,6 +72,7 @@ static const WORD MAX_CONSOLE_LINES = 1500;
 
 extern HINSTANCE godot_hinstance;
 
+#if 0
 void RedirectIOToConsole() {
 
 	int hConHandle;
@@ -127,6 +139,7 @@ void RedirectIOToConsole() {
 
 	// point to console as well
 }
+#endif
 
 int OS_Windows::get_video_driver_count() const {
 
@@ -164,7 +177,8 @@ void OS_Windows::initialize_core() {
 	//RedirectIOToConsole();
 
 	ThreadWindows::make_default();	
-	SemaphoreWindows::make_default();	
+	//SemaphoreWindows::make_default();	
+	SemaphoreDummy::make_default();	
 	MutexWindows::make_default();	
 
 	FileAccess::make_default<FileAccessWindows>(FileAccess::ACCESS_RESOURCES);
@@ -175,9 +189,9 @@ void OS_Windows::initialize_core() {
 	DirAccess::make_default<DirAccessWindows>(DirAccess::ACCESS_USERDATA);
 	DirAccess::make_default<DirAccessWindows>(DirAccess::ACCESS_FILESYSTEM);
 
-	TCPServerWinsock::make_default();
-	StreamPeerWinsock::make_default();
-	PacketPeerUDPWinsock::make_default();
+	//TCPServerWinsock::make_default();
+	//StreamPeerWinsock::make_default();
+	//PacketPeerUDPWinsock::make_default();
 	
 	mempool_static = new MemoryPoolStaticMalloc;
 #if 1
@@ -199,7 +213,7 @@ void OS_Windows::initialize_core() {
 
 	process_map = memnew((Map<ProcessID, ProcessInfo>));
 
-	IP_Unix::make_default();
+	//IP_Unix::make_default();
 
 	cursor_shape=CURSOR_ARROW;
 
@@ -329,7 +343,7 @@ LRESULT OS_Windows::WndProc(HWND hWnd,UINT uMsg, WPARAM	wParam,	LPARAM	lParam) {
 				tme.dwFlags=TME_LEAVE;
 				tme.hwndTrack=hWnd;
 				tme.dwHoverTime=HOVER_DEFAULT;
-				TrackMouseEvent(&tme);
+				_TrackMouseEvent(&tme);
 
 			}
 
@@ -658,12 +672,12 @@ LRESULT OS_Windows::WndProc(HWND hWnd,UINT uMsg, WPARAM	wParam,	LPARAM	lParam) {
 
 			if (user_proc) {
 
-				return CallWindowProcW(user_proc, hWnd, uMsg, wParam, lParam);
+				return CallWindowProc(user_proc, hWnd, uMsg, wParam, lParam);
 			};
 		};
 	}
 
-	return DefWindowProcW(hWnd,uMsg,wParam,lParam);
+	return DefWindowProc(hWnd,uMsg,wParam,lParam);
 
 }
 
@@ -673,7 +687,7 @@ LRESULT CALLBACK WndProc(HWND	hWnd,UINT uMsg,	WPARAM	wParam,	LPARAM	lParam)	{
 	if (os_win)
 		return os_win->WndProc(hWnd,uMsg,wParam,lParam);
 	else
-		return DefWindowProcW(hWnd,uMsg,wParam,lParam);
+		return DefWindowProc(hWnd,uMsg,wParam,lParam);
 
 }
 
@@ -951,7 +965,7 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
     main_loop=NULL;
     outside=true;
 
-	WNDCLASSEXW	wc;
+	WNDCLASSEX	wc;
 	
 	video_mode=p_desired;
 	//printf("**************** desired %s, mode %s\n", p_desired.fullscreen?"true":"false", video_mode.fullscreen?"true":"false");
@@ -962,8 +976,8 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 	WindowRect.top=0;
 	WindowRect.bottom=video_mode.height;
 
-	memset(&wc,0,sizeof(WNDCLASSEXW));
-	wc.cbSize=sizeof(WNDCLASSEXW);
+	memset(&wc,0,sizeof(WNDCLASSEX));
+	wc.cbSize=sizeof(WNDCLASSEX);
 	wc.style= CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
 	wc.lpfnWndProc = (WNDPROC)::WndProc;
 	wc.cbClsExtra = 0;
@@ -971,13 +985,13 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 	//wc.hInstance = hInstance;
 	wc.hInstance = godot_hinstance ? godot_hinstance : GetModuleHandle(NULL);
 	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);		
-	wc.hCursor = NULL;//LoadCursor(NULL, IDC_ARROW);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName	= NULL;	
-	wc.lpszClassName	= L"Engine";
+	wc.lpszClassName	= _T("Engine");
 
-	if (!RegisterClassExW(&wc)) {
-		MessageBox(NULL,"Failed To Register The Window Class.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+	if (!RegisterClassEx(&wc)) {
+		MessageBox(NULL,_T("Failed To Register The Window Class."),_T("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 		return;											// Return 
 	}
 	
@@ -1027,7 +1041,7 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 
 
 	char* windowid = getenv("GODOT_WINDOWID");
-	if (windowid) {
+	if (windowid && strlen(windowid)) {
 
 		// strtoull on mingw
 		#ifdef MINGW_ENABLED
@@ -1047,7 +1061,7 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 
 		RECT rect;
 		if (!GetClientRect(hWnd, &rect)) {
-			MessageBoxW(NULL,L"Window Creation Error.",L"ERROR",MB_OK|MB_ICONEXCLAMATION);
+			MessageBox(NULL,_T("Window Re-Creation Error."),_T("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 			return;								// Return FALSE
 		};
 		video_mode.width = rect.right;
@@ -1055,23 +1069,29 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 		video_mode.fullscreen = false;
 	} else {
 
-		if (!(hWnd=CreateWindowExW(dwExStyle,L"Engine",L"", dwStyle|WS_CLIPSIBLINGS|WS_CLIPCHILDREN, 0, 0,WindowRect.right-WindowRect.left,WindowRect.bottom-WindowRect.top, NULL,NULL,	hInstance,NULL))) {
-			MessageBoxW(NULL,L"Window Creation Error.",L"ERROR",MB_OK|MB_ICONEXCLAMATION);
+		if (!(hWnd=CreateWindowEx(dwExStyle,_T("Engine"),_T(""), dwStyle|WS_CLIPSIBLINGS|WS_CLIPCHILDREN, 0, 0,WindowRect.right-WindowRect.left,WindowRect.bottom-WindowRect.top, NULL,NULL,	hInstance,NULL))) {
+			MessageBox(NULL,_T("Window Creation Error."),_T("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 			return;								// Return FALSE
 		}
 
 
 	};
 	
-#if defined(OPENGL_ENABLED) || defined(GLES1_ENABLED) || defined(GLES2_ENABLED) || defined(LEGACYGL_ENABLED)
-	gl_context = memnew( ContextGL_Win(hWnd,false) );
-	gl_context->initialize();
-	rasterizer = memnew( RasterizerGLES1 );
-#else
- #ifdef DX9_ENABLED
-	rasterizer = memnew( RasterizerDX9(hWnd) );
- #endif
+	if (strcmp(get_video_driver_name(p_video_driver), "GLES1") == 0) {
+		gl_context = memnew( ContextGL_Win(hWnd,false) );
+		gl_context->initialize();
+		rasterizer = memnew( RasterizerGLES1 );
+	}
+#ifdef DX9_ENABLED
+	else if (strcmp(get_video_driver_name(p_video_driver), "DX9") == 0) {
+		rasterizer = memnew( RasterizerDX9(hWnd) );
+	}
 #endif
+	//else if (strcmp(get_video_driver_name(p_video_driver), "GLES2") == 0) {
+	//	gl_context = memnew( ContextGL_Win(hWnd,false) );
+	//	gl_context->initialize();
+	//	rasterizer = memnew( RasterizerGLES2 );
+	//}
 
 	visual_server = memnew( VisualServerRaster(rasterizer) );
 	if (get_render_thread_mode()!=RENDER_THREAD_UNSAFE) {
@@ -1140,7 +1160,7 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 	tme.dwFlags=TME_LEAVE;
 	tme.hwndTrack=hWnd;
 	tme.dwHoverTime=HOVER_DEFAULT;
-	TrackMouseEvent(&tme);
+	_TrackMouseEvent(&tme);
 
 	//RegisterTouchWindow(hWnd, 0); // Windows 7
 
@@ -1184,6 +1204,7 @@ void OS_Windows::set_clipboard(const String& p_text) {
 	SetClipboardData(CF_TEXT, mem);
 
 	CloseClipboard();
+
 };
 
 String OS_Windows::get_clipboard() const {
@@ -1194,36 +1215,22 @@ String OS_Windows::get_clipboard() const {
 		ERR_FAIL_V("");
 	};
 
-	if (IsClipboardFormatAvailable(CF_UNICODETEXT)) {
+	// Handled by UNICOWS
+	HGLOBAL mem = GetClipboardData(CF_UNICODETEXT);
+	if (mem != NULL) {
 
-		HGLOBAL mem = GetClipboardData(CF_UNICODETEXT);
-		if (mem != NULL) {
+		LPWSTR ptr = (LPWSTR)GlobalLock(mem);
+		if (ptr != NULL) {
 
-			LPWSTR ptr = (LPWSTR)GlobalLock(mem);
-			if (ptr != NULL) {
-
-				ret = String((CharType*)ptr);
-				GlobalUnlock(mem);
-			};
-		};
-
-	} else if (IsClipboardFormatAvailable(CF_TEXT)) {
-
-		HGLOBAL mem = GetClipboardData(CF_UNICODETEXT);
-		if (mem != NULL) {
-
-			LPTSTR ptr = (LPTSTR)GlobalLock(mem);
-			if (ptr != NULL) {
-
-				ret.parse_utf8((const char*)ptr);
-				GlobalUnlock(mem);
-			};
+			ret = String((CharType*)ptr);
+			GlobalUnlock(mem);
 		};
 	};
 
 	CloseClipboard();
 
 	return ret;
+
 };
 
 
@@ -1292,8 +1299,8 @@ void OS_Windows::finalize_core() {
 		delete mempool_static;
 
 
-	TCPServerWinsock::cleanup();
-	StreamPeerWinsock::cleanup();
+	//TCPServerWinsock::cleanup();
+	//StreamPeerWinsock::cleanup();
 }
 
 void OS_Windows::vprint(const char* p_format, va_list p_list, bool p_stderr) {
@@ -1304,6 +1311,7 @@ void OS_Windows::vprint(const char* p_format, va_list p_list, bool p_stderr) {
 		return;
 	buf[len]=0;
 
+#ifdef UNICODE
 
 	int wlen = MultiByteToWideChar(CP_UTF8,0,buf,len,NULL,0);
 	if (wlen<0)
@@ -1323,13 +1331,22 @@ void OS_Windows::vprint(const char* p_format, va_list p_list, bool p_stderr) {
 #endif
 	free(wbuf);
 
+#else
+
+	if (p_stderr)
+		fprintf(stderr,"%s",buf);
+	else
+		printf("%s",buf);
+
+#endif
+
 	fflush(stdout);
 };
 
 void OS_Windows::alert(const String& p_alert,const String& p_title) {
 
 	if (!is_no_window_mode_enabled())
-		MessageBoxW(NULL,p_alert.c_str(),p_title.c_str(),MB_OK|MB_ICONEXCLAMATION);
+		MessageBox(NULL,p_alert.t_str(),p_title.t_str(),MB_OK|MB_ICONEXCLAMATION);
 	else
 		print_line("ALERT: "+p_alert);
 }
@@ -1391,7 +1408,7 @@ int OS_Windows::get_mouse_button_state() const {
 
 void OS_Windows::set_window_title(const String& p_title) {
 
-	SetWindowTextW(hWnd,p_title.c_str());
+	SetWindowText(hWnd,p_title.t_str());
 }
 
 void OS_Windows::set_video_mode(const VideoMode& p_video_mode,int p_screen) {
@@ -1558,11 +1575,11 @@ void OS_Windows::process_events() {
 
 	process_joysticks();
 	
-	while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)) {
+	while(PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
 
 
 		TranslateMessage(&msg);
-		DispatchMessageW(&msg);
+		DispatchMessage(&msg);
 		
 	}
 
@@ -1618,7 +1635,7 @@ Error OS_Windows::execute(const String& p_path, const List<String>& p_arguments,
 		//argss+"\"";
 		//argss+=" 2>nul";
 
-		FILE* f=_wpopen(argss.c_str(),L"r");
+		FILE* f=_tpopen(argss.t_str(),_T("r"));
 
 		ERR_FAIL_COND_V(!f,ERR_CANT_OPEN);
 
@@ -1651,14 +1668,15 @@ Error OS_Windows::execute(const String& p_path, const List<String>& p_arguments,
 	ZeroMemory( &pi.si, sizeof(pi.si) );
 	pi.si.cb = sizeof(pi.si);
 	ZeroMemory( &pi.pi, sizeof(pi.pi) );
-	LPSTARTUPINFOW si_w = (LPSTARTUPINFOW) &pi.si;
+	LPSTARTUPINFO si_w = (LPSTARTUPINFO) &pi.si;
 
 	print_line("running cmdline: "+cmdline);
-	Vector<CharType> modstr; //windows wants to change this no idea why
-	modstr.resize(cmdline.size());
-	for(int i=0;i<cmdline.size();i++)
-		modstr[i]=cmdline[i];
-	int ret = CreateProcessW(NULL, modstr.ptr(), NULL, NULL, 0, NORMAL_PRIORITY_CLASS, NULL, NULL, si_w, &pi.pi);
+	//Vector<CharType> modstr; //windows wants to change this no idea why
+	//modstr.resize(cmdline.size());
+	//for(int i=0;i<cmdline.size();i++)
+	//	modstr[i]=cmdline[i];
+	LPTSTR modstr = _tcsdup(cmdline.t_str());
+	int ret = CreateProcess(NULL, modstr, NULL, NULL, 0, NORMAL_PRIORITY_CLASS, NULL, NULL, si_w, &pi.pi);
 	ERR_FAIL_COND_V(ret == 0, ERR_CANT_FORK);
 
 	if (p_blocking) {
@@ -1675,6 +1693,7 @@ Error OS_Windows::execute(const String& p_path, const List<String>& p_arguments,
 		};
 		process_map->insert(pid, pi);
 	};
+	free(modstr);
 	return OK;
 };
 
@@ -1697,7 +1716,7 @@ Error OS_Windows::kill(const ProcessID& p_pid) {
 
 Error OS_Windows::set_cwd(const String& p_cwd) {
 
-	if (_wchdir(p_cwd.c_str())!=0)
+	if (_tchdir(p_cwd.replace("/", "\\").t_str())!=0)
 		return ERR_CANT_OPEN;
 
 	return OK;
@@ -1705,10 +1724,9 @@ Error OS_Windows::set_cwd(const String& p_cwd) {
 
 String OS_Windows::get_executable_path() const {
 
-	wchar_t bufname[4096];
-	GetModuleFileNameW(NULL,bufname,4096);
+	TCHAR bufname[4096];
+	GetModuleFileName(NULL,bufname,4096);
 	String s= bufname;
-	print_line("EXEC PATHPó: "+s);
 	return s;
 }
 
@@ -1799,7 +1817,7 @@ void OS_Windows::move_window_to_foreground() {
 
 Error OS_Windows::shell_open(String p_uri) {
 
-	ShellExecuteW(NULL, L"open", p_uri.c_str(), NULL, NULL, SW_SHOWNORMAL);
+	ShellExecute(NULL, _T("open"), p_uri.t_str(), NULL, NULL, SW_SHOWNORMAL);
 	return OK;
 }
 
@@ -1808,7 +1826,7 @@ String OS_Windows::get_locale() const {
 
 	const _WinLocale *wl = &_win_locales[0];
 
-	LANGID langid = GetUserDefaultUILanguage();
+	LANGID langid = GetUserDefaultLangID();
 	String neutral;
 	int lang = langid&((1<<9)-1);
 	int sublang = langid&~((1<<9)-1);
@@ -1878,44 +1896,70 @@ MainLoop *OS_Windows::get_main_loop() const {
 	return main_loop;
 }
 
+#ifndef UNICODE
+#define _TFUNC(S) S // "A"
+#else
+#define _TFUNC(S) S "W"
+#endif
+
+typedef HRESULT(* FPSHGetFolderPath)(HWND, int, HANDLE, DWORD, LPTSTR);
 String OS_Windows::get_system_dir(SystemDir p_dir) const {
 
+	FPSHGetFolderPath _SHGetFolderPathT = (FPSHGetFolderPath)GetProcAddress(GetModuleHandle(_T("shell32")), _TFUNC("SHGetFolderPath"));
+	if (_SHGetFolderPathT) {
+		int id;
 
-	int id;
+		switch(p_dir) {
+			case SYSTEM_DIR_DESKTOP: {
+				id=CSIDL_DESKTOPDIRECTORY;
+			} break;
+			case SYSTEM_DIR_DCIM: {
+				id=CSIDL_MYPICTURES;
+			} break;
+			case SYSTEM_DIR_DOCUMENTS: {
+				id=0x000C;
+			} break;
+			case SYSTEM_DIR_DOWNLOADS: {
+				id=0x000C ;
+			} break;
+			case SYSTEM_DIR_MOVIES: {
+				id=CSIDL_MYVIDEO;
+			} break;
+			case SYSTEM_DIR_MUSIC: {
+				id=CSIDL_MYMUSIC;
+			} break;
+			case SYSTEM_DIR_PICTURES: {
+				id=CSIDL_MYPICTURES;
+			} break;
+			case SYSTEM_DIR_RINGTONES: {
+				id=CSIDL_MYMUSIC;
+			} break;
+		}
 
+		WCHAR szPath[MAX_PATH];
+		HRESULT res = _SHGetFolderPathT(NULL,id,NULL,0,szPath);
+		ERR_FAIL_COND_V(res!=S_OK,String());
+		return String(szPath);
+	} else {
+		int id;
 
+		switch(p_dir) {
+			case SYSTEM_DIR_DESKTOP: {
+				id=CSIDL_DESKTOPDIRECTORY;
+			} break;
+			default: {
+				id=CSIDL_PERSONAL;
+			} break;
+		}
 
-	switch(p_dir) {
-		case SYSTEM_DIR_DESKTOP: {
-			id=CSIDL_DESKTOPDIRECTORY;
-		} break;
-		case SYSTEM_DIR_DCIM: {
-			id=CSIDL_MYPICTURES;
-		} break;
-		case SYSTEM_DIR_DOCUMENTS: {
-			id=0x000C;
-		} break;
-		case SYSTEM_DIR_DOWNLOADS: {
-			id=0x000C ;
-		} break;
-		case SYSTEM_DIR_MOVIES: {
-			id=CSIDL_MYVIDEO;
-		} break;
-		case SYSTEM_DIR_MUSIC: {
-			id=CSIDL_MYMUSIC;
-		} break;
-		case SYSTEM_DIR_PICTURES: {
-			id=CSIDL_MYPICTURES;
-		} break;
-		case SYSTEM_DIR_RINGTONES: {
-			id=CSIDL_MYMUSIC;
-		} break;
+		TCHAR szPath[MAX_PATH];
+		LPITEMIDLIST pidl;
+		HRESULT res = SHGetSpecialFolderLocation(NULL,id,&pidl);
+		ERR_FAIL_COND_V(res!=S_OK,String());
+		SHGetPathFromIDList(pidl,szPath);
+		CoTaskMemFree(pidl);
+		return String(szPath);
 	}
-
-	WCHAR szPath[MAX_PATH];
-	HRESULT res = SHGetFolderPathW(NULL,id,NULL,0,szPath);
-	ERR_FAIL_COND_V(res!=S_OK,String());
-	return String(szPath);
 
 }
 String OS_Windows::get_data_dir() const {
@@ -1937,7 +1981,6 @@ String OS_Windows::get_data_dir() const {
 
 
 }
-
 
 OS_Windows::OS_Windows(HINSTANCE _hInstance) {
 
@@ -1962,6 +2005,8 @@ OS_Windows::OS_Windows(HINSTANCE _hInstance) {
 
 #ifdef RTAUDIO_ENABLED
 	AudioDriverManagerSW::add_driver(&driver_rtaudio);
+#else
+	AudioDriverManagerSW::add_driver(new AudioDriverDummy);
 #endif
 
 }

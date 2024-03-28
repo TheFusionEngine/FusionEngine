@@ -1,5 +1,7 @@
 #include "packet_peer_udp_winsock.h"
 
+#ifndef WIN98_ENABLED
+
 #include <winsock2.h>
 
 int PacketPeerUDPWinsock::get_available_packet_count() const {
@@ -200,3 +202,5 @@ PacketPeerUDPWinsock::~PacketPeerUDPWinsock() {
 
 	close();
 }
+
+#endif

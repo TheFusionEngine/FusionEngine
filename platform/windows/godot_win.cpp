@@ -123,10 +123,18 @@ char* mb_to_utf8(const char* mbs) {
 	wbuf[wlen]=0;
 
 	int ulen = WideCharToMultiByte(CP_UTF8,0,wbuf,-1,NULL,0,NULL,NULL);
-	char * ubuf = new char[ulen + 1];
-	WideCharToMultiByte(CP_UTF8,0,wbuf,-1,ubuf,ulen,NULL,NULL);
-	ubuf[ulen] = 0;
-	return ubuf;
+    if (ulen > 0) {
+        char * ubuf = new char[ulen + 1];
+        WideCharToMultiByte(CP_UTF8,0,wbuf,-1,ubuf,ulen,NULL,NULL);
+        ubuf[ulen] = 0;
+        return ubuf;
+    } else {
+        ulen = strlen(mbs);
+        char *ubuf = new char[ulen + 1];
+        strcpy(ubuf, mbs);
+        return ubuf;
+    }
+
 }
 
 int main(int argc, char** argv) {
@@ -223,7 +231,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     char filename[_MAX_PATH];
 
-    GetModuleFileName(NULL, filename, _MAX_PATH);
+    GetModuleFileNameA(NULL, filename, _MAX_PATH);
     argv[0] = filename;
 
     // call the user specified main function

@@ -3337,14 +3337,15 @@ void RasterizerPSP::_setup_fixed_material(const Geometry *p_geometry,const Mater
 	if (!shadow) {
 
 		///ambient @TODO offer global ambient group option
-
 		///diffuse
 		Color diffuse_color=p_material->parameters[VS::FIXED_MATERIAL_PARAM_DIFFUSE];
 		const auto diffuse_rgba = MK_RGBA_C(diffuse_color);
-		//color array overrides this
-		sceGuColorMaterial(GU_AMBIENT | GU_DIFFUSE | GU_SPECULAR);
+		sceGuColor(diffuse_rgba);
 
-		//sceGuColor(diffuse_rgba);
+		//color array overrides this
+		sceGuColorMaterial(GU_DIFFUSE | GU_AMBIENT | GU_SPECULAR);
+
+		//sceGuAmbient(diffuse_rgba);
 		//sceGuAmbientColor(diffuse_rgba);
 
 		last_color=diffuse_color;
@@ -3370,10 +3371,9 @@ void RasterizerPSP::_setup_fixed_material(const Geometry *p_geometry,const Mater
 			1.0 //p_material->parameters[VS::FIXED_MATERIAL_PARAM_DETAIL_MIX]
 		));
 
-		sceGuSpecular(p_material->parameters[VS::FIXED_MATERIAL_PARAM_SPECULAR_EXP]);
+		//sceGuSpecular(p_material->parameters[VS::FIXED_MATERIAL_PARAM_SPECULAR_EXP]);
 
 		sceGuShadeModel(GU_SMOOTH);
-		sceGuAmbient(diffuse_rgba);
 
 		//Plane sparams=p_material->parameters[VS::FIXED_MATERIAL_PARAM_SHADE_PARAM];
 		//depth test?
@@ -3467,7 +3467,7 @@ void RasterizerPSP::_setup_material(const Geometry *p_geometry,const Material *p
 		if (lighting!=!p_material->flags[VS::MATERIAL_FLAG_UNSHADED]) {
 			if (p_material->flags[VS::MATERIAL_FLAG_UNSHADED]) {
 				// glDisable(GL_LIGHTING);
-				sceGuDisable(GU_LIGHTING);
+				//sceGuDisable(GU_LIGHTING);
 			} else {
 				// glEnable(GL_LIGHTING);
 				sceGuEnable(GU_LIGHTING);
@@ -3533,10 +3533,6 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 
 		case VS::LIGHT_DIRECTIONAL: {
 
-			sceGumMatrixMode(GU_MODEL);
-			sceGumPushMatrix();
-			sceGumLoadIdentity();
-
 			sceGuLight(p_idx, GU_DIRECTIONAL, GU_DIFFUSE_AND_SPECULAR, gumake<ScePspFVector3>({
 				p_instance->light_vector.x,
 				p_instance->light_vector.y,
@@ -3545,15 +3541,9 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 
 			sceGuLightAtt(p_idx, 1, 0, 0);
 
-			sceGumPopMatrix();
-
 		} break;
 
 		case VS::LIGHT_OMNI: {
-
-			sceGumMatrixMode(GU_MODEL);
-			sceGumPushMatrix();
-			sceGumLoadIdentity();
 
 			sceGuLight(p_idx, GU_POINTLIGHT, GU_DIFFUSE_AND_SPECULAR, gumake<ScePspFVector3>({
 				p_instance->light_vector.x,
@@ -3563,17 +3553,10 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 
 			sceGuLightAtt(p_idx, 0, p_instance->linear_att, 0);
 
-			sceGumPopMatrix();
-
-
 		} break;
 		case VS::LIGHT_SPOT: {
 
-			sceGumMatrixMode(GU_MODEL);
-			sceGumPushMatrix();
-			sceGumLoadIdentity();
-
-			sceGuLight(p_idx,GU_SPOTLIGHT,GU_DIFFUSE_AND_SPECULAR,gumake<ScePspFVector3>({
+			sceGuLight(p_idx, GU_SPOTLIGHT, GU_DIFFUSE_AND_SPECULAR, gumake<ScePspFVector3>({
 				p_instance->light_vector.x,
 				p_instance->light_vector.y,
 				p_instance->light_vector.z,
@@ -3586,8 +3569,6 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 				}), ld->vars[VS::LIGHT_PARAM_SPOT_ATTENUATION], ld->vars[VS::LIGHT_PARAM_SPOT_ANGLE]);
 
 			sceGuLightAtt(p_idx, 0, p_instance->linear_att, 0);
-
-			sceGumPopMatrix();
 
 		} break;
 
@@ -3608,14 +3589,6 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 		1.0
 	));
 
-	//Color amb_color = Color(0,0,0);
-	//sceGuLightColor(glid, GU_AMBIENT, MK_RGBA_F(
-	//	amb_color.r,
-	//	amb_color.g,
-	//	amb_color.b,
-	//	1.0
-	//));
-
 	Color spec_color = ld->colors[VS::LIGHT_COLOR_SPECULAR];
 	sceGuLightColor(p_idx, GU_SPECULAR, MK_RGBA_F(
 		spec_color.r,
@@ -3634,17 +3607,15 @@ void RasterizerPSP::_setup_lights(const uint16_t * p_lights,int p_light_count) {
 	if (shadow)
 		return;
 
-
-
 	for (int i=directional_light_count; i<MAX_HW_LIGHTS; i++) {
 
 		if (i<(directional_light_count+p_light_count)) {
-
 
 			sceGuEnable(GU_LIGHT0 + i);
 			_setup_light(light_instances[p_lights[i]], i);
 
 		} else {
+
 			sceGuDisable(GU_LIGHT0 + i);
 
 		}
@@ -4071,6 +4042,14 @@ void RasterizerPSP::end_scene() {
 	depth_write=true;
 	depth_test=true;
 
+	sceGuLightMode(GU_SEPARATE_SPECULAR_COLOR);
+
+	sceGuColor(MK_RGBA(255, 255, 255, 255));
+	//sceGuAmbient(MK_RGBA(127, 127, 127, 255));
+	//sceGuAmbientColor(MK_RGBA(127, 127, 127, 255));
+
+	//sceGuAmbient(MK_RGBA(255, 255, 255, 255));
+
 	if (current_env) {
 
 		switch(current_env->bg_mode) {
@@ -4090,9 +4069,10 @@ void RasterizerPSP::end_scene() {
 						bgcolor = current_env->bg_param[VS::ENV_BG_PARAM_COLOR];
 					else
 						bgcolor = Globals::get_singleton()->get("render/default_clear_color");
+
 					// bgcolor = _convert_color(bgcolor);
-					float a = 1.0;
-					sceGuClearColor(MK_RGBA(bgcolor.r*255,bgcolor.g*255,bgcolor.b*255,a*255));
+					//sceGuAmbient(MK_RGBA_C(bgcolor));
+					sceGuClearColor(MK_RGBA(bgcolor.r*255,bgcolor.g*255,bgcolor.b*255,255));
 					sceGuClearDepth(0xFFFF);
 					// glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 					sceGuClear(GU_COLOR_BUFFER_BIT|GU_DEPTH_BUFFER_BIT);
@@ -4332,7 +4312,7 @@ void RasterizerPSP::reset_state() {
 	sceGumLoadIdentity();
 	sceGumMatrixMode(GU_MODEL);
 	sceGumLoadIdentity();
-	sceGuColor(MK_RGBA(1,1,1,1));
+	sceGuColor(MK_RGBA_F(1,1,1,1));
 
 	// glDisable(GL_CULL_FACE);
 	// glDisable(GL_DEPTH_TEST);
@@ -4356,7 +4336,8 @@ _FORCE_INLINE_ static void _set_glcoloro(const Color& p_color,const float p_opac
 
 	const auto color = MK_RGBA_F(p_color.r,p_color.g,p_color.b,p_color.a*p_opac);
 	sceGuColor(color);
-	sceGuAmbientColor(color);
+	//sceGuAmbientColor(color);
+	//sceGuAmbient(color);
 }
 
 

@@ -33,6 +33,9 @@
 #include <stdio.h>
 #include "os/copymem.h"
 #include "os/os.h"
+#if defined(WINDOWS_ENABLED)
+#include <windows.h>
+#endif
 
 /**
  * NOTE NOTE NOTE NOTE
@@ -304,6 +307,9 @@ void MemoryPoolStaticMalloc::_free(void *p_ptr) {
 	total_mem -= ringptr->size;
 	total_pointers--;
 	// catch more errors
+#if defined(WINDOWS_ENABLED)
+	ERR_FAIL_COND(IsBadWritePtr(ringptr, sizeof(RingPtr)+ringptr->size));
+#endif
 	zeromem(ringptr,sizeof(RingPtr)+ringptr->size);
 	::free(ringptr); //just free that pointer
 		

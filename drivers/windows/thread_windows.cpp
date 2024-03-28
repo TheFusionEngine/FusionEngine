@@ -44,7 +44,10 @@ Thread* ThreadWindows::create_thread_windows() {
 
 DWORD ThreadWindows::thread_callback( LPVOID userdata ) {
 
+	ERR_FAIL_NULL_V(userdata, 0);
 	ThreadWindows *t=reinterpret_cast<ThreadWindows*>(userdata);
+	ERR_FAIL_NULL_V(t->callback, 0);
+
 	t->callback(t->user);
 	t->id=(ID)GetCurrentThreadId(); // must implement
 	return 0;

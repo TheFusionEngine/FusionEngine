@@ -3312,7 +3312,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		last_color=diffuse_color;
 		glMaterialfv(side,GL_AMBIENT,diffuse_rgba);
 		glMaterialfv(side,GL_DIFFUSE,diffuse_rgba);
-		//specular
+		// | GU_SPECULARspecular
 
 		const Color specular_color=p_material->parameters[VS::FIXED_MATERIAL_PARAM_SPECULAR];
 		float specular_rgba[4]={
@@ -6209,7 +6209,10 @@ void RasterizerGLES1::init() {
 
 void RasterizerGLES1::finish() {
 
-	memdelete(skinned_buffer);
+	if (skinned_buffer) {
+		memdelete(skinned_buffer);
+		skinned_buffer = NULL;
+	}
 }
 
 int RasterizerGLES1::get_render_info(VS::RenderInfo p_info) {
@@ -6331,6 +6334,8 @@ bool RasterizerGLES1::has_feature(VS::Features p_feature) const {
 
 
 RasterizerGLES1::RasterizerGLES1(bool p_keep_copies,bool p_use_reload_hooks) {
+	skinned_buffer = NULL;
+
 	keep_copies=p_keep_copies;
 	pack_arrays=false;
 	use_reload_hooks=p_use_reload_hooks;

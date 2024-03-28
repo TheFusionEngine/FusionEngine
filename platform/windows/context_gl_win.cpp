@@ -121,25 +121,25 @@ Error ContextGL_Win::initialize() {
 	};
 	
 	if (!(hDC=GetDC(hWnd))) {
-		MessageBox(NULL,"Can't Create A GL Device Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		MessageBoxA(NULL,"Can't Create A GL Device Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return ERR_CANT_CREATE;								// Return FALSE
 	}
 
 	if (!(pixel_format=ChoosePixelFormat(hDC,&pfd)))	// Did Windows Find A Matching Pixel Format?
 	{
-		MessageBox(NULL,"Can't Find A Suitable pixel_format.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		MessageBoxA(NULL,"Can't Find A Suitable pixel_format.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return ERR_CANT_CREATE;								// Return FALSE
 	}
 
 	if(!SetPixelFormat(hDC,pixel_format,&pfd))		// Are We Able To Set The Pixel Format?
 	{
-		MessageBox(NULL,"Can't Set The pixel_format.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		MessageBoxA(NULL,"Can't Set The pixel_format.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return ERR_CANT_CREATE;								// Return FALSE
 	}
 
 	if (!(hRC=wglCreateContext(hDC)))				// Are We Able To Get A Rendering Context?
 	{
-		MessageBox(NULL,"Can't Create A Temporary GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		MessageBoxA(NULL,"Can't Create A Temporary GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return ERR_CANT_CREATE;								// Return FALSE
 	}
 
@@ -159,7 +159,7 @@ Error ContextGL_Win::initialize() {
 
 		if(wglCreateContextAttribsARB == NULL) //OpenGL 3.0 is not supported
 		{
-			MessageBox(NULL,"Cannot get Proc Adress for CreateContextAttribs", "ERROR",MB_OK|MB_ICONEXCLAMATION);
+			MessageBoxA(NULL,"Cannot get Proc Adress for CreateContextAttribs", "ERROR",MB_OK|MB_ICONEXCLAMATION);
 			wglDeleteContext(hRC);
 			return ERR_CANT_CREATE;
 		}
@@ -168,7 +168,7 @@ Error ContextGL_Win::initialize() {
 		if (!(new_hRC=wglCreateContextAttribsARB(hDC,0, attribs)))
 		{
 			wglDeleteContext(hRC);
-			MessageBox(NULL,"Can't Create An OpenGL 3.1 Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+			MessageBoxA(NULL,"Can't Create An OpenGL 3.1 Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 			return ERR_CANT_CREATE;								// Return false
 		}
 		wglMakeCurrent(hDC,NULL);
@@ -177,7 +177,7 @@ Error ContextGL_Win::initialize() {
 
 		if (!wglMakeCurrent(hDC,hRC)) 				// Try To Activate The Rendering Context
 		{
-			MessageBox(NULL,"Can't Activate The GL 3.1 Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+			MessageBoxA(NULL,"Can't Activate The GL 3.1 Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 			return ERR_CANT_CREATE;							// Return FALSE
 		}
 

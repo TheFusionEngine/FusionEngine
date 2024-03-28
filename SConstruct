@@ -69,6 +69,8 @@ env_base.android_module_libraries=[]
 env_base.android_manifest_chunk=""
 env_base.disabled_modules=[]
 
+env_base.__class__.use_windows_spawn_fix = methods.use_windows_spawn_fix
+
 env_base.__class__.android_module_source = methods.android_module_source
 env_base.__class__.android_module_library = methods.android_module_library
 env_base.__class__.android_module_file = methods.android_module_file

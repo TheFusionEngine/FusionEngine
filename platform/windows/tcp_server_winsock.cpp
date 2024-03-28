@@ -30,6 +30,8 @@
 
 #include "stream_peer_winsock.h"
 
+#if defined(WINDOWS_ENABLED) && !defined(WIN98_ENABLED)
+
 #include <winsock2.h>
 
 extern int winsock_refcount;
@@ -167,3 +169,4 @@ TCPServerWinsock::~TCPServerWinsock() {
 	stop();
 };
 
+#endif

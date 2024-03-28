@@ -26,7 +26,7 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifdef WINDOWS_ENABLED
+#if defined(WINDOWS_ENABLED) && !defined(WIN98_ENABLED)
 
 #include "stream_peer_winsock.h"
 

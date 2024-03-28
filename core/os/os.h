@@ -348,6 +348,12 @@ public:
 	virtual Error dialog_show(String p_title, String p_description, Vector<String> p_buttons, Object* p_obj, String p_callback);
 	virtual Error dialog_input_text(String p_title, String p_description, String p_partial, Object* p_obj, String p_callback);
 
+	enum Charset {
+		OS_CHARSET_ANSI,
+		OS_CHARSET_UTF8,
+		OS_CHARSET_UNICODE,
+	};
+	virtual Charset get_charset() const { return OS_CHARSET_UTF8; }
 
 	void set_time_scale(float p_scale);
 	float get_time_scale() const;

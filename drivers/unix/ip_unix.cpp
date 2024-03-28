@@ -28,7 +28,7 @@
 /*************************************************************************/
 #include "ip_unix.h"
 
-#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED)
+#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED) && !defined(WIN98_ENABLED)
 
 
 #ifdef WINDOWS_ENABLED
@@ -74,7 +74,7 @@ IP_Address IP_Unix::_resolve_hostname(const String& p_hostname) {
 
 #if defined(WINDOWS_ENABLED)
 
-#if defined(WINRT_ENABLED)
+#if defined(WINRT_ENABLED) || defined(WIN98_ENABLED)
 
 void IP_Unix::get_local_addresses(List<IP_Address> *r_addresses) const {
 

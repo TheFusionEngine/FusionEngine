@@ -32,8 +32,6 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <wchar.h>
-#include <tchar.h>
 #include "print_string.h"
 
 #ifdef _MSC_VER
@@ -54,26 +52,24 @@ void FileAccessWindows::check_errors() const {
 Error FileAccessWindows::_open(const String& p_filename, int p_mode_flags) {
 
 	String filename=fix_path(p_filename);
+	String file_c = filename.replace("/", "\\");
 	if (f)
 		close();
 
 
-	const wchar_t* mode_string;
+	const char* mode_string;
 
 	if (p_mode_flags==READ)
-		mode_string=L"rb";
+		mode_string="rb";
 	else if (p_mode_flags==WRITE)
-		mode_string=L"wb";
+		mode_string="wb";
 	else if (p_mode_flags==READ_WRITE)
-		mode_string=L"wb+";
+		mode_string="wb+";
 	else
 		return ERR_INVALID_PARAMETER;
 
-	/* pretty much every implementation that uses fopen as primary
-	   backend supports utf8 encoding */
-
-	struct _stat st;
-	if (_wstat(filename.c_str(), &st) == 0) {
+	struct stat st;
+	if (stat(file_c.ascii().get_data(), &st) == 0) {
 
 		if (!S_ISREG(st.st_mode))
 			return ERR_FILE_CANT_OPEN;
@@ -83,11 +79,11 @@ Error FileAccessWindows::_open(const String& p_filename, int p_mode_flags) {
 	if (is_backup_save_enabled() && p_mode_flags&WRITE && !(p_mode_flags&READ)) {
 		save_path=filename;
 		filename=filename+".tmp";
+		file_c=filename.replace("/", "\\");
 		//print_line("saving instead to "+path);
 	}
 
-	f=_wfopen(filename.c_str(), mode_string);
-
+	f=fopen(file_c.ascii().get_data(), mode_string);
 
 	if (f==NULL) {
 		last_error=ERR_FILE_CANT_OPEN;
@@ -111,8 +107,9 @@ void FileAccessWindows::close() {
 
 		//unlink(save_path.utf8().get_data());
 		//print_line("renaming..");
-		_wunlink(save_path.c_str()); //unlink if exists
-		int rename_error = _wrename((save_path+".tmp").c_str(),save_path.c_str());
+		_unlink(save_path.ascii().get_data()); //unlink if exists
+		String rt = save_path+".tmp";
+		int rename_error = ::rename(rt.ascii().get_data(),save_path.ascii().get_data());
 		save_path="";
 		ERR_FAIL_COND( rename_error != 0);
 	}
@@ -200,9 +197,10 @@ void FileAccessWindows::store_8(uint8_t p_dest) {
 bool FileAccessWindows::file_exists(const String& p_name) {
 
 	FILE *g;
-	//printf("opening file %s\n", p_fname.c_str());
 	String filename=fix_path(p_name);
-	g=_wfopen(filename.c_str(),L"rb");
+	String cfname = filename.replace("/", "\\");
+	g=fopen(cfname.ascii().get_data(),"rb");
+
 	if (g==NULL) {
 
 		return false;
@@ -219,8 +217,9 @@ uint64_t FileAccessWindows::_get_modified_time(const String& p_file) {
 	if (file.ends_with("/") && file!="/")
 		file=file.substr(0,file.length()-1);
 
-	struct _stat st;
-	int rv = _wstat(file.c_str(), &st);
+	struct stat st;
+	String tfile = file.replace("/", "\\");
+	int rv = stat(tfile.ascii().get_data(), &st);
 
 	if (rv == 0) {
 

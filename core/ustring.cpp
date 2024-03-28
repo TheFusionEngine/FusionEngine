@@ -73,6 +73,11 @@ void String::copy_from(const char *p_cstr) {
 		set(i,p_cstr[i]);
 	}
 
+#ifdef WINDOWS_ENABLED
+#ifndef _UNICODE
+	has_ascii_ = false;
+#endif
+#endif
 }
 
 void String::copy_from(const CharType* p_cstr, int p_clip_to) {
@@ -101,6 +106,12 @@ void String::copy_from(const CharType* p_cstr, int p_clip_to) {
 	
 		dst[i]=p_cstr[i];
 	}
+
+#ifdef WINDOWS_ENABLED
+#ifndef _UNICODE
+	has_ascii_ = false;
+#endif
+#endif
 }
 
 void String::copy_from(const CharType& p_char) {
@@ -108,6 +119,12 @@ void String::copy_from(const CharType& p_char) {
 	resize(2);
 	set(0,p_char);
 	set(1,0);
+
+#ifdef WINDOWS_ENABLED
+#ifndef _UNICODE
+	has_ascii_ = false;
+#endif
+#endif
 }
 
 

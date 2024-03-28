@@ -30,6 +30,9 @@
 #include "error_macros.h"
 #include "copymem.h"
 #include <stdio.h>
+#ifdef WINDOWS_ENABLED
+#include <windows.h>
+#endif
 void * operator new(size_t p_size,const char *p_description) {
 
 	return Memory::alloc_static( p_size, p_description );
@@ -115,7 +118,10 @@ size_t Memory::get_dynamic_mem_usage() {
 void * operator new(size_t p_size,void *p_pointer,size_t check, const char *p_description) {
 
 	void *failptr=0;
-	ERR_FAIL_COND_V( check < p_size , failptr); /** bug, or strange compiler, most likely */
+	//ERR_FAIL_COND_V( check < p_size , failptr); /** bug, or strange compiler, most likely */
+#if defined(WINDOWS_ENABLED) && defined(DEBUG_MEMORY_ENABLED)
+	ERR_FAIL_COND_V(IsBadWritePtr(p_pointer, p_size), failptr);
+#endif
 
 	return p_pointer;
 }
