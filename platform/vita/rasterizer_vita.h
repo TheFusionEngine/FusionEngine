@@ -44,7 +44,7 @@
 #include "platform_config.h"
 #ifndef GLES1_INCLUDE_H
 #include <GLES/gl.h>
-
+#include "immvertex.h"
 #else
 #include GLES1_INCLUDE_H
 #endif

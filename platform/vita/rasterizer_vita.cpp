@@ -4448,8 +4448,8 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	float alpha = 0.2f;
 	int num;
 
-	glDisable(GL_TEXTURE_GEN_S);
-	glDisable(GL_TEXTURE_GEN_T);
+	// glDisable(GL_TEXTURE_GEN_S);
+	// glDisable(GL_TEXTURE_GEN_T);
 	
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
@@ -4464,13 +4464,13 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0, viewport.width, viewport.height, 0, -1, 1);
+	glOrthof(0, viewport.width, viewport.height, 0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
 	
 	alphainc = alpha / times;
-	
+	/*
 	glBegin(GL_QUADS);
 	for (num = 0;num < times;num++)
 	{
@@ -4492,6 +4492,55 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 		alpha = alpha - alphainc;
 	}
 	glEnd();
+	*/
+	//attempt at porting
+	
+	GLfloat vertices[] = {
+		0, 0,
+		0, (GLfloat)viewport.height,
+		(GLfloat)viewport.width, (GLfloat)viewport.height,
+		(GLfloat)viewport.width, 0
+	};
+
+	GLubyte indices[] = {0, 1, 2, 0, 2, 3};
+	// GLubyte indices[] = {0, 1, 2, 3};
+
+
+
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	// glEnableClientState(GL_COLOR_ARRAY);
+	
+	for (num = 0; num < times; num++) {
+		glColor4f(1.0f, 1.0f, 1.0f, alpha);
+		GLfloat texCoords[] = {
+			0+spost, 1-spost,
+			0+spost, 0+spost,
+			1-spost, 0+spost,
+			1-spost, 1-spost
+		};
+/*
+		GLfloat colors[] = {
+			1.0f, 1.0f, 1.0f, alpha,
+			1.0f, 1.0f, 1.0f, alpha,
+			1.0f, 1.0f, 1.0f, alpha,
+			1.0f, 1.0f, 1.0f, alpha
+		};*/
+		
+		glVertexPointer(2, GL_FLOAT, 0, vertices);
+		glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+		// glColorPointer(4, GL_FLOAT, 0, colors);
+		
+		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		
+		spost += inc;
+		alpha = alpha - alphainc;
+	}
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
 	glBindTexture(GL_TEXTURE_2D,0);
 	
 	glMatrixMode(GL_PROJECTION);
@@ -6132,8 +6181,8 @@ void RasterizerGLES1::init() {
 	
 
 	scene_pass=1;
-	if (ContextGL::get_singleton())
-		ContextGL::get_singleton()->make_current();
+	// if (ContextGL::get_singleton())
+		// ContextGL::get_singleton()->make_current();
 
 
 
