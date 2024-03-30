@@ -2999,7 +2999,7 @@ void RasterizerGLES1::set_viewport(const VS::ViewportRect& p_viewport) {
 
 	viewport=p_viewport;
 	//print_line("viewport: "+itos(p_viewport.x)+","+itos(p_viewport.y)+","+itos(p_viewport.width)+","+itos(p_viewport.height));
-
+	is_editor = VS::get_singleton()->get_editor();
 	glViewport( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
 }
 
@@ -3312,7 +3312,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		last_color=diffuse_color;
 		glMaterialfv(side,GL_AMBIENT,diffuse_rgba);
 		glMaterialfv(side,GL_DIFFUSE,diffuse_rgba);
-		//specular
+		// | GU_SPECULARspecular
 
 		const Color specular_color=p_material->parameters[VS::FIXED_MATERIAL_PARAM_SPECULAR];
 		float specular_rgba[4]={
@@ -4264,6 +4264,10 @@ void RasterizerGLES1::_setup_shader_params(const Material *p_material) {
 #endif
 
 }
+_FORCE_INLINE_ static void _set_glcoloro(const Color& p_color,const float p_opac) {
+
+	glColor4f(p_color.r, p_color.g, p_color.b, p_color.a*p_opac);
+}
 
 void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reverse_cull) {
 
@@ -4271,6 +4275,8 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 	uint64_t prev_light_key=0;
 	const Skeleton *prev_skeleton=NULL;
 	const Geometry *prev_geometry=NULL;
+	const BakedLightData *prev_baked_light=NULL;
+	RID prev_baked_light_texture;
 
 	Geometry::Type prev_geometry_type=Geometry::GEOMETRY_INVALID;
 
@@ -4281,7 +4287,79 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		uint64_t light_key = e->light_key;
 		const Skeleton *skeleton = e->skeleton;
 		const Geometry *geometry = e->geometry;
+		const BakedLightData *baked_light = e->instance->baked_light;
+		
+		bool bind_baked_light_octree=false;
+		bool bind_baked_lightmap=false;
 
+		if (e->instance->sampled_light.is_valid()) {
+
+			SampledLight *sl = sampled_light_owner.get(e->instance->sampled_light);
+			if (sl) {
+
+				baked_light=NULL; //can't mix
+				// material_shader.set_conditional(MaterialShaderGLES2::ENABLE_AMBIENT_DP_SAMPLER,true);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D,sl->texture); //bind the texture
+			}
+		}
+		if (baked_light) {
+
+			if (baked_light->mode==VS::BAKED_LIGHT_OCTREE && baked_light->octree_texture.is_valid() && e->instance->baked_light_octree_xform) {
+				// material_shader.set_conditional(MaterialShaderGLES2::ENABLE_AMBIENT_OCTREE,true);
+				bind_baked_light_octree=true;
+				if (prev_baked_light!=baked_light) {
+					Texture *tex=texture_owner.get(baked_light->octree_texture);
+					if (tex) {
+
+						glActiveTexture(GL_TEXTURE0);
+						glBindTexture(tex->target,tex->tex_id); //bind the texture
+					}
+					if (baked_light->light_texture.is_valid()) {
+						Texture *texl=texture_owner.get(baked_light->light_texture);
+						if (texl) {
+							glActiveTexture(GL_TEXTURE0);
+							glBindTexture(texl->target,texl->tex_id); //bind the light texture
+						}
+					}
+
+			}
+				
+		} else if (baked_light->mode==VS::BAKED_LIGHT_LIGHTMAPS) {
+
+
+				int lightmap_idx = e->instance->baked_lightmap_id;
+
+				// material_shader.set_conditional(MaterialShaderGLES2::ENABLE_AMBIENT_LIGHTMAP,false);
+				bind_baked_lightmap=false;
+
+
+				if (baked_light->lightmaps.has(lightmap_idx)) {
+
+
+					RID texid = baked_light->lightmaps[lightmap_idx];
+
+					if (prev_baked_light!=baked_light || texid!=prev_baked_light_texture) {
+
+
+						Texture *tex = texture_owner.get(texid);
+						if (tex) {
+
+							glActiveTexture(GL_TEXTURE0);
+							glBindTexture(tex->target,tex->tex_id); //bind the texture
+						}
+
+						prev_baked_light_texture=texid;
+					}
+
+					if (texid.is_valid()) {
+							bind_baked_lightmap=true;
+					}
+
+				}
+			}
+		}
+		
 		if (material!=prev_material || geometry->type!=prev_geometry_type) {
 			_setup_material(e->geometry,material);
 			_rinfo.mat_change_count++;
@@ -4355,6 +4433,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		prev_skeleton=skeleton;
 		prev_geometry=geometry;
 		prev_light_key=e->light_key;
+		prev_baked_light=baked_light;
 		prev_geometry_type=geometry->type;
 	}
 
@@ -4362,7 +4441,65 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 };
 
+void RasterizerGLES1::_process_blur(int times, float inc) {
 
+	float spost = 0.0f;
+	float alphainc = 0.9f / times;
+	float alpha = 0.2f;
+	int num;
+
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+	
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	glEnable(GL_BLEND);
+	
+
+	glBindTexture(GL_TEXTURE_2D, BlurTexture);
+
+	glViewport( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
+	
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, viewport.width, viewport.height, 0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	
+	alphainc = alpha / times;
+	
+	glBegin(GL_QUADS);
+	for (num = 0;num < times;num++)
+	{
+		glColor4f(1.0f, 1.0f, 1.0f, alpha);
+		glTexCoord2f(0+spost,1-spost);
+		glVertex2f(0,0);
+
+		glTexCoord2f(0+spost,0+spost);
+		glVertex2f(0, viewport.height);
+
+		glTexCoord2f(1-spost,0+spost);
+		glVertex2f(viewport.width, viewport.height);
+
+		glTexCoord2f(1-spost,1-spost);
+		glVertex2f(viewport.width,0);
+
+
+		spost += inc;
+		alpha = alpha - alphainc;
+	}
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D,0);
+	
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+	
 
 void RasterizerGLES1::end_scene() {
 
@@ -4384,7 +4521,7 @@ void RasterizerGLES1::end_scene() {
 			case VS::ENV_BG_DEFAULT_COLOR:
 			case VS::ENV_BG_COLOR: {
 				//only in the runner
-				if(VS::get_singleton()->get_editor() != true) {
+				if(is_editor != true) {
 					Color bgcolor;
 					if (current_env->bg_mode==VS::ENV_BG_COLOR)
 						bgcolor = current_env->bg_param[VS::ENV_BG_PARAM_COLOR];
@@ -4478,9 +4615,19 @@ void RasterizerGLES1::end_scene() {
 	lighting=true;
 	glEnable(GL_LIGHTING);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
+	
+	if(current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor) {
+		glViewport(0,0,256,256);
+		
+		_render_list_forward(&opaque_render_list);
+		
+		glBindTexture(GL_TEXTURE_2D, BlurTexture);
+		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 0, 0, 256, 256, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glViewport( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
+	}
+	
 	_render_list_forward(&opaque_render_list);
-
 
 	alpha_render_list.sort_z();
 	glEnable(GL_BLEND);
@@ -4488,11 +4635,42 @@ void RasterizerGLES1::end_scene() {
 	_render_list_forward(&alpha_render_list);
 
 	glPopMatrix();
+		// canvas_shader.set_conditional(CanvasShaderGLES2::DEBUG_ENCODED_32,false);
+	/*
+	canvas_begin();
+	glDisable(GL_BLEND);
+	_set_glcoloro(Color(1,1,1), 1);
+	// canvas_shader.bind();
 
+
+	List<RID> samplers;
+	sampled_light_owner.get_owned_list(&samplers);
+
+	Size2 debug_size(128,128);
+	Size2 ofs;
+
+
+	for (List<RID>::Element *E=samplers.front();E;E=E->next()) {
+
+		SampledLight *sl=sampled_light_owner.get(E->get());
+
+		_debug_draw_shadow(sl->texture, Rect2( ofs, debug_size ));
+
+		ofs.x+=debug_size.x/2;
+		if ( (ofs.x+debug_size.x) > viewport.width ) {
+
+			ofs.x=0;
+			ofs.y+=debug_size.y;
+		}
+	}*/
 
 //	material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,false);
-
-	_debug_shadows();
+	if(current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor)
+		_process_blur(current_env->fx_param[VS::ENV_FX_PARAM_ES1_BLUR_TIMES], current_env->fx_param[VS::ENV_FX_PARAM_ES1_BLUR_ALPHA]);
+	
+	
+	
+	// _debug_shadows();
 }
 void RasterizerGLES1::end_shadow_map() {
 #if 0
@@ -4604,15 +4782,16 @@ void RasterizerGLES1::end_shadow_map() {
 #endif
 }
 
-void RasterizerGLES1::_debug_draw_shadow(ShadowBuffer *p_buffer, const Rect2& p_rect) {
+void RasterizerGLES1::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
+
 
 /*
-
 	Transform modelview;
 	modelview.translate(-(viewport.width / 2.0f), -(viewport.height / 2.0f), 0.0f);
 	modelview.scale( Vector3( 2.0f / viewport.width, -2.0f / viewport.height, 1.0f ) );
 	modelview.translate(p_rect.pos.x, p_rect.pos.y, 0);
-	material_shader.set_uniform_default(MaterialShaderGLES1::MODELVIEW_TRANSFORM, *e->transform);
+	// material_shader.set_uniform_default(MaterialShaderGLES1::MODELVIEW_TRANSFORM, *e->transform);
+	_gl_load_transform(modelview);
 	glBindTexture(GL_TEXTURE_2D,p_buffer->depth);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 
@@ -4634,8 +4813,32 @@ void RasterizerGLES1::_debug_draw_shadow(ShadowBuffer *p_buffer, const Rect2& p_
 	};
 
 	_draw_primitive(4,coords,0,0,texcoords);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-*/
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);*/
+	Matrix32 modelview;
+	modelview.translate(p_rect.pos.x, p_rect.pos.y);
+	// canvas_shader.set_uniform(CanvasShaderGLES2::MODELVIEW_MATRIX, modelview);
+	_gl_mult_transform(modelview);
+	glBindTexture(GL_TEXTURE_2D,tex);
+
+	Vector3 coords[4]= {
+		Vector3(p_rect.pos.x, p_rect.pos.y, 0 ),
+		Vector3(p_rect.pos.x+p_rect.size.width,
+		p_rect.pos.y, 0 ),
+		Vector3(p_rect.pos.x+p_rect.size.width,
+		p_rect.pos.y+p_rect.size.height, 0 ),
+		Vector3(p_rect.pos.x,
+		p_rect.pos.y+p_rect.size.height, 0 )
+	};
+
+	Vector3 texcoords[4]={
+		Vector3( 0.0f,0.0f, 0),
+		Vector3( 1.0f,0.0f, 0),
+		Vector3( 1.0f, 1.0f, 0),
+		Vector3( 0.0f, 1.0f, 0),
+	};
+
+	_draw_primitive(4,coords,0,0,texcoords);
+
 }
 
 void RasterizerGLES1::_debug_draw_shadows_type(Vector<ShadowBuffer>& p_shadows,Point2& ofs) {
@@ -4660,7 +4863,7 @@ void RasterizerGLES1::_debug_draw_shadows_type(Vector<ShadowBuffer>& p_shadows,P
 			if (sb->owner->shadow_pass!=frame)
 				continue;
 		}
-		_debug_draw_shadow(sb, Rect2( ofs, debug_size ));
+		// _debug_draw_shadow(sb, Rect2( ofs, debug_size ));
 		ofs.x+=debug_size.x;
 		if ( (ofs.x+debug_size.x) > viewport.width ) {
 
@@ -4759,10 +4962,7 @@ void RasterizerGLES1::reset_state() {
 
 }
 
-_FORCE_INLINE_ static void _set_glcoloro(const Color& p_color,const float p_opac) {
 
-	glColor4f(p_color.r, p_color.g, p_color.b, p_color.a*p_opac);
-}
 
 
 void RasterizerGLES1::canvas_begin() {
@@ -5468,11 +5668,72 @@ Variant RasterizerGLES1::environment_fx_get_param(RID p_env,VS::EnvironmentFxPar
 
 RID RasterizerGLES1::sampled_light_dp_create(int p_width,int p_height) {
 
-	return sampled_light_owner.make_rid(memnew(SampledLight));
-}
+	SampledLight *slight = memnew(SampledLight);
+	slight->w=p_width;
+	slight->h=p_height;
+	slight->multiplier=1.0;
+	slight->is_float=false;
 
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1,&slight->texture);
+	glBindTexture(GL_TEXTURE_2D, slight->texture);
+// for debug, but glitchy
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Remove artifact on the edges of the shadowmap
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
+	if (slight->is_float) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, p_width, p_height, 0, GL_RGBA, GL_FLOAT,NULL);
+	} else {
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, p_width, p_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	}
+
+	return sampled_light_owner.make_rid(slight);
+}/*
+#include "io/resource_saver.h"
+#include "scene/resources/texture.h"*/
 void RasterizerGLES1::sampled_light_dp_update(RID p_sampled_light, const Color *p_data, float p_multiplier) {
 
+	SampledLight *slight = sampled_light_owner.get(p_sampled_light);
+	ERR_FAIL_COND(!slight);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, slight->texture);
+
+	if (slight->is_float) {
+
+
+		glTexSubImage2D(GL_TEXTURE_2D, 0,0,0,slight->w, slight->h, GL_RGBA, GL_FLOAT,p_data);
+
+
+	} else {
+		//convert to bytes
+		uint8_t *tex8 = (uint8_t*)alloca(slight->w*slight->h*4);
+		// DVector<uint8_t> tex;
+		const float* src=(const float*)p_data;
+
+		for(int i=0;i<slight->w*slight->h*4;i++) {
+
+			tex8[i]=Math::fast_ftoi(CLAMP(src[i]*255.0,0.0,255.0));
+			// tex.push_back(Math::fast_ftoi(CLAMP(src[i]*255.0,0.0,255.0)));
+		}
+				/*
+				Image img(slight->w,slight->h,0,Image::FORMAT_RGBA,tex);
+				Ref<ImageTexture> it = memnew( ImageTexture );
+				it->create_from_image(img);
+				ResourceSaver::save("baked.png",it);*/
+		glTexSubImage2D(GL_TEXTURE_2D, 0,0,0,slight->w, slight->h, GL_RGBA, GL_UNSIGNED_BYTE,p_data);
+	}
+
+	slight->multiplier=p_multiplier;
 
 }
 
@@ -5868,11 +6129,11 @@ void RasterizerGLES1::init() {
 #endif
 
 
-
+	
 
 	scene_pass=1;
-	// if (ContextGL::get_singleton())
-		// ContextGL::get_singleton()->make_current();
+	if (ContextGL::get_singleton())
+		ContextGL::get_singleton()->make_current();
 
 
 
@@ -5933,12 +6194,25 @@ void RasterizerGLES1::init() {
 	s3tc_supported=false;
 	_rinfo.texture_mem=0;
 
+	unsigned int* data;
 
+	data = (GLuint *)calloc( 1, ((256 * 256)* 4 * sizeof(GLuint)) );
+
+	glGenTextures(1, &BlurTexture);
+	glBindTexture(GL_TEXTURE_2D, BlurTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 256, 256, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	// free(data); TODO
 }
 
 void RasterizerGLES1::finish() {
 
-	memdelete(skinned_buffer);
+	if (skinned_buffer) {
+		memdelete(skinned_buffer);
+		skinned_buffer = NULL;
+	}
 }
 
 int RasterizerGLES1::get_render_info(VS::RenderInfo p_info) {
@@ -6060,6 +6334,8 @@ bool RasterizerGLES1::has_feature(VS::Features p_feature) const {
 
 
 RasterizerGLES1::RasterizerGLES1(bool p_keep_copies,bool p_use_reload_hooks) {
+	skinned_buffer = NULL;
+
 	keep_copies=p_keep_copies;
 	pack_arrays=false;
 	use_reload_hooks=p_use_reload_hooks;

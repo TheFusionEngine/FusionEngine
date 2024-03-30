@@ -69,7 +69,7 @@ class RasterizerGLES1 : public Rasterizer {
 	void glClientActiveTexture(int a1) { };
 	#endif
 
-
+	GLuint BlurTexture;
 
 	uint8_t *skinned_buffer;
 	int skinned_buffer_size;
@@ -79,6 +79,7 @@ class RasterizerGLES1 : public Rasterizer {
 	bool npo2_textures_available;
 	bool pack_arrays;
 	bool use_reload_hooks;
+	bool is_editor;
 	
 
 	Image _get_gl_image_and_format(const Image& p_image, Image::Format p_format, uint32_t p_flags,GLenum& r_gl_format,int &r_gl_components,bool &r_has_alpha_cache,bool &r_compressed);
@@ -529,6 +530,9 @@ class RasterizerGLES1 : public Rasterizer {
 	struct SampledLight {
 
 		int w,h;
+		GLuint texture;
+		float multiplier;
+		bool is_float;
 	};
 
 	mutable RID_Owner<SampledLight> sampled_light_owner;
@@ -815,7 +819,7 @@ class RasterizerGLES1 : public Rasterizer {
 
 	float shadow_near_far_split_size_ratio;
 	bool _allocate_shadow_buffers(LightInstance *p_instance, Vector<ShadowBuffer>& p_buffers);
-	void _debug_draw_shadow(ShadowBuffer *p_buffer, const Rect2& p_rect);
+	void _debug_draw_shadow(GLuint tex, const Rect2& p_rect);
 	void _debug_draw_shadows_type(Vector<ShadowBuffer>& p_shadows,Point2& ofs);
 	void _debug_shadows();
 	void reset_state();
@@ -881,6 +885,7 @@ class RasterizerGLES1 : public Rasterizer {
 	//void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1);
 	//void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_h_flip=false, bool p_v_flip=false );
 	//void _draw_quad(const Rect2& p_rect);
+	void _process_blur(int times, float inc);
 
 public:
 
