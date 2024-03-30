@@ -1086,7 +1086,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 			}
 
 			NavigationScheme nav_scheme = _get_navigation_schema("3d_editor/navigation_scheme");
-			NavigationMode nav_mode = NAVIGATION_NONE;
+			nav_mode = NAVIGATION_NONE;
 
 			if (_edit.gizmo.is_valid()) {
 
@@ -1372,7 +1372,9 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 
 			} else if (m.button_mask&2) {
 
-				if (nav_scheme == NAVIGATION_MAYA && m.mod.alt) {
+				if (nav_scheme == NAVIGATION_GODOT) {
+					nav_mode = NAVIGATION_FPS;
+				} else if (nav_scheme == NAVIGATION_MAYA && m.mod.alt) {
 					nav_mode = NAVIGATION_ZOOM;
 				}
 
@@ -1436,6 +1438,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 
 				} break;
 
+				case NAVIGATION_FPS:
 				case NAVIGATION_ORBIT: {
 					cursor.x_rot+=m.relative_y/80.0;
 					cursor.y_rot+=m.relative_x/80.0;
@@ -1451,12 +1454,53 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 
 		case InputEvent::KEY: {
 
+			Transform fps_transform;
+			fps_transform.translate( cursor.pos );
+			fps_transform.basis.rotate(Vector3(0,1,0),cursor.y_rot);
+			fps_transform.basis.rotate(Vector3(1,0,0),cursor.x_rot);
+			fps_transform.translate(0,0,cursor.distance);
+
 			const InputEventKey &k = p_event.key;
 			switch(k.scancode) {
+				case KEY_A: {
 
+					if (nav_mode == NAVIGATION_FPS) {
+
+						Vector3 forward = fps_transform.basis.get_axis(0).normalized();
+						forward*=cursor.distance/DISTANCE_DEFAULT;
+
+						cursor.pos -= forward;
+					}
+				} break;
+				case KEY_D: {
+
+					if (nav_mode == NAVIGATION_FPS) {
+
+						Vector3 forward = fps_transform.basis.get_axis(0).normalized();
+						forward*=cursor.distance/DISTANCE_DEFAULT;
+
+						cursor.pos += forward;
+					}
+				} break;
+				case KEY_W: {
+
+					if (nav_mode == NAVIGATION_FPS) {
+
+						Vector3 forward = fps_transform.basis.get_axis(2).normalized();
+						forward*=cursor.distance/DISTANCE_DEFAULT;
+
+						cursor.pos -= forward;
+					}
+				} break;
 				case KEY_S: {
 
-					if (_edit.mode!=TRANSFORM_NONE) {
+					if (nav_mode == NAVIGATION_FPS) {
+
+						Vector3 forward = fps_transform.basis.get_axis(2).normalized();
+						forward*=cursor.distance/DISTANCE_DEFAULT;
+
+						cursor.pos += forward;
+					} else if (_edit.mode!=TRANSFORM_NONE) {
 
 						_edit.snap=true;
 					}
@@ -2143,6 +2187,7 @@ void SpatialEditorViewport::reset() {
 
 SpatialEditorViewport::SpatialEditorViewport(SpatialEditor *p_spatial_editor, EditorNode *p_editor, int p_index) {
 
+	nav_mode = NAVIGATION_NONE;
 	index=p_index;
 	editor=p_editor;
 	editor_selection=editor->get_editor_selection();;

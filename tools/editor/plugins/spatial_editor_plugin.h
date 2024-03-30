@@ -148,7 +148,8 @@ private:
 		NAVIGATION_NONE,
 		NAVIGATION_PAN,
 		NAVIGATION_ZOOM,
-		NAVIGATION_ORBIT
+		NAVIGATION_ORBIT,
+		NAVIGATION_FPS,
 	};
 	enum TransformMode {
 		TRANSFORM_NONE,
@@ -195,6 +196,7 @@ private:
 
 	RID move_gizmo_instance[3], rotate_gizmo_instance[3];
 
+	NavigationMode nav_mode;
 
 	String last_message;
 	String message;
