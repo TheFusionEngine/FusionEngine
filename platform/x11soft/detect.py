@@ -115,7 +115,7 @@ def configure(env):
 	env.Append(CPPFLAGS=['-DOPENGL_ENABLED'])
 	env.Append(CPPFLAGS=["-DALSA_ENABLED"])
 	env.Append(CPPFLAGS=['-DX11_ENABLED','-DUNIX_ENABLED','-DGLES1_ENABLED', '-DGL_DLL_IMPORTS', '-DUSE_MGL_NAMESPACE'])
-	env.Append(LIBS=['OSMesa32', 'glu', 'SDL', 'pthread','asound','z']) #TODO detect linux/BSD!
+	env.Append(LIBS=['OSMesa32', 'GLU', 'SDL', 'pthread','asound','z']) #TODO detect linux/BSD!
 
 #host compiler is default..
 

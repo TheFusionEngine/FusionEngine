@@ -8,9 +8,7 @@ Export('env')
 SConscript('unix/SCsub');
 SConscript('alsa/SCsub');
 SConscript('windows/SCsub');
-if env["platform"] == "x11":
-	SConscript('gles2/SCsub');
-elif env["platform"] in ("x11soft", "windows"):
+if env["platform"] in ("x11soft", "windows"):
 	SConscript('gl11/SCsub');
 else:
 	SConscript('gles1/SCsub');
