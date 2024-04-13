@@ -5706,7 +5706,10 @@ void RasterizerGLES1::init() {
 
 void RasterizerGLES1::finish() {
 
-	memdelete(skinned_buffer);
+	if (skinned_buffer) {
+		memdelete_arr(skinned_buffer);
+		skinned_buffer = NULL;
+	}
 }
 
 int RasterizerGLES1::get_render_info(VS::RenderInfo p_info) {
@@ -5831,6 +5834,8 @@ RasterizerGLES1::RasterizerGLES1(bool p_keep_copies,bool p_use_reload_hooks) {
 	keep_copies=p_keep_copies;
 	pack_arrays=false;
 	use_reload_hooks=p_use_reload_hooks;
+
+	skinned_buffer = NULL;
 
 	frame = 0;
 };
