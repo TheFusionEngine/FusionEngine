@@ -187,11 +187,12 @@ private:
 		Vector3 cursor_pos;
 
 		Vector3 pos;
-		float x_rot,y_rot,distance;
+		float distance;
+		Quat q;
 		bool region_select;
 		Point2 region_begin,region_end;
 
-		Cursor() { x_rot=y_rot=0; distance=4; region_select=false; }
+		Cursor() { q=Quat(); distance=4; region_select=false; }
 	} cursor;
 
 	RID move_gizmo_instance[3], rotate_gizmo_instance[3];
