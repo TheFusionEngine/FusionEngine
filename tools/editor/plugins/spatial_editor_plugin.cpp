@@ -1448,12 +1448,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 					fps_transform.basis*=cursor.q;
 					fps_transform.translate(Vector3(0,0,cursor.distance));
 
-					Quat uq = Quat(Vector3(0,1,0),m.relative_x/80.0)*fps_transform.basis;
-					Quat tq = uq*Quat(Vector3(1,0,0),m.relative_y/80.0);
-					Vector3 ax;
-					real_t an;
-					tq.get_axis_and_angle(ax, an);
-					fps_transform.basis = uq.slerp(tq, CLAMP(Math::abs(an - Math_PI) / uq.angle_to(tq), 0, 1));
+					fps_transform.basis = Quat(Vector3(0,1,0),m.relative_x/80.0)*fps_transform.basis*Quat(Vector3(1,0,0),m.relative_y/80.0);
 
 					fps_transform.translate(Vector3(0,0,-cursor.distance));
 					fps_transform.orthonormalize();
@@ -1462,35 +1457,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 				} break;
 
 				case NAVIGATION_ORBIT: {
-					Quat uq = Quat(Vector3(0,1,0),m.relative_x/80.0)*cursor.q;
-					Quat tq = uq*Quat(Vector3(1,0,0),m.relative_y/80.0);
-					Quat hq = Quat(Vector3(1,0,0),Math_PI/2.0);
-					hq.normalize();
-
-					real_t an = uq.angle_to(hq);
-					if (an != an) {
-						WARN_PRINT("an!=an");
-						an = Math_PI/2.0;
-					}
-					an -= Math_PI/2.0;
-					an = CLAMP(Math::abs(an), 0, Math_PI/2.0);
-
-					printf("%f\n", an);
-
-					cursor.q = uq.slerp(tq, CLAMP(an, 0, 1));
-					//cursor.q = uq.slerp(tq, CLAMP((Math_PI / 2.0) / Math::abs(Matrix3(tq).get_euler().x) - 1.0, 0, 1));
-
-					//Matrix3 mat(cursor.q);
-					//Vector3 euler(mat.get_euler());
-
-					//mat = Quat(Vector3(0,1,0),m.relative_x/80.0)*cursor.q*Quat(Vector3(1,0,0),m.relative_y/80.0);
-					//mat.orthonormalize();
-					//Vector3 euler(mat.get_euler());
-					//euler.x = CLAMP(euler.x, -Math_PI/2.0, Math_PI/2.0);
-					//if (euler.x == Math_PI/2.0 || euler.x == -Math_PI/2.0) {
-					//	mat.set_euler(euler);
-					//}
-					//cursor.q = mat;
+					cursor.q = Quat(Vector3(0,1,0),m.relative_x/80.0)*cursor.q*Quat(Vector3(1,0,0),m.relative_y/80.0);
 				} break;
 
 				default: {}
