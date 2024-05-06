@@ -1,11 +1,11 @@
 /*************************************************************************/
-/*  tcp_server_posix.h                                                   */
+/*  thread_ctr_wrapper.h                                                 */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
 /*                    http://www.godotengine.org                         */
 /*************************************************************************/
-/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2016 Juan Linietsky, Ariel Manzur.                 */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -26,32 +26,39 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef TCP_SERVER_POSIX_H
-#define TCP_SERVER_POSIX_H
+#ifndef THREAD_CTR_WRAPPER_H
+#define THREAD_CTR_WRAPPER_H
 
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
-#include "core/io/tcp_server.h"
+typedef void (*ThreadCreateCallback)(void *p_userdata);
 
-class TCPServerPosix : public TCP_Server {
+extern "C" {
+#include <sys/reent.h>
+#include <3ds/types.h>
+	
+// Needs to be same as definition in 3ds/thread.h
+// Which cannot itself be included due to Thread struct naming conflict
+struct Thread_tag
+{
+	Handle handle;
+	ThreadFunc ep;
+	void* arg;
+	int rc;
+	bool detached, finished;
+	struct _reent reent;
+	void* stacktop;
+};
+}
 
-	int listen_sockfd;
-
-	static TCP_Server* _create();
-
+class ThreadCtrWrapper
+{
+	Thread_tag* thread;
+	
 public:
-
-	virtual Error listen(uint16_t p_port,const List<String> *p_accepted_hosts=NULL);
-	virtual bool is_connection_available() const;
-	virtual Ref<StreamPeerTCP> take_connection();
-
-	virtual void stop();
-
-	static void make_default();
-
-	TCPServerPosix();
-	~TCPServerPosix();
+	ThreadCtrWrapper(ThreadCreateCallback p_callback, void* p_userdata, int32_t p_priority);
+	
+	void wait();
+	
+	static uint64_t get_thread_ID_func_3ds();
 };
 
-
-#endif // TCP_SERVER_POSIX_H
 #endif

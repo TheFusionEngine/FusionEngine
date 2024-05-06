@@ -1,11 +1,11 @@
 /*************************************************************************/
-/*  tcp_server_posix.h                                                   */
+/*  thread_3ds.cpp                                                       */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
 /*                    http://www.godotengine.org                         */
 /*************************************************************************/
-/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2016 Juan Linietsky, Ariel Manzur.                 */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -26,32 +26,46 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef TCP_SERVER_POSIX_H
-#define TCP_SERVER_POSIX_H
-
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
-#include "core/io/tcp_server.h"
-
-class TCPServerPosix : public TCP_Server {
-
-	int listen_sockfd;
-
-	static TCP_Server* _create();
-
-public:
-
-	virtual Error listen(uint16_t p_port,const List<String> *p_accepted_hosts=NULL);
-	virtual bool is_connection_available() const;
-	virtual Ref<StreamPeerTCP> take_connection();
-
-	virtual void stop();
-
-	static void make_default();
-
-	TCPServerPosix();
-	~TCPServerPosix();
-};
+#ifdef __3DS__
+#include "thread_3ds.h"
+#include "platform/3ds/os_3ds.h"
+#include "memory.h"
 
 
-#endif // TCP_SERVER_POSIX_H
+Thread* Thread3ds::create_func_3ds(ThreadCreateCallback p_callback,void * p_user,const Thread::Settings& p_settings) {
+	// Get base thread priority for relative priority setting
+	int32_t priority;
+	svcGetThreadPriority(&priority, (Thread::_main_thread_id == 0) ? CUR_THREAD_HANDLE : Thread::_main_thread_id);
+	
+	if (p_settings.priority == PRIORITY_LOW)
+		priority++;
+	else if (p_settings.priority == PRIORITY_HIGH)
+		priority--;
+	
+	ThreadCtrWrapper* thread_wrapper = memnew(ThreadCtrWrapper(p_callback, p_user, priority));
+	return memnew(Thread3ds(thread_wrapper));
+}
+
+void Thread3ds::make_default() {
+	create_func = create_func_3ds;
+	get_thread_ID_func = ThreadCtrWrapper::get_thread_ID_func_3ds;
+	wait_to_finish_func = wait_to_finish_func_3ds;
+}
+
+Thread::ID Thread3ds::get_ID() const {
+	return id;
+}
+
+void Thread3ds::wait_to_finish_func_3ds(Thread* p_thread) {
+	Thread3ds *t = static_cast<Thread3ds*>(p_thread);
+	t->thread->wait();
+}
+
+Thread3ds::Thread3ds(ThreadCtrWrapper* p_thread) {
+	thread = p_thread;
+}
+
+Thread3ds::~Thread3ds() {
+	memdelete(thread);
+}
 #endif

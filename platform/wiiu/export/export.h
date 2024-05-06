@@ -1,11 +1,12 @@
 /*************************************************************************/
-/*  tcp_server_posix.h                                                   */
+/*  export.h                                                             */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2020 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2020 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -26,32 +27,5 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef TCP_SERVER_POSIX_H
-#define TCP_SERVER_POSIX_H
 
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
-#include "core/io/tcp_server.h"
-
-class TCPServerPosix : public TCP_Server {
-
-	int listen_sockfd;
-
-	static TCP_Server* _create();
-
-public:
-
-	virtual Error listen(uint16_t p_port,const List<String> *p_accepted_hosts=NULL);
-	virtual bool is_connection_available() const;
-	virtual Ref<StreamPeerTCP> take_connection();
-
-	virtual void stop();
-
-	static void make_default();
-
-	TCPServerPosix();
-	~TCPServerPosix();
-};
-
-
-#endif // TCP_SERVER_POSIX_H
-#endif
+void register_wiiu_exporter();

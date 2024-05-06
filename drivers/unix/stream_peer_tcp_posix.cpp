@@ -26,10 +26,10 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifdef UNIX_ENABLED
+#if defined(UNIX_ENABLED)  || defined(__3DS__)
 
 #include "stream_peer_tcp_posix.h"
-
+ #include <arpa/inet.h>
 #include <poll.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,7 +57,7 @@
 #endif
 
 static void set_addr_in(struct sockaddr_in& their_addr, const IP_Address& p_host, uint16_t p_port) {
-
+	// printf("%s\n", p_host.host);
 	their_addr.sin_family = AF_INET;    // host byte order
 	their_addr.sin_port = htons(p_port);  // short, network byte order
 	their_addr.sin_addr = *((struct in_addr*)&p_host.host);
@@ -143,14 +143,44 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 		//perror("socket");
 		return FAILED;
 	};
-
+#ifndef __3DS__
 #ifndef NO_FCNTL
 	fcntl(sockfd, F_SETFL, O_NONBLOCK);
 #else
 	int bval = 1;
 	ioctl(sockfd, FIONBIO, &bval);
 #endif
+#endif
+#ifdef __3DS__
+	#define atoa(x) #x
+	struct addrinfo hints;
+	struct addrinfo *resaddr = NULL, *resaddr_cur;
+	memset(&hints, 0, sizeof(struct addrinfo));
+	
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	//TODO: Do not embed this
+	if(getaddrinfo("reshop.elementfx.com", "80", &hints, &resaddr)!=0)
+	{
+		printf("getaddrinfo() failed.\n");
+		closesocket(sockfd);
+		// return;
+	}
 
+	for(resaddr_cur = resaddr; resaddr_cur!=NULL; resaddr_cur = resaddr_cur->ai_next)
+	{
+		if(::connect(sockfd, resaddr_cur->ai_addr, resaddr_cur->ai_addrlen)==0)break;
+	}
+
+	freeaddrinfo(resaddr);
+
+	if(resaddr_cur==NULL)
+	{
+		printf("Failed to connect.\n");
+		closesocket(sockfd);
+		// return;
+	}
+#else
 	struct sockaddr_in their_addr;
 	set_addr_in(their_addr, p_host, p_port);
 
@@ -161,7 +191,7 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 		disconnect();
 		return FAILED;
 	};
-
+#endif
 	if (errno == EINPROGRESS) {
 		status = STATUS_CONNECTING;
 	} else {

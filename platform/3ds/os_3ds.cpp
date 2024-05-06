@@ -42,6 +42,34 @@
 #include "main/main.h"
 #include <sys/time.h>
 #include <unistd.h>
+#include "thread_3ds.h"
+#include "drivers/unix/tcp_server_posix.h"
+#include "drivers/unix/stream_peer_tcp_posix.h"
+// #include "packet_peer_udp_posix.h"
+#include <malloc.h>
+#include "drivers/unix/ip_unix.h"
+extern "C" {
+#include <3ds/services/hid.h>
+#include <3ds/services/soc.h>
+#include <3ds/services/sslc.h>
+};
+
+#define SOC_ALIGN       0x1000
+#define SOC_BUFFERSIZE  0x100000
+
+
+
+/*
+void socShutdown() {
+
+	printf("waiting for socExit...\n");
+	socExit();
+
+}*/
+
+
+
+	// atexit(socShutdown);
 
 int OS_3DS::get_video_driver_count() const {
 
@@ -53,16 +81,18 @@ const char * OS_3DS::get_video_driver_name(int p_driver) const {
 }
 OS::VideoMode OS_3DS::get_default_video_mode() const {
 
-	return OS::VideoMode(800,600,false);
+	return OS::VideoMode(800,480,false);
 }
 
 static MemoryPoolStaticMalloc *mempool_static=NULL;
 static MemoryPoolDynamicStatic *mempool_dynamic=NULL;
-	
+static u32 *SOC_buffer = NULL;	
 	
 void OS_3DS::initialize_core() {
 
-	ThreadDummy::make_default();
+	
+	//TODO: Make audio single threaded so I don't need threads
+	Thread3ds::make_default();
 	SemaphoreDummy::make_default();
 	MutexDummy::make_default();
 
@@ -80,14 +110,30 @@ void OS_3DS::initialize_core() {
 	
 	ticks_start = 0;
 	ticks_start = get_ticks_usec();
-
+/*
 	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_RESOURCES);
 	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_USERDATA);
 	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_FILESYSTEM);
 	//FileAccessBufferedFA<FileAccessUnix>::make_default();
 	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_RESOURCES);
 	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_USERDATA);
-	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_FILESYSTEM);
+	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_FILESYSTEM);*/
+
+	SOC_buffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
+
+	if(SOC_buffer == NULL) {
+		printf("memalign: failed to allocate\n");
+	}
+	int ret;
+	if ((ret = socInit(SOC_buffer, SOC_BUFFERSIZE)) != 0) {
+    	printf("socInit: 0x%08X\n", (unsigned int)ret);
+	}
+	sslcInit(0);
+
+	TCPServerPosix::make_default();
+	StreamPeerTCPPosix::make_default();
+	// PacketPeerUDPPosix::make_default();
+	IP_Unix::make_default();
 }
 
 void OS_3DS::finalize_core() {
@@ -277,6 +323,59 @@ void OS_3DS::set_cursor_shape(CursorShape p_shape) {
 
 }
 
+static u32 buttons[16] = {
+	KEY_B,
+	KEY_A,
+	KEY_Y,
+	KEY_X,
+	KEY_L,
+	KEY_R,
+	KEY_ZL,    // L2
+	KEY_ZR,    // R2
+	KEY_TOUCH,
+	KEY_TOUCH, 
+	KEY_SELECT,
+	KEY_START,
+	KEY_DUP,
+	KEY_DDOWN,
+	KEY_DLEFT,
+	KEY_DRIGHT,
+};
+
+void OS_3DS::process_keys() {
+	hidScanInput();
+
+	last++;
+	
+	u32 down = hidKeysDown();
+
+	for(int i = 0; i < 16; i++) {
+		if (down & buttons[i]) {
+			InputEvent event;
+			event.type = InputEvent::JOYSTICK_BUTTON;
+			event.device = 0;
+			event.joy_button.button_index = i;
+			event.joy_button.pressed = true;
+			event.ID = last;
+			input->parse_input_event(event);
+		} else {
+			InputEvent event;
+			event.type = InputEvent::JOYSTICK_BUTTON;
+			event.device = 0;
+			event.joy_button.button_index = i;
+			event.joy_button.pressed = false;
+			event.ID = last;
+			input->parse_input_event(event);
+		}
+	}
+
+	circlePosition pos;
+	hidCircleRead(&pos);
+
+	input->set_joy_axis(0, 0, pos.dx);
+	input->set_joy_axis(0, 1, pos.dy);
+}
+
 void OS_3DS::run() {
 
 	force_quit = false;
@@ -287,7 +386,8 @@ void OS_3DS::run() {
 	main_loop->init();
 
 	while (!force_quit) {
-	
+		process_keys();
+		
 		if (Main::iteration()==true)
 			break;
 	};

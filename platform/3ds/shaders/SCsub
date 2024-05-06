@@ -2,7 +2,9 @@ Import('env')
 
 shaders = [
 	'simple_3d',
-	'simple_2d'
+	'simple_2d',
+	'2d',
+	'3d'
 ]
 
 if 'PICA' in env['BUILDERS']:

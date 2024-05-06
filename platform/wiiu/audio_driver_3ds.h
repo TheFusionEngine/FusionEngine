@@ -1,11 +1,11 @@
 /*************************************************************************/
-/*  tcp_server_posix.h                                                   */
+/*  audio_driver_3ds.h                                                   */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
 /*                    http://www.godotengine.org                         */
 /*************************************************************************/
-/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2016 Juan Linietsky, Ariel Manzur.                 */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -26,32 +26,59 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef TCP_SERVER_POSIX_H
-#define TCP_SERVER_POSIX_H
+#ifndef AUDIO_DRIVER_PSP_H
+#define AUDIO_DRIVER_PSP_H
 
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
-#include "core/io/tcp_server.h"
+#include "servers/audio/audio_server_sw.h"
 
-class TCPServerPosix : public TCP_Server {
+#include "core/os/thread.h"
+#include "core/os/mutex.h"
 
-	int listen_sockfd;
+#include <pspaudio.h>
+#include <pspaudiolib.h>
+#include <pspthreadman.h>
+#include <pspkerneltypes.h>
 
-	static TCP_Server* _create();
+class AudioDriverPSP : public AudioDriverSW {
+
+	Thread *thread;
+	Mutex *mutex;
+	int32_t* samples_in;
+	int16_t* samples_out;
+	int id;
+
+	static void thread_func(void *p_udata);
+
+
+	int buffer_size;
+
+	unsigned int mix_rate;
+	OutputFormat output_format;
+
+	int channels;
+
+	bool active;
+	bool thread_exited;
+	bool exit_thread;
+	bool pcm_open;
 
 public:
 
-	virtual Error listen(uint16_t p_port,const List<String> *p_accepted_hosts=NULL);
-	virtual bool is_connection_available() const;
-	virtual Ref<StreamPeerTCP> take_connection();
+	const char* get_name() const {
+		return "PSP Audio";
+	};
 
-	virtual void stop();
+	virtual Error init();
+	virtual void start();
+	virtual int get_mix_rate() const;
+	virtual OutputFormat get_output_format() const;
 
-	static void make_default();
+	virtual void lock();
+	virtual void unlock();
+	virtual void finish();
 
-	TCPServerPosix();
-	~TCPServerPosix();
+	AudioDriverPSP();
+	~AudioDriverPSP();
 };
 
-
-#endif // TCP_SERVER_POSIX_H
 #endif

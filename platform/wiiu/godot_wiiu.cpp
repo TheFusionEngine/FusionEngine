@@ -1,11 +1,12 @@
 /*************************************************************************/
-/*  tcp_server_posix.h                                                   */
+/*  godot_server.cpp                                                     */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2020 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2020 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -26,32 +27,54 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef TCP_SERVER_POSIX_H
-#define TCP_SERVER_POSIX_H
 
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
-#include "core/io/tcp_server.h"
+#include <whb/proc.h>
+#include <whb/gfx.h>
 
-class TCPServerPosix : public TCP_Server {
+#include "main/main.h"
 
-	int listen_sockfd;
+#include <whb/gfx.h>
+#include <whb/log_console.h>
 
-	static TCP_Server* _create();
+#include <whb/sdcard.h>
+#include <sndcore2/core.h>
+#include "os_wiiu.h"
+// #include "CafeGLSLCompiler.h"
+#include <sysapp/launch.h>
+int main(int argc, char *argv[]) {
+	WHBProcInit();
+	// WHBGfxInit();
+	WHBLogConsoleInit();
+	WHBMountSdCard();
+	AXInit();
+	// GLSL_Init();
+    // ramfsInit();
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		OSReport("ERROR: cannot initialize SDL video.%s\n", SDL_GetError());
+	OSReport("Fusion wiiu\n");
+	OS_WIIU os;
 
-public:
+	OSReport("Fusion wiiu OS init\n");
+	char* args[] = {"-path", WHBGetSdCardMountPath()};
+	OSReport("setup\n");
 
-	virtual Error listen(uint16_t p_port,const List<String> *p_accepted_hosts=NULL);
-	virtual bool is_connection_available() const;
-	virtual Ref<StreamPeerTCP> take_connection();
-
-	virtual void stop();
-
-	static void make_default();
-
-	TCPServerPosix();
-	~TCPServerPosix();
-};
+	Error err = Main::setup("wiiu", 2, args, true);
+    OSReport("setup\n");
 
 
-#endif // TCP_SERVER_POSIX_H
-#endif
+	if (err!=OK)
+		return 0;
+	
+	if (Main::start()) {
+		OSReport("game running\n");
+		os.run(); // it is actually the OS that decides how to run
+	}
+	Main::cleanup();
+	//GLSL_Shutdown();
+	
+    AXQuit();
+	WHBLogConsoleFree();
+    WHBProcShutdown();
+	SYSLaunchMenu();
+	return 0;
+}

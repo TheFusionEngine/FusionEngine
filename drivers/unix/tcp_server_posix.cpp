@@ -29,10 +29,10 @@
 #include "tcp_server_posix.h"
 #include "stream_peer_tcp_posix.h"
 
-#ifdef UNIX_ENABLED
+#if defined(UNIX_ENABLED)  || defined(__3DS__)
 
 #include <poll.h>
-
+ #include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

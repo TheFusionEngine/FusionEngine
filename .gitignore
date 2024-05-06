@@ -43,7 +43,8 @@ platform/android/libs/play_licensing/gen/*
 *.d
 *.so
 *.os
-
+*.rpx
+*.3dsx
 # QT project files
 *.config
 *.creator

@@ -22,6 +22,7 @@
 .alias inpos v0
 .alias intex v1
 .alias innrm v2
+; .alias inclr v3
 
 .proc main
 	; Force the w component of inpos to be 1.0
@@ -81,6 +82,7 @@
 
 	; outclr = clamp r1 to [0,1]
 	min outclr, ones, r1
+	;mov outclr, r1
 
 	; We're finished
 	end

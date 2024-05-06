@@ -1,11 +1,12 @@
 /*************************************************************************/
-/*  tcp_server_posix.h                                                   */
+/*  mutex_posix.cpp                                                      */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2020 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2020 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -26,32 +27,48 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef TCP_SERVER_POSIX_H
-#define TCP_SERVER_POSIX_H
 
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
-#include "core/io/tcp_server.h"
+#include "mutex_wiiu.h"
+#include "os/memory.h"
 
-class TCPServerPosix : public TCP_Server {
+#if defined(__WIIU__)
 
-	int listen_sockfd;
+void MutexWiiu::lock() {
 
-	static TCP_Server* _create();
+	mutex.lock();
+}
+void MutexWiiu::unlock() {
 
-public:
+	mutex.unlock();
+}
+Error MutexWiiu::try_lock() {
 
-	virtual Error listen(uint16_t p_port,const List<String> *p_accepted_hosts=NULL);
-	virtual bool is_connection_available() const;
-	virtual Ref<StreamPeerTCP> take_connection();
+	return mutex.try_lock() ? OK : ERR_BUSY;
+}
 
-	virtual void stop();
+Mutex *MutexWiiu::create_func_wiiu(bool p_recursive) {
 
-	static void make_default();
+	return memnew(MutexWiiu(p_recursive));
+}
 
-	TCPServerPosix();
-	~TCPServerPosix();
-};
+void MutexWiiu::make_default() {
 
+	create_func = create_func_wiiu;
+}
 
-#endif // TCP_SERVER_POSIX_H
+MutexWiiu::MutexWiiu(bool p_recursive) {
+
+	// pthread_mutexattr_init(&attr);
+	// if (p_recursive)
+	// 	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+	// pthread_mutex_init(&mutex, &attr);
+	if(!p_recursive)
+		printf("non recursive thread!\n");
+}
+
+MutexWiiu::~MutexWiiu() {
+
+	// pthread_mutex_destroy(&mutex);
+}
+
 #endif

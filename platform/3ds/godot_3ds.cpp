@@ -32,6 +32,7 @@
 
 extern "C" {
 #include <3ds/gfx.h>
+#include <3ds/os.h>
 #include <3ds/console.h>
 u32 __stacksize__ = 1024 * 128;
 };
@@ -39,7 +40,9 @@ u32 __stacksize__ = 1024 * 128;
 int main(int argc, char* argv[]) {
 	
 	gfxInitDefault();
+	gfxSetDoubleBuffering(GFX_TOP, true);
 	consoleInit(GFX_BOTTOM, NULL);
+	osSetSpeedupEnable(true);
 	
 	OS_3DS os;
 	

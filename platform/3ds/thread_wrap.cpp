@@ -1,11 +1,11 @@
 /*************************************************************************/
-/*  tcp_server_posix.h                                                   */
+/*  thread_ctr_wrapper.cpp                                               */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
 /*                    http://www.godotengine.org                         */
 /*************************************************************************/
-/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2016 Juan Linietsky, Ariel Manzur.                 */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -26,32 +26,23 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef TCP_SERVER_POSIX_H
-#define TCP_SERVER_POSIX_H
+#ifdef __3DS__
+#include "thread_wrap.h"
+#include <3ds.h>
 
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
-#include "core/io/tcp_server.h"
+ThreadCtrWrapper::ThreadCtrWrapper(ThreadCreateCallback p_callback, void* p_userdata, int32_t p_priority) {
+	thread = threadCreate(p_callback, p_userdata, 64 * 1024, p_priority, -1, false);
+}
 
-class TCPServerPosix : public TCP_Server {
+uint64_t ThreadCtrWrapper::get_thread_ID_func_3ds() {
+	if (!threadGetCurrent())
+		return CUR_THREAD_HANDLE;
+	return threadGetHandle(threadGetCurrent());
+}
 
-	int listen_sockfd;
+void ThreadCtrWrapper::wait() {
+	threadJoin(thread, U64_MAX);
+	threadFree(thread);
+}
 
-	static TCP_Server* _create();
-
-public:
-
-	virtual Error listen(uint16_t p_port,const List<String> *p_accepted_hosts=NULL);
-	virtual bool is_connection_available() const;
-	virtual Ref<StreamPeerTCP> take_connection();
-
-	virtual void stop();
-
-	static void make_default();
-
-	TCPServerPosix();
-	~TCPServerPosix();
-};
-
-
-#endif // TCP_SERVER_POSIX_H
 #endif
