@@ -1291,12 +1291,12 @@ def use_windows_spawn_fix(self, platform=None):
         #startupinfo = subprocess.STARTUPINFO()
         #startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         proc = subprocess.Popen(prefix + cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, shell=(os.name != "nt"), env=env)
+                                stderr=subprocess.STDOUT, shell=(os.name != "nt"), env=env)
         data, err = proc.communicate()
         rv = proc.wait()
         if rv:
             print("=====")
-            print(err.decode())
+            print(data.decode())
             print("=====")
         return rv
 

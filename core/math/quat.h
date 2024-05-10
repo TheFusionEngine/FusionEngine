@@ -53,6 +53,13 @@ public:
 	Quat slerpni(const Quat& q, const real_t& t) const;
 	Quat cubic_slerp(const Quat& q, const Quat& prep, const Quat& postq,const real_t& t) const;
 
+	_FORCE_INLINE_ real_t angle_to(const Quat& p_to) const {
+		real_t d = dot(p_to);
+
+		// acos does clamping.
+		return Math::acos(d * d * 2 - 1);
+	}
+
 	_FORCE_INLINE_ void get_axis_and_angle(Vector3& r_axis, real_t &r_angle) const {
 		r_angle = 2 * Math::acos(w);
 		r_axis.x = -x / Math::sqrt(1-w*w);

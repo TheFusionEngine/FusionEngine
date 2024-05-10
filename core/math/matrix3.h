@@ -77,7 +77,9 @@ public:
 	Matrix3 scaled( const Vector3& p_scale ) const;
 	Vector3 get_scale() const;
 
+	Vector3 get_euler_yxz() const;
 	Vector3 get_euler() const;
+	void set_euler_yxz(const Vector3& p_euler);
 	void set_euler(const Vector3& p_euler);
 
 	// transposed dot products

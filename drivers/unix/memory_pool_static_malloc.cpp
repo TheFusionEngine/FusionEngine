@@ -315,7 +315,7 @@ void MemoryPoolStaticMalloc::_free(void *p_ptr) {
 		
 #else
 	ERR_FAIL_COND(p_ptr==0);
-		
+
 	::free(p_ptr);
 #endif
 }
