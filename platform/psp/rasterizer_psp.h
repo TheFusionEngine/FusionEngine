@@ -213,39 +213,37 @@ private:
 			constexpr auto sign_mask = 1 << u_bits_num; // sign bit
 
 			const float s = coord == 1 ? uvbb.size.y : uvbb.size.x;
-			const float p = coord == 1 ? uvbb.pos.y : uvbb.pos.x;
-			const float cv = value + p;
-			const float intgf = Math::abs(cv / s);
+			if (s != .0f) {
+				const float p = coord == 1 ? uvbb.pos.y : uvbb.pos.x;
+				const float cv = value + p;
+				const float intgf = Math::abs(cv / s);
 
-			unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
-			//if (intg > intg_mask) {
-			//	printf("out of bounds uv: %f; %f @ %d\n", intgf, s, coord);
+				unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
 
-			//	intg = intg_mask;
-			//}
-
-			val = intg & ~sign_mask;
-			if (cv < 0)
-				val = -val;
+				val = intg & ~sign_mask;
+				if (cv < 0)
+					val = -val;
+			} else {
+				val = 0;
+			}
 		} else if constexpr (Dims == 3) {
 			constexpr auto intg_mask = (1 << u_bits_num) - 1;
 			constexpr auto sign_mask = 1 << u_bits_num; // sign bit
 
 			const float s = aabb.size.coord[coord];
-			const float p = aabb.pos.coord[coord];
-			const float cv = value - p;
-			const float intgf = Math::abs(cv / s);
+			if (s != .0f) {
+				const float p = aabb.pos.coord[coord];
+				const float cv = value - p;
+				const float intgf = Math::abs(cv / s);
 
-			unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
-			//if (intg > intg_mask) {
-			//	printf("out of bounds vertex: %f; %f @ %d\n", intgf, s, coord);
+				unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
 
-			//	intg = intg_mask;
-			//}
-
-			val = intg & ~sign_mask;
-			if (cv < 0)
-				val = -val;
+				val = intg & ~sign_mask;
+				if (cv < 0)
+					val = -val;
+			} else {
+				val = 0;
+			}
 		} else if constexpr (sizeof(T) != sizeof(U)) {
 			val = value * ((1 << u_bits_num) - 1);
 		}
