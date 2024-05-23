@@ -38,6 +38,8 @@
 #include "servers/visual/shader_language.h"
 #include "servers/visual/particle_system_sw.h"
 #include "gl_context/context_gl.h"
+#include "scene/resources/texture.h"
+#include "io/resource_saver.h"
 #include <string.h>
 
 _FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
@@ -2742,33 +2744,51 @@ VS::LightOp RasterizerPSP::light_get_operator(RID p_light) const {
 
 void RasterizerPSP::light_omni_set_shadow_mode(RID p_light,VS::LightOmniShadowMode p_mode) {
 
+	Light * light = light_owner.get( p_light );
+	ERR_FAIL_COND(!light);
 
+	light->omni_shadow_mode=p_mode;
 }
+VS::LightOmniShadowMode RasterizerPSP::light_omni_get_shadow_mode(RID p_light) const {
 
-VS::LightOmniShadowMode RasterizerPSP::light_omni_get_shadow_mode(RID p_light) const{
+	const Light * light = light_owner.get( p_light );
+	ERR_FAIL_COND_V(!light,VS::LIGHT_OMNI_SHADOW_DEFAULT);
 
-	return VS::LightOmniShadowMode(0);
+	return light->omni_shadow_mode;
 }
 
 void RasterizerPSP::light_directional_set_shadow_mode(RID p_light,VS::LightDirectionalShadowMode p_mode) {
 
+	Light * light = light_owner.get( p_light );
+	ERR_FAIL_COND(!light);
 
+	light->directional_shadow_mode=p_mode;
 }
+
 
 VS::LightDirectionalShadowMode RasterizerPSP::light_directional_get_shadow_mode(RID p_light) const {
 
-	return VS::LIGHT_DIRECTIONAL_SHADOW_ORTHOGONAL;
+	const Light * light = light_owner.get( p_light );
+	ERR_FAIL_COND_V(!light,VS::LIGHT_DIRECTIONAL_SHADOW_ORTHOGONAL);
+
+	return light->directional_shadow_mode;
 }
 
 void RasterizerPSP::light_directional_set_shadow_param(RID p_light,VS::LightDirectionalShadowParam p_param, float p_value) {
 
+	Light * light = light_owner.get( p_light );
+	ERR_FAIL_COND(!light);
 
+	light->directional_shadow_param[p_param]=p_value;
 }
 
 float RasterizerPSP::light_directional_get_shadow_param(RID p_light,VS::LightDirectionalShadowParam p_param) const {
 
-	return 0;
+	const Light * light = light_owner.get( p_light );
+	ERR_FAIL_COND_V(!light,0);
+	return light->directional_shadow_param[p_param];
 }
+
 
 
 AABB RasterizerPSP::light_get_aabb(RID p_light) const {
@@ -2855,33 +2875,52 @@ bool RasterizerPSP::light_instance_assign_shadow(RID p_light_instance) {
 }
 
 
-Rasterizer::ShadowType RasterizerPSP::light_instance_get_shadow_type(RID p_light_instance) const {
+
+Rasterizer::ShadowType RasterizerPSP::light_instance_get_shadow_type(RID p_light_instance,bool p_far) const {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND_V(!lighti,Rasterizer::SHADOW_NONE);
+	
 
 	switch(lighti->base->type) {
 
-		case VS::LIGHT_DIRECTIONAL: return SHADOW_PSM; break;
+		case VS::LIGHT_DIRECTIONAL: {
+			switch(lighti->base->directional_shadow_mode) {
+				case VS::LIGHT_DIRECTIONAL_SHADOW_ORTHOGONAL: {
+					return SHADOW_ORTHOGONAL;
+				} break;
+				case VS::LIGHT_DIRECTIONAL_SHADOW_PERSPECTIVE:{
+					return SHADOW_PSM;
+				} break;
+				case VS::LIGHT_DIRECTIONAL_SHADOW_PARALLEL_2_SPLITS:
+				case VS::LIGHT_DIRECTIONAL_SHADOW_PARALLEL_4_SPLITS:{
+					return SHADOW_PSSM;
+				} break;
+			}
+
+		}break;
 		case VS::LIGHT_OMNI: return SHADOW_DUAL_PARABOLOID; break;
 		case VS::LIGHT_SPOT: return SHADOW_SIMPLE; break;
 	}
 
 	return Rasterizer::SHADOW_NONE;
 }
-
-Rasterizer::ShadowType RasterizerPSP::light_instance_get_shadow_type(RID p_light_instance,bool p_far) const {
-
-	return SHADOW_NONE;
-}
 void RasterizerPSP::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
 
 
 }
 
+int RasterizerPSP::light_instance_get_shadow_size(RID p_light_instance, int p_index) const{
+
+	LightInstance *lighti = light_instance_owner.get( p_light_instance );
+	ERR_FAIL_COND_V(!lighti,1);
+	ERR_FAIL_COND_V(!lighti->near_shadow_buffer,256);
+	return lighti->near_shadow_buffer->size/2;
+}
+
 int RasterizerPSP::light_instance_get_shadow_passes(RID p_light_instance) const {
 
-	return 0;
+	return 2;
 }
 
 bool RasterizerPSP::light_instance_get_pssm_shadow_overlap(RID p_light_instance) const {
@@ -2907,8 +2946,35 @@ void RasterizerPSP::shadow_clear_near() {
 }
 
 bool RasterizerPSP::shadow_allocate_near(RID p_light) {
+#ifdef PSP_SHADOWS
+	/*
+	LightInstance *li = light_instance_owner.get(p_light);
+	ERR_FAIL_COND_V(!li,false);
+	// ERR_FAIL_COND_V( li->near_shadow_buffer, false);
 
+	int skip=0;
+
+	for(int i=0;i<near_shadow_buffers.size();i++) {
+
+
+		if (skip>0) {
+			skip--;
+			continue;
+		}
+
+		if (near_shadow_buffers[i].owner!=NULL)
+			continue;
+
+		near_shadow_buffers[i].owner=li;
+		li->near_shadow_buffer=&near_shadow_buffers[i];
+		return true;
+	}
+
+	return false;*/
+	return true;
+#else
 	return false;
+#endif
 }
 
 bool RasterizerPSP::shadow_allocate_far(RID p_light) {
@@ -3037,6 +3103,17 @@ void RasterizerPSP::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugM
 };
 
 void RasterizerPSP::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) {
+
+	shadow = light_instance_owner.get(p_light_instance);
+	shadow_pass = p_shadow_pass;
+
+	opaque_render_list.clear();
+	alpha_render_list.clear();
+	light_instance_count=0;
+
+	sceGuFrontFace(GU_CW);
+	cull_front=true;
+
 
 }
 
@@ -4194,7 +4271,191 @@ void RasterizerPSP::end_scene() {
 
 	_debug_shadows();
 }
+
 void RasterizerPSP::end_shadow_map() {
+
+	// ERR_FAIL_COND_V(shadow->shadow_buffers.empty());
+
+	sceGuDisable(GU_BLEND);
+	sceGuDisable(GU_SCISSOR_TEST);
+	sceGuDisable(GU_DITHER);
+	sceGuEnable(GU_DEPTH_TEST);
+	sceGuDepthMask(GU_FALSE);
+
+	// sceGuColorMask(MK_RGBA(0, 0, 0, 0));
+
+	CameraMatrix cm;
+	float z_near,z_far;
+	Transform light_transform;
+
+	float dp_direction=0.0;
+	bool flip_facing=false;
+	Rect2 vp_rect;
+
+	for (int i = 0; i < shadow->shadow_buffers.size(); ++i) {
+		ShadowBuffer *sb = shadow->shadow_buffers.get(i);
+		
+		sceGuDepthBuffer(sb->zmem, sb->size);
+		sceGuOffset(2048 - (sb->size/2),2048 - (sb->size/2));
+		sceGuViewport(2048,2048,sb->size,sb->size);
+		
+
+		switch(shadow->base->type) {
+
+			case VS::LIGHT_DIRECTIONAL: {
+
+				if (shadow->base->directional_shadow_mode==VS::LIGHT_DIRECTIONAL_SHADOW_PARALLEL_4_SPLITS) {
+
+					cm = shadow->custom_projection;
+					light_transform=shadow->custom_transform;
+
+					if (shadow_pass==0) {
+
+						vp_rect=Rect2(0, sb->size/2, sb->size/2, sb->size/2);
+						sceGuScissor(0, sb->size/2, sb->size/2, sb->size/2);
+					} else if (shadow_pass==1) {
+
+						vp_rect=Rect2(0, 0, sb->size/2, sb->size/2);
+						sceGuScissor(0, 0, sb->size/2, sb->size/2);
+
+					} else if (shadow_pass==2) {
+
+						vp_rect=Rect2(sb->size/2, sb->size/2, sb->size/2, sb->size/2);
+						sceGuScissor(sb->size/2, sb->size/2, sb->size/2, sb->size/2);
+					} else if (shadow_pass==3) {
+
+						vp_rect=Rect2(sb->size/2, 0, sb->size/2, sb->size/2);
+						sceGuScissor(sb->size/2, 0, sb->size/2, sb->size/2);
+
+					}
+
+					sceGuEnable(GU_SCISSOR_TEST);
+
+				} else if (shadow->base->directional_shadow_mode==VS::LIGHT_DIRECTIONAL_SHADOW_PARALLEL_2_SPLITS) {
+
+					if (shadow_pass==0) {
+
+						cm = shadow->custom_projection;
+						light_transform=shadow->custom_transform;
+						vp_rect=Rect2(0, sb->size/2, sb->size, sb->size/2);
+						sceGuScissor(0, sb->size/2, sb->size, sb->size/2);
+					} else {
+
+						cm = shadow->custom_projection;
+						light_transform=shadow->custom_transform;
+						vp_rect=Rect2(0, 0, sb->size, sb->size/2);
+						sceGuScissor(0, 0, sb->size, sb->size/2);
+
+					}
+
+					sceGuEnable(GU_SCISSOR_TEST);
+
+				} else {
+					cm = shadow->custom_projection;
+					light_transform=shadow->custom_transform;
+					vp_rect=Rect2(0, 0, sb->size, sb->size);
+					sceGuViewport(0, 0, sb->size, sb->size);
+				}
+
+				z_near=cm.get_z_near();
+				z_far=cm.get_z_far();
+
+				sceGuClearDepth(0xFFFF);
+				sceGuClearColor(MK_RGBA(255, 255, 255, 255));
+
+				sceGuClear(GU_DEPTH_BUFFER_BIT);
+
+				sceGuDisable(GU_SCISSOR_TEST);
+
+			} break;
+			case VS::LIGHT_OMNI: {
+
+				// material_shader.set_conditional(MaterialShaderGLES2::USE_DUAL_PARABOLOID,true);
+				dp_direction = shadow_pass?1.0:-1.0;
+				flip_facing = (shadow_pass == 1);
+				light_transform=shadow->transform;
+				z_near=0;
+				z_far=shadow->base->vars[ VS::LIGHT_PARAM_RADIUS ];
+				// shadow->dp.x=1.0/z_far;
+				// shadow->dp.y=dp_direction;
+
+				if (shadow_pass==0) {
+					vp_rect=Rect2(0, sb->size/2, sb->size, sb->size/2);
+
+					sceGuScissor(0,0,SCR_WIDTH,SCR_HEIGHT);
+				} else {
+					vp_rect=Rect2(0, 0, sb->size, sb->size/2);
+
+				}
+				sceGuEnable(GU_SCISSOR_TEST);
+				shadow->projection=cm;
+
+				sceGuClearDepth(0xFFFF);
+				sceGuClearColor(MK_RGBA(255, 255, 255, 255));
+				//if (use_rgba_shadowmaps)
+					sceGuClear(GU_DEPTH_BUFFER_BIT|GU_COLOR_BUFFER_BIT);
+				//else
+					//sceGuClear(GU_DEPTH_BUFFER_BIT);
+				sceGuDisable(GU_SCISSOR_TEST);
+
+			} break;
+			case VS::LIGHT_SPOT: {
+
+				float far = shadow->base->vars[ VS::LIGHT_PARAM_RADIUS ];
+				ERR_FAIL_COND( far<=0 );
+				float near= far/200.0;
+				if (near<0.05)
+				near=0.05;
+
+				float angle = shadow->base->vars[ VS::LIGHT_PARAM_SPOT_ANGLE ];
+
+				cm.set_perspective( angle*2.0, 1.0, near, far );
+
+				shadow->projection=cm; // cache
+				light_transform=shadow->transform;
+				z_near=cm.get_z_near();
+				z_far=cm.get_z_far();
+
+				sceGuOffset(2048 - (sb->size/2),2048 - (sb->size/2));
+				sceGuViewport(2048,2048,sb->size,sb->size);
+
+				vp_rect=Rect2(0, 0, sb->size, sb->size);
+				sceGuClearDepth(0xFFFF);
+				sceGuClearColor(MK_RGBA(255,255,255,255));
+				// if (use_rgba_shadowmaps)
+					// sceGuClear(GU_DEPTH_BUFFER_BIT|GU_COLOR_BUFFER_BIT);
+				// else
+					sceGuClear(GU_DEPTH_BUFFER_BIT);
+			} break;
+		}
+
+		
+
+		Transform light_transform_inverse = light_transform.affine_inverse();
+
+		opaque_render_list.sort_mat();
+		_render_list_forward(&opaque_render_list,false);
+
+		Image img(sb->size, sb->size,0,Image::FORMAT_GRAYSCALE);
+		DVector<uint8_t> d = img.get_data();
+		
+		for(int i = 0; i < sb->size*sb->size; i++) {
+			reinterpret_cast<uint8_t*>(d.write().ptr())[i] = reinterpret_cast<uint16_t*>(sb->zmem)[i] / 256;
+			
+		}
+		
+		
+		Ref<ImageTexture> it = memnew( ImageTexture );
+		it->create_from_image(img);
+		printf("Saved shoad\n");
+		ResourceSaver::save("shaod.png",it);
+	} 
+
+	shadow=NULL;
+	sceGuDepthBuffer(zbp, BUF_WIDTH);
+
+	// sceGuColorMask(MK_RGBA(0, 0, 0, 0));
+
 }
 
 void RasterizerPSP::_debug_draw_shadow(ShadowBuffer *p_buffer, const Rect2& p_rect) {
@@ -5280,52 +5541,31 @@ void RasterizerPSP::custom_shade_model_get_param_info(int p_model, List<Property
 };
 
 
+
 void RasterizerPSP::ShadowBuffer::init(int p_size) {
 
-
-#if 0
 	size=p_size;
+	
+	printf("Init shadowbuffer %d\n", p_size);
+	
+	if (zmem != NULL)
+		edfree(zmem);
+	zmem = edalloc(p_size * p_size * 2);
 
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1, &depth);
-	ERR_FAIL_COND(depth==0);
+}
 
-	/* Setup Depth Texture */
-	glBindTexture(GL_TEXTURE_2D, depth);
-	glTexImage2D (GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, p_size, p_size, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
+RasterizerPSP::ShadowBuffer::~ShadowBuffer() {
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	float border_color[]={1.0f, 1.0f, 1.0f, 1.0f};
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
-
-	/* Create FBO */
-	glGenFramebuffers(1, &fbo);
-
-	ERR_FAIL_COND( fbo==0 );
-
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth, 0);
-	glDrawBuffer(GL_FALSE);
-	glReadBuffer(GL_FALSE);
-
-	/* Check FBO creation */
-	GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
-
-	ERR_FAIL_COND( status==GL_FRAMEBUFFER_UNSUPPORTED );
-
-	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
-#endif
+	if (zmem != NULL)
+		edfree(zmem);
+	
+	zmem = NULL;
 
 }
 
 void RasterizerPSP::_init_shadow_buffers() {
-
-	int near_shadow_size=GLOBAL_DEF("rasterizer/near_shadow_size",512);
+#ifdef PSP_SHADOWS
+	int near_shadow_size=GLOBAL_DEF("rasterizer/near_shadow_size",128);
 	int far_shadow_size=GLOBAL_DEF("rasterizer/far_shadow_size",64);
 
 	near_shadow_buffers.resize( GLOBAL_DEF("rasterizer/near_shadow_count",4) );
@@ -5342,9 +5582,8 @@ void RasterizerPSP::_init_shadow_buffers() {
 
 		far_shadow_buffers[i].init(far_shadow_size);
 	}
-
+#endif
 }
-
 
 void RasterizerPSP::_update_framebuffer() {
 

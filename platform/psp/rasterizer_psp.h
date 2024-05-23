@@ -704,12 +704,15 @@ class RasterizerPSP : public Rasterizer {
 
 		VS::LightType type;
 		float vars[VS::LIGHT_PARAM_MAX];
+		VS::LightOmniShadowMode omni_shadow_mode;
+		VS::LightDirectionalShadowMode directional_shadow_mode;
+		float directional_shadow_param[3];
 		Color colors[3];
 		bool shadow_enabled;
 		RID projector;
 		bool volumetric_enabled;
 		Color volumetric_color;
-
+		
 
 		Light() {
 
@@ -802,6 +805,9 @@ class RasterizerPSP : public Rasterizer {
 
 		Transform custom_transform;
 		CameraMatrix custom_projection;
+		VS::LightOmniShadowMode omni_shadow_mode;
+		VS::LightDirectionalShadowMode directional_shadow_mode;
+		float directional_shadow_param[3];
 
 		Vector3 light_vector;
 		Vector3 spot_vector;
@@ -822,10 +828,20 @@ class RasterizerPSP : public Rasterizer {
 
 				sb->owner=NULL;
 			}
-
+				
 			shadow_buffers.clear();
+			clear_near_shadow_buffers();
 		}
+		
+		ShadowBuffer* near_shadow_buffer;
 
+		void clear_near_shadow_buffers() {
+
+			if (near_shadow_buffer) {
+				near_shadow_buffer->owner=NULL;
+				near_shadow_buffer=NULL;
+			}
+		}
 		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; }
 
 	};
@@ -1051,12 +1067,13 @@ class RasterizerPSP : public Rasterizer {
 	struct ShadowBuffer {
 
 		int size;
-		unsigned int fbo;
-		unsigned int depth;
+		void *zmem;
 		LightInstance *owner;
 		void init(int p_size);
-		ShadowBuffer() { size=0; depth=0; owner=NULL; }
+		ShadowBuffer() { size=0; zmem=NULL; owner=NULL; }
+		~ShadowBuffer();
 	};
+
 
 	Vector<ShadowBuffer> near_shadow_buffers;
 	Vector<ShadowBuffer> far_shadow_buffers;
@@ -1388,11 +1405,11 @@ public:
 
 	virtual bool light_instance_has_shadow(RID p_light_instance) const;
 	virtual bool light_instance_assign_shadow(RID p_light_instance);
-	virtual ShadowType light_instance_get_shadow_type(RID p_light_instance) const;
+
 	virtual int light_instance_get_shadow_passes(RID p_light_instance) const;
 	virtual bool light_instance_get_pssm_shadow_overlap(RID p_light_instance) const;
 	virtual void light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near=0,float p_split_far=0);
-	virtual int light_instance_get_shadow_size(RID p_light_instance, int p_index=0) const { return 1; }
+	virtual int light_instance_get_shadow_size(RID p_light_instance, int p_index=0) const;
 
 	virtual ShadowType light_instance_get_shadow_type(RID p_light_instance,bool p_far=false) const;
 	virtual void light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near=0,float p_split_far=0);
