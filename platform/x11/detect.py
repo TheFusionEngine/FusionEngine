@@ -93,15 +93,15 @@ def configure(env):
 
 	if (env["target"]=="release"):
 		
-		env.Append(CCFLAGS=['-O2','-ffast-math','-fomit-frame-pointer'])
+		env.Append(CCFLAGS=['-O2','-w','-fpermissive','-ffast-math','-fomit-frame-pointer'])
 
 	elif (env["target"]=="release_debug"):
 
-		env.Append(CCFLAGS=['-O2','-ffast-math','-DDEBUG_ENABLED'])
+		env.Append(CCFLAGS=['-O2','-w','-fpermissive','-ffast-math','-DDEBUG_ENABLED'])
 
 	elif (env["target"]=="debug"):
 
-		env.Append(CCFLAGS=['-g2', '-Wall','-DDEBUG_ENABLED','-DDEBUG_MEMORY_ENABLED'])
+		env.Append(CCFLAGS=['-g2','-Wno-error','-Wall','-DDEBUG_ENABLED','-DDEBUG_MEMORY_ENABLED'])
 
 	env.ParseConfig('pkg-config x11 --cflags --libs')
 	env.ParseConfig('pkg-config xcursor --cflags --libs')

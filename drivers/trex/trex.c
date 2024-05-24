@@ -3,13 +3,15 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <setjmp.h>
+#include <wchar.h>
+#include <wctype.h>
 #include "trex.h"
 
-#ifdef _UINCODE
+#ifdef _UNICODE
 #define scisprint iswprint
 #define scstrlen wcslen
 #define scprintf wprintf
-#define _SC(x) L##c
+#define _SC(x) (L##x)
 #else
 #define scisprint isprint
 #define scstrlen strlen

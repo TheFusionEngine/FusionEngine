@@ -286,6 +286,20 @@ _FORCE_INLINE_ T *gumake(T &&il) {
 	*mem = il;
 	return mem;
 }
+ 
+inline uint32_t unswizzle(uint32_t offset, uint32_t log2_w) {
+	if (log2_w <= 4)
+		return offset;
+ 
+	uint32_t w_mask = (1 << log2_w) - 1;
+ 
+	uint32_t mx = offset & 0xf;
+	uint32_t by = offset & (~7 << log2_w);
+	uint32_t bx = offset & ((w_mask & 0xf) << 7);
+	uint32_t my = offset & 0x70;
+ 
+	return by | (bx >> 3) | (my << (log2_w - 4)) | mx;
+}
 
 inline void swizzle(uint8_t *out, const uint8_t *in, uint32_t width, uint32_t height) {
 	int rowblocks = width / 16;
@@ -842,7 +856,7 @@ class RasterizerPSP : public Rasterizer {
 				near_shadow_buffer=NULL;
 			}
 		}
-		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; }
+		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; near_shadow_buffer=NULL; }
 
 	};
 	mutable RID_Owner<Light> light_owner;

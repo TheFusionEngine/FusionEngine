@@ -26,11 +26,14 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
+#define PSP
 #ifdef PSP
 
 #define BUDDY_ALLOC_IMPLEMENTATION
 
 #include "rasterizer_psp.h"
+#include <pspthreadman.h>
+#include <psputils.h>
 #include "os/os.h"
 #include "globals.h"
 #include <stdio.h>
@@ -2733,8 +2736,6 @@ void RasterizerPSP::light_set_operator(RID p_light,VS::LightOp p_op) {
 
 	Light * light = light_owner.get( p_light );
 	ERR_FAIL_COND(!light);
-
-
 };
 
 VS::LightOp RasterizerPSP::light_get_operator(RID p_light) const {
@@ -2843,15 +2844,13 @@ void RasterizerPSP::light_instance_set_transform(RID p_light_instance,const Tran
 
 bool RasterizerPSP::light_instance_has_shadow(RID p_light_instance) const {
 
-	return false;
-
-	/*
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND_V(!lighti, false);
 
 	if (!lighti->base->shadow_enabled)
 		return false;
 
+#if 0
 	if (lighti->base->type==VS::LIGHT_DIRECTIONAL) {
 		if (lighti->shadow_pass!=scene_pass)
 			return false;
@@ -2859,11 +2858,10 @@ bool RasterizerPSP::light_instance_has_shadow(RID p_light_instance) const {
 	} else {
 		if (lighti->shadow_pass!=frame)
 			return false;
-	}*/
+	}
+#endif
 
-
-
-	//return !lighti->shadow_buffers.empty();
+	return lighti->near_shadow_buffer != NULL;
 
 }
 
@@ -2942,21 +2940,22 @@ void RasterizerPSP::light_instance_set_custom_transform(RID p_light_instance, in
 }
 void RasterizerPSP::shadow_clear_near() {
 
+	for(int i=0;i<near_shadow_buffers.size();i++) {
+
+		if (near_shadow_buffers[i].owner)
+			near_shadow_buffers[i].owner->clear_near_shadow_buffers();
+	}
 
 }
 
 bool RasterizerPSP::shadow_allocate_near(RID p_light) {
-#ifdef PSP_SHADOWS
-	/*
 	LightInstance *li = light_instance_owner.get(p_light);
-	ERR_FAIL_COND_V(!li,false);
-	// ERR_FAIL_COND_V( li->near_shadow_buffer, false);
+	ERR_FAIL_NULL_V(li, false);
+	ERR_FAIL_COND_V(li->near_shadow_buffer, false);
 
 	int skip=0;
 
 	for(int i=0;i<near_shadow_buffers.size();i++) {
-
-
 		if (skip>0) {
 			skip--;
 			continue;
@@ -2970,11 +2969,7 @@ bool RasterizerPSP::shadow_allocate_near(RID p_light) {
 		return true;
 	}
 
-	return false;*/
-	return true;
-#else
 	return false;
-#endif
 }
 
 bool RasterizerPSP::shadow_allocate_far(RID p_light) {
@@ -3085,7 +3080,6 @@ void RasterizerPSP::set_render_target(RID p_render_target, bool p_transparent_bg
 
 void RasterizerPSP::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug) {
 
-
 	opaque_render_list.clear();
 	alpha_render_list.clear();
 	light_instance_count=0;
@@ -3093,7 +3087,11 @@ void RasterizerPSP::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugM
 	scene_pass++;
 	last_light_id=0;
 	directional_light_count=0;
-	current_env = environment_owner.get(p_env);
+
+	if (p_env.is_valid())
+		current_env = environment_owner.get(p_env);
+	else
+		current_env = NULL;
 
 	//set state
 
@@ -3104,7 +3102,12 @@ void RasterizerPSP::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugM
 
 void RasterizerPSP::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) {
 
+	shadow = NULL;
+
+	//ERR_FAIL_COND(!p_light_instance.is_valid());
+
 	shadow = light_instance_owner.get(p_light_instance);
+
 	shadow_pass = p_shadow_pass;
 
 	opaque_render_list.clear();
@@ -3113,7 +3116,6 @@ void RasterizerPSP::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) 
 
 	sceGuFrontFace(GU_CW);
 	cull_front=true;
-
 
 }
 
@@ -4114,9 +4116,16 @@ void RasterizerPSP::_render_list_forward(RenderList *p_render_list,bool p_revers
 
 void RasterizerPSP::end_scene() {
 
+	sceGuPixelMask(0);
+	sceGuDepthBuffer(zbp,BUF_WIDTH);
+
+	sceGuOffset(2048 - (SCR_WIDTH/2),2048 - (SCR_HEIGHT/2));
+	sceGuViewport(2048,2048,SCR_WIDTH,SCR_HEIGHT);
+
 	sceGuEnable(GU_BLEND);
 	sceGuDepthMask(GU_FALSE);
 	sceGuEnable(GU_DEPTH_TEST);
+	sceGuDepthRange(0x0000,0xFFFF);
 	sceGuDepthFunc(GU_LEQUAL);
 	sceGuDisable(GU_SCISSOR_TEST);
 	sceGuDisable(GU_FOG);
@@ -4192,7 +4201,7 @@ void RasterizerPSP::end_scene() {
 #endif
 	// glClear(GL_DEPTH_BUFFER_BIT);
 
-	if (current_env->fx_enabled[VS::ENV_FX_FOG]) {
+	if (current_env != NULL && current_env->fx_enabled[VS::ENV_FX_FOG]) {
 
 		sceGuEnable(GU_FOG);
 		Color col_end = current_env->fx_param[VS::ENV_FX_PARAM_FOG_END_COLOR];
@@ -4274,15 +4283,25 @@ void RasterizerPSP::end_scene() {
 
 void RasterizerPSP::end_shadow_map() {
 
-	// ERR_FAIL_COND_V(shadow->shadow_buffers.empty());
+	ERR_FAIL_NULL(shadow);
 
+	ShadowBuffer *sb = shadow->near_shadow_buffer;
+	ERR_FAIL_NULL(sb);
+
+	ERR_FAIL_NULL(sb->zmem);
+	ERR_FAIL_COND(sb->size < 64);
+
+	sceGuDepthBuffer(sb->zmem - 0x4000000, sb->size);
+	sceGuPixelMask(-1);
+	
 	sceGuDisable(GU_BLEND);
 	sceGuDisable(GU_SCISSOR_TEST);
 	sceGuDisable(GU_DITHER);
-	sceGuEnable(GU_DEPTH_TEST);
-	sceGuDepthMask(GU_FALSE);
 
-	// sceGuColorMask(MK_RGBA(0, 0, 0, 0));
+	sceGuDepthMask(GU_FALSE);
+	sceGuEnable(GU_DEPTH_TEST);
+	sceGuDepthRange(0x0000,0xFFFF);
+	sceGuDepthFunc(GU_LEQUAL);
 
 	CameraMatrix cm;
 	float z_near,z_far;
@@ -4292,170 +4311,168 @@ void RasterizerPSP::end_shadow_map() {
 	bool flip_facing=false;
 	Rect2 vp_rect;
 
-	for (int i = 0; i < shadow->shadow_buffers.size(); ++i) {
-		ShadowBuffer *sb = shadow->shadow_buffers.get(i);
-		
-		sceGuDepthBuffer(sb->zmem, sb->size);
-		sceGuOffset(2048 - (sb->size/2),2048 - (sb->size/2));
-		sceGuViewport(2048,2048,sb->size,sb->size);
-		
+	sceGuOffset(2048 - (sb->size/2),2048 - (sb->size/2));
+	sceGuViewport(2048,2048,sb->size,sb->size);
 
-		switch(shadow->base->type) {
+	switch(shadow->base->type) {
 
-			case VS::LIGHT_DIRECTIONAL: {
+		case VS::LIGHT_DIRECTIONAL: {
 
-				if (shadow->base->directional_shadow_mode==VS::LIGHT_DIRECTIONAL_SHADOW_PARALLEL_4_SPLITS) {
+			if (shadow->base->directional_shadow_mode==VS::LIGHT_DIRECTIONAL_SHADOW_PARALLEL_4_SPLITS) {
 
-					cm = shadow->custom_projection;
-					light_transform=shadow->custom_transform;
-
-					if (shadow_pass==0) {
-
-						vp_rect=Rect2(0, sb->size/2, sb->size/2, sb->size/2);
-						sceGuScissor(0, sb->size/2, sb->size/2, sb->size/2);
-					} else if (shadow_pass==1) {
-
-						vp_rect=Rect2(0, 0, sb->size/2, sb->size/2);
-						sceGuScissor(0, 0, sb->size/2, sb->size/2);
-
-					} else if (shadow_pass==2) {
-
-						vp_rect=Rect2(sb->size/2, sb->size/2, sb->size/2, sb->size/2);
-						sceGuScissor(sb->size/2, sb->size/2, sb->size/2, sb->size/2);
-					} else if (shadow_pass==3) {
-
-						vp_rect=Rect2(sb->size/2, 0, sb->size/2, sb->size/2);
-						sceGuScissor(sb->size/2, 0, sb->size/2, sb->size/2);
-
-					}
-
-					sceGuEnable(GU_SCISSOR_TEST);
-
-				} else if (shadow->base->directional_shadow_mode==VS::LIGHT_DIRECTIONAL_SHADOW_PARALLEL_2_SPLITS) {
-
-					if (shadow_pass==0) {
-
-						cm = shadow->custom_projection;
-						light_transform=shadow->custom_transform;
-						vp_rect=Rect2(0, sb->size/2, sb->size, sb->size/2);
-						sceGuScissor(0, sb->size/2, sb->size, sb->size/2);
-					} else {
-
-						cm = shadow->custom_projection;
-						light_transform=shadow->custom_transform;
-						vp_rect=Rect2(0, 0, sb->size, sb->size/2);
-						sceGuScissor(0, 0, sb->size, sb->size/2);
-
-					}
-
-					sceGuEnable(GU_SCISSOR_TEST);
-
-				} else {
-					cm = shadow->custom_projection;
-					light_transform=shadow->custom_transform;
-					vp_rect=Rect2(0, 0, sb->size, sb->size);
-					sceGuViewport(0, 0, sb->size, sb->size);
-				}
-
-				z_near=cm.get_z_near();
-				z_far=cm.get_z_far();
-
-				sceGuClearDepth(0xFFFF);
-				sceGuClearColor(MK_RGBA(255, 255, 255, 255));
-
-				sceGuClear(GU_DEPTH_BUFFER_BIT);
-
-				sceGuDisable(GU_SCISSOR_TEST);
-
-			} break;
-			case VS::LIGHT_OMNI: {
-
-				// material_shader.set_conditional(MaterialShaderGLES2::USE_DUAL_PARABOLOID,true);
-				dp_direction = shadow_pass?1.0:-1.0;
-				flip_facing = (shadow_pass == 1);
-				light_transform=shadow->transform;
-				z_near=0;
-				z_far=shadow->base->vars[ VS::LIGHT_PARAM_RADIUS ];
-				// shadow->dp.x=1.0/z_far;
-				// shadow->dp.y=dp_direction;
+				cm = shadow->custom_projection;
+				light_transform=shadow->custom_transform;
 
 				if (shadow_pass==0) {
-					vp_rect=Rect2(0, sb->size/2, sb->size, sb->size/2);
 
-					sceGuScissor(0,0,SCR_WIDTH,SCR_HEIGHT);
-				} else {
-					vp_rect=Rect2(0, 0, sb->size, sb->size/2);
+					vp_rect=Rect2(0, sb->size/2, sb->size/2, sb->size/2);
+					sceGuScissor(0, sb->size/2, sb->size/2, sb->size/2);
+				} else if (shadow_pass==1) {
+
+					vp_rect=Rect2(0, 0, sb->size/2, sb->size/2);
+					sceGuScissor(0, 0, sb->size/2, sb->size/2);
+
+				} else if (shadow_pass==2) {
+
+					vp_rect=Rect2(sb->size/2, sb->size/2, sb->size/2, sb->size/2);
+					sceGuScissor(sb->size/2, sb->size/2, sb->size/2, sb->size/2);
+				} else if (shadow_pass==3) {
+
+					vp_rect=Rect2(sb->size/2, 0, sb->size/2, sb->size/2);
+					sceGuScissor(sb->size/2, 0, sb->size/2, sb->size/2);
 
 				}
+
 				sceGuEnable(GU_SCISSOR_TEST);
-				shadow->projection=cm;
 
-				sceGuClearDepth(0xFFFF);
-				sceGuClearColor(MK_RGBA(255, 255, 255, 255));
-				//if (use_rgba_shadowmaps)
-					sceGuClear(GU_DEPTH_BUFFER_BIT|GU_COLOR_BUFFER_BIT);
-				//else
-					//sceGuClear(GU_DEPTH_BUFFER_BIT);
-				sceGuDisable(GU_SCISSOR_TEST);
+			} else if (shadow->base->directional_shadow_mode==VS::LIGHT_DIRECTIONAL_SHADOW_PARALLEL_2_SPLITS) {
 
-			} break;
-			case VS::LIGHT_SPOT: {
+				if (shadow_pass==0) {
 
-				float far = shadow->base->vars[ VS::LIGHT_PARAM_RADIUS ];
-				ERR_FAIL_COND( far<=0 );
-				float near= far/200.0;
-				if (near<0.05)
-				near=0.05;
+					cm = shadow->custom_projection;
+					light_transform=shadow->custom_transform;
+					vp_rect=Rect2(0, sb->size/2, sb->size, sb->size/2);
+					sceGuScissor(0, sb->size/2, sb->size, sb->size/2);
+				} else {
 
-				float angle = shadow->base->vars[ VS::LIGHT_PARAM_SPOT_ANGLE ];
+					cm = shadow->custom_projection;
+					light_transform=shadow->custom_transform;
+					vp_rect=Rect2(0, 0, sb->size, sb->size/2);
+					sceGuScissor(0, 0, sb->size, sb->size/2);
 
-				cm.set_perspective( angle*2.0, 1.0, near, far );
+				}
 
-				shadow->projection=cm; // cache
-				light_transform=shadow->transform;
-				z_near=cm.get_z_near();
-				z_far=cm.get_z_far();
+				sceGuEnable(GU_SCISSOR_TEST);
 
-				sceGuOffset(2048 - (sb->size/2),2048 - (sb->size/2));
-				sceGuViewport(2048,2048,sb->size,sb->size);
-
+			} else {
+				cm = shadow->custom_projection;
+				light_transform=shadow->custom_transform;
 				vp_rect=Rect2(0, 0, sb->size, sb->size);
-				sceGuClearDepth(0xFFFF);
-				sceGuClearColor(MK_RGBA(255,255,255,255));
-				// if (use_rgba_shadowmaps)
-					// sceGuClear(GU_DEPTH_BUFFER_BIT|GU_COLOR_BUFFER_BIT);
-				// else
-					sceGuClear(GU_DEPTH_BUFFER_BIT);
-			} break;
-		}
+				sceGuViewport(0, 0, sb->size, sb->size);
+			}
 
-		
+			z_near=cm.get_z_near();
+			z_far=cm.get_z_far();
 
-		Transform light_transform_inverse = light_transform.affine_inverse();
+			sceGuClearDepth(0xFFFF);
+			//sceGuClearColor(MK_RGBA(255, 255, 255, 255));
 
-		opaque_render_list.sort_mat();
-		_render_list_forward(&opaque_render_list,false);
+			sceGuClear(GU_DEPTH_BUFFER_BIT);
 
-		Image img(sb->size, sb->size,0,Image::FORMAT_GRAYSCALE);
-		DVector<uint8_t> d = img.get_data();
-		
-		for(int i = 0; i < sb->size*sb->size; i++) {
-			reinterpret_cast<uint8_t*>(d.write().ptr())[i] = reinterpret_cast<uint16_t*>(sb->zmem)[i] / 256;
-			
-		}
-		
-		
-		Ref<ImageTexture> it = memnew( ImageTexture );
-		it->create_from_image(img);
-		printf("Saved shoad\n");
-		ResourceSaver::save("shaod.png",it);
-	} 
+			sceGuDisable(GU_SCISSOR_TEST);
 
-	shadow=NULL;
-	sceGuDepthBuffer(zbp, BUF_WIDTH);
+		} break;
+		case VS::LIGHT_OMNI: {
 
-	// sceGuColorMask(MK_RGBA(0, 0, 0, 0));
+			// material_shader.set_conditional(MaterialShaderGLES2::USE_DUAL_PARABOLOID,true);
+			dp_direction = shadow_pass?1.0:-1.0;
+			flip_facing = (shadow_pass == 1);
+			light_transform=shadow->transform;
+			z_near=0;
+			z_far=shadow->base->vars[ VS::LIGHT_PARAM_RADIUS ];
+			// shadow->dp.x=1.0/z_far;
+			// shadow->dp.y=dp_direction;
 
+			if (shadow_pass==0) {
+				vp_rect=Rect2(0, sb->size/2, sb->size, sb->size/2);
+
+				sceGuScissor(0,0,SCR_WIDTH,SCR_HEIGHT);
+			} else {
+				vp_rect=Rect2(0, 0, sb->size, sb->size/2);
+
+			}
+			sceGuEnable(GU_SCISSOR_TEST);
+			shadow->projection=cm;
+
+			sceGuClearDepth(0xFFFF);
+			//sceGuClearColor(MK_RGBA(255, 255, 255, 255));
+			//if (use_rgba_shadowmaps)
+				//sceGuClear(GU_DEPTH_BUFFER_BIT|GU_COLOR_BUFFER_BIT);
+			//else
+				sceGuClear(GU_DEPTH_BUFFER_BIT);
+			sceGuDisable(GU_SCISSOR_TEST);
+
+		} break;
+		case VS::LIGHT_SPOT: {
+
+			float far = shadow->base->vars[ VS::LIGHT_PARAM_RADIUS ];
+			ERR_FAIL_COND( far<=0 );
+			float near= far/200.0;
+			if (near<0.05)
+			near=0.05;
+
+			float angle = shadow->base->vars[ VS::LIGHT_PARAM_SPOT_ANGLE ];
+
+			cm.set_perspective( angle*2.0, 1.0, near, far );
+
+			shadow->projection=cm; // cache
+			light_transform=shadow->transform;
+			z_near=cm.get_z_near();
+			z_far=cm.get_z_far();
+
+			sceGuOffset(2048 - (sb->size/2),2048 - (sb->size/2));
+			sceGuViewport(2048,2048,sb->size,sb->size);
+
+			vp_rect=Rect2(0, 0, sb->size, sb->size);
+			sceGuClearDepth(0xFFFF);
+			sceGuClearColor(MK_RGBA(255,255,255,255));
+			// if (use_rgba_shadowmaps)
+				// sceGuClear(GU_DEPTH_BUFFER_BIT|GU_COLOR_BUFFER_BIT);
+			// else
+				sceGuClear(GU_DEPTH_BUFFER_BIT);
+		} break;
+	}
+
+	Transform light_transform_inverse = light_transform.affine_inverse();
+
+	sceGumMatrixMode(GU_PROJECTION);
+	sceGumLoadMatrix((const ScePspFMatrix4 *)&cm.matrix[0][0]);
+
+	sceGumMatrixMode(GU_VIEW);
+	_gl_load_transform(light_transform_inverse);
+
+	opaque_render_list.sort_mat();
+	_render_list_forward(&opaque_render_list,false);
+
+	shadow = NULL;
+
+	sceGuDepthBuffer(zbp,BUF_WIDTH);
+
+#if 0
+	sceKernelDcacheWritebackInvalidateAll();
+	asm volatile("sync");
+
+	ByteArray zar;
+	zar.resize(sb->size*sb->size);
+	for(int i = 0; i < sb->size*sb->size; i++) {
+		zar.write()[i] = reinterpret_cast<uint16_t *>(sb->zmem + 0x600000)[i] / 0x100;
+	}
+	Image img(sb->size, sb->size, false, Image::FORMAT_GRAYSCALE, zar);
+
+	static int si = 0;
+	img.save_png(String("shadow_") + itos(si++) + ".png");
+	printf("Saved Near Shadow Buffer #%d\n", si);
+#endif
 }
 
 void RasterizerPSP::_debug_draw_shadow(ShadowBuffer *p_buffer, const Rect2& p_rect) {
@@ -4555,6 +4572,38 @@ void RasterizerPSP::end_frame() {
 	sceDisplayWaitVblankStart();
 	sceGuSwapBuffers();
 	// printf("end_frame done\n");
+
+	// TODO: Remove this
+#if 0
+	for (int n = 0; n < near_shadow_buffers.size(); ++n) {
+		ShadowBuffer sb = near_shadow_buffers.get(n);
+
+		ByteArray zar;
+		zar.resize(sb.size*sb.size*3);
+
+		const uint32_t log2_w = Math::log((sb.size * 2) >> 3) / Math::log(2);
+		for(int i = 0; i < sb.size*sb.size; i++) {
+			//const uint16_t v =
+			//	(reinterpret_cast<uint8_t *>(sb.zmem + 0x600000)[unswizzle(i * 2, log2_w)] & 0xFF) |
+			//	(reinterpret_cast<uint8_t *>(sb.zmem + 0x600000)[unswizzle(i * 2 + 1, log2_w)] & 0xFF) << 8;
+			//zar.write()[i] = v / 0x100;
+
+			//zar.write()[i] = reinterpret_cast<uint16_t *>(sb.zmem + )[i] / 0x100;
+			zar.write()[i * 3] = 0;
+			zar.write()[i * 3 + 1] = reinterpret_cast<uint8_t *>(sb.zmem + 0x600000)[i * 2];
+			zar.write()[i * 3 + 2] = reinterpret_cast<uint8_t *>(sb.zmem + 0x600000)[i * 2 + 1];
+
+			//const uint16_t v =
+			//	(reinterpret_cast<uint8_t *>(sb.zmem + 0x600000)[i * 2] & 0xFF) |
+			//	(reinterpret_cast<uint8_t *>(sb.zmem + 0x600000)[i * 2 + 1] & 0xFF) << 8;
+			//zar.write()[i] = v / 0x100;
+		}
+		Image img(sb.size, sb.size, false, Image::FORMAT_RGB, zar);
+
+		img.save_png(String("shadow_") + itos(n) + ".png");
+		printf("Saved Near Shadow Buffer #%d\n", n);
+	}
+#endif
 }
 
 /* CANVAS API */
@@ -5546,11 +5595,10 @@ void RasterizerPSP::ShadowBuffer::init(int p_size) {
 
 	size=p_size;
 	
-	printf("Init shadowbuffer %d\n", p_size);
-	
 	if (zmem != NULL)
 		edfree(zmem);
 	zmem = edalloc(p_size * p_size * 2);
+	memset(zmem, '\0', p_size * p_size * 2);
 
 }
 
@@ -5564,25 +5612,23 @@ RasterizerPSP::ShadowBuffer::~ShadowBuffer() {
 }
 
 void RasterizerPSP::_init_shadow_buffers() {
-#ifdef PSP_SHADOWS
-	int near_shadow_size=GLOBAL_DEF("rasterizer/near_shadow_size",128);
-	int far_shadow_size=GLOBAL_DEF("rasterizer/far_shadow_size",64);
+	int near_shadow_size=GLOBAL_DEF("rasterizer/near_shadow_size",256);
+	//int far_shadow_size=GLOBAL_DEF("rasterizer/far_shadow_size",64);
 
 	near_shadow_buffers.resize( GLOBAL_DEF("rasterizer/near_shadow_count",4) );
-	far_shadow_buffers.resize( GLOBAL_DEF("rasterizer/far_shadow_count",16) );
+	//far_shadow_buffers.resize( GLOBAL_DEF("rasterizer/far_shadow_count",16) );
 
-	shadow_near_far_split_size_ratio = GLOBAL_DEF("rasterizer/shadow_near_far_split_size_ratio",0.3);
+	shadow_near_far_split_size_ratio = GLOBAL_DEF("rasterizer/shadow_near_far_split_size_ratio",1);
 
 	for (int i=0;i<near_shadow_buffers.size();i++) {
 
 		near_shadow_buffers[i].init(near_shadow_size );
 	}
 
-	for (int i=0;i<far_shadow_buffers.size();i++) {
+	//for (int i=0;i<far_shadow_buffers.size();i++) {
 
-		far_shadow_buffers[i].init(far_shadow_size);
-	}
-#endif
+	//	far_shadow_buffers[i].init(far_shadow_size);
+	//}
 }
 
 void RasterizerPSP::_update_framebuffer() {
