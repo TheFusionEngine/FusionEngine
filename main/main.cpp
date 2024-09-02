@@ -714,7 +714,7 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 	return OK;
 
 	error:
-	
+
 	video_driver="";	
 	audio_driver="";
 	game_path="";

@@ -27,7 +27,7 @@ def get_opts():
 def get_flags():
 
 	return [
-	('builtin_zlib', 'no'),
+	('builtin_zlib', 'yes'),
 	('theora','no'), #use builtin openssl
 	('tools', 'no'),
 	('disable_3d', 'no'),
@@ -51,9 +51,9 @@ def configure(env):
 
 	env.Append(CPPPATH=['#platform/dreamcast'])
 
-	env["CC"]="kos-cc"
-	env["CXX"]="kos-c++"
-	env["LD"]="kos-c++"
+	env["CC"]="sh-elf-gcc"
+	env["CXX"]="sh-elf-g++"
+	env["LD"]="sh-elf-g++"
 	env["AR"]="sh-elf-gcc-ar"
 	env["RANLIB"]="sh-elf-gcc-ranlib"
 
@@ -71,8 +71,9 @@ def configure(env):
 	
 	kos_path = os.environ["KOS_BASE"]
 	kos_arch = os.environ["KOS_ARCH"]
+	ld_script = os.environ["KOS_LD_SCRIPT"]
 	
-	env.Append(CPPPATH=[kos_path+"/../sh-elf/sh-elf/include/"])
+	env.Append(CPPPATH=[kos_path+"/../sh-elf/sh-elf/include/",kos_path+"/kernel/arch/dreamcast/include/", kos_path+"/include/", kos_path+"/addons/include/"])
 	env.Append(LIBPATH=[kos_path+"/../sh-elf/sh-elf/lib", kos_path+"/lib/"+kos_arch])
 
 
@@ -88,8 +89,9 @@ def configure(env):
 
 		env.Append(CCFLAGS=['-g2', '-Wall','-DDEBUG_ENABLED','-DDEBUG_MEMORY_ENABLED'])
 
-	env.Append(CPPFLAGS=['-DSERVER_ENABLED', '-DBACKEND_KOSPVR', '-DDREAMCAST', '-DNDEBUG', '-D__DREAMCAST__', '-D__arch_dreamcast', '-D_arch_dreamcast', '-D_arch_sub_pristine', '-DKOS', '-DNEED_LONG_INT', '-DLIBC_FILEIO_ENABLED', '-DNO_STATVFS', '-fno-operator-names'])
+	env.Append(CPPFLAGS=['-DSERVER_ENABLED', '-DBACKEND_KOSPVR', '-DDREAMCAST', '-DNDEBUG', '-D__DREAMCAST__', '-D__arch_dreamcast', '-D_arch_dreamcast', '-D_arch_sub_pristine', '-DKOS', '-DNEED_LONG_INT', '-DLIBC_FILEIO_ENABLED', '-DNO_STATVFS', '-fno-operator-names', '-DULTRA'])
 	#env.Append(LDFLAGS=['-Wl,--start-group', '-Wl,--end-group'])
-	env.Append(LIBS=['m','z','GLdc', 'kallisti']) #TODO detect linux/BSD!
+	env.Append(LINKFLAGS=[ld_script])
+	env.Append(LIBS=['m','GL', 'kallisti', 'romdiskbase']) #TODO detect linux/BSD!
 
 

@@ -27,54 +27,20 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 #include "main/main.h"
-#include "os_kos.h"
-#include <GL/glkos.h>
-#include <kos.h>
-
-unsigned char romdisk_data = 0;
-
+#include "os_ultra.h"
+#include <libdragon.h>
 int main(int argc, char* argv[]) {
-	glKosInit();
-	OS_KOS os;
-#if 0
-	file_t fd;
-    file_t d;
-    dirent_t *de;
-    int amt;
+	debug_init_isviewer();
+	debug_init_usblog();
+	debugf("hello\n");
+	OS_Ultra os;
+	debugf("this\n");
+	char* args[] = {"-path", "rom:/"};
 
-    printf("Reading directory from CD-Rom:\r\n");
-
-    /* Read and print the root directory */
-    d = fs_open("/cd", O_RDONLY | O_DIR);
-
-    if(d < 0) {
-        printf("Can't open root!\r\n");
-
-    }
-
-    while((de = fs_readdir(d))) {
-        printf("%s  /  ", de->name);
-
-        if(de->size >= 0) {
-            printf("%d\r\n", de->size);
-        }
-        else {
-            printf("DIR\r\n");
-        }
-    }
-
-    fs_close(d);
-#endif
-	char* args[] = {"-path", "/cd/"};
-	
-	Error err  = Main::setup("kos",2, args);
-	if (err!=OK)
-		return 255;
+	Error err = Main::setup("ultra", 2, args, true);
 		
-	if (Main::start()) {
-        printf("Running\n");
+	if (Main::start())
 		os.run(); // it is actually the OS that decides how to run
-    }
 	Main::cleanup();
 	
 	return 0;

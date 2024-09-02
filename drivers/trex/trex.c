@@ -5,7 +5,7 @@
 #include <setjmp.h>
 #include "trex.h"
 
-#ifdef _UINCODE
+#ifdef _UICODE
 #define scisprint iswprint
 #define scstrlen wcslen
 #define scprintf wprintf

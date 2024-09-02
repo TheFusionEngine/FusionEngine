@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  OS_KOS.cpp                                                        */
+/*  OS_Ultra.cpp                                                        */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -27,8 +27,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 #include "servers/visual/visual_server_raster.h"
-#include "rasterizer_dc.h"
-#include "os_kos.h"
+#include "servers/visual/rasterizer_dummy.h"
+#include "os_ultra.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "print_string.h"
@@ -45,19 +45,19 @@
 #include "main/main.h"
 #include <unistd.h>
 
-#include <GL/glkos.h>
+// #include <GL/glkos.h>
 
 #include <sys/time.h>
 
-int OS_KOS::get_video_driver_count() const {
+int OS_Ultra::get_video_driver_count() const {
 
 	return 1;
 }
-const char * OS_KOS::get_video_driver_name(int p_driver) const {
+const char * OS_Ultra::get_video_driver_name(int p_driver) const {
 
 	return "GLES1";
 }
-OS::VideoMode OS_KOS::get_default_video_mode() const {
+OS::VideoMode OS_Ultra::get_default_video_mode() const {
 
 	return OS::VideoMode(640, 480,false);
 }
@@ -65,7 +65,7 @@ OS::VideoMode OS_KOS::get_default_video_mode() const {
 static MemoryPoolStaticMalloc *mempool_static=NULL;
 static MemoryPoolDynamicStatic *mempool_dynamic=NULL;
 
-void OS_KOS::initialize_core() {
+void OS_Ultra::initialize_core() {
 
 	printf("init core\n");
  	ThreadDummy::make_default();
@@ -88,20 +88,20 @@ void OS_KOS::initialize_core() {
 	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_FILESYSTEM);
 }
 
-void OS_KOS::finalize_core() {
+void OS_Ultra::finalize_core() {
 	if (mempool_dynamic)
 		memdelete( mempool_dynamic );
 	delete mempool_static;
 }
 
-void OS_KOS::initialize(const VideoMode& p_desired,int p_video_driver,int p_audio_driver) {
+void OS_Ultra::initialize(const VideoMode& p_desired,int p_video_driver,int p_audio_driver) {
 
 	args=OS::get_singleton()->get_cmdline_args();
 	current_videomode=p_desired;
 	main_loop=NULL;
 
-	
-	rasterizer = memnew( RasterizerDC );
+
+	rasterizer = memnew( RasterizerDummy );
 
 	visual_server = memnew( VisualServerRaster(rasterizer) );
 
@@ -120,7 +120,7 @@ void OS_KOS::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	spatial_sound_2d_server = memnew( SpatialSound2DServerSW );
 	spatial_sound_2d_server->init();
 
-	
+
 	ERR_FAIL_COND(!visual_server);
 
 	visual_server->init();
@@ -136,7 +136,7 @@ void OS_KOS::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 
 	printf("INIT\n");
 }
-void OS_KOS::finalize() {
+void OS_Ultra::finalize() {
 
 	if(main_loop)
 		memdelete(main_loop);
@@ -158,7 +158,7 @@ void OS_KOS::finalize() {
 	visual_server->finish();
 	memdelete(visual_server);
 	memdelete(rasterizer);
-	
+
 	physics_server->finish();
 	memdelete(physics_server);
 
@@ -170,26 +170,27 @@ void OS_KOS::finalize() {
 	args.clear();
 }
 
-void OS_KOS::set_mouse_show(bool p_show) {
+void OS_Ultra::set_mouse_show(bool p_show) {
 
 
 }
 
-OS::Date OS_KOS::get_date() const {
+OS::Date OS_Ultra::get_date() const {
 	Date ret;
 	return ret;
 }
 
-OS::Time OS_KOS::get_time() const {
+OS::Time OS_Ultra::get_time() const {
 	Time ret;
 	return ret;
 }
 
-void OS_KOS::delay_usec(uint32_t p_usec) const {
-	sleep(p_usec / 1000000); //help
+void OS_Ultra::delay_usec(uint32_t p_usec) const {
+	// usleep(p_usec);
+
 }
 
-uint64_t OS_KOS::get_ticks_usec() const{
+uint64_t OS_Ultra::get_ticks_usec() const{
 	struct timeval tv_now;
 	gettimeofday(&tv_now, NULL);
 
@@ -199,44 +200,44 @@ uint64_t OS_KOS::get_ticks_usec() const{
 	return longtime;
 }
 
-void OS_KOS::set_mouse_grab(bool p_grab) {
+void OS_Ultra::set_mouse_grab(bool p_grab) {
 
 	grab=p_grab;
 }
-bool OS_KOS::is_mouse_grab_enabled() const {
+bool OS_Ultra::is_mouse_grab_enabled() const {
 
 	return grab;
 }
 
-int OS_KOS::get_mouse_button_state() const {
+int OS_Ultra::get_mouse_button_state() const {
 
 	return 0;
 }
 
-Point2 OS_KOS::get_mouse_pos() const {
+Point2 OS_Ultra::get_mouse_pos() const {
 
 	return Point2();
 }
 
-void OS_KOS::set_window_title(const String& p_title) {
+void OS_Ultra::set_window_title(const String& p_title) {
 
 
 }
 
-void OS_KOS::set_video_mode(const VideoMode& p_video_mode,int p_screen) {
+void OS_Ultra::set_video_mode(const VideoMode& p_video_mode,int p_screen) {
 
 
 }
-OS::VideoMode OS_KOS::get_video_mode(int p_screen) const {
+OS::VideoMode OS_Ultra::get_video_mode(int p_screen) const {
 
 	return current_videomode;
 }
-void OS_KOS::get_fullscreen_mode_list(List<VideoMode> *p_list,int p_screen) const {
+void OS_Ultra::get_fullscreen_mode_list(List<VideoMode> *p_list,int p_screen) const {
 
 
 }
 
-void OS_KOS::vprint(const char* p_format, va_list p_list,bool p_stder)
+void OS_Ultra::vprint(const char* p_format, va_list p_list,bool p_stder)
 {
 	if (p_stder) {
 		vfprintf(stderr,p_format,p_list);
@@ -247,69 +248,69 @@ void OS_KOS::vprint(const char* p_format, va_list p_list,bool p_stder)
 	}
 }
 
-MainLoop *OS_KOS::get_main_loop() const {
+MainLoop *OS_Ultra::get_main_loop() const {
 
 	return main_loop;
 }
 
-void OS_KOS::delete_main_loop() {
+void OS_Ultra::delete_main_loop() {
 
 	if (main_loop)
 		memdelete(main_loop);
 	main_loop=NULL;
 }
 
-void OS_KOS::set_main_loop( MainLoop * p_main_loop ) {
+void OS_Ultra::set_main_loop( MainLoop * p_main_loop ) {
 
 	main_loop=p_main_loop;
 	input->set_main_loop(p_main_loop);
 }
 
-bool OS_KOS::can_draw() const {
+bool OS_Ultra::can_draw() const {
 
 	return true; //please draw
 };
 
 
-String OS_KOS::get_name() {
+String OS_Ultra::get_name() {
 
 	return "Dreamcast KOS";
 }
 
 
 
-void OS_KOS::move_window_to_foreground() {
+void OS_Ultra::move_window_to_foreground() {
 
 }
 
-void OS_KOS::set_cursor_shape(CursorShape p_shape) {
+void OS_Ultra::set_cursor_shape(CursorShape p_shape) {
 
 
 }
 
-void OS_KOS::run() {
+void OS_Ultra::run() {
 
 	force_quit = false;
-	
+
 	if (!main_loop)
 		return;
-		
+
 	main_loop->init();
-		
+
 	while (!force_quit) {
 		if (Main::iteration()==true)
 			break;
 	};
-	
+
 	main_loop->finish();
 }
 
-void OS_KOS::swap_buffers() {
+void OS_Ultra::swap_buffers() {
 	// printf("swap \n");
-	glKosSwapBuffers();
+	// glKosSwapBuffers();
 }
 
-OS_KOS::OS_KOS() {
+OS_Ultra::OS_Ultra() {
 
 	AudioDriverManagerSW::add_driver(&driver_dummy);
 	//adriver here
