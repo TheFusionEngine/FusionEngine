@@ -545,7 +545,7 @@ void RasterizerDC::texture_set_data(RID p_texture,const Image& p_image,VS::CubeM
 		img.resize(texture->alloc_width, texture->alloc_height, Image::INTERPOLATE_BILINEAR);
 	};
 
-	img.resize(64, 64, Image::INTERPOLATE_BILINEAR); //testing
+	img.resize(8, 8, Image::INTERPOLATE_BILINEAR); //testing
 	GLenum blit_target = /*(texture->target == GL_TEXTURE_CUBE_MAP)?_cube_side_enum[p_cube_side]:*/GL_TEXTURE_2D;
 
 	texture->data_size=img.get_data().size();
