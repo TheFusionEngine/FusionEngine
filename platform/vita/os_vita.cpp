@@ -480,11 +480,11 @@ void OS_VITA::init_camera() {
 	cameraInfo.size = sizeof(SceCameraInfo);
 
 	cameraInfo.format = SCE_CAMERA_FORMAT_ABGR;
-	cameraInfo.resolution = SCE_CAMERA_RESOLUTION_160_120;
+	cameraInfo.resolution = SCE_CAMERA_RESOLUTION_640_480;
 	cameraInfo.framerate = SCE_CAMERA_FRAMERATE_60_FPS;
 
-	int _cameraWidth = 160;
-	int _cameraHeight = 120;
+	int _cameraWidth = 640;
+	int _cameraHeight = 480;
 
     cameraInfo.pIBase = camera_tex;
 
@@ -519,14 +519,14 @@ void OS_VITA::process_camera() {
 	
 	
 	DVector<uint8_t> dstbuff;
-	dstbuff.resize( 160 * 120 * 4 );
+	dstbuff.resize( 640 * 480 * 4 );
 	
 	DVector<uint8_t>::Write dstbuff_write = dstbuff.write();
 
 	uint8_t* data = dstbuff_write.ptr();
 
-	memcpy(data, camera_tex, 160*120*4);
-	size_t total_pixels = 160 * 120;
+	memcpy(data, camera_tex, 640*480*4);
+	size_t total_pixels = 640 * 480;
 
     for (size_t i = 0; i < total_pixels; i++) {
         uint32_t abgr = data[i];
@@ -536,7 +536,7 @@ void OS_VITA::process_camera() {
     }
 
 	Image frame = Image();
-	frame.create(160, 120, 0, Image::FORMAT_RGBA, dstbuff);
+	frame.create(640, 480, 0, Image::FORMAT_RGBA, dstbuff);
 
 	if (camera_image->get_width() == 0) {
 		camera_image->create(frame.get_width(),frame.get_height(),frame.get_format(),Texture::FLAG_VIDEO_SURFACE|Texture::FLAG_FILTER);
