@@ -69,7 +69,7 @@ static MemoryPoolDynamicStatic *mempool_dynamic=NULL;
 	
 void OS_PSP::initialize_core() {
 
-	ThreadPosix::make_default();
+	ThreadDummy::make_default();
 	SemaphoreDummy::make_default();
 	MutexDummy::make_default();
 
