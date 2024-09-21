@@ -10,6 +10,8 @@ common_psp=[\
 	"psp_volatile.cpp",\
 	"psp_edram.cpp",\
 	"audio_driver_psp.cpp",\
+	#"me.c",\
+	#"MediaEngine.S",\
 ]
 
 prog = env.Program('#bin/godot_psp',['godot_psp.cpp']+common_psp)

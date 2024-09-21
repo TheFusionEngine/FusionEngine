@@ -30,6 +30,10 @@
 #include "globals.h"
 #include "os/os.h"
 
+#ifdef PSP_ENABLED
+#define NO_THREADS
+#endif
+
 struct _AudioDriverLock {
 
 	_AudioDriverLock() { if (AudioDriverSW::get_singleton()) AudioDriverSW::get_singleton()->lock(); }
