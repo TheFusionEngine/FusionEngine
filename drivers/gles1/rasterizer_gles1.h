@@ -31,7 +31,7 @@
 
 #include "servers/visual/rasterizer.h"
 
-#if defined(GLES1_ENABLED) || defined(__psp2__)
+#if defined(GLES1_ENABLED) || defined(__psp2__) || defined(__WII__)
 
 #include "image.h"
 #include "rid.h"
@@ -42,13 +42,16 @@
 #include "sort.h"
 // #include "tools/editor/scene_tree_editor.h"
 #include "platform_config.h"
+#ifndef __WII__
 #ifndef GLES1_INCLUDE_H
 #include <GLES/gl.h>
 
 #else
 #include GLES1_INCLUDE_H
 #endif
-
+#else
+#include <GL/gl.h>
+#endif
 
 #include "servers/visual/particle_system_sw.h"
 
@@ -68,7 +71,7 @@ class RasterizerGLES1 : public Rasterizer {
 		MAX_HW_LIGHTS = 4,
 #endif
 	};
-	#ifdef PSP
+	#if defined(PSP) || defined(__WII__)
 	void glActiveTexture(int a1) { };
 	void glClientActiveTexture(int a1) { };
 	#endif
@@ -570,22 +573,23 @@ class RasterizerGLES1 : public Rasterizer {
 		uint64_t last_pass;
 		uint16_t sort_key;
 
-		Vector<ShadowBuffer*> shadow_buffers;
+		ShadowBuffer* shadow_buffer;
 
-		void clear_shadow_buffers() {
+		void clear_shadow_buffers() {/*
 
-			for (int i=0;i<shadow_buffers.size();i++) {
+			for (int i=0;i<shadow_buffer.size();i++) {
 
-				ShadowBuffer *sb=shadow_buffers[i];
+				ShadowBuffer *sb=shadow_buffer[i];
 				ERR_CONTINUE( sb->owner != this );
 
 				sb->owner=NULL;
 			}
-
-			shadow_buffers.clear();
+			
+			shadow_buffers.clear();*/
+			shadow_buffer = NULL;
 		}
 
-		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; }
+		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; shadow_buffer=NULL; }
 
 	};
 	mutable RID_Owner<Light> light_owner;
