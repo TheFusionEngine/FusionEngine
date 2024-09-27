@@ -4834,7 +4834,7 @@ void RasterizerGLES1::end_scene() {
 
 	blend_mode=VS::MATERIAL_BLEND_MODE_MIX;
 	lighting=true;
-	// glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 #ifndef __WII__
 	if(current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor) {
