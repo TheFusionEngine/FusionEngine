@@ -1319,8 +1319,11 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 	Surface *surface = memnew( Surface );
 	ERR_FAIL_COND( !surface );
-
-	bool use_VBO=true; //glGenBuffersARB!=NULL; // TODO detect if it's in there
+#ifdef __WII__
+	bool use_VBO = false;
+#else
+	bool use_VBO = true; //glGenBuffersARB!=NULL; // TODO detect if it's in there
+#endif
 	if (format&VS::ARRAY_FORMAT_WEIGHTS || mesh->morph_target_count>0) {
 
 		use_VBO=false;
@@ -4831,7 +4834,7 @@ void RasterizerGLES1::end_scene() {
 
 	blend_mode=VS::MATERIAL_BLEND_MODE_MIX;
 	lighting=true;
-	glEnable(GL_LIGHTING);
+	// glEnable(GL_LIGHTING);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 #ifndef __WII__
 	if(current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor) {

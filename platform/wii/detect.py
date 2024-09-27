@@ -50,7 +50,7 @@ def configure(env):
 
     arch = ['-MMD','-MP','-mrvl', '-mcpu=750', '-meabi', '-mhard-float']
     # env.Append(CCFLAGS=['-g','-Wall', '-std=gnu++11'] + arch)
-    env.Append(CCFLAGS=[ '-DGEKKO','-DHW_RVL', '-D__WII__', '-DGAMECUBE_WII','-DNEED_LONG_INT', '-DLIBC_FILEIO_ENABLED','-DNO_SAFE_CAST', '-DPTHREAD_NO_RENAME', '-DNO_THREADS'] + arch)
+    env.Append(CCFLAGS=[ '-DGEKKO','-DHW_RVL', '-D__WII__', '-DGAMECUBE_WII','-DNEED_LONG_INT', '-DLIBC_FILEIO_ENABLED','-DNO_SAFE_CAST', '-DPTHREAD_NO_RENAME', '-DNO_THREADS', '-DBIG_ENDIAN_ENABLED'] + arch)
     
     env.Append(CPPPATH=[ogc_path+"/include", devkitpro_path +"/portlibs/wii/include/", devkitpro_path +"/portlibs/ppc/include/"])
     env.Append(LIBPATH=[ogc_path+"/lib/wii", devkitpro_path+"/portlibs/wii/lib/", devkitpro_path+"/portlibs/ppc/lib/"])

@@ -312,6 +312,24 @@ void OS_WII::set_cursor_shape(CursorShape p_shape) {
 void OS_WII::swap_buffers() {
 	SDL_GL_SwapBuffers();
 }
+
+void OS_WII::process_input() {
+	
+	while ( SDL_PollEvent( &event ) )
+		{
+		switch( event.type )
+		{
+
+		case SDL_QUIT:
+			/* handle quit requests */
+			force_quit = true;
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 void OS_WII::run() {
 
 	force_quit = false;
@@ -322,7 +340,8 @@ void OS_WII::run() {
 	main_loop->init();
 		
 	while (!force_quit) {
-	
+		process_input();
+		
 		if (Main::iteration()==true)
 			break;
 	};
