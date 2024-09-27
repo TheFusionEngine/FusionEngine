@@ -75,7 +75,7 @@ class OS_WII : public OS {
 	bool force_quit;
 
 	InputDefault *input;
-
+	SDL_Event event;
 
 
 protected:
@@ -131,6 +131,7 @@ public:
 	virtual void get_fullscreen_mode_list(List<VideoMode> *p_list,int p_screen=0) const;
 
 	virtual void move_window_to_foreground();
+	virtual void process_input();
 	
 	virtual void swap_buffers();
 	
