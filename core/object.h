@@ -237,7 +237,7 @@ protected:\
 virtual void _initialize_typev() {\
 	initialize_type();\
 }\
-_FORCE_INLINE_ bool (Object::* (_get_get() const))(const StringName& p_name,Variant&) const {\
+_FORCE_INLINE_ bool (Object::* _get_get() const)(const StringName& p_name,Variant&) const {\
 	return (bool (Object::*)(const StringName&,Variant&)const) &m_type::_get;\
 }\
 virtual bool _getv(const StringName& p_name, Variant& r_ret) const { \
@@ -247,7 +247,7 @@ virtual bool _getv(const StringName& p_name, Variant& r_ret) const { \
 	}\
 	return m_inherits::_getv(p_name,r_ret);\
 }\
-_FORCE_INLINE_ bool (Object::* (_get_set() const))(const StringName& p_name,const Variant &p_property) {\
+_FORCE_INLINE_ bool (Object::* _get_set() const)(const StringName& p_name,const Variant &p_property) {\
 	return (bool (Object::*)(const StringName&, const Variant&))&m_type::_set;\
 }\
 virtual bool _setv(const StringName& p_name,const Variant &p_property) { \
@@ -258,7 +258,7 @@ virtual bool _setv(const StringName& p_name,const Variant &p_property) { \
 	}\
 	return false;\
 }\
-_FORCE_INLINE_ void (Object::* (_get_get_property_list() const))(List<PropertyInfo> *p_list) const{\
+_FORCE_INLINE_ void (Object::* _get_get_property_list() const)(List<PropertyInfo> *p_list) const{\
 	return (void (Object::*)(List<PropertyInfo>*)const)&m_type::_get_property_list;\
 }\
 virtual void _get_property_listv(List<PropertyInfo> *p_list,bool p_reversed) const { \
@@ -278,7 +278,7 @@ virtual void _get_property_listv(List<PropertyInfo> *p_list,bool p_reversed) con
 	}\
 \
 }\
-_FORCE_INLINE_ void (Object::* (_get_notification() const))(int){\
+_FORCE_INLINE_ void (Object::* _get_notification() const)(int){\
 	return (void (Object::*)(int)) &m_type::_notification;\
 }\
 virtual void _notificationv(int p_notification,bool p_reversed) { \
@@ -414,16 +414,16 @@ protected:
 	_FORCE_INLINE_ static void (*_get_bind_methods())() {
 		return &Object::_bind_methods;
 	}
-	_FORCE_INLINE_ bool (Object::* (_get_get() const))(const StringName& p_name,Variant &r_ret) const {
+	_FORCE_INLINE_ bool (Object::* _get_get() const)(const StringName& p_name,Variant &r_ret) const {
 		return &Object::_get;
 	}
-	_FORCE_INLINE_ bool (Object::* (_get_set() const))(const StringName& p_name,const Variant &p_property) {
+	_FORCE_INLINE_ bool (Object::* _get_set() const)(const StringName& p_name,const Variant &p_property) {
 			return &Object::_set;
 	}
-	_FORCE_INLINE_ void (Object::* (_get_get_property_list() const))(List<PropertyInfo> *p_list) const{
+	_FORCE_INLINE_ void (Object::* _get_get_property_list() const)(List<PropertyInfo> *p_list) const{
 			return &Object::_get_property_list;
 	}	
-	_FORCE_INLINE_ void (Object::* (_get_notification() const))(int){
+	_FORCE_INLINE_ void (Object::* _get_notification() const)(int){
 			return &Object::_notification;
 	}	
 	static void get_valid_parents_static(List<String> *p_parents);
