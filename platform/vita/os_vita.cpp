@@ -31,7 +31,7 @@
 #endif
 
 #include "servers/visual/visual_server_raster.h"
-#include "servers/visual/rasterizer_dummy.h"
+// #include "servers/visual/rasterizer_dummy.h"
 #ifdef PSP2_GLES2
 
 extern "C" {
@@ -40,7 +40,7 @@ extern "C" {
 
 #include "drivers/gles2/rasterizer_gles2.h"
 #else
-#include "rasterizer_vita.h"
+#include "drivers/gles1/rasterizer_gles1.h"
 #endif
 #include "os_vita.h"
 #include <stdio.h>
@@ -506,6 +506,8 @@ void OS_VITA::init_camera() {
 		printf("sceCameraStart() 0x%X\n", ret);
 	else
 		camera_init = true;
+	
+	sceCameraSetNightmode(SCE_CAMERA_DEVICE_BACK, SCE_CAMERA_NIGHTMODE_LESS10);
 	
 	set_camera_image(camera_image);
 }
