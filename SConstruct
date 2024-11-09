@@ -303,6 +303,11 @@ if selected_platform in platform_list:
 
 	env.Append(LINKFLAGS = '-Wl,-Map=${TARGET.base}.map')
 
+	scons_cache_path = os.environ.get("SCONS_CACHE")
+	if scons_cache_path is not None:
+    		CacheDir(scons_cache_path)
+    		print("Scons cache enabled... (path: '" + scons_cache_path + "')")
+
 	Export('env')
 
 	#build subdirs, the build order is dependent on link order.
