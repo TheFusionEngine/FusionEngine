@@ -223,6 +223,7 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
+.cache/
 
 # KDE
 .directory
