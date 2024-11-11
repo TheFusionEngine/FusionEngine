@@ -125,7 +125,7 @@ class LightSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(LightSpatialGizmo,SpatialGizmoTool);
 
-	Light* light;
+	Light3D* light;
 
 public:
 
@@ -136,7 +136,7 @@ public:
 	virtual void commit_handle(int p_idx,const Variant& p_restore,bool p_cancel=false);
 
 	void redraw();
-	LightSpatialGizmo(Light* p_light=NULL);
+	LightSpatialGizmo(Light3D* p_light=NULL);
 
 };
 

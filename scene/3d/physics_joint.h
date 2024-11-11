@@ -33,9 +33,9 @@
 #include "scene/3d/physics_body.h"
 
 
-class Joint : public Node3D {
+class Joint3D : public Node3D {
 
-	OBJ_TYPE(Joint,Node3D);
+	OBJ_TYPE(Joint3D,Node3D);
 
 	RID ba,bb;
 
@@ -68,16 +68,16 @@ public:
 	int get_solver_priority() const;
 
 	RID get_joint() const { return joint; }
-	Joint();
+	Joint3D();
 
 };
 
 ///////////////////////////////////////////
 
 
-class PinJoint3D : public Joint {
+class PinJoint3D : public Joint3D {
 
-	OBJ_TYPE(PinJoint3D,Joint);
+	OBJ_TYPE(PinJoint3D,Joint3D);
 public:
 
 	enum Param {
@@ -102,9 +102,9 @@ public:
 VARIANT_ENUM_CAST(PinJoint3D::Param);
 
 
-class HingeJoint3D : public Joint {
+class HingeJoint3D : public Joint3D {
 
-	OBJ_TYPE(HingeJoint3D,Joint);
+	OBJ_TYPE(HingeJoint3D,Joint3D);
 public:
 
 	enum Param {
@@ -155,9 +155,9 @@ VARIANT_ENUM_CAST(HingeJoint3D::Param);
 VARIANT_ENUM_CAST(HingeJoint3D::Flag);
 
 
-class SliderJoint3D : public Joint {
+class SliderJoint3D : public Joint3D {
 
-	OBJ_TYPE(SliderJoint3D,Joint);
+	OBJ_TYPE(SliderJoint3D,Joint3D);
 public:
 
 	enum Param {
@@ -215,9 +215,9 @@ VARIANT_ENUM_CAST(SliderJoint3D::Param);
 
 
 
-class ConeTwistJoint : public Joint {
+class ConeTwistJoint : public Joint3D {
 
-	OBJ_TYPE(ConeTwistJoint,Joint);
+	OBJ_TYPE(ConeTwistJoint,Joint3D);
 public:
 
 	enum Param {
@@ -254,9 +254,9 @@ public:
 VARIANT_ENUM_CAST(ConeTwistJoint::Param);
 
 
-class Generic6DOFJoint : public Joint {
+class Generic6DOFJoint : public Joint3D {
 
-	OBJ_TYPE(Generic6DOFJoint,Joint);
+	OBJ_TYPE(Generic6DOFJoint,Joint3D);
 public:
 
 	enum Param {

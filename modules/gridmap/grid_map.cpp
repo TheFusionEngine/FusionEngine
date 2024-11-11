@@ -1503,11 +1503,11 @@ void GridMap::bake_geometry() {
 
 		for(int i=0;i<get_child_count();i++) {
 
-			if (get_child(i)->cast_to<Light>()) {
-				Light *l = get_child(i)->cast_to<Light>();
+			if (get_child(i)->cast_to<Light3D>()) {
+				Light3D *l = get_child(i)->cast_to<Light3D>();
 				BakeLight bl;
-				for(int i=0;i<Light::PARAM_MAX;i++) {
-					bl.param[i]=l->get_parameter(Light::Parameter(i));
+				for(int i=0;i<Light3D::PARAM_MAX;i++) {
+					bl.param[i]=l->get_parameter(Light3D::Parameter(i));
 				}
 				Transform t=l->get_global_transform();
 				bl.pos=t.origin;

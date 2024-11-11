@@ -358,7 +358,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<ImmediateGeometry3D>();
 	ObjectTypeDB::register_type<Sprite3D>();
 	ObjectTypeDB::register_type<AnimatedSprite3D>();
-	ObjectTypeDB::register_virtual_type<Light>();
+	ObjectTypeDB::register_virtual_type<Light3D>();
 	ObjectTypeDB::register_type<DirectionalLight3D>();
 	ObjectTypeDB::register_type<OmniLight3D>();
 	ObjectTypeDB::register_type<SpotLight3D>();
@@ -397,7 +397,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<BakedLightSampler>();
 	ObjectTypeDB::register_type<WorldEnvironment>();
 
-	ObjectTypeDB::register_virtual_type<Joint>();
+	ObjectTypeDB::register_virtual_type<Joint3D>();
 	ObjectTypeDB::register_type<PinJoint3D>();
 	ObjectTypeDB::register_type<HingeJoint3D>();
 	ObjectTypeDB::register_type<SliderJoint3D>();
@@ -457,7 +457,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_virtual_type<PhysicsBody2D>();
 	ObjectTypeDB::register_type<StaticBody2D>();
 	ObjectTypeDB::register_type<RigidBody2D>();
-	ObjectTypeDB::register_type<KinematicBody2D>();
+	ObjectTypeDB::register_type<CharacterBody2D>();
 	ObjectTypeDB::register_type<Area2D>();
 	ObjectTypeDB::register_type<CollisionShape2D>();
 	ObjectTypeDB::register_type<CollisionPolygon2D>();

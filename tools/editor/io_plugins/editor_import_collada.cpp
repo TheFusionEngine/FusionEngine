@@ -132,7 +132,7 @@ Error ColladaImport::_populate_skeleton(Skeleton3D *p_skeleton,Collada::Node *p_
 		//should map this bone to something for animation?
 	} else {
 		print_line("no rest: "+joint->sid);
-		WARN_PRINT("Joint has no rest..");
+		WARN_PRINT("Joint3D has no rest..");
 	}
 
 
@@ -232,37 +232,37 @@ Error ColladaImport::_create_scene(Collada::Node *p_node, Node3D *p_parent) {
 					if (!bool(GLOBAL_DEF("collada/use_ambient",false)))
 						return OK;
 					//well, it's an ambient light..
-					Light *l = memnew( DirectionalLight3D );
+					Light3D *l = memnew( DirectionalLight3D );
 //					l->set_color(Light::COLOR_AMBIENT,ld.color);
-					l->set_color(Light::COLOR_DIFFUSE,Color(0,0,0));
-					l->set_color(Light::COLOR_SPECULAR,Color(0,0,0));
+					l->set_color(Light3D::COLOR_DIFFUSE,Color(0,0,0));
+					l->set_color(Light3D::COLOR_SPECULAR,Color(0,0,0));
 					node = l;
 
 				} else if (ld.mode==Collada::LightData::MODE_DIRECTIONAL) {
 
 					//well, it's an ambient light..
-					Light *l = memnew( DirectionalLight3D );
+					Light3D *l = memnew( DirectionalLight3D );
 					//if (found_ambient) //use it here
 					//	l->set_color(Light::COLOR_AMBIENT,ambient);
 
-					l->set_color(Light::COLOR_DIFFUSE,ld.color);
-					l->set_color(Light::COLOR_SPECULAR,Color(1,1,1));
+					l->set_color(Light3D::COLOR_DIFFUSE,ld.color);
+					l->set_color(Light3D::COLOR_SPECULAR,Color(1,1,1));
 					node = l;
 				} else {
 
-					Light *l;
+					Light3D *l;
 
 					if (ld.mode==Collada::LightData::MODE_OMNI)
 						l=memnew( OmniLight3D );
 					else {
 						l=memnew( SpotLight3D );
-						l->set_parameter(Light::PARAM_SPOT_ANGLE,ld.spot_angle);
-						l->set_parameter(Light::PARAM_SPOT_ATTENUATION,ld.spot_exp);
+						l->set_parameter(Light3D::PARAM_SPOT_ANGLE,ld.spot_angle);
+						l->set_parameter(Light3D::PARAM_SPOT_ATTENUATION,ld.spot_exp);
 					}
 
 					//
-					l->set_color(Light::COLOR_DIFFUSE,ld.color);
-					l->set_color(Light::COLOR_SPECULAR,Color(1,1,1));
+					l->set_color(Light3D::COLOR_DIFFUSE,ld.color);
+					l->set_color(Light3D::COLOR_SPECULAR,Color(1,1,1));
 					l->approximate_opengl_attenuation(ld.constant_att,ld.linear_att,ld.quad_att);
 					node=l;
 				}

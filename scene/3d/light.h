@@ -37,9 +37,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class Light : public VisualInstance3D {
+class Light3D : public VisualInstance3D {
 
-	OBJ_TYPE( Light, VisualInstance3D );
+	OBJ_TYPE( Light3D, VisualInstance3D );
 	OBJ_CATEGORY("3D Light Nodes");
 
 public:
@@ -109,7 +109,7 @@ protected:
 	void _notification(int p_what);
 
 	
-	Light(VisualServer::LightType p_type);	
+	Light3D(VisualServer::LightType p_type);
 public:
 
 	VS::LightType get_light_type() const { return type; }
@@ -143,20 +143,20 @@ public:
 
 	void approximate_opengl_attenuation(float p_constant, float p_linear, float p_quadratic, float p_radius_treshold=0.5);
 
-	Light();
-	~Light();
+	Light3D();
+	~Light3D();
 
 };
 
-VARIANT_ENUM_CAST( Light::Parameter );
-VARIANT_ENUM_CAST( Light::LightColor );
-VARIANT_ENUM_CAST( Light::Operator );
-VARIANT_ENUM_CAST( Light::BakeMode);
+VARIANT_ENUM_CAST( Light3D::Parameter );
+VARIANT_ENUM_CAST( Light3D::LightColor );
+VARIANT_ENUM_CAST( Light3D::Operator );
+VARIANT_ENUM_CAST( Light3D::BakeMode);
 
 
-class DirectionalLight3D : public Light {
+class DirectionalLight3D : public Light3D {
 
-	OBJ_TYPE( DirectionalLight3D, Light );
+	OBJ_TYPE( DirectionalLight3D, Light3D );
 
 public:
 
@@ -194,27 +194,27 @@ VARIANT_ENUM_CAST( DirectionalLight3D::ShadowMode );
 VARIANT_ENUM_CAST( DirectionalLight3D::ShadowParam );
 
 
-class OmniLight3D : public Light {
+class OmniLight3D : public Light3D {
 
-	OBJ_TYPE( OmniLight3D, Light );
+	OBJ_TYPE( OmniLight3D, Light3D );
 protected:
 	static void _bind_methods();
 
 public:
 
 
-	OmniLight3D() : Light( VisualServer::LIGHT_OMNI ) { set_parameter(PARAM_SHADOW_Z_OFFSET,0.001);}
+	OmniLight3D() : Light3D( VisualServer::LIGHT_OMNI ) { set_parameter(PARAM_SHADOW_Z_OFFSET,0.001);}
 };
 
-class SpotLight3D : public Light {
+class SpotLight3D : public Light3D {
 
-	OBJ_TYPE( SpotLight3D, Light );
+	OBJ_TYPE( SpotLight3D, Light3D );
 protected:
 	static void _bind_methods();
 public:
 
 
-	SpotLight3D() : Light( VisualServer::LIGHT_SPOT ) {}
+	SpotLight3D() : Light3D( VisualServer::LIGHT_SPOT ) {}
 };
 
 

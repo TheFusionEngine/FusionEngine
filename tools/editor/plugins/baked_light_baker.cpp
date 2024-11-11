@@ -279,11 +279,11 @@ void BakedLightBaker::_parse_geometry(Node* p_node) {
 		if (mesh.is_valid()) {
 			_add_mesh(mesh,meshi->get_material_override(),base_inv * meshi->get_global_transform(),meshi->get_baked_light_texture_id());
 		}
-	} else if (p_node->cast_to<Light>()) {
+	} else if (p_node->cast_to<Light3D>()) {
 
-		Light *dl=p_node->cast_to<Light>();
+		Light3D *dl=p_node->cast_to<Light3D>();
 
-		if (dl->get_bake_mode()!=Light::BAKE_MODE_DISABLED) {
+		if (dl->get_bake_mode()!=Light3D::BAKE_MODE_DISABLED) {
 
 
 			LightData dirl;
@@ -305,9 +305,9 @@ void BakedLightBaker::_parse_geometry(Node* p_node) {
 			dirl.attenuation=dl->get_parameter(DirectionalLight3D::PARAM_ATTENUATION);
 			dirl.darkening=dl->get_parameter(DirectionalLight3D::PARAM_SHADOW_DARKENING);
 			dirl.radius=dl->get_parameter(DirectionalLight3D::PARAM_RADIUS);
-			dirl.bake_direct=dl->get_bake_mode()==Light::BAKE_MODE_FULL;
+			dirl.bake_direct=dl->get_bake_mode()==Light3D::BAKE_MODE_FULL;
 			dirl.rays_thrown=0;
-			dirl.bake_shadow=dl->get_bake_mode()==Light::BAKE_MODE_INDIRECT_AND_SHADOWS;
+			dirl.bake_shadow=dl->get_bake_mode()==Light3D::BAKE_MODE_INDIRECT_AND_SHADOWS;
 			lights.push_back(dirl);
 		}
 
@@ -1716,7 +1716,7 @@ void BakedLightBaker::bake(const Ref<BakedLight> &p_light, Node* p_node) {
 	cell_count=0;
 
 	base_inv=p_node->cast_to<Node3D>()->get_global_transform().affine_inverse();
-	EditorProgress ep("bake","Light Baker Setup:",5);
+	EditorProgress ep("bake","Light3D Baker Setup:",5);
 	baked_light=p_light;
 	lattice_size=baked_light->get_initial_lattice_subdiv();
 	octree_depth=baked_light->get_cell_subdivision();
@@ -1752,7 +1752,7 @@ void BakedLightBaker::bake(const Ref<BakedLight> &p_light, Node* p_node) {
 	_fix_lights();
 	ep.step("Making BVH",2);
 	_make_bvh();
-	ep.step("Creating Light Octree",3);
+	ep.step("Creating Light3D Octree",3);
 	_make_octree();
 	ep.step("Creating Octree Texture",4);
 	_make_octree_texture();

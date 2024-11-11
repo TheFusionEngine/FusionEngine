@@ -710,9 +710,9 @@ String LightSpatialGizmo::get_handle_name(int p_idx) const {
 Variant LightSpatialGizmo::get_handle_value(int p_idx) const{
 
 	if (p_idx==0)
-		return light->get_parameter(Light::PARAM_RADIUS);
+		return light->get_parameter(Light3D::PARAM_RADIUS);
 	if (p_idx==1)
-		return light->get_parameter(Light::PARAM_SPOT_ANGLE);
+		return light->get_parameter(Light3D::PARAM_SPOT_ANGLE);
 
 	return Variant();
 }
@@ -770,7 +770,7 @@ void LightSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p
 			if (d<0)
 				d=0;
 
-			light->set_parameter(Light::PARAM_RADIUS,d);
+			light->set_parameter(Light3D::PARAM_RADIUS,d);
 		} else if (light->cast_to<OmniLight3D>()) {
 
 			Plane cp=Plane( gt.origin, p_camera->get_transform().basis.get_axis(2));
@@ -779,15 +779,15 @@ void LightSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p
 			if (cp.intersects_ray(ray_from,ray_dir,&inters)) {
 
 				float r = inters.distance_to(gt.origin);
-				light->set_parameter(Light::PARAM_RADIUS,r);
+				light->set_parameter(Light3D::PARAM_RADIUS,r);
 			}
 
 		}
 
 	} else if (p_idx==1) {
 
-		float a = _find_closest_angle_to_half_pi_arc(s[0],s[1],light->get_parameter(Light::PARAM_RADIUS),gt);
-		light->set_parameter(Light::PARAM_SPOT_ANGLE,CLAMP(a,0.01,89.99));
+		float a = _find_closest_angle_to_half_pi_arc(s[0],s[1],light->get_parameter(Light3D::PARAM_RADIUS),gt);
+		light->set_parameter(Light3D::PARAM_SPOT_ANGLE,CLAMP(a,0.01,89.99));
 	}
 }
 
@@ -795,21 +795,21 @@ void LightSpatialGizmo::commit_handle(int p_idx,const Variant& p_restore,bool p_
 
 	if (p_cancel) {
 
-		light->set_parameter(p_idx==0?Light::PARAM_RADIUS:Light::PARAM_SPOT_ANGLE,p_restore);
+		light->set_parameter(p_idx==0?Light3D::PARAM_RADIUS:Light3D::PARAM_SPOT_ANGLE,p_restore);
 
 	} else if (p_idx==0) {
 
 		UndoRedo *ur = SpatialEditor::get_singleton()->get_undo_redo();
 		ur->create_action("Change Light Radius");
-		ur->add_do_method(light,"set_parameter",Light::PARAM_RADIUS,light->get_parameter(Light::PARAM_RADIUS));
-		ur->add_undo_method(light,"set_parameter",Light::PARAM_RADIUS,p_restore);
+		ur->add_do_method(light,"set_parameter",Light3D::PARAM_RADIUS,light->get_parameter(Light3D::PARAM_RADIUS));
+		ur->add_undo_method(light,"set_parameter",Light3D::PARAM_RADIUS,p_restore);
 		ur->commit_action();
 	} else if (p_idx==1) {
 
 		UndoRedo *ur = SpatialEditor::get_singleton()->get_undo_redo();
 		ur->create_action("Change Light Radius");
-		ur->add_do_method(light,"set_parameter",Light::PARAM_SPOT_ANGLE,light->get_parameter(Light::PARAM_SPOT_ANGLE));
-		ur->add_undo_method(light,"set_parameter",Light::PARAM_SPOT_ANGLE,p_restore);
+		ur->add_do_method(light,"set_parameter",Light3D::PARAM_SPOT_ANGLE,light->get_parameter(Light3D::PARAM_SPOT_ANGLE));
+		ur->add_undo_method(light,"set_parameter",Light3D::PARAM_SPOT_ANGLE,p_restore);
 		ur->commit_action();
 
 	}
@@ -872,7 +872,7 @@ void LightSpatialGizmo::redraw() {
 
 		OmniLight3D *on = light->cast_to<OmniLight3D>();
 
-		float r = on->get_parameter(Light::PARAM_RADIUS);
+		float r = on->get_parameter(Light3D::PARAM_RADIUS);
 
 		Vector<Vector3> points;
 
@@ -912,9 +912,9 @@ void LightSpatialGizmo::redraw() {
 		Vector<Vector3> points;
 		SpotLight3D *on = light->cast_to<SpotLight3D>();
 
-		float r = on->get_parameter(Light::PARAM_RADIUS);
-		float w = r*Math::sin(Math::deg2rad(on->get_parameter(Light::PARAM_SPOT_ANGLE)));
-		float d = r*Math::cos(Math::deg2rad(on->get_parameter(Light::PARAM_SPOT_ANGLE)));
+		float r = on->get_parameter(Light3D::PARAM_RADIUS);
+		float w = r*Math::sin(Math::deg2rad(on->get_parameter(Light3D::PARAM_SPOT_ANGLE)));
+		float d = r*Math::cos(Math::deg2rad(on->get_parameter(Light3D::PARAM_SPOT_ANGLE)));
 
 
 
@@ -988,7 +988,7 @@ void LightSpatialGizmo::redraw() {
 
 }
 
-LightSpatialGizmo::LightSpatialGizmo(Light* p_light){
+LightSpatialGizmo::LightSpatialGizmo(Light3D* p_light){
 
 	light=p_light;
 	set_spatial_node(p_light);
@@ -2868,9 +2868,9 @@ SpatialEditorGizmos *SpatialEditorGizmos::singleton=NULL;
 
 Ref<SpatialEditorGizmo> SpatialEditorGizmos::get_gizmo(Node3D *p_spatial) {
 
-	if (p_spatial->cast_to<Light>()) {
+	if (p_spatial->cast_to<Light3D>()) {
 
-		Ref<LightSpatialGizmo> lsg = memnew( LightSpatialGizmo(p_spatial->cast_to<Light>()) );
+		Ref<LightSpatialGizmo> lsg = memnew( LightSpatialGizmo(p_spatial->cast_to<Light3D>()) );
 		return lsg;
 	}
 

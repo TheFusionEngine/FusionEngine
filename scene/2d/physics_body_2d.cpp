@@ -784,7 +784,7 @@ RigidBody2D::~RigidBody2D() {
 //////////////////////////
 
 
-Variant KinematicBody2D::_get_collider() const {
+Variant CharacterBody2D::_get_collider() const {
 
 	ObjectID oid=get_collider();
 	if (oid==0)
@@ -802,7 +802,7 @@ Variant KinematicBody2D::_get_collider() const {
 }
 
 
-bool KinematicBody2D::_ignores_mode(Physics2DServer::BodyMode p_mode) const {
+bool CharacterBody2D::_ignores_mode(Physics2DServer::BodyMode p_mode) const {
 
 	switch(p_mode) {
 		case Physics2DServer::BODY_MODE_STATIC: return !collide_static;
@@ -814,7 +814,7 @@ bool KinematicBody2D::_ignores_mode(Physics2DServer::BodyMode p_mode) const {
 	return true;
 }
 
-Vector2 KinematicBody2D::move(const Vector2& p_motion) {
+Vector2 CharacterBody2D::move(const Vector2& p_motion) {
 
 	//give me back regular physics engine logic
 	//this is madness
@@ -962,12 +962,12 @@ Vector2 KinematicBody2D::move(const Vector2& p_motion) {
 
 }
 
-Vector2 KinematicBody2D::move_to(const Vector2& p_position) {
+Vector2 CharacterBody2D::move_to(const Vector2& p_position) {
 
 	return move(p_position-get_global_pos());
 }
 
-bool KinematicBody2D::can_move_to(const Vector2& p_position, bool p_discrete) {
+bool CharacterBody2D::can_move_to(const Vector2& p_position, bool p_discrete) {
 
 	ERR_FAIL_COND_V(!is_inside_tree(),false);
 	Physics2DDirectSpaceState *dss = Physics2DServer::get_singleton()->space_get_direct_state(get_world_2d()->get_space());
@@ -1007,131 +1007,131 @@ bool KinematicBody2D::can_move_to(const Vector2& p_position, bool p_discrete) {
 	return true;
 }
 
-bool KinematicBody2D::is_colliding() const {
+bool CharacterBody2D::is_colliding() const {
 
 	ERR_FAIL_COND_V(!is_inside_tree(),false);
 
 	return colliding;
 }
-Vector2 KinematicBody2D::get_collision_pos() const {
+Vector2 CharacterBody2D::get_collision_pos() const {
 
 	ERR_FAIL_COND_V(!colliding,Vector2());
 	return collision;
 
 }
-Vector2 KinematicBody2D::get_collision_normal() const {
+Vector2 CharacterBody2D::get_collision_normal() const {
 
 	ERR_FAIL_COND_V(!colliding,Vector2());
 	return normal;
 
 }
 
-Vector2 KinematicBody2D::get_collider_velocity() const {
+Vector2 CharacterBody2D::get_collider_velocity() const {
 
 	return collider_vel;
 }
 
-ObjectID KinematicBody2D::get_collider() const {
+ObjectID CharacterBody2D::get_collider() const {
 
 	ERR_FAIL_COND_V(!colliding,0);
 	return collider;
 }
 
 
-int KinematicBody2D::get_collider_shape() const {
+int CharacterBody2D::get_collider_shape() const {
 
 	ERR_FAIL_COND_V(!colliding,0);
 	return collider_shape;
 }
 
-Variant KinematicBody2D::get_collider_metadata() const {
+Variant CharacterBody2D::get_collider_metadata() const {
 
 	ERR_FAIL_COND_V(!colliding,0);
 	return collider_metadata;
 
 }
 
-void KinematicBody2D::set_collide_with_static_bodies(bool p_enable) {
+void CharacterBody2D::set_collide_with_static_bodies(bool p_enable) {
 
 	collide_static=p_enable;
 }
-bool KinematicBody2D::can_collide_with_static_bodies() const {
+bool CharacterBody2D::can_collide_with_static_bodies() const {
 
 	return collide_static;
 }
 
-void KinematicBody2D::set_collide_with_rigid_bodies(bool p_enable) {
+void CharacterBody2D::set_collide_with_rigid_bodies(bool p_enable) {
 
 	collide_rigid=p_enable;
 
 }
-bool KinematicBody2D::can_collide_with_rigid_bodies() const {
+bool CharacterBody2D::can_collide_with_rigid_bodies() const {
 
 
 	return collide_rigid;
 }
 
-void KinematicBody2D::set_collide_with_kinematic_bodies(bool p_enable) {
+void CharacterBody2D::set_collide_with_kinematic_bodies(bool p_enable) {
 
 	collide_kinematic=p_enable;
 
 }
-bool KinematicBody2D::can_collide_with_kinematic_bodies() const {
+bool CharacterBody2D::can_collide_with_kinematic_bodies() const {
 
 	return collide_kinematic;
 }
 
-void KinematicBody2D::set_collide_with_character_bodies(bool p_enable) {
+void CharacterBody2D::set_collide_with_character_bodies(bool p_enable) {
 
 	collide_character=p_enable;
 }
-bool KinematicBody2D::can_collide_with_character_bodies() const {
+bool CharacterBody2D::can_collide_with_character_bodies() const {
 
 	return collide_character;
 }
 
-void KinematicBody2D::set_collision_margin(float p_margin) {
+void CharacterBody2D::set_collision_margin(float p_margin) {
 
 	margin=p_margin;
 }
 
-float KinematicBody2D::get_collision_margin() const{
+float CharacterBody2D::get_collision_margin() const{
 
 	return margin;
 }
 
-void KinematicBody2D::_bind_methods() {
+void CharacterBody2D::_bind_methods() {
 
 
-	ObjectTypeDB::bind_method(_MD("move","rel_vec"),&KinematicBody2D::move);
-	ObjectTypeDB::bind_method(_MD("move_to","position"),&KinematicBody2D::move_to);
+	ObjectTypeDB::bind_method(_MD("move","rel_vec"),&CharacterBody2D::move);
+	ObjectTypeDB::bind_method(_MD("move_to","position"),&CharacterBody2D::move_to);
 
-	ObjectTypeDB::bind_method(_MD("can_move_to","position"),&KinematicBody2D::can_move_to);
+	ObjectTypeDB::bind_method(_MD("can_move_to","position"),&CharacterBody2D::can_move_to);
 
-	ObjectTypeDB::bind_method(_MD("is_colliding"),&KinematicBody2D::is_colliding);
+	ObjectTypeDB::bind_method(_MD("is_colliding"),&CharacterBody2D::is_colliding);
 
-	ObjectTypeDB::bind_method(_MD("get_collision_pos"),&KinematicBody2D::get_collision_pos);
-	ObjectTypeDB::bind_method(_MD("get_collision_normal"),&KinematicBody2D::get_collision_normal);
-	ObjectTypeDB::bind_method(_MD("get_collider_velocity"),&KinematicBody2D::get_collider_velocity);
-	ObjectTypeDB::bind_method(_MD("get_collider:Object"),&KinematicBody2D::_get_collider);
-	ObjectTypeDB::bind_method(_MD("get_collider_shape"),&KinematicBody2D::get_collider_shape);
-	ObjectTypeDB::bind_method(_MD("get_collider_metadata"),&KinematicBody2D::get_collider_metadata);
+	ObjectTypeDB::bind_method(_MD("get_collision_pos"),&CharacterBody2D::get_collision_pos);
+	ObjectTypeDB::bind_method(_MD("get_collision_normal"),&CharacterBody2D::get_collision_normal);
+	ObjectTypeDB::bind_method(_MD("get_collider_velocity"),&CharacterBody2D::get_collider_velocity);
+	ObjectTypeDB::bind_method(_MD("get_collider:Object"),&CharacterBody2D::_get_collider);
+	ObjectTypeDB::bind_method(_MD("get_collider_shape"),&CharacterBody2D::get_collider_shape);
+	ObjectTypeDB::bind_method(_MD("get_collider_metadata"),&CharacterBody2D::get_collider_metadata);
 
 
-	ObjectTypeDB::bind_method(_MD("set_collide_with_static_bodies","enable"),&KinematicBody2D::set_collide_with_static_bodies);
-	ObjectTypeDB::bind_method(_MD("can_collide_with_static_bodies"),&KinematicBody2D::can_collide_with_static_bodies);
+	ObjectTypeDB::bind_method(_MD("set_collide_with_static_bodies","enable"),&CharacterBody2D::set_collide_with_static_bodies);
+	ObjectTypeDB::bind_method(_MD("can_collide_with_static_bodies"),&CharacterBody2D::can_collide_with_static_bodies);
 
-	ObjectTypeDB::bind_method(_MD("set_collide_with_kinematic_bodies","enable"),&KinematicBody2D::set_collide_with_kinematic_bodies);
-	ObjectTypeDB::bind_method(_MD("can_collide_with_kinematic_bodies"),&KinematicBody2D::can_collide_with_kinematic_bodies);
+	ObjectTypeDB::bind_method(_MD("set_collide_with_kinematic_bodies","enable"),&CharacterBody2D::set_collide_with_kinematic_bodies);
+	ObjectTypeDB::bind_method(_MD("can_collide_with_kinematic_bodies"),&CharacterBody2D::can_collide_with_kinematic_bodies);
 
-	ObjectTypeDB::bind_method(_MD("set_collide_with_rigid_bodies","enable"),&KinematicBody2D::set_collide_with_rigid_bodies);
-	ObjectTypeDB::bind_method(_MD("can_collide_with_rigid_bodies"),&KinematicBody2D::can_collide_with_rigid_bodies);
+	ObjectTypeDB::bind_method(_MD("set_collide_with_rigid_bodies","enable"),&CharacterBody2D::set_collide_with_rigid_bodies);
+	ObjectTypeDB::bind_method(_MD("can_collide_with_rigid_bodies"),&CharacterBody2D::can_collide_with_rigid_bodies);
 
-	ObjectTypeDB::bind_method(_MD("set_collide_with_character_bodies","enable"),&KinematicBody2D::set_collide_with_character_bodies);
-	ObjectTypeDB::bind_method(_MD("can_collide_with_character_bodies"),&KinematicBody2D::can_collide_with_character_bodies);
+	ObjectTypeDB::bind_method(_MD("set_collide_with_character_bodies","enable"),&CharacterBody2D::set_collide_with_character_bodies);
+	ObjectTypeDB::bind_method(_MD("can_collide_with_character_bodies"),&CharacterBody2D::can_collide_with_character_bodies);
 
-	ObjectTypeDB::bind_method(_MD("set_collision_margin","pixels"),&KinematicBody2D::set_collision_margin);
-	ObjectTypeDB::bind_method(_MD("get_collision_margin","pixels"),&KinematicBody2D::get_collision_margin);
+	ObjectTypeDB::bind_method(_MD("set_collision_margin","pixels"),&CharacterBody2D::set_collision_margin);
+	ObjectTypeDB::bind_method(_MD("get_collision_margin","pixels"),&CharacterBody2D::get_collision_margin);
 
 	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"collide_with/static"),_SCS("set_collide_with_static_bodies"),_SCS("can_collide_with_static_bodies"));
 	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"collide_with/kinematic"),_SCS("set_collide_with_kinematic_bodies"),_SCS("can_collide_with_kinematic_bodies"));
@@ -1142,7 +1142,7 @@ void KinematicBody2D::_bind_methods() {
 
 }
 
-KinematicBody2D::KinematicBody2D() : PhysicsBody2D(Physics2DServer::BODY_MODE_KINEMATIC){
+CharacterBody2D::CharacterBody2D() : PhysicsBody2D(Physics2DServer::BODY_MODE_KINEMATIC){
 
 	collide_static=true;
 	collide_rigid=true;
@@ -1156,7 +1156,7 @@ KinematicBody2D::KinematicBody2D() : PhysicsBody2D(Physics2DServer::BODY_MODE_KI
 
 	margin=0.08;
 }
-KinematicBody2D::~KinematicBody2D()  {
+CharacterBody2D::~CharacterBody2D()  {
 
 
 }

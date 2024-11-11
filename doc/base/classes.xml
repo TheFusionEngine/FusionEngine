@@ -7014,7 +7014,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="ConeTwistJoint" inherits="Joint" category="Core">
+<class name="ConeTwistJoint" inherits="Joint3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10064,7 +10064,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Generic6DOFJoint" inherits="Joint" category="Core">
+<class name="Generic6DOFJoint" inherits="Joint3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -11364,7 +11364,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="HingeJoint3D" inherits="Joint" category="Core">
+<class name="HingeJoint3D" inherits="Joint3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12871,7 +12871,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Joint" inherits="Node3D" category="Core">
+<class name="Joint3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -13099,7 +13099,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="KinematicBody2D" inherits="PhysicsBody2D" category="Core">
+<class name="CharacterBody2D" inherits="PhysicsBody2D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -21471,7 +21471,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PinJoint3D" inherits="Joint" category="Core">
+<class name="PinJoint3D" inherits="Joint3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -21505,10 +21505,10 @@
 </class>
 <class name="PinJoint2D" inherits="Joint2D" category="Core">
 	<brief_description>
-	Pin Joint for 2D Shapes.
+	Pin Joint3D for 2D Shapes.
 	</brief_description>
 	<description>
-	Pin Joint for 2D Rigid Bodies. It pins 2 bodies (rigid or static) together, or a single body to a fixed position in space.
+	Pin Joint3D for 2D Rigid Bodies. It pins 2 bodies (rigid or static) together, or a single body to a fixed position in space.
 	</description>
 	<methods>
 	</methods>
@@ -26191,7 +26191,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SliderJoint3D" inherits="Joint" category="Core">
+<class name="SliderJoint3D" inherits="Joint3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>

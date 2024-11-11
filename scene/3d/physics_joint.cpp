@@ -30,7 +30,7 @@
 
 
 
-void Joint::_update_joint(bool p_only_free) {
+void Joint3D::_update_joint(bool p_only_free) {
 
 
 	if (joint.is_valid()) {
@@ -80,7 +80,7 @@ void Joint::_update_joint(bool p_only_free) {
 }
 
 
-void Joint::set_node_a(const NodePath& p_node_a) {
+void Joint3D::set_node_a(const NodePath& p_node_a) {
 
 
 	if (a==p_node_a)
@@ -90,12 +90,12 @@ void Joint::set_node_a(const NodePath& p_node_a) {
 	_update_joint();
 }
 
-NodePath Joint::get_node_a() const{
+NodePath Joint3D::get_node_a() const{
 
 	return a;
 }
 
-void Joint::set_node_b(const NodePath& p_node_b){
+void Joint3D::set_node_b(const NodePath& p_node_b){
 
 	if (b==p_node_b)
 		return;
@@ -103,14 +103,14 @@ void Joint::set_node_b(const NodePath& p_node_b){
 	_update_joint();
 
 }
-NodePath Joint::get_node_b() const{
+NodePath Joint3D::get_node_b() const{
 
 
 	return b;
 }
 
 
-void Joint::set_solver_priority(int p_priority) {
+void Joint3D::set_solver_priority(int p_priority) {
 
 	solver_priority=p_priority;
 	if (joint.is_valid())
@@ -118,13 +118,13 @@ void Joint::set_solver_priority(int p_priority) {
 
 }
 
-int Joint::get_solver_priority() const {
+int Joint3D::get_solver_priority() const {
 
 	return solver_priority;
 }
 
 
-void Joint::_notification(int p_what) {
+void Joint3D::_notification(int p_what) {
 
 	switch(p_what) {
 
@@ -144,17 +144,17 @@ void Joint::_notification(int p_what) {
 }
 
 
-void Joint::_bind_methods() {
+void Joint3D::_bind_methods() {
 
 
-	ObjectTypeDB::bind_method( _MD("set_node_a","node"), &Joint::set_node_a );
-	ObjectTypeDB::bind_method( _MD("get_node_a"), &Joint::get_node_a );
+	ObjectTypeDB::bind_method( _MD("set_node_a","node"), &Joint3D::set_node_a );
+	ObjectTypeDB::bind_method( _MD("get_node_a"), &Joint3D::get_node_a );
 
-	ObjectTypeDB::bind_method( _MD("set_node_b","node"), &Joint::set_node_b );
-	ObjectTypeDB::bind_method( _MD("get_node_b"), &Joint::get_node_b );
+	ObjectTypeDB::bind_method( _MD("set_node_b","node"), &Joint3D::set_node_b );
+	ObjectTypeDB::bind_method( _MD("get_node_b"), &Joint3D::get_node_b );
 
-	ObjectTypeDB::bind_method( _MD("set_solver_priority","priority"), &Joint::set_solver_priority );
-	ObjectTypeDB::bind_method( _MD("get_solver_priority"), &Joint::get_solver_priority );
+	ObjectTypeDB::bind_method( _MD("set_solver_priority","priority"), &Joint3D::set_solver_priority );
+	ObjectTypeDB::bind_method( _MD("get_solver_priority"), &Joint3D::get_solver_priority );
 
 	ADD_PROPERTY( PropertyInfo( Variant::NODE_PATH, "nodes/node_a"), _SCS("set_node_a"),_SCS("get_node_a") );
 	ADD_PROPERTY( PropertyInfo( Variant::NODE_PATH, "nodes/node_b"), _SCS("set_node_b"),_SCS("get_node_b") );
@@ -165,7 +165,7 @@ void Joint::_bind_methods() {
 
 
 
-Joint::Joint() {
+Joint3D::Joint3D() {
 
 	solver_priority=1;
 }
