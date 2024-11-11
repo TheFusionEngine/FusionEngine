@@ -1124,7 +1124,7 @@ enum {
     AKEYCODE_AT              = 77,
     AKEYCODE_NUM             = 78,
     AKEYCODE_HEADSETHOOK     = 79,
-    AKEYCODE_FOCUS           = 80,   // *Camera* focus
+    AKEYCODE_FOCUS           = 80,   // *Camera3D* focus
     AKEYCODE_PLUS            = 81,
     AKEYCODE_MENU            = 82,
     AKEYCODE_NOTIFICATION    = 83,
@@ -1275,7 +1275,7 @@ TODO: map these android key:
     AKEYCODE_AT              = 77,
     AKEYCODE_NUM             = 78,
     AKEYCODE_HEADSETHOOK     = 79,
-    AKEYCODE_FOCUS           = 80,   // *Camera* focus
+    AKEYCODE_FOCUS           = 80,   // *Camera3D* focus
     AKEYCODE_NOTIFICATION    = 83,
     AKEYCODE_SEARCH          = 84,
     AKEYCODE_PICTSYMBOLS     = 94,

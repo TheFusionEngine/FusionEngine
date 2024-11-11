@@ -35,9 +35,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class Skeleton : public Spatial {
+class Skeleton3D : public Node3D {
 
-	OBJ_TYPE( Skeleton, Spatial );
+	OBJ_TYPE( Skeleton3D, Node3D );
 
 	struct Bone {
 
@@ -139,8 +139,8 @@ public:
 
 	void localize_rests(); // used for loaders and tools
 	
-	Skeleton();	
-	~Skeleton();
+	Skeleton3D();	
+	~Skeleton3D();
 
 };
 

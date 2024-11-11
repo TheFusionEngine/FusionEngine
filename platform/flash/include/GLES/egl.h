@@ -1,5 +1,5 @@
 /*
- * Skeleton egl.h to provide compatibility for early GLES 1.0
+ * Skeleton3D egl.h to provide compatibility for early GLES 1.0
  * applications. Several early implementations included gl.h
  * in egl.h leading applications to include only egl.h
  *

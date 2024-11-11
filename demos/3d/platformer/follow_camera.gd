@@ -1,5 +1,5 @@
 
-extends Camera
+extends Camera3D
 
 # member variables here, example:
 # var a=2
@@ -78,7 +78,7 @@ func _ready():
 #find collision exceptions for ray
 	var node = self
 	while(node):
-		if (node extends RigidBody):
+		if (node extends RigidBody3D):
 			collision_exception.append(node.get_rid())
 			break
 		else:

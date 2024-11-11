@@ -7,8 +7,8 @@
 class BakedLightBaker;
 
 
-class BakedLightInstance : public VisualInstance {
-	OBJ_TYPE(BakedLightInstance,VisualInstance);
+class BakedLightInstance : public VisualInstance3D {
+	OBJ_TYPE(BakedLightInstance,VisualInstance3D);
 
 	Ref<BakedLight> baked_light;
 
@@ -32,8 +32,8 @@ public:
 
 
 
-class BakedLightSampler : public VisualInstance {
-	OBJ_TYPE(BakedLightSampler,VisualInstance);
+class BakedLightSampler : public VisualInstance3D {
+	OBJ_TYPE(BakedLightSampler,VisualInstance3D);
 
 
 public:

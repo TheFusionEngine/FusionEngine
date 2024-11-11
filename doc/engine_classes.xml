@@ -1882,7 +1882,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="BodyShape" inherits="Spatial" category="Core">
+<class name="BodyShape" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -1902,7 +1902,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="BoxShape" inherits="Shape" category="Core">
+<class name="BoxShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2130,7 +2130,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Camera" inherits="Spatial" category="Core">
+<class name="Camera3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2738,7 +2738,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="CapsuleShape" inherits="Shape" category="Core">
+<class name="CapsuleShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2988,7 +2988,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="ConcavePolygonShape" inherits="Shape" category="Core">
+<class name="ConcavePolygonShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -3568,7 +3568,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="ConvexPolygonShape" inherits="Shape" category="Core">
+<class name="ConvexPolygonShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -3680,7 +3680,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="DirectionalLight" inherits="Light" category="Core">
+<class name="DirectionalLight3D" inherits="Light" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -3690,7 +3690,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="DynamicBody" inherits="PhysicsBody" category="Core">
+<class name="DynamicBody" inherits="PhysicsBody3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -4352,7 +4352,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="FollowCamera" inherits="Camera" category="Core">
+<class name="FollowCamera" inherits="Camera3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -4800,7 +4800,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="GeometryInstance" inherits="VisualInstance" category="Core">
+<class name="GeometryInstance3D" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -4916,7 +4916,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="GridMap" inherits="Spatial" category="Core">
+<class name="GridMap" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -5360,7 +5360,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="InterpolatedCamera" inherits="Camera" category="Core">
+<class name="InterpolatedCamera" inherits="Camera3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -5532,7 +5532,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="Light" inherits="VisualInstance" category="Core">
+<class name="Light" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -6152,7 +6152,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="MeshInstance" inherits="GeometryInstance" category="Core">
+<class name="MeshInstance3D" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -6352,7 +6352,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="MultiMeshInstance" inherits="GeometryInstance" category="Core">
+<class name="MultiMeshInstance3D" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -6659,19 +6659,19 @@
 			</description>
 		</method>
 		<method name="set_world"  >
-			<argument index="0" name="world" type="World">
+			<argument index="0" name="world" type="World3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_world" qualifiers="const" >
-			<return type="World">
+			<return type="World3D">
 			</return>
 			<description>
 			</description>
 		</method>
 		<method name="get_current_world" qualifiers="const" >
-			<return type="World">
+			<return type="World3D">
 			</return>
 			<description>
 			</description>
@@ -7338,7 +7338,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="OmniLight" inherits="Light" category="Core">
+<class name="OmniLight3D" inherits="Light" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7710,7 +7710,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Particles" inherits="VisualInstance" category="Core">
+<class name="Particles3D" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9182,7 +9182,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsBody" inherits="Spatial" category="Core">
+<class name="PhysicsBody3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10390,7 +10390,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Portal" inherits="VisualInstance" category="Core">
+<class name="Portal" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10470,7 +10470,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Position3D" inherits="Spatial" category="Core">
+<class name="Position3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10480,7 +10480,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="ProximityGroup" inherits="Spatial" category="Core">
+<class name="ProximityGroup" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -11372,7 +11372,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="RoomInstance" inherits="VisualInstance" category="Core">
+<class name="RoomInstance" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12041,7 +12041,7 @@
 	</description>
 	<methods>
 		<method name="get_default_world" qualifiers="const" >
-			<return type="World">
+			<return type="World3D">
 			</return>
 			<description>
 			</description>
@@ -12498,7 +12498,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Skeleton" inherits="Spatial" category="Core">
+<class name="Skeleton3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12732,7 +12732,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Spatial" inherits="Node" category="Core">
+<class name="Node3D" inherits="Node" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12782,7 +12782,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="SpatialPlayer" inherits="Spatial" category="Core">
+<class name="SoundPlayer3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12824,7 +12824,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="SpatialSamplePlayer" inherits="SpatialPlayer" category="Core">
+<class name="SamplePlayer3D" inherits="SoundPlayer3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12926,7 +12926,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SpatialStreamPlayer" inherits="SpatialPlayer" category="Core">
+<class name="StreamPlayer3D" inherits="SoundPlayer3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12998,7 +12998,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SphereShape" inherits="Shape" category="Core">
+<class name="SphereShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -13066,7 +13066,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SpotLight" inherits="Light" category="Core">
+<class name="SpotLight3D" inherits="Light" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -13076,7 +13076,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Sprite" inherits="Node2D" category="Core">
+<class name="Sprite2D" inherits="Node2D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -13216,7 +13216,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="StaticBody" inherits="PhysicsBody" category="Core">
+<class name="StaticBody3D" inherits="PhysicsBody3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -14012,7 +14012,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="TestCube" inherits="GeometryInstance" category="Core">
+<class name="TestCube" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -16005,7 +16005,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="VisualInstance" inherits="Spatial" category="Core">
+<class name="VisualInstance3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -17905,7 +17905,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="World" inherits="Resource" category="Core">
+<class name="World3D" inherits="Resource" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>

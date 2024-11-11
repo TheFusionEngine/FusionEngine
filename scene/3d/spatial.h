@@ -53,9 +53,9 @@ public:
 };
 
 
-class Spatial : public Node {
+class Node3D : public Node {
 
-	OBJ_TYPE( Spatial, Node );
+	OBJ_TYPE( Node3D, Node );
 	OBJ_CATEGORY("3D");
 	
 	enum TransformDirty {
@@ -86,9 +86,9 @@ class Spatial : public Node {
 		bool inside_world;
 	
 		int children_lock;
-		Spatial *parent;
-		List<Spatial*> children;
-		List<Spatial*>::Element *C;
+		Node3D *parent;
+		List<Node3D*> children;
+		List<Node3D*>::Element *C;
 		
 		bool ignore_notification;
 
@@ -107,7 +107,7 @@ class Spatial : public Node {
 	void _update_gizmo();
 #endif
 	void _notify_dirty();
-	void _propagate_transform_changed(Spatial *p_origin);
+	void _propagate_transform_changed(Node3D *p_origin);
 
 	void _set_rotation_deg(const Vector3& p_deg);
 	Vector3 _get_rotation_deg() const;
@@ -136,10 +136,10 @@ public:
 		NOTIFICATION_VISIBILITY_CHANGED=43,
 	};
 
-	Spatial *get_parent_spatial() const;
+	Node3D *get_parent_spatial() const;
 
 
-	Ref<World> get_world() const;
+	Ref<World3D> get_world() const;
 
 	void set_translation(const Vector3& p_translation);
 	void set_rotation(const Vector3& p_euler);
@@ -177,8 +177,8 @@ public:
 	Transform get_import_transform() const;
 #endif
 
-	Spatial();	
-	~Spatial();
+	Node3D();	
+	~Node3D();
 
 };
 

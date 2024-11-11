@@ -133,22 +133,22 @@ void AnimationCache::_update_cache() {
 				String ps = property;
 
 
-				Spatial *sp = node->cast_to<Spatial>();
+				Node3D *sp = node->cast_to<Node3D>();
 
 				if (!sp) {
 
 					path_cache.push_back(Path());
-					ERR_EXPLAIN("Transform track not of type Spatial: "+np);
+					ERR_EXPLAIN("Transform track not of type Node3D: "+np);
 					ERR_CONTINUE(!sp);
 				}
 
 				if (ps!="") {
 
-					Skeleton *sk = node->cast_to<Skeleton>();
+					Skeleton3D *sk = node->cast_to<Skeleton3D>();
 					if (!sk) {
 
 						path_cache.push_back(Path());
-						ERR_EXPLAIN("Property defined in Transform track, but not a Skeleton!: "+np);
+						ERR_EXPLAIN("Property defined in Transform track, but not a Skeleton3D!: "+np);
 						ERR_CONTINUE(!sk);
 					}
 
@@ -156,7 +156,7 @@ void AnimationCache::_update_cache() {
 					if (idx==-1) {
 
 						path_cache.push_back(Path());
-						ERR_EXPLAIN("Property defined in Transform track, but not a Skeleton Bone!: "+np);
+						ERR_EXPLAIN("Property defined in Transform track, but not a Skeleton3D Bone!: "+np);
 						ERR_CONTINUE(idx==-1);
 
 					}

@@ -12,7 +12,7 @@ class EditorSceneImporterFBXConv : public EditorSceneImporter {
 
 	struct BoneInfo {
 
-		Skeleton *skeleton;
+		Skeleton3D *skeleton;
 		Transform rest;
 		int index;
 		bool has_anim_chan;
@@ -39,7 +39,7 @@ class EditorSceneImporterFBXConv : public EditorSceneImporter {
 		Array nodes;
 		Array animations;
 		Map<String,BoneInfo > bones;
-		Map<String,Skeleton*> skeletons;
+		Map<String,Skeleton3D*> skeletons;
 		Map<String,Ref<Mesh> > mesh_cache;
 		Map<String,SurfaceInfo> surface_cache;
 		Map<String,Ref<Material> > material_cache;
@@ -57,8 +57,8 @@ class EditorSceneImporterFBXConv : public EditorSceneImporter {
 	void _detect_bones_in_nodes(State& state,const Array& p_nodes);
 	void _detect_bones(State& state);
 
-	Error _parse_bones(State& state,const Array &p_bones,Skeleton* p_skeleton);
-	void _parse_skeletons(const String& p_name,State& state, const Array &p_nodes, Skeleton*p_skeleton=NULL, int p_parent=-1);
+	Error _parse_bones(State& state,const Array &p_bones,Skeleton3D* p_skeleton);
+	void _parse_skeletons(const String& p_name,State& state, const Array &p_nodes, Skeleton3D*p_skeleton=NULL, int p_parent=-1);
 
 	void _add_surface(State& state,Ref<Mesh>& m,const Dictionary &part);
 	Error _parse_nodes(State& state,const Array &p_nodes,Node* p_base);

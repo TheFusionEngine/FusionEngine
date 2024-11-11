@@ -210,7 +210,7 @@ void EditorSceneImporterFBXConv::_detect_bones_in_nodes(State& state,const Array
 
 }
 
-void EditorSceneImporterFBXConv::_parse_skeletons(const String& p_name,State& state, const Array &p_nodes, Skeleton *p_skeleton,int p_parent) {
+void EditorSceneImporterFBXConv::_parse_skeletons(const String& p_name,State& state, const Array &p_nodes, Skeleton3D *p_skeleton,int p_parent) {
 
 
 
@@ -220,14 +220,14 @@ void EditorSceneImporterFBXConv::_parse_skeletons(const String& p_name,State& st
 		Dictionary d = p_nodes[i];
 		int bone_idx=-1;
 		String id;
-		Skeleton* skeleton=p_skeleton;
+		Skeleton3D* skeleton=p_skeleton;
 		if (d.has("id")) {
 
 			id=_id(d["id"]);
 			if (state.bones.has(id)) {
 				//BONER
 				if (!skeleton) {
-					skeleton=memnew( Skeleton );
+					skeleton=memnew( Skeleton3D );
 					state.skeletons[id]=skeleton;
 				}
 				bone_idx = skeleton->get_bone_count();
@@ -282,7 +282,7 @@ void EditorSceneImporterFBXConv::_detect_bones(State& state) {
 	print_line("found skeletons: "+itos(state.skeletons.size()));
 }
 
-Error EditorSceneImporterFBXConv::_parse_bones(State& state,const Array &p_bones,Skeleton* p_skeleton) {
+Error EditorSceneImporterFBXConv::_parse_bones(State& state,const Array &p_bones,Skeleton3D* p_skeleton) {
 
 
 
@@ -359,7 +359,7 @@ Error EditorSceneImporterFBXConv::_parse_nodes(State& state,const Array &p_nodes
 	for(int i=0;i<p_nodes.size();i++) {
 
 		Dictionary n = p_nodes[i];
-		Spatial *node=NULL;
+		Node3D *node=NULL;
 		bool skip=false;
 
 		String id;
@@ -371,20 +371,20 @@ Error EditorSceneImporterFBXConv::_parse_nodes(State& state,const Array &p_nodes
 
 		if (state.skeletons.has(id)) {
 
-			Skeleton *skeleton = state.skeletons[id];
+			Skeleton3D *skeleton = state.skeletons[id];
 			node=skeleton;
 			skeleton->localize_rests();
 			print_line("IS SKELETON! ");
 		} else if (state.bones.has(id)) {
 			if (p_base)
-				node=p_base->cast_to<Spatial>();
+				node=p_base->cast_to<Node3D>();
 			if (!state.bones[id].has_anim_chan) {
 				print_line("no has anim "+id);
 			}
 			skip=true;
 		} else if (n.has("parts")) {
 			//is a mesh
-			MeshInstance *mesh = memnew( MeshInstance );
+			MeshInstance3D *mesh = memnew( MeshInstance3D );
 			node=mesh;
 
 			Array parts=n["parts"];
@@ -424,7 +424,7 @@ Error EditorSceneImporterFBXConv::_parse_nodes(State& state,const Array &p_nodes
 		if (!skip) {
 
 			if (!node) {
-				node = memnew( Spatial );
+				node = memnew( Node3D );
 			}
 
 			node->set_name(id);
@@ -858,7 +858,7 @@ Error EditorSceneImporterFBXConv::_parse_animations(State& state) {
 				if (!state.bones.has(bone))
 					continue;
 
-				Skeleton *sk = state.bones[bone].skeleton;
+				Skeleton3D *sk = state.bones[bone].skeleton;
 
 				if (!sk)
 					continue;
@@ -1008,7 +1008,7 @@ Error EditorSceneImporterFBXConv::_parse_json(State& state, const String &p_path
 		state.animations=dict["animations"];
 
 
-	state.scene = memnew( Spatial );
+	state.scene = memnew( Node3D );
 	_detect_bones(state);
 	_parse_surfaces(state);
 	_parse_materials(state);

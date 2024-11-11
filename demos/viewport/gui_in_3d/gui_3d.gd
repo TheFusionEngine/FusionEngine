@@ -1,5 +1,5 @@
 
-extends Spatial
+extends Node3D
 
 # member variables here, example:
 # var a=2

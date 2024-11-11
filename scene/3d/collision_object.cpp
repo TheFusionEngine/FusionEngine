@@ -29,7 +29,7 @@
 #include "collision_object.h"
 #include "servers/physics_server.h"
 #include "scene/scene_string_names.h"
-void CollisionObject::_update_shapes_from_children() {
+void CollisionObject3D::_update_shapes_from_children() {
 
 	shapes.resize(0);
 	for(int i=0;i<get_child_count();i++) {
@@ -41,7 +41,7 @@ void CollisionObject::_update_shapes_from_children() {
 //	_update_shapes();
 }
 
-void CollisionObject::_notification(int p_what) {
+void CollisionObject3D::_notification(int p_what) {
 
 	switch(p_what) {
 
@@ -81,7 +81,7 @@ void CollisionObject::_notification(int p_what) {
 	}
 }
 
-void CollisionObject::_update_shapes() {
+void CollisionObject3D::_update_shapes() {
 
 	if (!rid.is_valid())
 		return;
@@ -106,7 +106,7 @@ void CollisionObject::_update_shapes() {
 }
 
 
-bool CollisionObject::_set(const StringName& p_name, const Variant& p_value) {
+bool CollisionObject3D::_set(const StringName& p_name, const Variant& p_value) {
 	String name=p_name;
 
 	if (name=="shape_count") {
@@ -135,7 +135,7 @@ bool CollisionObject::_set(const StringName& p_name, const Variant& p_value) {
 
 }
 
-bool CollisionObject::_get(const StringName& p_name,Variant &r_ret) const {
+bool CollisionObject3D::_get(const StringName& p_name,Variant &r_ret) const {
 
 	String name=p_name;
 
@@ -158,7 +158,7 @@ bool CollisionObject::_get(const StringName& p_name,Variant &r_ret) const {
 	return true;
 }
 
-void CollisionObject::_get_property_list( List<PropertyInfo> *p_list) const {
+void CollisionObject3D::_get_property_list( List<PropertyInfo> *p_list) const {
 
 	p_list->push_back( PropertyInfo(Variant::INT,"shape_count",PROPERTY_HINT_RANGE,"0,256,1",PROPERTY_USAGE_NOEDITOR|PROPERTY_USAGE_NO_INSTANCE_STATE) );
 
@@ -172,7 +172,7 @@ void CollisionObject::_get_property_list( List<PropertyInfo> *p_list) const {
 }
 
 
-void CollisionObject::_input_event(Node *p_camera, const InputEvent& p_input_event, const Vector3& p_pos, const Vector3& p_normal, int p_shape) {
+void CollisionObject3D::_input_event(Node *p_camera, const InputEvent& p_input_event, const Vector3& p_pos, const Vector3& p_normal, int p_shape) {
 
 	if (get_script_instance()) {
 		get_script_instance()->call(SceneStringNames::get_singleton()->_input_event,p_camera,p_input_event,p_pos,p_normal,p_shape);
@@ -180,7 +180,7 @@ void CollisionObject::_input_event(Node *p_camera, const InputEvent& p_input_eve
 	emit_signal(SceneStringNames::get_singleton()->input_event,p_camera,p_input_event,p_pos,p_normal,p_shape);
 }
 
-void CollisionObject::_mouse_enter() {
+void CollisionObject3D::_mouse_enter() {
 
 	if (get_script_instance()) {
 		get_script_instance()->call(SceneStringNames::get_singleton()->_mouse_enter);
@@ -189,7 +189,7 @@ void CollisionObject::_mouse_enter() {
 }
 
 
-void CollisionObject::_mouse_exit() {
+void CollisionObject3D::_mouse_exit() {
 
 	if (get_script_instance()) {
 		get_script_instance()->call(SceneStringNames::get_singleton()->_mouse_exit);
@@ -198,7 +198,7 @@ void CollisionObject::_mouse_exit() {
 
 }
 
-void CollisionObject::_update_pickable() {
+void CollisionObject3D::_update_pickable() {
 	if (!is_inside_tree())
 		return;
 	bool pickable = ray_pickable && is_inside_tree() && is_visible();
@@ -208,37 +208,37 @@ void CollisionObject::_update_pickable() {
 		PhysicsServer::get_singleton()->body_set_ray_pickable(rid,pickable);
 }
 
-void CollisionObject::set_ray_pickable(bool p_ray_pickable) {
+void CollisionObject3D::set_ray_pickable(bool p_ray_pickable) {
 
 	ray_pickable=p_ray_pickable;
 	_update_pickable();
 
 }
 
-bool CollisionObject::is_ray_pickable() const {
+bool CollisionObject3D::is_ray_pickable() const {
 
 	return ray_pickable;
 }
 
 
-void CollisionObject::_bind_methods() {
+void CollisionObject3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("add_shape","shape:Shape","transform"),&CollisionObject::add_shape,DEFVAL(Transform()));
-	ObjectTypeDB::bind_method(_MD("get_shape_count"),&CollisionObject::get_shape_count);
-	ObjectTypeDB::bind_method(_MD("set_shape","shape_idx","shape:Shape"),&CollisionObject::set_shape);
-	ObjectTypeDB::bind_method(_MD("set_shape_transform","shape_idx","transform"),&CollisionObject::set_shape_transform);
-//    ObjectTypeDB::bind_method(_MD("set_shape_transform","shape_idx","transform"),&CollisionObject::set_shape_transform);
-	ObjectTypeDB::bind_method(_MD("set_shape_as_trigger","shape_idx","enable"),&CollisionObject::set_shape_as_trigger);
-	ObjectTypeDB::bind_method(_MD("is_shape_set_as_trigger","shape_idx"),&CollisionObject::is_shape_set_as_trigger);
-	ObjectTypeDB::bind_method(_MD("get_shape:Shape","shape_idx"),&CollisionObject::get_shape);
-	ObjectTypeDB::bind_method(_MD("get_shape_transform","shape_idx"),&CollisionObject::get_shape_transform);
-	ObjectTypeDB::bind_method(_MD("remove_shape","shape_idx"),&CollisionObject::remove_shape);
-	ObjectTypeDB::bind_method(_MD("clear_shapes"),&CollisionObject::clear_shapes);
-	ObjectTypeDB::bind_method(_MD("set_ray_pickable","ray_pickable"),&CollisionObject::set_ray_pickable);
-	ObjectTypeDB::bind_method(_MD("is_ray_pickable"),&CollisionObject::is_ray_pickable);
-	ObjectTypeDB::bind_method(_MD("set_capture_input_on_drag","enable"),&CollisionObject::set_capture_input_on_drag);
-	ObjectTypeDB::bind_method(_MD("get_capture_input_on_drag"),&CollisionObject::get_capture_input_on_drag);
-	ObjectTypeDB::bind_method(_MD("get_rid"),&CollisionObject::get_rid);
+	ObjectTypeDB::bind_method(_MD("add_shape","shape:Shape","transform"),&CollisionObject3D::add_shape,DEFVAL(Transform()));
+	ObjectTypeDB::bind_method(_MD("get_shape_count"),&CollisionObject3D::get_shape_count);
+	ObjectTypeDB::bind_method(_MD("set_shape","shape_idx","shape:Shape"),&CollisionObject3D::set_shape);
+	ObjectTypeDB::bind_method(_MD("set_shape_transform","shape_idx","transform"),&CollisionObject3D::set_shape_transform);
+//    ObjectTypeDB::bind_method(_MD("set_shape_transform","shape_idx","transform"),&CollisionObject3D::set_shape_transform);
+	ObjectTypeDB::bind_method(_MD("set_shape_as_trigger","shape_idx","enable"),&CollisionObject3D::set_shape_as_trigger);
+	ObjectTypeDB::bind_method(_MD("is_shape_set_as_trigger","shape_idx"),&CollisionObject3D::is_shape_set_as_trigger);
+	ObjectTypeDB::bind_method(_MD("get_shape:Shape","shape_idx"),&CollisionObject3D::get_shape);
+	ObjectTypeDB::bind_method(_MD("get_shape_transform","shape_idx"),&CollisionObject3D::get_shape_transform);
+	ObjectTypeDB::bind_method(_MD("remove_shape","shape_idx"),&CollisionObject3D::remove_shape);
+	ObjectTypeDB::bind_method(_MD("clear_shapes"),&CollisionObject3D::clear_shapes);
+	ObjectTypeDB::bind_method(_MD("set_ray_pickable","ray_pickable"),&CollisionObject3D::set_ray_pickable);
+	ObjectTypeDB::bind_method(_MD("is_ray_pickable"),&CollisionObject3D::is_ray_pickable);
+	ObjectTypeDB::bind_method(_MD("set_capture_input_on_drag","enable"),&CollisionObject3D::set_capture_input_on_drag);
+	ObjectTypeDB::bind_method(_MD("get_capture_input_on_drag"),&CollisionObject3D::get_capture_input_on_drag);
+	ObjectTypeDB::bind_method(_MD("get_rid"),&CollisionObject3D::get_rid);
 	BIND_VMETHOD( MethodInfo("_input_event",PropertyInfo(Variant::OBJECT,"camera"),PropertyInfo(Variant::INPUT_EVENT,"event"),PropertyInfo(Variant::VECTOR3,"click_pos"),PropertyInfo(Variant::VECTOR3,"click_normal"),PropertyInfo(Variant::INT,"shape_idx")));
 
 	ADD_SIGNAL( MethodInfo("input_event",PropertyInfo(Variant::OBJECT,"camera"),PropertyInfo(Variant::INPUT_EVENT,"event"),PropertyInfo(Variant::VECTOR3,"click_pos"),PropertyInfo(Variant::VECTOR3,"click_normal"),PropertyInfo(Variant::INT,"shape_idx")));
@@ -250,7 +250,7 @@ void CollisionObject::_bind_methods() {
 }
 
 
-void CollisionObject::add_shape(const Ref<Shape>& p_shape, const Transform& p_transform) {
+void CollisionObject3D::add_shape(const Ref<Shape>& p_shape, const Transform& p_transform) {
 
 	ShapeData sdata;
 	sdata.shape=p_shape;
@@ -259,19 +259,19 @@ void CollisionObject::add_shape(const Ref<Shape>& p_shape, const Transform& p_tr
 	_update_shapes();
 
 }
-int CollisionObject::get_shape_count() const {
+int CollisionObject3D::get_shape_count() const {
 
 	return shapes.size();
 
 }
-void CollisionObject::set_shape(int p_shape_idx, const Ref<Shape>& p_shape) {
+void CollisionObject3D::set_shape(int p_shape_idx, const Ref<Shape>& p_shape) {
 
 	ERR_FAIL_INDEX(p_shape_idx,shapes.size());
 	shapes[p_shape_idx].shape=p_shape;
 	_update_shapes();
 }
 
-void CollisionObject::set_shape_transform(int p_shape_idx, const Transform& p_transform) {
+void CollisionObject3D::set_shape_transform(int p_shape_idx, const Transform& p_transform) {
 
 	ERR_FAIL_INDEX(p_shape_idx,shapes.size());
 	shapes[p_shape_idx].xform=p_transform;
@@ -279,19 +279,19 @@ void CollisionObject::set_shape_transform(int p_shape_idx, const Transform& p_tr
 	_update_shapes();
 }
 
-Ref<Shape> CollisionObject::get_shape(int p_shape_idx) const {
+Ref<Shape> CollisionObject3D::get_shape(int p_shape_idx) const {
 
 	ERR_FAIL_INDEX_V(p_shape_idx,shapes.size(),Ref<Shape>());
 	return shapes[p_shape_idx].shape;
 
 }
-Transform CollisionObject::get_shape_transform(int p_shape_idx) const {
+Transform CollisionObject3D::get_shape_transform(int p_shape_idx) const {
 
 	ERR_FAIL_INDEX_V(p_shape_idx,shapes.size(),Transform());
 	return shapes[p_shape_idx].xform;
 
 }
-void CollisionObject::remove_shape(int p_shape_idx) {
+void CollisionObject3D::remove_shape(int p_shape_idx) {
 
 	ERR_FAIL_INDEX(p_shape_idx,shapes.size());
 	shapes.remove(p_shape_idx);
@@ -299,14 +299,14 @@ void CollisionObject::remove_shape(int p_shape_idx) {
 	_update_shapes();
 }
 
-void CollisionObject::clear_shapes() {
+void CollisionObject3D::clear_shapes() {
 
 	shapes.clear();
 
 	_update_shapes();
 }
 
-void CollisionObject::set_shape_as_trigger(int p_shape_idx, bool p_trigger) {
+void CollisionObject3D::set_shape_as_trigger(int p_shape_idx, bool p_trigger) {
 
     ERR_FAIL_INDEX(p_shape_idx,shapes.size());
     shapes[p_shape_idx].trigger=p_trigger;
@@ -317,13 +317,13 @@ void CollisionObject::set_shape_as_trigger(int p_shape_idx, bool p_trigger) {
     }
 }
 
-bool CollisionObject::is_shape_set_as_trigger(int p_shape_idx) const {
+bool CollisionObject3D::is_shape_set_as_trigger(int p_shape_idx) const {
 
     ERR_FAIL_INDEX_V(p_shape_idx,shapes.size(),false);
     return shapes[p_shape_idx].trigger;
 }
 
-CollisionObject::CollisionObject(RID p_rid, bool p_area) {
+CollisionObject3D::CollisionObject3D(RID p_rid, bool p_area) {
 
 	rid=p_rid;
 	area=p_area;
@@ -338,19 +338,19 @@ CollisionObject::CollisionObject(RID p_rid, bool p_area) {
 
 }
 
-void CollisionObject::set_capture_input_on_drag(bool p_capture) {
+void CollisionObject3D::set_capture_input_on_drag(bool p_capture) {
 
 	capture_input_on_drag=p_capture;
 
 }
 
-bool CollisionObject::get_capture_input_on_drag() const {
+bool CollisionObject3D::get_capture_input_on_drag() const {
 
 	return capture_input_on_drag;
 }
 
 
-CollisionObject::CollisionObject() {
+CollisionObject3D::CollisionObject3D() {
 
 
 	capture_input_on_drag=false;
@@ -361,7 +361,7 @@ CollisionObject::CollisionObject() {
 	//set_transform_notify(true);
 }
 
-CollisionObject::~CollisionObject() {
+CollisionObject3D::~CollisionObject3D() {
 
 	PhysicsServer::get_singleton()->free(rid);
 }

@@ -54,7 +54,7 @@
 			<string> "names" </string>
 			<string_array  len="92">
 				<string> "world" </string>
-				<string> "Spatial" </string>
+				<string> "Node3D" </string>
 				<string> "_import_path" </string>
 				<string> "_import_transform" </string>
 				<string> "__meta__" </string>
@@ -69,7 +69,7 @@
 				<string> "cell/center_z" </string>
 				<string> "cell/scale" </string>
 				<string> "data" </string>
-				<string> "DirectionalLight" </string>
+				<string> "DirectionalLight3D" </string>
 				<string> "transform/local" </string>
 				<string> "layers" </string>
 				<string> "params/enabled" </string>
@@ -94,7 +94,7 @@
 				<string> "coins" </string>
 				<string> "Node" </string>
 				<string> "coin" </string>
-				<string> "Area" </string>
+				<string> "Area3D" </string>
 				<string> "coin 2" </string>
 				<string> "coin 3" </string>
 				<string> "coin 3 2" </string>
@@ -140,7 +140,7 @@
 				<string> "coin 4 5 4 4" </string>
 				<string> "enemies" </string>
 				<string> "enemy" </string>
-				<string> "RigidBody" </string>
+				<string> "RigidBody3D" </string>
 				<string> "enemy 2" </string>
 				<string> "enemy 3" </string>
 				<string> "enemy 4" </string>

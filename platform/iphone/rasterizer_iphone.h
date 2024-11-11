@@ -250,13 +250,13 @@ class RasterizerIPhone : public Rasterizer {
 	mutable RID_Owner<Poly> poly_owner;
 
 
-	struct Skeleton {
+	struct Skeleton3D {
 
 		Vector<Transform> bones;
 
 	};
 
-	mutable RID_Owner<Skeleton> skeleton_owner;
+	mutable RID_Owner<Skeleton3D> skeleton_owner;
 
 
 	struct Light {
@@ -328,7 +328,7 @@ class RasterizerIPhone : public Rasterizer {
 		struct Element {
 
 			float depth;
-			const Skeleton *skeleton;
+			const Skeleton3D *skeleton;
 			Transform transform;
 			LightInstance* lights[MAX_LIGHTS];
 			int light_count;
@@ -445,7 +445,7 @@ class RasterizerIPhone : public Rasterizer {
 			}
 		};
 
-		_FORCE_INLINE_ void add_element( const Geometry *p_geometry, const Material* p_material,const Transform& p_transform, LightInstance **p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides, const Skeleton *p_skeleton, float p_depth, GeometryOwner *p_owner=NULL) {
+		_FORCE_INLINE_ void add_element( const Geometry *p_geometry, const Material* p_material,const Transform& p_transform, LightInstance **p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides, const Skeleton3D *p_skeleton, float p_depth, GeometryOwner *p_owner=NULL) {
 
 
 			ERR_FAIL_COND( element_count >= MAX_ELEMENTS );
@@ -547,7 +547,7 @@ class RasterizerIPhone : public Rasterizer {
 
 	Plane camera_plane;
 
-	void _add_geometry( const Geometry* p_geometry, const Transform& p_world, uint32_t p_vertex_format, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides,const Skeleton* p_skeleton,GeometryOwner *p_owner);
+	void _add_geometry( const Geometry* p_geometry, const Transform& p_world, uint32_t p_vertex_format, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides,const Skeleton3D* p_skeleton,GeometryOwner *p_owner);
 	void _render_list_forward(RenderList *p_render_list);
 
 	void _setup_light(LightInstance* p_instance, int p_idx);
@@ -555,7 +555,7 @@ class RasterizerIPhone : public Rasterizer {
 	void _setup_material(const Geometry *p_geometry,const Material *p_material);
 
 	void _setup_geometry(const Geometry *p_geometry, const Material* p_material);
-	void _render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton);
+	void _render(const Geometry *p_geometry,const Material *p_material, const Skeleton3D* p_skeleton);
 
 
 	/*********/

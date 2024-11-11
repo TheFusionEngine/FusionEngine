@@ -58,7 +58,7 @@
 				<string> "Node" </string>
 				<string> "__meta__" </string>
 				<string> "floor" </string>
-				<string> "Sprite" </string>
+				<string> "Sprite2D" </string>
 				<string> "visibility/visible" </string>
 				<string> "visibility/opacity" </string>
 				<string> "visibility/self_opacity" </string>

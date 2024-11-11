@@ -2748,7 +2748,7 @@ void EditorNode::_property_keyed(const String& p_keyed,const Variant& p_value) {
 
 void EditorNode::_transform_keyed(Object *sp,const String& p_sub,const Transform& p_key) {
 
-	Spatial *s=sp->cast_to<Spatial>();
+	Node3D *s=sp->cast_to<Node3D>();
 	if (!s)
 		return;
 	animation_editor->insert_transform_key(s,p_sub,p_key);
@@ -3236,7 +3236,7 @@ EditorNode::EditorNode() {
 
 	GLOBAL_DEF("editor/main_run_args","$exec -path $path -scene $scene $main_scene");
 
-	ObjectTypeDB::set_type_enabled("CollisionShape",true);
+	ObjectTypeDB::set_type_enabled("CollisionShape3D",true);
 	ObjectTypeDB::set_type_enabled("CollisionShape2D",true);
 	ObjectTypeDB::set_type_enabled("CollisionPolygon2D",true);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeConvexPolygon",true);

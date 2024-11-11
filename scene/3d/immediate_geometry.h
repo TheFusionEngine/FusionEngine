@@ -4,9 +4,9 @@
 #include "scene/3d/visual_instance.h"
 #include "scene/resources/mesh.h"
 
-class ImmediateGeometry : public GeometryInstance {
+class ImmediateGeometry3D : public GeometryInstance3D {
 
-	OBJ_TYPE(ImmediateGeometry,GeometryInstance);
+	OBJ_TYPE(ImmediateGeometry3D,GeometryInstance3D);
 
 
 	RID im;
@@ -39,8 +39,8 @@ public:
 	virtual AABB get_aabb() const;
 	virtual DVector<Face3> get_faces(uint32_t p_usage_flags) const;
 
-	ImmediateGeometry();
-	~ImmediateGeometry();
+	ImmediateGeometry3D();
+	~ImmediateGeometry3D();
 };
 
 #endif // IMMEDIATE_GEOMETRY_H

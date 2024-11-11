@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resource_file type="PackedScene"  version="0.99" version_name="Godot Engine v0.99.3735-pre-beta">
-	<resource type="CapsuleShape" path="local://1">
+	<resource type="CapsuleShape3D" path="local://1">
 		<real name="radius"> 0.4 </real>
 		<real name="height"> 0.4 </real>
 
@@ -1062,7 +1062,7 @@
 			<string> "names" </string>
 			<string_array  len="249">
 				<string> "player" </string>
-				<string> "RigidBody" </string>
+				<string> "RigidBody3D" </string>
 				<string> "shape_count" </string>
 				<string> "shapes/0/shape" </string>
 				<string> "shapes/0/transform" </string>
@@ -1085,15 +1085,15 @@
 				<string> "script/script" </string>
 				<string> "__meta__" </string>
 				<string> "collision_capsule" </string>
-				<string> "CollisionShape" </string>
+				<string> "CollisionShape3D" </string>
 				<string> "transform/local" </string>
 				<string> "shape" </string>
 				<string> "trigger" </string>
 				<string> "collision_ray" </string>
 				<string> "target" </string>
-				<string> "Spatial" </string>
+				<string> "Node3D" </string>
 				<string> "camera" </string>
-				<string> "Camera" </string>
+				<string> "Camera3D" </string>
 				<string> "projection" </string>
 				<string> "fov" </string>
 				<string> "near" </string>
@@ -1245,7 +1245,7 @@
 				<string> "bones/26/enabled" </string>
 				<string> "bones/26/bound_childs" </string>
 				<string> "robot" </string>
-				<string> "MeshInstance" </string>
+				<string> "MeshInstance3D" </string>
 				<string> "layers" </string>
 				<string> "geometry/visible" </string>
 				<string> "geometry/material_override" </string>
@@ -1261,7 +1261,7 @@
 				<string> "bullet" </string>
 				<string> "Position3D" </string>
 				<string> "sfx" </string>
-				<string> "SpatialSamplePlayer" </string>
+				<string> "SamplePlayer3D" </string>
 				<string> "params/volume_db" </string>
 				<string> "params/pitch_scale" </string>
 				<string> "params/attenuation/min_distance" </string>
@@ -1320,7 +1320,7 @@
 			<string> "variants" </string>
 			<array  len="121" shared="false">
 				<int> 2 </int>
-				<resource  resource_type="CapsuleShape" path="local://1">  </resource>
+				<resource  resource_type="CapsuleShape3D" path="local://1">  </resource>
 				<transform> 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.954765, 0 </transform>
 				<bool> False </bool>
 				<resource  resource_type="RayShape" path="local://2">  </resource>

@@ -2554,7 +2554,7 @@ void AnimationKeyEditor::_query_insert(const InsertData& p_id) {
 
 }
 
-void AnimationKeyEditor::insert_transform_key(Spatial *p_node,const String& p_sub,const Transform& p_xform) {
+void AnimationKeyEditor::insert_transform_key(Node3D *p_node,const String& p_sub,const Transform& p_xform) {
 
 	if (!keying)
 		return;

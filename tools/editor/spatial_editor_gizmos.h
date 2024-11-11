@@ -50,7 +50,7 @@
 #include "scene/3d/physics_joint.h"
 
 
-class Camera;
+class Camera3D;
 
 class SpatialGizmoTool  : public SpatialEditorGizmo {
 
@@ -73,7 +73,7 @@ class SpatialGizmoTool  : public SpatialEditorGizmo {
 			extra_margin=false;
 		}
 
-		void create_instance(Spatial *p_base);
+		void create_instance(Node3D *p_base);
 
 	};
 
@@ -90,9 +90,9 @@ class SpatialGizmoTool  : public SpatialEditorGizmo {
 	bool billboard_handle;
 
 	bool valid;
-	Spatial *base;
+	Node3D *base;
 	Vector<Instance> instances;
-	Spatial *spatial_node;
+	Node3D *spatial_node;
 protected:
 	void add_lines(const Vector<Vector3> &p_lines,const Ref<Material>& p_material,bool p_billboard=false);
 	void add_mesh(const Ref<Mesh>& p_mesh,bool p_billboard=false,const RID& p_skeleton=RID());
@@ -101,13 +101,13 @@ protected:
 	void add_unscaled_billboard(const Ref<Material>& p_material,float p_scale=1);
 	void add_handles(const Vector<Vector3> &p_handles,bool p_billboard=false,bool p_secondary=false);
 
-	void set_spatial_node(Spatial *p_node);
+	void set_spatial_node(Node3D *p_node);
 
 public:
 
 	virtual Vector3 get_handle_pos(int p_idx) const;
-	virtual bool intersect_frustum(const Camera *p_camera,const Vector<Plane> &p_frustum);
-	virtual bool intersect_ray(const Camera *p_camera,const Point2& p_point,  Vector3& r_pos, Vector3& r_normal,int *r_gizmo_handle=NULL,bool p_sec_first=false);
+	virtual bool intersect_frustum(const Camera3D *p_camera,const Vector<Plane> &p_frustum);
+	virtual bool intersect_ray(const Camera3D *p_camera,const Point2& p_point,  Vector3& r_pos, Vector3& r_normal,int *r_gizmo_handle=NULL,bool p_sec_first=false);
 
 	void clear();
 	void create();
@@ -132,7 +132,7 @@ public:
 
 	virtual String get_handle_name(int p_idx) const;
 	virtual Variant get_handle_value(int p_idx) const;
-	virtual void set_handle(int p_idx,Camera *p_camera, const Point2& p_point);
+	virtual void set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point);
 	virtual void commit_handle(int p_idx,const Variant& p_restore,bool p_cancel=false);
 
 	void redraw();
@@ -144,18 +144,18 @@ class CameraSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(CameraSpatialGizmo,SpatialGizmoTool);
 
-	Camera* camera;
+	Camera3D* camera;
 
 public:
 
 
 	virtual String get_handle_name(int p_idx) const;
 	virtual Variant get_handle_value(int p_idx) const;
-	virtual void set_handle(int p_idx,Camera *p_camera, const Point2& p_point);
+	virtual void set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point);
 	virtual void commit_handle(int p_idx,const Variant& p_restore,bool p_cancel=false);
 
 	void redraw();
-	CameraSpatialGizmo(Camera* p_camera=NULL);
+	CameraSpatialGizmo(Camera3D* p_camera=NULL);
 
 };
 
@@ -165,12 +165,12 @@ class MeshInstanceSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(MeshInstanceSpatialGizmo,SpatialGizmoTool);
 
-	MeshInstance* mesh;
+	MeshInstance3D* mesh;
 
 public:
 
 	void redraw();
-	MeshInstanceSpatialGizmo(MeshInstance* p_mesh=NULL);
+	MeshInstanceSpatialGizmo(MeshInstance3D* p_mesh=NULL);
 
 };
 
@@ -191,26 +191,26 @@ class SkeletonSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(SkeletonSpatialGizmo,SpatialGizmoTool);
 
-	Skeleton* skel;
+	Skeleton3D* skel;
 
 public:
 
 	void redraw();
-	SkeletonSpatialGizmo(Skeleton* p_skel=NULL);
+	SkeletonSpatialGizmo(Skeleton3D* p_skel=NULL);
 
 };
 
 
-class SpatialPlayerSpatialGizmo  : public SpatialGizmoTool {
+class SoundPlayer3DSpatialGizmo  : public SpatialGizmoTool {
 
-	OBJ_TYPE(SpatialPlayerSpatialGizmo,SpatialGizmoTool);
+	OBJ_TYPE(SoundPlayer3DSpatialGizmo,SpatialGizmoTool);
 
-	SpatialPlayer* splayer;
+	SoundPlayer3D* splayer;
 
 public:
 
 	void redraw();
-	SpatialPlayerSpatialGizmo(SpatialPlayer* p_splayer=NULL);
+	SoundPlayer3DSpatialGizmo(SoundPlayer3D* p_splayer=NULL);
 
 };
 
@@ -271,17 +271,17 @@ class VisibilityNotifierGizmo  : public SpatialGizmoTool {
 	OBJ_TYPE(VisibilityNotifierGizmo ,SpatialGizmoTool);
 
 
-	VisibilityNotifier* notifier;
+	VisibilityNotifier3D* notifier;
 
 public:
 
 	virtual String get_handle_name(int p_idx) const;
 	virtual Variant get_handle_value(int p_idx) const;
-	virtual void set_handle(int p_idx,Camera *p_camera, const Point2& p_point);
+	virtual void set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point);
 	virtual void commit_handle(int p_idx,const Variant& p_restore,bool p_cancel=false);
 
 	void redraw();
-	VisibilityNotifierGizmo(VisibilityNotifier* p_notifier=NULL);
+	VisibilityNotifierGizmo(VisibilityNotifier3D* p_notifier=NULL);
 
 };
 
@@ -291,15 +291,15 @@ class CollisionShapeSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(CollisionShapeSpatialGizmo,SpatialGizmoTool);
 
-	CollisionShape* cs;
+	CollisionShape3D* cs;
 
 public:
 	virtual String get_handle_name(int p_idx) const;
 	virtual Variant get_handle_value(int p_idx) const;
-	virtual void set_handle(int p_idx,Camera *p_camera, const Point2& p_point);
+	virtual void set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point);
 	virtual void commit_handle(int p_idx,const Variant& p_restore,bool p_cancel=false);
 	void redraw();
-	CollisionShapeSpatialGizmo(CollisionShape* p_cs=NULL);
+	CollisionShapeSpatialGizmo(CollisionShape3D* p_cs=NULL);
 
 };
 
@@ -308,12 +308,12 @@ class CollisionPolygonSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(CollisionPolygonSpatialGizmo,SpatialGizmoTool);
 
-	CollisionPolygon* polygon;
+	CollisionPolygon3D* polygon;
 
 public:
 
 	void redraw();
-	CollisionPolygonSpatialGizmo(CollisionPolygon* p_polygon=NULL);
+	CollisionPolygonSpatialGizmo(CollisionPolygon3D* p_polygon=NULL);
 
 };
 
@@ -322,12 +322,12 @@ class RayCastSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(RayCastSpatialGizmo,SpatialGizmoTool);
 
-	RayCast* raycast;
+	RayCast3D* raycast;
 
 public:
 
 	void redraw();
-	RayCastSpatialGizmo(RayCast* p_raycast=NULL);
+	RayCastSpatialGizmo(RayCast3D* p_raycast=NULL);
 
 };
 
@@ -337,12 +337,12 @@ class VehicleWheelSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(VehicleWheelSpatialGizmo,SpatialGizmoTool);
 
-	VehicleWheel* car_wheel;
+	VehicleWheel3D* car_wheel;
 
 public:
 
 	void redraw();
-	VehicleWheelSpatialGizmo(VehicleWheel* p_car_wheel=NULL);
+	VehicleWheelSpatialGizmo(VehicleWheel3D* p_car_wheel=NULL);
 
 };
 
@@ -376,12 +376,12 @@ class PinJointSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(PinJointSpatialGizmo,SpatialGizmoTool);
 
-	PinJoint* p3d;
+	PinJoint3D* p3d;
 
 public:
 
 	void redraw();
-	PinJointSpatialGizmo(PinJoint* p_p3d=NULL);
+	PinJointSpatialGizmo(PinJoint3D* p_p3d=NULL);
 
 };
 
@@ -390,12 +390,12 @@ class HingeJointSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(HingeJointSpatialGizmo,SpatialGizmoTool);
 
-	HingeJoint* p3d;
+	HingeJoint3D* p3d;
 
 public:
 
 	void redraw();
-	HingeJointSpatialGizmo(HingeJoint* p_p3d=NULL);
+	HingeJointSpatialGizmo(HingeJoint3D* p_p3d=NULL);
 
 };
 
@@ -403,12 +403,12 @@ class SliderJointSpatialGizmo  : public SpatialGizmoTool {
 
 	OBJ_TYPE(SliderJointSpatialGizmo,SpatialGizmoTool);
 
-	SliderJoint* p3d;
+	SliderJoint3D* p3d;
 
 public:
 
 	void redraw();
-	SliderJointSpatialGizmo(SliderJoint* p_p3d=NULL);
+	SliderJointSpatialGizmo(SliderJoint3D* p_p3d=NULL);
 
 };
 
@@ -478,7 +478,7 @@ public:
 	Ref<TriangleMesh> test_cube_tm;
 
 
-	Ref<SpatialEditorGizmo> get_gizmo(Spatial *p_spatial);
+	Ref<SpatialEditorGizmo> get_gizmo(Node3D *p_spatial);
 
 	SpatialEditorGizmos();
 };

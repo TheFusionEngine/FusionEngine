@@ -61,7 +61,7 @@ void SpatialGizmoTool::clear() {
 	secondary_handles.clear();
 }
 
-void SpatialGizmoTool::Instance::create_instance(Spatial *p_base) {
+void SpatialGizmoTool::Instance::create_instance(Node3D *p_base) {
 
 	instance = VS::get_singleton()->instance_create2(mesh->get_rid(),p_base->get_world()->get_scenario());
 	VS::get_singleton()->instance_attach_object_instance_ID(instance,p_base->get_instance_ID());
@@ -354,13 +354,13 @@ void SpatialGizmoTool::add_handles(const Vector<Vector3> &p_handles, bool p_bill
 }
 
 
-void SpatialGizmoTool::set_spatial_node(Spatial *p_node){
+void SpatialGizmoTool::set_spatial_node(Node3D *p_node){
 
 	spatial_node=p_node;
 
 }
 
-bool SpatialGizmoTool::intersect_frustum(const Camera *p_camera,const Vector<Plane> &p_frustum) {
+bool SpatialGizmoTool::intersect_frustum(const Camera3D *p_camera,const Vector<Plane> &p_frustum) {
 
 	ERR_FAIL_COND_V(!spatial_node,false);
 	ERR_FAIL_COND_V(!valid,false);
@@ -401,7 +401,7 @@ bool SpatialGizmoTool::intersect_frustum(const Camera *p_camera,const Vector<Pla
 }
 
 
-bool SpatialGizmoTool::intersect_ray(const Camera *p_camera,const Point2& p_point,  Vector3& r_pos, Vector3& r_normal,int *r_gizmo_handle,bool p_sec_first) {
+bool SpatialGizmoTool::intersect_ray(const Camera3D *p_camera,const Point2& p_point,  Vector3& r_pos, Vector3& r_normal,int *r_gizmo_handle,bool p_sec_first) {
 
 	ERR_FAIL_COND_V(!spatial_node,false);
 	ERR_FAIL_COND_V(!valid,false);
@@ -750,7 +750,7 @@ static float _find_closest_angle_to_half_pi_arc(const Vector3& p_from, const Vec
 }
 
 
-void LightSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_point) {
+void LightSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point) {
 
 	Transform gt = light->get_global_transform();
 	gt.orthonormalize();
@@ -762,7 +762,7 @@ void LightSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_p
 	Vector3 s[2]={gi.xform(ray_from),gi.xform(ray_from+ray_dir*4096)};
 	if (p_idx==0) {
 
-		if (light->cast_to<SpotLight>()) {
+		if (light->cast_to<SpotLight3D>()) {
 			Vector3 ra,rb;
 			Geometry::get_closest_points_between_segments(Vector3(),Vector3(0,0,-4096),s[0],s[1],ra,rb);
 
@@ -771,7 +771,7 @@ void LightSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_p
 				d=0;
 
 			light->set_parameter(Light::PARAM_RADIUS,d);
-		} else if (light->cast_to<OmniLight>()) {
+		} else if (light->cast_to<OmniLight3D>()) {
 
 			Plane cp=Plane( gt.origin, p_camera->get_transform().basis.get_axis(2));
 
@@ -820,7 +820,7 @@ void LightSpatialGizmo::commit_handle(int p_idx,const Variant& p_restore,bool p_
 void LightSpatialGizmo::redraw() {
 
 
-	if (light->cast_to<DirectionalLight>()) {
+	if (light->cast_to<DirectionalLight3D>()) {
 
 
 
@@ -865,12 +865,12 @@ void LightSpatialGizmo::redraw() {
 
 	}
 
-	if (light->cast_to<OmniLight>()) {
+	if (light->cast_to<OmniLight3D>()) {
 
 		clear();
 
 
-		OmniLight *on = light->cast_to<OmniLight>();
+		OmniLight3D *on = light->cast_to<OmniLight3D>();
 
 		float r = on->get_parameter(Light::PARAM_RADIUS);
 
@@ -905,12 +905,12 @@ void LightSpatialGizmo::redraw() {
 	}
 
 
-	if (light->cast_to<SpotLight>()) {
+	if (light->cast_to<SpotLight3D>()) {
 
 		clear();
 
 		Vector<Vector3> points;
-		SpotLight *on = light->cast_to<SpotLight>();
+		SpotLight3D *on = light->cast_to<SpotLight3D>();
 
 		float r = on->get_parameter(Light::PARAM_RADIUS);
 		float w = r*Math::sin(Math::deg2rad(on->get_parameter(Light::PARAM_SPOT_ANGLE)));
@@ -999,7 +999,7 @@ LightSpatialGizmo::LightSpatialGizmo(Light* p_light){
 
 String CameraSpatialGizmo::get_handle_name(int p_idx) const {
 
-	if (camera->get_projection()==Camera::PROJECTION_PERSPECTIVE) {
+	if (camera->get_projection()==Camera3D::PROJECTION_PERSPECTIVE) {
 		return "FOV";
 	} else {
 		return "Size";
@@ -1007,14 +1007,14 @@ String CameraSpatialGizmo::get_handle_name(int p_idx) const {
 }
 Variant CameraSpatialGizmo::get_handle_value(int p_idx) const{
 
-	if (camera->get_projection()==Camera::PROJECTION_PERSPECTIVE) {
+	if (camera->get_projection()==Camera3D::PROJECTION_PERSPECTIVE) {
 		return camera->get_fov();
 	} else {
 
 		return camera->get_size();
 	}
 }
-void CameraSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_point){
+void CameraSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point){
 
 	Transform gt = camera->get_global_transform();
 	gt.orthonormalize();
@@ -1025,7 +1025,7 @@ void CameraSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_
 
 	Vector3 s[2]={gi.xform(ray_from),gi.xform(ray_from+ray_dir*4096)};
 
-	if (camera->get_projection()==Camera::PROJECTION_PERSPECTIVE) {
+	if (camera->get_projection()==Camera3D::PROJECTION_PERSPECTIVE) {
 		Transform gt=camera->get_global_transform();
 		float a = _find_closest_angle_to_half_pi_arc(s[0],s[1],1.0,gt);
 		camera->set("fov",a);
@@ -1043,14 +1043,14 @@ void CameraSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_
 }
 void CameraSpatialGizmo::commit_handle(int p_idx,const Variant& p_restore,bool p_cancel){
 
-	if (camera->get_projection()==Camera::PROJECTION_PERSPECTIVE) {
+	if (camera->get_projection()==Camera3D::PROJECTION_PERSPECTIVE) {
 
 		if (p_cancel) {
 
 			camera->set("fov",p_restore);
 		} else {
 			UndoRedo *ur = SpatialEditor::get_singleton()->get_undo_redo();
-			ur->create_action("Change Camera FOV");
+			ur->create_action("Change Camera3D FOV");
 			ur->add_do_property(camera,"fov",camera->get_fov());
 			ur->add_undo_property(camera,"fov",p_restore);
 			ur->commit_action();
@@ -1063,7 +1063,7 @@ void CameraSpatialGizmo::commit_handle(int p_idx,const Variant& p_restore,bool p
 			camera->set("size",p_restore);
 		} else {
 			UndoRedo *ur = SpatialEditor::get_singleton()->get_undo_redo();
-			ur->create_action("Change Camera Size");
+			ur->create_action("Change Camera3D Size");
 			ur->add_do_property(camera,"size",camera->get_size());
 			ur->add_undo_property(camera,"size",p_restore);
 			ur->commit_action();
@@ -1083,7 +1083,7 @@ void CameraSpatialGizmo::redraw(){
 
 	switch(camera->get_projection()) {
 
-		case Camera::PROJECTION_PERSPECTIVE: {
+		case Camera3D::PROJECTION_PERSPECTIVE: {
 
 			float fov = camera->get_fov();
 
@@ -1115,7 +1115,7 @@ void CameraSpatialGizmo::redraw(){
 			ADD_TRIANGLE( tup, side+up, nside+up );
 
 		} break;
-		case Camera::PROJECTION_ORTHOGONAL: {
+		case Camera3D::PROJECTION_ORTHOGONAL: {
 
 #define ADD_QUAD( m_a, m_b, m_c, m_d)\
 {\
@@ -1156,7 +1156,7 @@ void CameraSpatialGizmo::redraw(){
 }
 
 
-CameraSpatialGizmo::CameraSpatialGizmo(Camera* p_camera){
+CameraSpatialGizmo::CameraSpatialGizmo(Camera3D* p_camera){
 
 	camera=p_camera;
 	set_spatial_node(camera);
@@ -1178,7 +1178,7 @@ void MeshInstanceSpatialGizmo::redraw() {
 		add_collision_triangles(tm);
 }
 
-MeshInstanceSpatialGizmo::MeshInstanceSpatialGizmo(MeshInstance* p_mesh) {
+MeshInstanceSpatialGizmo::MeshInstanceSpatialGizmo(MeshInstance3D* p_mesh) {
 
 	mesh=p_mesh;
 	set_spatial_node(p_mesh);
@@ -1403,7 +1403,7 @@ void SkeletonSpatialGizmo::redraw() {
 
 }
 
-SkeletonSpatialGizmo::SkeletonSpatialGizmo(Skeleton* p_skel) {
+SkeletonSpatialGizmo::SkeletonSpatialGizmo(Skeleton3D* p_skel) {
 
 	skel=p_skel;
 	set_spatial_node(p_skel);
@@ -1412,14 +1412,14 @@ SkeletonSpatialGizmo::SkeletonSpatialGizmo(Skeleton* p_skel) {
 /////
 
 
-void SpatialPlayerSpatialGizmo::redraw() {
+void SoundPlayer3DSpatialGizmo::redraw() {
 
 	clear();
-	if (splayer->cast_to<SpatialStreamPlayer>()) {
+	if (splayer->cast_to<StreamPlayer3D>()) {
 
 		add_unscaled_billboard(SpatialEditorGizmos::singleton->stream_player_icon,0.05);
 
-	} else if (splayer->cast_to<SpatialSamplePlayer>()) {
+	} else if (splayer->cast_to<SamplePlayer3D>()) {
 
 		add_unscaled_billboard(SpatialEditorGizmos::singleton->sample_player_icon,0.05);
 
@@ -1427,7 +1427,7 @@ void SpatialPlayerSpatialGizmo::redraw() {
 
 }
 
-SpatialPlayerSpatialGizmo::SpatialPlayerSpatialGizmo(SpatialPlayer* p_splayer){
+SoundPlayer3DSpatialGizmo::SoundPlayer3DSpatialGizmo(SoundPlayer3D* p_splayer){
 
 	set_spatial_node(p_splayer);
 	splayer=p_splayer;
@@ -1561,7 +1561,7 @@ void RayCastSpatialGizmo::redraw() {
 
 }
 
-RayCastSpatialGizmo::RayCastSpatialGizmo(RayCast* p_raycast){
+RayCastSpatialGizmo::RayCastSpatialGizmo(RayCast3D* p_raycast){
 
 	set_spatial_node(p_raycast);
 	raycast=p_raycast;
@@ -1626,7 +1626,7 @@ void VehicleWheelSpatialGizmo::redraw() {
 
 }
 
-VehicleWheelSpatialGizmo::VehicleWheelSpatialGizmo(VehicleWheel* p_car_wheel){
+VehicleWheelSpatialGizmo::VehicleWheelSpatialGizmo(VehicleWheel3D* p_car_wheel){
 
 	set_spatial_node(p_car_wheel);
 	car_wheel=p_car_wheel;
@@ -1662,17 +1662,17 @@ String CollisionShapeSpatialGizmo::get_handle_name(int p_idx) const {
 	if (s.is_null())
 		return "";
 
-	if (s->cast_to<SphereShape>()) {
+	if (s->cast_to<SphereShape3D>()) {
 
 		return "Radius";
 	}
 
-	if (s->cast_to<BoxShape>()) {
+	if (s->cast_to<BoxShape3D>()) {
 
 		return "Extents";
 	}
 
-	if (s->cast_to<CapsuleShape>()) {
+	if (s->cast_to<CapsuleShape3D>()) {
 
 		return p_idx==0?"Radius":"Height";
 	}
@@ -1690,21 +1690,21 @@ Variant CollisionShapeSpatialGizmo::get_handle_value(int p_idx) const{
 	if (s.is_null())
 		return Variant();
 
-	if (s->cast_to<SphereShape>()) {
+	if (s->cast_to<SphereShape3D>()) {
 
-		Ref<SphereShape> ss = s;
+		Ref<SphereShape3D> ss = s;
 		return ss->get_radius();
 	}
 
-	if (s->cast_to<BoxShape>()) {
+	if (s->cast_to<BoxShape3D>()) {
 
-		Ref<BoxShape> bs = s;
+		Ref<BoxShape3D> bs = s;
 		return bs->get_extents();
 	}
 
-	if (s->cast_to<CapsuleShape>()) {
+	if (s->cast_to<CapsuleShape3D>()) {
 
-		Ref<CapsuleShape> cs = s;
+		Ref<CapsuleShape3D> cs = s;
 		return p_idx==0?cs->get_radius():cs->get_height();
 	}
 
@@ -1716,7 +1716,7 @@ Variant CollisionShapeSpatialGizmo::get_handle_value(int p_idx) const{
 
 	return Variant();
 }
-void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_point){
+void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point){
 	Ref<Shape> s = cs->get_shape();
 	if (s.is_null())
 		return;
@@ -1730,9 +1730,9 @@ void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Po
 
 	Vector3 sg[2]={gi.xform(ray_from),gi.xform(ray_from+ray_dir*4096)};
 
-	if (s->cast_to<SphereShape>()) {
+	if (s->cast_to<SphereShape3D>()) {
 
-		Ref<SphereShape> ss = s;
+		Ref<SphereShape3D> ss = s;
 		Vector3 ra,rb;
 		Geometry::get_closest_points_between_segments(Vector3(),Vector3(4096,0,0),sg[0],sg[1],ra,rb);
 		float d = ra.x;
@@ -1755,11 +1755,11 @@ void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Po
 	}
 
 
-	if (s->cast_to<BoxShape>()) {
+	if (s->cast_to<BoxShape3D>()) {
 
 		Vector3 axis;
 		axis[p_idx]=1.0;
-		Ref<BoxShape> bs = s;
+		Ref<BoxShape3D> bs = s;
 		Vector3 ra,rb;
 		Geometry::get_closest_points_between_segments(Vector3(),axis*4096,sg[0],sg[1],ra,rb);
 		float d = ra[p_idx];
@@ -1772,11 +1772,11 @@ void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Po
 
 	}
 
-	if (s->cast_to<CapsuleShape>()) {
+	if (s->cast_to<CapsuleShape3D>()) {
 
 		Vector3 axis;
 		axis[p_idx==0?0:2]=1.0;
-		Ref<CapsuleShape> cs = s;
+		Ref<CapsuleShape3D> cs = s;
 		Vector3 ra,rb;
 		Geometry::get_closest_points_between_segments(Vector3(),axis*4096,sg[0],sg[1],ra,rb);
 		float d = axis.dot(ra);
@@ -1798,9 +1798,9 @@ void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restor
 	if (s.is_null())
 		return;
 
-	if (s->cast_to<SphereShape>()) {
+	if (s->cast_to<SphereShape3D>()) {
 
-		Ref<SphereShape> ss=s;
+		Ref<SphereShape3D> ss=s;
 		if (p_cancel) {
 			ss->set_radius(p_restore);
 			return;
@@ -1814,9 +1814,9 @@ void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restor
 
 	}
 
-	if (s->cast_to<BoxShape>()) {
+	if (s->cast_to<BoxShape3D>()) {
 
-		Ref<BoxShape> ss=s;
+		Ref<BoxShape3D> ss=s;
 		if (p_cancel) {
 			ss->set_extents(p_restore);
 			return;
@@ -1829,9 +1829,9 @@ void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restor
 		ur->commit_action();
 	}
 
-	if (s->cast_to<CapsuleShape>()) {
+	if (s->cast_to<CapsuleShape3D>()) {
 
-		Ref<CapsuleShape> ss=s;
+		Ref<CapsuleShape3D> ss=s;
 		if (p_cancel) {
 			if (p_idx==0)
 				ss->set_radius(p_restore);
@@ -1881,9 +1881,9 @@ void CollisionShapeSpatialGizmo::redraw(){
 	if (s.is_null())
 		return;
 
-	if (s->cast_to<SphereShape>()) {
+	if (s->cast_to<SphereShape3D>()) {
 
-		Ref<SphereShape> sp= s;
+		Ref<SphereShape3D> sp= s;
 		float r=sp->get_radius();
 
 		Vector<Vector3> points;
@@ -1929,9 +1929,9 @@ void CollisionShapeSpatialGizmo::redraw(){
 
 	}
 
-	if (s->cast_to<BoxShape>()) {
+	if (s->cast_to<BoxShape3D>()) {
 
-		Ref<BoxShape> bs=s;
+		Ref<BoxShape3D> bs=s;
 		Vector<Vector3> lines;
 		AABB aabb;
 		aabb.pos=-bs->get_extents();
@@ -1959,9 +1959,9 @@ void CollisionShapeSpatialGizmo::redraw(){
 
 	}
 
-	if (s->cast_to<CapsuleShape>()) {
+	if (s->cast_to<CapsuleShape3D>()) {
 
-		Ref<CapsuleShape> cs=s;
+		Ref<CapsuleShape3D> cs=s;
 		float radius = cs->get_radius();
 		float height = cs->get_height();
 
@@ -2072,9 +2072,9 @@ void CollisionShapeSpatialGizmo::redraw(){
 	}
 
 
-	if (s->cast_to<ConvexPolygonShape>()) {
+	if (s->cast_to<ConvexPolygonShape3D>()) {
 
-		DVector<Vector3> points = s->cast_to<ConvexPolygonShape>()->get_points();
+		DVector<Vector3> points = s->cast_to<ConvexPolygonShape3D>()->get_points();
 
 		if (points.size()>3) {
 
@@ -2117,7 +2117,7 @@ void CollisionShapeSpatialGizmo::redraw(){
 	}
 
 }
-CollisionShapeSpatialGizmo::CollisionShapeSpatialGizmo(CollisionShape* p_cs) {
+CollisionShapeSpatialGizmo::CollisionShapeSpatialGizmo(CollisionShape3D* p_cs) {
 
 	cs=p_cs;
 	set_spatial_node(p_cs);
@@ -2152,7 +2152,7 @@ void CollisionPolygonSpatialGizmo::redraw() {
 	add_collision_segments(lines);
 }
 
-CollisionPolygonSpatialGizmo::CollisionPolygonSpatialGizmo(CollisionPolygon* p_polygon){
+CollisionPolygonSpatialGizmo::CollisionPolygonSpatialGizmo(CollisionPolygon3D* p_polygon){
 
 	set_spatial_node(p_polygon);
 	polygon=p_polygon;
@@ -2174,7 +2174,7 @@ Variant VisibilityNotifierGizmo::get_handle_value(int p_idx) const{
 
 	return notifier->get_aabb();
 }
-void VisibilityNotifierGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_point){
+void VisibilityNotifierGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point){
 
 
 	Transform gt = notifier->get_global_transform();
@@ -2249,7 +2249,7 @@ void VisibilityNotifierGizmo::redraw(){
 	add_handles(handles);
 
 }
-VisibilityNotifierGizmo::VisibilityNotifierGizmo(VisibilityNotifier* p_notifier){
+VisibilityNotifierGizmo::VisibilityNotifierGizmo(VisibilityNotifier3D* p_notifier){
 
 	notifier=p_notifier;
 	set_spatial_node(p_notifier);
@@ -2375,7 +2375,7 @@ void PinJointSpatialGizmo::redraw() {
 }
 
 
-PinJointSpatialGizmo::PinJointSpatialGizmo(PinJoint* p_p3d) {
+PinJointSpatialGizmo::PinJointSpatialGizmo(PinJoint3D* p_p3d) {
 
 	p3d=p_p3d;
 	set_spatial_node(p3d);
@@ -2395,10 +2395,10 @@ void HingeJointSpatialGizmo::redraw() {
 	cursor_points.push_back(Vector3(0,0,+cs*2));
 	cursor_points.push_back(Vector3(0,0,-cs*2));
 
-	float ll = p3d->get_param(HingeJoint::PARAM_LIMIT_LOWER);
-	float ul = p3d->get_param(HingeJoint::PARAM_LIMIT_UPPER);
+	float ll = p3d->get_param(HingeJoint3D::PARAM_LIMIT_LOWER);
+	float ul = p3d->get_param(HingeJoint3D::PARAM_LIMIT_UPPER);
 
-	if (p3d->get_flag(HingeJoint::FLAG_USE_LIMIT) && ll<ul) {
+	if (p3d->get_flag(HingeJoint3D::FLAG_USE_LIMIT) && ll<ul) {
 
 		const int points = 32;
 		float step = (ul-ll)/points;
@@ -2456,7 +2456,7 @@ void HingeJointSpatialGizmo::redraw() {
 }
 
 
-HingeJointSpatialGizmo::HingeJointSpatialGizmo(HingeJoint* p_p3d) {
+HingeJointSpatialGizmo::HingeJointSpatialGizmo(HingeJoint3D* p_p3d) {
 
 	p3d=p_p3d;
 	set_spatial_node(p3d);
@@ -2478,10 +2478,10 @@ void SliderJointSpatialGizmo::redraw() {
 	cursor_points.push_back(Vector3(0,0,+cs*2));
 	cursor_points.push_back(Vector3(0,0,-cs*2));
 
-	float ll = p3d->get_param(SliderJoint::PARAM_ANGULAR_LIMIT_LOWER);
-	float ul = p3d->get_param(SliderJoint::PARAM_ANGULAR_LIMIT_UPPER);
-	float lll = -p3d->get_param(SliderJoint::PARAM_LINEAR_LIMIT_LOWER);
-	float lul = -p3d->get_param(SliderJoint::PARAM_LINEAR_LIMIT_UPPER);
+	float ll = p3d->get_param(SliderJoint3D::PARAM_ANGULAR_LIMIT_LOWER);
+	float ul = p3d->get_param(SliderJoint3D::PARAM_ANGULAR_LIMIT_UPPER);
+	float lll = -p3d->get_param(SliderJoint3D::PARAM_LINEAR_LIMIT_LOWER);
+	float lul = -p3d->get_param(SliderJoint3D::PARAM_LINEAR_LIMIT_UPPER);
 
 	if (lll>lul) {
 
@@ -2573,7 +2573,7 @@ void SliderJointSpatialGizmo::redraw() {
 }
 
 
-SliderJointSpatialGizmo::SliderJointSpatialGizmo(SliderJoint* p_p3d) {
+SliderJointSpatialGizmo::SliderJointSpatialGizmo(SliderJoint3D* p_p3d) {
 
 	p3d=p_p3d;
 	set_spatial_node(p3d);
@@ -2866,7 +2866,7 @@ Generic6DOFJointSpatialGizmo::Generic6DOFJointSpatialGizmo(Generic6DOFJoint* p_p
 
 SpatialEditorGizmos *SpatialEditorGizmos::singleton=NULL;
 
-Ref<SpatialEditorGizmo> SpatialEditorGizmos::get_gizmo(Spatial *p_spatial) {
+Ref<SpatialEditorGizmo> SpatialEditorGizmos::get_gizmo(Node3D *p_spatial) {
 
 	if (p_spatial->cast_to<Light>()) {
 
@@ -2874,15 +2874,15 @@ Ref<SpatialEditorGizmo> SpatialEditorGizmos::get_gizmo(Spatial *p_spatial) {
 		return lsg;
 	}
 
-	if (p_spatial->cast_to<Camera>()) {
+	if (p_spatial->cast_to<Camera3D>()) {
 
-		Ref<CameraSpatialGizmo> lsg = memnew( CameraSpatialGizmo(p_spatial->cast_to<Camera>()) );
+		Ref<CameraSpatialGizmo> lsg = memnew( CameraSpatialGizmo(p_spatial->cast_to<Camera3D>()) );
 		return lsg;
 	}
 
-	if (p_spatial->cast_to<Skeleton>()) {
+	if (p_spatial->cast_to<Skeleton3D>()) {
 
-		Ref<SkeletonSpatialGizmo> lsg = memnew( SkeletonSpatialGizmo(p_spatial->cast_to<Skeleton>()) );
+		Ref<SkeletonSpatialGizmo> lsg = memnew( SkeletonSpatialGizmo(p_spatial->cast_to<Skeleton3D>()) );
 		return lsg;
 	}
 
@@ -2893,9 +2893,9 @@ Ref<SpatialEditorGizmo> SpatialEditorGizmos::get_gizmo(Spatial *p_spatial) {
 		return lsg;
 	}
 
-	if (p_spatial->cast_to<MeshInstance>()) {
+	if (p_spatial->cast_to<MeshInstance3D>()) {
 
-		Ref<MeshInstanceSpatialGizmo> misg = memnew( MeshInstanceSpatialGizmo(p_spatial->cast_to<MeshInstance>()) );
+		Ref<MeshInstanceSpatialGizmo> misg = memnew( MeshInstanceSpatialGizmo(p_spatial->cast_to<MeshInstance3D>()) );
 		return misg;
 	}
 
@@ -2911,9 +2911,9 @@ Ref<SpatialEditorGizmo> SpatialEditorGizmos::get_gizmo(Spatial *p_spatial) {
 		return misg;
 	}
 
-	if (p_spatial->cast_to<RayCast>()) {
+	if (p_spatial->cast_to<RayCast3D>()) {
 
-		Ref<RayCastSpatialGizmo> misg = memnew( RayCastSpatialGizmo(p_spatial->cast_to<RayCast>()) );
+		Ref<RayCastSpatialGizmo> misg = memnew( RayCastSpatialGizmo(p_spatial->cast_to<RayCast3D>()) );
 		return misg;
 	}
 
@@ -2930,44 +2930,44 @@ Ref<SpatialEditorGizmo> SpatialEditorGizmos::get_gizmo(Spatial *p_spatial) {
 		return misg;
 	}
 
-	if (p_spatial->cast_to<SpatialPlayer>()) {
+	if (p_spatial->cast_to<SoundPlayer3D>()) {
 
-		Ref<SpatialPlayerSpatialGizmo> misg = memnew( SpatialPlayerSpatialGizmo(p_spatial->cast_to<SpatialPlayer>()) );
+		Ref<SoundPlayer3DSpatialGizmo> misg = memnew( SoundPlayer3DSpatialGizmo(p_spatial->cast_to<SoundPlayer3D>()) );
 		return misg;
 	}
 
-	if (p_spatial->cast_to<CollisionShape>()) {
+	if (p_spatial->cast_to<CollisionShape3D>()) {
 
-		Ref<CollisionShapeSpatialGizmo> misg = memnew( CollisionShapeSpatialGizmo(p_spatial->cast_to<CollisionShape>()) );
+		Ref<CollisionShapeSpatialGizmo> misg = memnew( CollisionShapeSpatialGizmo(p_spatial->cast_to<CollisionShape3D>()) );
 		return misg;
 	}
 
-	if (p_spatial->cast_to<VisibilityNotifier>()) {
+	if (p_spatial->cast_to<VisibilityNotifier3D>()) {
 
-		Ref<VisibilityNotifierGizmo> misg = memnew( VisibilityNotifierGizmo(p_spatial->cast_to<VisibilityNotifier>()) );
+		Ref<VisibilityNotifierGizmo> misg = memnew( VisibilityNotifierGizmo(p_spatial->cast_to<VisibilityNotifier3D>()) );
 		return misg;
 	}
 
-	if (p_spatial->cast_to<VehicleWheel>()) {
+	if (p_spatial->cast_to<VehicleWheel3D>()) {
 
-		Ref<VehicleWheelSpatialGizmo> misg = memnew( VehicleWheelSpatialGizmo(p_spatial->cast_to<VehicleWheel>()) );
+		Ref<VehicleWheelSpatialGizmo> misg = memnew( VehicleWheelSpatialGizmo(p_spatial->cast_to<VehicleWheel3D>()) );
 		return misg;
 	}
-	if (p_spatial->cast_to<PinJoint>()) {
+	if (p_spatial->cast_to<PinJoint3D>()) {
 
-		Ref<PinJointSpatialGizmo> misg = memnew( PinJointSpatialGizmo(p_spatial->cast_to<PinJoint>()) );
-		return misg;
-	}
-
-	if (p_spatial->cast_to<HingeJoint>()) {
-
-		Ref<HingeJointSpatialGizmo> misg = memnew( HingeJointSpatialGizmo(p_spatial->cast_to<HingeJoint>()) );
+		Ref<PinJointSpatialGizmo> misg = memnew( PinJointSpatialGizmo(p_spatial->cast_to<PinJoint3D>()) );
 		return misg;
 	}
 
-	if (p_spatial->cast_to<SliderJoint>()) {
+	if (p_spatial->cast_to<HingeJoint3D>()) {
 
-		Ref<SliderJointSpatialGizmo> misg = memnew( SliderJointSpatialGizmo(p_spatial->cast_to<SliderJoint>()) );
+		Ref<HingeJointSpatialGizmo> misg = memnew( HingeJointSpatialGizmo(p_spatial->cast_to<HingeJoint3D>()) );
+		return misg;
+	}
+
+	if (p_spatial->cast_to<SliderJoint3D>()) {
+
+		Ref<SliderJointSpatialGizmo> misg = memnew( SliderJointSpatialGizmo(p_spatial->cast_to<SliderJoint3D>()) );
 		return misg;
 	}
 
@@ -2983,9 +2983,9 @@ Ref<SpatialEditorGizmo> SpatialEditorGizmos::get_gizmo(Spatial *p_spatial) {
 		return misg;
 	}
 
-	if (p_spatial->cast_to<CollisionPolygon>()) {
+	if (p_spatial->cast_to<CollisionPolygon3D>()) {
 
-		Ref<CollisionPolygonSpatialGizmo> misg = memnew( CollisionPolygonSpatialGizmo(p_spatial->cast_to<CollisionPolygon>()) );
+		Ref<CollisionPolygonSpatialGizmo> misg = memnew( CollisionPolygonSpatialGizmo(p_spatial->cast_to<CollisionPolygon3D>()) );
 		return misg;
 	}
 
@@ -3115,7 +3115,7 @@ SpatialEditorGizmos::SpatialEditorGizmos() {
 	sample_player_icon->set_depth_draw_mode(Material::DEPTH_DRAW_NEVER);
 	sample_player_icon->set_fixed_flag(FixedMaterial::FLAG_USE_ALPHA, true);
 	sample_player_icon->set_parameter(FixedMaterial::PARAM_DIFFUSE,Color(1,1,1,0.9));
-	sample_player_icon->set_texture(FixedMaterial::PARAM_DIFFUSE,SpatialEditor::get_singleton()->get_icon("GizmoSpatialSamplePlayer","EditorIcons"));
+	sample_player_icon->set_texture(FixedMaterial::PARAM_DIFFUSE,SpatialEditor::get_singleton()->get_icon("GizmoSamplePlayer3D","EditorIcons"));
 
 	room_material = create_line_material(Color(1.0,0.6,0.9));
 	portal_material = create_line_material(Color(1.0,0.8,0.6));
@@ -3130,7 +3130,7 @@ SpatialEditorGizmos::SpatialEditorGizmos() {
 	stream_player_icon->set_depth_draw_mode(Material::DEPTH_DRAW_NEVER);
 	stream_player_icon->set_fixed_flag(FixedMaterial::FLAG_USE_ALPHA, true);
 	stream_player_icon->set_parameter(FixedMaterial::PARAM_DIFFUSE,Color(1,1,1,0.9));
-	stream_player_icon->set_texture(FixedMaterial::PARAM_DIFFUSE,SpatialEditor::get_singleton()->get_icon("GizmoSpatialStreamPlayer","EditorIcons"));
+	stream_player_icon->set_texture(FixedMaterial::PARAM_DIFFUSE,SpatialEditor::get_singleton()->get_icon("GizmoStreamPlayer3D","EditorIcons"));
 
 	visibility_notifier_icon = Ref<FixedMaterial>( memnew( FixedMaterial ));
 	visibility_notifier_icon->set_flag(Material::FLAG_UNSHADED, true);

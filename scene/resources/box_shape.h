@@ -31,9 +31,9 @@
 
 #include "scene/resources/shape.h"
 
-class BoxShape : public Shape {
+class BoxShape3D : public Shape {
 
-	OBJ_TYPE(BoxShape,Shape);
+	OBJ_TYPE(BoxShape3D,Shape);
 	Vector3 extents;
 
 protected:
@@ -47,7 +47,7 @@ public:
 	void set_extents(const Vector3& p_extents);
 	Vector3 get_extents() const;
 
-	BoxShape();
+	BoxShape3D();
 };
 
 #endif // BOX_SHAPE_H

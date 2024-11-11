@@ -31,7 +31,7 @@
 #include "scene/resources/surface_tool.h"
 
 /*
-static const char* _var_names[Particles::VAR_MAX]={
+static const char* _var_names[Particles3D::VAR_MAX]={
 	"vars/lifetime",
 	"vars/spread",
 	"vars/gravity",
@@ -47,7 +47,7 @@ static const char* _var_names[Particles::VAR_MAX]={
 	"vars/height_speed_scale",
 };
 */
-static const char* _rand_names[Particles::VAR_MAX]={
+static const char* _rand_names[Particles3D::VAR_MAX]={
 	"rand/lifetime",
 	"rand/spread",
 	"rand/gravity",
@@ -64,78 +64,78 @@ static const char* _rand_names[Particles::VAR_MAX]={
 	"rand/height_speed_scale",
 };
 
-static const Particles::Variable _var_indices[Particles::VAR_MAX]={
-	Particles::VAR_LIFETIME,
-	Particles::VAR_SPREAD,
-	Particles::VAR_GRAVITY,
-	Particles::VAR_LINEAR_VELOCITY,
-	Particles::VAR_ANGULAR_VELOCITY,
-	Particles::VAR_LINEAR_ACCELERATION,
-	Particles::VAR_DRAG,
-	Particles::VAR_TANGENTIAL_ACCELERATION,
-	Particles::VAR_DAMPING,
-	Particles::VAR_INITIAL_SIZE,
-	Particles::VAR_FINAL_SIZE,
-	Particles::VAR_INITIAL_ANGLE,
-	Particles::VAR_HEIGHT,
-	Particles::VAR_HEIGHT_SPEED_SCALE,
+static const Particles3D::Variable _var_indices[Particles3D::VAR_MAX]={
+	Particles3D::VAR_LIFETIME,
+	Particles3D::VAR_SPREAD,
+	Particles3D::VAR_GRAVITY,
+	Particles3D::VAR_LINEAR_VELOCITY,
+	Particles3D::VAR_ANGULAR_VELOCITY,
+	Particles3D::VAR_LINEAR_ACCELERATION,
+	Particles3D::VAR_DRAG,
+	Particles3D::VAR_TANGENTIAL_ACCELERATION,
+	Particles3D::VAR_DAMPING,
+	Particles3D::VAR_INITIAL_SIZE,
+	Particles3D::VAR_FINAL_SIZE,
+	Particles3D::VAR_INITIAL_ANGLE,
+	Particles3D::VAR_HEIGHT,
+	Particles3D::VAR_HEIGHT_SPEED_SCALE,
 };
 
 
 
-AABB Particles::get_aabb() const {
+AABB Particles3D::get_aabb() const {
 
 	return AABB( Vector3(-1,-1,-1), Vector3(2, 2, 2 ) );
 }
-DVector<Face3> Particles::get_faces(uint32_t p_usage_flags) const {
+DVector<Face3> Particles3D::get_faces(uint32_t p_usage_flags) const {
 
 	return DVector<Face3>();
 }
 
 
-void Particles::set_amount(int p_amount) {
+void Particles3D::set_amount(int p_amount) {
 
 	ERR_FAIL_INDEX(p_amount,4096);
 	amount=p_amount;
 	VisualServer::get_singleton()->particles_set_amount(particles,p_amount);
 }
-int Particles::get_amount() const {
+int Particles3D::get_amount() const {
 	
 	return amount;
 }
 	
-void Particles::set_emitting(bool p_emitting) {
+void Particles3D::set_emitting(bool p_emitting) {
 
 	emitting=p_emitting;
 	VisualServer::get_singleton()->particles_set_emitting(particles,p_emitting);
 
 	setup_timer();
 }
-bool Particles::is_emitting() const {
+bool Particles3D::is_emitting() const {
 
 	return emitting;
 }
 	
-void Particles::set_visibility_aabb(const AABB& p_aabb) {
+void Particles3D::set_visibility_aabb(const AABB& p_aabb) {
 
 	visibility_aabb=p_aabb;
 	VisualServer::get_singleton()->particles_set_visibility_aabb(particles,p_aabb);
 	update_gizmo();
 	
 }
-AABB Particles::get_visibility_aabb() const {
+AABB Particles3D::get_visibility_aabb() const {
 
 	return visibility_aabb;
 }
 	
 
-void Particles::set_emission_points(const DVector<Vector3>& p_points) {
+void Particles3D::set_emission_points(const DVector<Vector3>& p_points) {
 
 	using_points = p_points.size();
 	VisualServer::get_singleton()->particles_set_emission_points(particles,p_points);
 }
 
-DVector<Vector3> Particles::get_emission_points() const {
+DVector<Vector3> Particles3D::get_emission_points() const {
 
 	if (!using_points)
 		return DVector<Vector3>();
@@ -144,43 +144,43 @@ DVector<Vector3> Particles::get_emission_points() const {
 
 }
 
-void Particles::set_emission_half_extents(const Vector3& p_half_extents) {
+void Particles3D::set_emission_half_extents(const Vector3& p_half_extents) {
 
 	emission_half_extents=p_half_extents;
 	VisualServer::get_singleton()->particles_set_emission_half_extents(particles,p_half_extents);
 
 }
 
-Vector3 Particles::get_emission_half_extents() const {
+Vector3 Particles3D::get_emission_half_extents() const {
 
 	return emission_half_extents;
 }
 
-void Particles::set_emission_base_velocity(const Vector3& p_base_velocity) {
+void Particles3D::set_emission_base_velocity(const Vector3& p_base_velocity) {
 
 	emission_base_velocity=p_base_velocity;
 	VisualServer::get_singleton()->particles_set_emission_base_velocity(particles,p_base_velocity);
 
 }
 
-Vector3 Particles::get_emission_base_velocity() const {
+Vector3 Particles3D::get_emission_base_velocity() const {
 
 	return emission_base_velocity;
 }
 
-void Particles::set_gravity_normal(const Vector3& p_normal)  {
+void Particles3D::set_gravity_normal(const Vector3& p_normal)  {
 
 	gravity_normal=p_normal;
 	VisualServer::get_singleton()->particles_set_gravity_normal(particles,p_normal);
 }
 
-Vector3 Particles::get_gravity_normal() const {
+Vector3 Particles3D::get_gravity_normal() const {
 
 	return gravity_normal;
 
 }
 	
-void Particles::set_variable(Variable p_variable,float p_value) {
+void Particles3D::set_variable(Variable p_variable,float p_value) {
 
 	ERR_FAIL_INDEX(p_variable,VAR_MAX);
 	var[p_variable]=p_value;
@@ -189,55 +189,55 @@ void Particles::set_variable(Variable p_variable,float p_value) {
 		update_gizmo();
 }
 
-float Particles::get_variable(Variable p_variable) const {
+float Particles3D::get_variable(Variable p_variable) const {
 
 	ERR_FAIL_INDEX_V(p_variable,VAR_MAX,-1);
 	return var[p_variable];
 
 }
 
-void Particles::set_randomness(Variable p_variable,float p_randomness) {
+void Particles3D::set_randomness(Variable p_variable,float p_randomness) {
 
 	ERR_FAIL_INDEX(p_variable,VAR_MAX);
 	var_random[p_variable]=p_randomness;
 	VisualServer::get_singleton()->particles_set_randomness(particles,(VS::ParticleVariable)p_variable,p_randomness);
 
 }
-float Particles::get_randomness(Variable p_variable) const {
+float Particles3D::get_randomness(Variable p_variable) const {
 
 	ERR_FAIL_INDEX_V(p_variable,VAR_MAX,-1);
 	return var_random[p_variable];
 
 }
 
-void Particles::set_color_phase_pos(int p_phase, float p_pos) {
+void Particles3D::set_color_phase_pos(int p_phase, float p_pos) {
 
 	ERR_FAIL_INDEX(p_phase,VS::MAX_PARTICLE_COLOR_PHASES);
 	color_phase[p_phase].pos=p_pos;
 	VisualServer::get_singleton()->particles_set_color_phase_pos(particles,p_phase,p_pos);
 
 }
-float Particles::get_color_phase_pos(int p_phase) const {
+float Particles3D::get_color_phase_pos(int p_phase) const {
 
 	ERR_FAIL_INDEX_V(p_phase,VS::MAX_PARTICLE_COLOR_PHASES,-1);
 	return color_phase[p_phase].pos;
 }
 
-void Particles::set_color_phase_color(int p_phase, const Color& p_color) {
+void Particles3D::set_color_phase_color(int p_phase, const Color& p_color) {
 
 	ERR_FAIL_INDEX(p_phase,VS::MAX_PARTICLE_COLOR_PHASES);
 	color_phase[p_phase].color=p_color;
 	VisualServer::get_singleton()->particles_set_color_phase_color(particles,p_phase,p_color);
 
 }
-Color Particles::get_color_phase_color(int p_phase) const {
+Color Particles3D::get_color_phase_color(int p_phase) const {
 
 	ERR_FAIL_INDEX_V(p_phase,VS::MAX_PARTICLE_COLOR_PHASES,Color());
 	return color_phase[p_phase].color;
 
 }
 
-void Particles::set_material(const Ref<Material>& p_material) {
+void Particles3D::set_material(const Ref<Material>& p_material) {
 
 	material=p_material;
 	if(material.is_null()) {
@@ -248,7 +248,7 @@ void Particles::set_material(const Ref<Material>& p_material) {
 
 }
 
-void Particles::setup_timer() {
+void Particles3D::setup_timer() {
 
 	if (emitting && emit_timeout > 0) {
 
@@ -258,63 +258,63 @@ void Particles::setup_timer() {
 	};
 };
 
-void Particles::set_emit_timeout(float p_timeout) {
+void Particles3D::set_emit_timeout(float p_timeout) {
 
 	emit_timeout = p_timeout;
 	setup_timer();
 };
 
-float Particles::get_emit_timeout() const {
+float Particles3D::get_emit_timeout() const {
 
 	return emit_timeout;
 };
 
 
-Ref<Material> Particles::get_material() const {
+Ref<Material> Particles3D::get_material() const {
 
 	return material;
 }	
 
-void Particles::set_height_from_velocity(bool p_enable) {
+void Particles3D::set_height_from_velocity(bool p_enable) {
 
 	height_from_velocity=p_enable;
 	VisualServer::get_singleton()->particles_set_height_from_velocity(particles,height_from_velocity);
 }
 
-bool Particles::has_height_from_velocity() const {
+bool Particles3D::has_height_from_velocity() const {
 
 	return height_from_velocity;
 }
 
-void Particles::set_color_phases(int p_phases) {
+void Particles3D::set_color_phases(int p_phases) {
 
 	color_phase_count=p_phases;
 	VisualServer::get_singleton()->particles_set_color_phases(particles,p_phases);
 }
 
-int Particles::get_color_phases() const{
+int Particles3D::get_color_phases() const{
 
 	return color_phase_count;
 }
 
-bool Particles::_can_gizmo_scale() const {
+bool Particles3D::_can_gizmo_scale() const {
 
 	return false;
 }
 
-void Particles::set_use_local_coordinates(bool p_use) {
+void Particles3D::set_use_local_coordinates(bool p_use) {
 
 	local_coordinates=p_use;
 	VisualServer::get_singleton()->particles_set_use_local_coordinates(particles,local_coordinates);
 }
 
-bool Particles::is_using_local_coordinates() const{
+bool Particles3D::is_using_local_coordinates() const{
 
 	return local_coordinates;
 }
 
 
-RES Particles::_get_gizmo_geometry() const {
+RES Particles3D::_get_gizmo_geometry() const {
 
 	Ref<SurfaceTool> surface_tool( memnew( SurfaceTool ));
 
@@ -403,41 +403,41 @@ RES Particles::_get_gizmo_geometry() const {
 }
 
 
-void Particles::_bind_methods() {
+void Particles3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_amount","amount"),&Particles::set_amount);
-	ObjectTypeDB::bind_method(_MD("get_amount"),&Particles::get_amount);
-	ObjectTypeDB::bind_method(_MD("set_emitting","enabled"),&Particles::set_emitting);
-	ObjectTypeDB::bind_method(_MD("is_emitting"),&Particles::is_emitting);
-	ObjectTypeDB::bind_method(_MD("set_visibility_aabb","aabb"),&Particles::set_visibility_aabb);
-	ObjectTypeDB::bind_method(_MD("get_visibility_aabb"),&Particles::get_visibility_aabb);
-	ObjectTypeDB::bind_method(_MD("set_emission_half_extents","half_extents"),&Particles::set_emission_half_extents);
-	ObjectTypeDB::bind_method(_MD("get_emission_half_extents"),&Particles::get_emission_half_extents);
-	ObjectTypeDB::bind_method(_MD("set_emission_base_velocity","base_velocity"),&Particles::set_emission_base_velocity);
-	ObjectTypeDB::bind_method(_MD("get_emission_base_velocity"),&Particles::get_emission_base_velocity);
-	ObjectTypeDB::bind_method(_MD("set_emission_points","points"),&Particles::set_emission_points);
-	ObjectTypeDB::bind_method(_MD("get_emission_points"),&Particles::get_emission_points);
-	ObjectTypeDB::bind_method(_MD("set_gravity_normal","normal"),&Particles::set_gravity_normal);
-	ObjectTypeDB::bind_method(_MD("get_gravity_normal"),&Particles::get_gravity_normal);
-	ObjectTypeDB::bind_method(_MD("set_variable","variable","value"),&Particles::set_variable);
-	ObjectTypeDB::bind_method(_MD("get_variable","variable"),&Particles::get_variable);
-	ObjectTypeDB::bind_method(_MD("set_randomness","variable","randomness"),&Particles::set_randomness);
-	ObjectTypeDB::bind_method(_MD("get_randomness"),&Particles::get_randomness);
-	ObjectTypeDB::bind_method(_MD("set_color_phase_pos","phase","pos"),&Particles::set_color_phase_pos);
-	ObjectTypeDB::bind_method(_MD("get_color_phase_pos","phase"),&Particles::get_color_phase_pos);
-	ObjectTypeDB::bind_method(_MD("set_color_phase_color","phase","color"),&Particles::set_color_phase_color);
-	ObjectTypeDB::bind_method(_MD("get_color_phase_color","phase"),&Particles::get_color_phase_color);
-	ObjectTypeDB::bind_method(_MD("set_material","material:Material"),&Particles::set_material);
-	ObjectTypeDB::bind_method(_MD("get_material:Material"),&Particles::get_material);
-	ObjectTypeDB::bind_method(_MD("set_emit_timeout"),&Particles::set_emit_timeout);
-	ObjectTypeDB::bind_method(_MD("get_emit_timeout"),&Particles::get_emit_timeout);
-	ObjectTypeDB::bind_method(_MD("set_height_from_velocity","enable"),&Particles::set_height_from_velocity);
-	ObjectTypeDB::bind_method(_MD("has_height_from_velocity"),&Particles::has_height_from_velocity);
-	ObjectTypeDB::bind_method(_MD("set_use_local_coordinates","enable"),&Particles::set_use_local_coordinates);
-	ObjectTypeDB::bind_method(_MD("is_using_local_coordinates"),&Particles::is_using_local_coordinates);
+	ObjectTypeDB::bind_method(_MD("set_amount","amount"),&Particles3D::set_amount);
+	ObjectTypeDB::bind_method(_MD("get_amount"),&Particles3D::get_amount);
+	ObjectTypeDB::bind_method(_MD("set_emitting","enabled"),&Particles3D::set_emitting);
+	ObjectTypeDB::bind_method(_MD("is_emitting"),&Particles3D::is_emitting);
+	ObjectTypeDB::bind_method(_MD("set_visibility_aabb","aabb"),&Particles3D::set_visibility_aabb);
+	ObjectTypeDB::bind_method(_MD("get_visibility_aabb"),&Particles3D::get_visibility_aabb);
+	ObjectTypeDB::bind_method(_MD("set_emission_half_extents","half_extents"),&Particles3D::set_emission_half_extents);
+	ObjectTypeDB::bind_method(_MD("get_emission_half_extents"),&Particles3D::get_emission_half_extents);
+	ObjectTypeDB::bind_method(_MD("set_emission_base_velocity","base_velocity"),&Particles3D::set_emission_base_velocity);
+	ObjectTypeDB::bind_method(_MD("get_emission_base_velocity"),&Particles3D::get_emission_base_velocity);
+	ObjectTypeDB::bind_method(_MD("set_emission_points","points"),&Particles3D::set_emission_points);
+	ObjectTypeDB::bind_method(_MD("get_emission_points"),&Particles3D::get_emission_points);
+	ObjectTypeDB::bind_method(_MD("set_gravity_normal","normal"),&Particles3D::set_gravity_normal);
+	ObjectTypeDB::bind_method(_MD("get_gravity_normal"),&Particles3D::get_gravity_normal);
+	ObjectTypeDB::bind_method(_MD("set_variable","variable","value"),&Particles3D::set_variable);
+	ObjectTypeDB::bind_method(_MD("get_variable","variable"),&Particles3D::get_variable);
+	ObjectTypeDB::bind_method(_MD("set_randomness","variable","randomness"),&Particles3D::set_randomness);
+	ObjectTypeDB::bind_method(_MD("get_randomness"),&Particles3D::get_randomness);
+	ObjectTypeDB::bind_method(_MD("set_color_phase_pos","phase","pos"),&Particles3D::set_color_phase_pos);
+	ObjectTypeDB::bind_method(_MD("get_color_phase_pos","phase"),&Particles3D::get_color_phase_pos);
+	ObjectTypeDB::bind_method(_MD("set_color_phase_color","phase","color"),&Particles3D::set_color_phase_color);
+	ObjectTypeDB::bind_method(_MD("get_color_phase_color","phase"),&Particles3D::get_color_phase_color);
+	ObjectTypeDB::bind_method(_MD("set_material","material:Material"),&Particles3D::set_material);
+	ObjectTypeDB::bind_method(_MD("get_material:Material"),&Particles3D::get_material);
+	ObjectTypeDB::bind_method(_MD("set_emit_timeout"),&Particles3D::set_emit_timeout);
+	ObjectTypeDB::bind_method(_MD("get_emit_timeout"),&Particles3D::get_emit_timeout);
+	ObjectTypeDB::bind_method(_MD("set_height_from_velocity","enable"),&Particles3D::set_height_from_velocity);
+	ObjectTypeDB::bind_method(_MD("has_height_from_velocity"),&Particles3D::has_height_from_velocity);
+	ObjectTypeDB::bind_method(_MD("set_use_local_coordinates","enable"),&Particles3D::set_use_local_coordinates);
+	ObjectTypeDB::bind_method(_MD("is_using_local_coordinates"),&Particles3D::is_using_local_coordinates);
 
-	ObjectTypeDB::bind_method(_MD("set_color_phases","count"),&Particles::set_color_phases);
-	ObjectTypeDB::bind_method(_MD("get_color_phases"),&Particles::get_color_phases);
+	ObjectTypeDB::bind_method(_MD("set_color_phases","count"),&Particles3D::set_color_phases);
+	ObjectTypeDB::bind_method(_MD("get_color_phases"),&Particles3D::get_color_phases);
 
 	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "Material" ), _SCS("set_material"), _SCS("get_material") );
 
@@ -497,7 +497,7 @@ void Particles::_bind_methods() {
 
 }
 
-Particles::Particles() {
+Particles3D::Particles3D() {
 
 	particles = VisualServer::get_singleton()->particles_create();
 	timer = memnew(Timer);
@@ -552,7 +552,7 @@ Particles::Particles() {
 }
 
 
-Particles::~Particles() {
+Particles3D::~Particles3D() {
 
 	VisualServer::get_singleton()->free(particles);
 }

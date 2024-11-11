@@ -79,11 +79,11 @@ void MultiMeshEditor::_populate() {
 			return;
 		}
 
-		MeshInstance *ms_instance = ms_node->cast_to<MeshInstance>();
+		MeshInstance3D *ms_instance = ms_node->cast_to<MeshInstance3D>();
 
 		if (!ms_instance) {
 
-			err_dialog->set_text("Mesh source is invalid (Not a MeshInstance).");
+			err_dialog->set_text("Mesh source is invalid (Not a MeshInstance3D).");
 			err_dialog->popup_centered(Size2(300,100));
 			return;
 		}
@@ -115,7 +115,7 @@ void MultiMeshEditor::_populate() {
 		return;
 	}
 
-	GeometryInstance *ss_instance = ss_node->cast_to<MeshInstance>();
+	GeometryInstance3D *ss_instance = ss_node->cast_to<MeshInstance3D>();
 
 	if (!ss_instance) {
 
@@ -126,7 +126,7 @@ void MultiMeshEditor::_populate() {
 
 	Transform geom_xform = node->get_global_transform().affine_inverse() * ss_instance->get_global_transform();
 
-	DVector<Face3> geometry = ss_instance->get_faces(VisualInstance::FACES_SOLID);
+	DVector<Face3> geometry = ss_instance->get_faces(VisualInstance3D::FACES_SOLID);
 
 	if (geometry.size()==0) {
 
@@ -154,14 +154,14 @@ void MultiMeshEditor::_populate() {
 	node->populate_parent(populate_rotate_random->get_val(),populate_tilt_random->get_val(),populate_scale_random->get_val(),populate_scale->get_val());
 
 
-	ERR_EXPLAIN("Parent is not of type VisualInstance.");
-	ERR_FAIL_COND(!get_parent() || !get_parent()->is_type("VisualInstance"));
+	ERR_EXPLAIN("Parent is not of type VisualInstance3D.");
+	ERR_FAIL_COND(!get_parent() || !get_parent()->is_type("VisualInstance3D"));
 
 	ERR_EXPLAIN("Multimesh not present");
 	ERR_FAIL_COND(multimesh.is_null());
 
-	VisualInstance *vi = get_parent()->cast_to<VisualInstance>();
-	ERR_EXPLAIN("Parent is not of type VisualInstance, can't be populated.");
+	VisualInstance3D *vi = get_parent()->cast_to<VisualInstance3D>();
+	ERR_EXPLAIN("Parent is not of type VisualInstance3D, can't be populated.");
 	ERR_FAIL_COND(!vi);
 
 #endif
@@ -297,7 +297,7 @@ void MultiMeshEditor::_menu_option(int p_option) {
 }
 
 
-void MultiMeshEditor::edit(MultiMeshInstance *p_multimesh) {
+void MultiMeshEditor::edit(MultiMeshInstance3D *p_multimesh) {
 
 	node=p_multimesh;	
 
@@ -424,12 +424,12 @@ MultiMeshEditor::MultiMeshEditor() {
 
 void MultiMeshEditorPlugin::edit(Object *p_object) {
 
-	multimesh_editor->edit(p_object->cast_to<MultiMeshInstance>());
+	multimesh_editor->edit(p_object->cast_to<MultiMeshInstance3D>());
 }
 
 bool MultiMeshEditorPlugin::handles(Object *p_object) const {
 
-	return p_object->is_type("MultiMeshInstance");
+	return p_object->is_type("MultiMeshInstance3D");
 }
 
 void MultiMeshEditorPlugin::make_visible(bool p_visible) {

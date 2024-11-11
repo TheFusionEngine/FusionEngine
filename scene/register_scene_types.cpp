@@ -341,30 +341,30 @@ void register_scene_types() {
 
 	/* REGISTER 3D */
 
-	ObjectTypeDB::register_type<Spatial>();
-	ObjectTypeDB::register_type<Skeleton>();
+	ObjectTypeDB::register_type<Node3D>();
+	ObjectTypeDB::register_type<Skeleton3D>();
 	ObjectTypeDB::register_type<AnimationPlayer>();
 	ObjectTypeDB::register_type<Tween>();
 
 	OS::get_singleton()->yield(); //may take time to init
 
 #ifndef _3D_DISABLED
-	ObjectTypeDB::register_type<BoneAttachment>();
-	ObjectTypeDB::register_virtual_type<VisualInstance>();
-	ObjectTypeDB::register_type<Camera>();
+	ObjectTypeDB::register_type<BoneAttachment3D>();
+	ObjectTypeDB::register_virtual_type<VisualInstance3D>();
+	ObjectTypeDB::register_type<Camera3D>();
 	ObjectTypeDB::register_type<InterpolatedCamera>();
 	ObjectTypeDB::register_type<TestCube>();
-	ObjectTypeDB::register_type<MeshInstance>();
-	ObjectTypeDB::register_type<ImmediateGeometry>();
+	ObjectTypeDB::register_type<MeshInstance3D>();
+	ObjectTypeDB::register_type<ImmediateGeometry3D>();
 	ObjectTypeDB::register_type<Sprite3D>();
 	ObjectTypeDB::register_type<AnimatedSprite3D>();
 	ObjectTypeDB::register_virtual_type<Light>();
-	ObjectTypeDB::register_type<DirectionalLight>();
-	ObjectTypeDB::register_type<OmniLight>();
-	ObjectTypeDB::register_type<SpotLight>();
+	ObjectTypeDB::register_type<DirectionalLight3D>();
+	ObjectTypeDB::register_type<OmniLight3D>();
+	ObjectTypeDB::register_type<SpotLight3D>();
 	ObjectTypeDB::register_type<AnimationTreePlayer>();
 	ObjectTypeDB::register_type<Portal>();
-	ObjectTypeDB::register_type<Particles>();
+	ObjectTypeDB::register_type<Particles3D>();
 	ObjectTypeDB::register_type<Position3D>();
 	ObjectTypeDB::register_type<Quad>();
 	ObjectTypeDB::register_type<NavigationMeshInstance>();
@@ -373,34 +373,34 @@ void register_scene_types() {
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_virtual_type<CollisionObject>();
-	ObjectTypeDB::register_type<StaticBody>();
-	ObjectTypeDB::register_type<RigidBody>();
-	ObjectTypeDB::register_type<KinematicBody>();
+	ObjectTypeDB::register_virtual_type<CollisionObject3D>();
+	ObjectTypeDB::register_type<StaticBody3D>();
+	ObjectTypeDB::register_type<RigidBody3D>();
+	ObjectTypeDB::register_type<CharacterBody3D>();
 
 
-	ObjectTypeDB::register_type<VehicleBody>();
-	ObjectTypeDB::register_type<VehicleWheel>();
-	ObjectTypeDB::register_type<Area>();
+	ObjectTypeDB::register_type<VehicleBody3D>();
+	ObjectTypeDB::register_type<VehicleWheel3D>();
+	ObjectTypeDB::register_type<Area3D>();
 	ObjectTypeDB::register_type<ProximityGroup>();
-	ObjectTypeDB::register_type<CollisionShape>();
-	ObjectTypeDB::register_type<CollisionPolygon>();
-	ObjectTypeDB::register_type<RayCast>();
-	ObjectTypeDB::register_type<MultiMeshInstance>();
+	ObjectTypeDB::register_type<CollisionShape3D>();
+	ObjectTypeDB::register_type<CollisionPolygon3D>();
+	ObjectTypeDB::register_type<RayCast3D>();
+	ObjectTypeDB::register_type<MultiMeshInstance3D>();
 	ObjectTypeDB::register_type<Room>();
 	ObjectTypeDB::register_type<Curve3D>();
-	ObjectTypeDB::register_type<Path>();
-	ObjectTypeDB::register_type<PathFollow>();
-	ObjectTypeDB::register_type<VisibilityNotifier>();
-	ObjectTypeDB::register_type<VisibilityEnabler>();
+	ObjectTypeDB::register_type<Path3D>();
+	ObjectTypeDB::register_type<PathFollow3D>();
+	ObjectTypeDB::register_type<VisibilityNotifier3D>();
+	ObjectTypeDB::register_type<VisibilityEnabler3D>();
 	ObjectTypeDB::register_type<BakedLightInstance>();
 	ObjectTypeDB::register_type<BakedLightSampler>();
 	ObjectTypeDB::register_type<WorldEnvironment>();
 
 	ObjectTypeDB::register_virtual_type<Joint>();
-	ObjectTypeDB::register_type<PinJoint>();
-	ObjectTypeDB::register_type<HingeJoint>();
-	ObjectTypeDB::register_type<SliderJoint>();
+	ObjectTypeDB::register_type<PinJoint3D>();
+	ObjectTypeDB::register_type<HingeJoint3D>();
+	ObjectTypeDB::register_type<SliderJoint3D>();
 	ObjectTypeDB::register_type<ConeTwistJoint>();
 	ObjectTypeDB::register_type<Generic6DOFJoint>();
 
@@ -408,8 +408,8 @@ void register_scene_types() {
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_type<SpatialSamplePlayer>();
-	ObjectTypeDB::register_type<SpatialStreamPlayer>();
+	ObjectTypeDB::register_type<SamplePlayer3D>();
+	ObjectTypeDB::register_type<StreamPlayer3D>();
 	ObjectTypeDB::register_type<SoundRoomParams>();
 
 
@@ -420,8 +420,8 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<SamplePlayer>();
 
 
-//	ObjectTypeDB::register_type<StaticBody>();
-//	ObjectTypeDB::register_type<RigidBody>();
+//	ObjectTypeDB::register_type<StaticBody3D>();
+//	ObjectTypeDB::register_type<RigidBody3D>();
 //	ObjectTypeDB::register_type<CharacterBody>();
 //	ObjectTypeDB::register_type<BodyVolumeSphere>();
 	//ObjectTypeDB::register_type<BodyVolumeBox>();
@@ -437,7 +437,7 @@ void register_scene_types() {
 
 
 	/* disable types by default, only editors should enable them */
-	ObjectTypeDB::set_type_enabled("CollisionShape",false);
+	ObjectTypeDB::set_type_enabled("CollisionShape3D",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeSphere",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeBox",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeCapsule",false);
@@ -448,10 +448,10 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<Node2D>();
 	ObjectTypeDB::register_type<Particles2D>();
 	ObjectTypeDB::register_type<ParticleAttractor2D>();
-	ObjectTypeDB::register_type<Sprite>();
+	ObjectTypeDB::register_type<Sprite2D>();
 	ObjectTypeDB::register_type<ViewportSprite>();
 	ObjectTypeDB::register_type<SpriteFrames>();
-	ObjectTypeDB::register_type<AnimatedSprite>();
+	ObjectTypeDB::register_type<AnimatedSprite2D>();
 	ObjectTypeDB::register_type<Position2D>();
 	ObjectTypeDB::register_virtual_type<CollisionObject2D>();
 	ObjectTypeDB::register_virtual_type<PhysicsBody2D>();
@@ -505,12 +505,12 @@ void register_scene_types() {
 	OS::get_singleton()->yield(); //may take time to init
 
 	ObjectTypeDB::register_type<RayShape>();
-	ObjectTypeDB::register_type<SphereShape>();
-	ObjectTypeDB::register_type<BoxShape>();
-	ObjectTypeDB::register_type<CapsuleShape>();
+	ObjectTypeDB::register_type<SphereShape3D>();
+	ObjectTypeDB::register_type<BoxShape3D>();
+	ObjectTypeDB::register_type<CapsuleShape3D>();
 	ObjectTypeDB::register_type<PlaneShape>();
-	ObjectTypeDB::register_type<ConvexPolygonShape>();
-	ObjectTypeDB::register_type<ConcavePolygonShape>();
+	ObjectTypeDB::register_type<ConvexPolygonShape3D>();
+	ObjectTypeDB::register_type<ConcavePolygonShape3D>();
 
 	ObjectTypeDB::register_type<SurfaceTool>();
 	ObjectTypeDB::register_type<MeshDataTool>();
@@ -519,7 +519,7 @@ void register_scene_types() {
 	OS::get_singleton()->yield(); //may take time to init
 
 #endif
-	ObjectTypeDB::register_type<World>();
+	ObjectTypeDB::register_type<World3D>();
 	ObjectTypeDB::register_type<Environment>();
 	ObjectTypeDB::register_type<World2D>();
 	ObjectTypeDB::register_virtual_type<Texture>();

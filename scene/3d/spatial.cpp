@@ -72,7 +72,7 @@ SpatialGizmo::SpatialGizmo() {
 
 }
 
-void Spatial::_notify_dirty() {
+void Node3D::_notify_dirty() {
 
 	if (!data.ignore_notification && !xform_change.in_list()) {
 
@@ -82,14 +82,14 @@ void Spatial::_notify_dirty() {
 
 
 
-void Spatial::_update_local_transform() const {
+void Node3D::_update_local_transform() const {
 
 	data.local_transform.basis.set_euler(data.rotation);
 	data.local_transform.basis.scale(data.scale);
 
 	data.dirty&=~DIRTY_LOCAL;
 }
-void Spatial::_propagate_transform_changed(Spatial *p_origin) {
+void Node3D::_propagate_transform_changed(Node3D *p_origin) {
 
 	if (!is_inside_tree()) {
 		return;
@@ -100,7 +100,7 @@ void Spatial::_propagate_transform_changed(Spatial *p_origin) {
 
 	data.children_lock++;
 		
-	for (List<Spatial*>::Element *E=data.children.front();E;E=E->next()) {
+	for (List<Node3D*>::Element *E=data.children.front();E;E=E->next()) {
 	
 		if (E->get()->data.toplevel_active)
 			continue; //don't propagate to a toplevel
@@ -118,14 +118,14 @@ void Spatial::_propagate_transform_changed(Spatial *p_origin) {
 	data.children_lock--;
 }
 
-void Spatial::_notification(int p_what) {
+void Node3D::_notification(int p_what) {
 
 	switch(p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 
 			Node *p = get_parent();
 			if (p)
-				data.parent=p->cast_to<Spatial>();
+				data.parent=p->cast_to<Node3D>();
 
 			if (data.parent)
 				data.C=data.parent->data.children.push_back(this);
@@ -223,7 +223,7 @@ void Spatial::_notification(int p_what) {
 	}
 }
 
-void Spatial::set_transform(const Transform& p_transform) {
+void Node3D::set_transform(const Transform& p_transform) {
 
 	data.local_transform=p_transform;
 	data.dirty|=DIRTY_VECTORS;
@@ -234,7 +234,7 @@ void Spatial::set_transform(const Transform& p_transform) {
 
 }
 
-void Spatial::set_global_transform(const Transform& p_transform) {
+void Node3D::set_global_transform(const Transform& p_transform) {
 
 	Transform xform =
 			(data.parent && !data.toplevel_active) ?
@@ -246,7 +246,7 @@ void Spatial::set_global_transform(const Transform& p_transform) {
 }
 
 
-Transform Spatial::get_transform() const {
+Transform Node3D::get_transform() const {
 
 	if (data.dirty & DIRTY_LOCAL) {
 
@@ -255,7 +255,7 @@ Transform Spatial::get_transform() const {
 	
 	return data.local_transform;
 }
-Transform Spatial::get_global_transform() const {
+Transform Node3D::get_global_transform() const {
 
 	ERR_FAIL_COND_V(!is_inside_tree(), Transform());
 
@@ -280,9 +280,9 @@ Transform Spatial::get_global_transform() const {
 	return data.global_transform;
 }
 #if 0
-void Spatial::add_child_notify(Node *p_child) {
+void Node3D::add_child_notify(Node *p_child) {
 /*
-	Spatial *s=p_child->cast_to<Spatial>();
+	Node3D *s=p_child->cast_to<Node3D>();
 	if (!s)
 		return;
 		
@@ -295,9 +295,9 @@ void Spatial::add_child_notify(Node *p_child) {
 */
 }
 
-void Spatial::remove_child_notify(Node *p_child) {
+void Node3D::remove_child_notify(Node *p_child) {
 /*
-	Spatial *s=p_child->cast_to<Spatial>();
+	Node3D *s=p_child->cast_to<Node3D>();
 	if (!s)
 		return;
 	
@@ -311,13 +311,13 @@ void Spatial::remove_child_notify(Node *p_child) {
 }
 #endif
 
-Spatial *Spatial::get_parent_spatial() const {
+Node3D *Node3D::get_parent_spatial() const {
 
 	return data.parent;
 
 }
 
-Transform Spatial::get_relative_transform(const Node *p_parent) const {
+Transform Node3D::get_relative_transform(const Node *p_parent) const {
 
 	if (p_parent==this)
 		return Transform();
@@ -331,14 +331,14 @@ Transform Spatial::get_relative_transform(const Node *p_parent) const {
 
 }
 
-void Spatial::set_translation(const Vector3& p_translation) {
+void Node3D::set_translation(const Vector3& p_translation) {
 
 	data.local_transform.origin=p_translation;
 	_propagate_transform_changed(this);
 
 }
 
-void Spatial::set_rotation(const Vector3& p_euler){
+void Node3D::set_rotation(const Vector3& p_euler){
 
 	if (data.dirty&DIRTY_VECTORS) {
 		data.scale=data.local_transform.basis.get_scale();
@@ -350,7 +350,7 @@ void Spatial::set_rotation(const Vector3& p_euler){
 	_propagate_transform_changed(this);
 
 }
-void Spatial::set_scale(const Vector3& p_scale){
+void Node3D::set_scale(const Vector3& p_scale){
 
 	if (data.dirty&DIRTY_VECTORS) {
 		data.rotation=data.local_transform.basis.get_euler();
@@ -363,11 +363,11 @@ void Spatial::set_scale(const Vector3& p_scale){
 
 }
 
-Vector3 Spatial::get_translation() const{
+Vector3 Node3D::get_translation() const{
 
 	return data.local_transform.origin;
 }
-Vector3 Spatial::get_rotation() const{
+Vector3 Node3D::get_rotation() const{
 
 	if (data.dirty&DIRTY_VECTORS) {
 		data.scale=data.local_transform.basis.get_scale();
@@ -377,7 +377,7 @@ Vector3 Spatial::get_rotation() const{
 
 	return data.rotation;
 }
-Vector3 Spatial::get_scale() const{
+Vector3 Node3D::get_scale() const{
 
 	if (data.dirty&DIRTY_VECTORS) {
 		data.scale=data.local_transform.basis.get_scale();
@@ -389,7 +389,7 @@ Vector3 Spatial::get_scale() const{
 }
 
 
-void Spatial::update_gizmo() {
+void Node3D::update_gizmo() {
 
 #ifdef TOOLS_ENABLED
 	if (!is_inside_world())
@@ -403,7 +403,7 @@ void Spatial::update_gizmo() {
 #endif
 }
 
-void Spatial::set_gizmo(const Ref<SpatialGizmo>& p_gizmo) {
+void Node3D::set_gizmo(const Ref<SpatialGizmo>& p_gizmo) {
 
 #ifdef TOOLS_ENABLED
 
@@ -422,7 +422,7 @@ void Spatial::set_gizmo(const Ref<SpatialGizmo>& p_gizmo) {
 #endif
 }
 
-Ref<SpatialGizmo> Spatial::get_gizmo() const {
+Ref<SpatialGizmo> Node3D::get_gizmo() const {
 
 #ifdef TOOLS_ENABLED
 
@@ -435,7 +435,7 @@ Ref<SpatialGizmo> Spatial::get_gizmo() const {
 
 #ifdef TOOLS_ENABLED
 
-void Spatial::_update_gizmo() {
+void Node3D::_update_gizmo() {
 
 	data.gizmo_dirty=false;
 	if (data.gizmo.is_valid()) {
@@ -447,7 +447,7 @@ void Spatial::_update_gizmo() {
 }
 
 
-void Spatial::set_disable_gizmo(bool p_enabled) {
+void Node3D::set_disable_gizmo(bool p_enabled) {
 
 	data.gizmo_disabled=p_enabled;
 	if (!p_enabled && data.gizmo.is_valid())
@@ -456,7 +456,7 @@ void Spatial::set_disable_gizmo(bool p_enabled) {
 
 #endif
 
-void Spatial::set_as_toplevel(bool p_enabled) {
+void Node3D::set_as_toplevel(bool p_enabled) {
 
 	if (data.toplevel==p_enabled)
 		return;
@@ -476,41 +476,41 @@ void Spatial::set_as_toplevel(bool p_enabled) {
 
 }
 
-bool Spatial::is_set_as_toplevel() const{
+bool Node3D::is_set_as_toplevel() const{
 
 	return data.toplevel;
 }
 
-void Spatial::_set_rotation_deg(const Vector3& p_deg) {
+void Node3D::_set_rotation_deg(const Vector3& p_deg) {
 
 	set_rotation(p_deg * Math_PI / 180.0);
 }
 
-Vector3 Spatial::_get_rotation_deg() const {
+Vector3 Node3D::_get_rotation_deg() const {
 
 	return get_rotation() * 180.0 / Math_PI;
 }
 
-Ref<World> Spatial::get_world() const {
+Ref<World3D> Node3D::get_world() const {
 
-	ERR_FAIL_COND_V(!is_inside_world(),Ref<World>());
+	ERR_FAIL_COND_V(!is_inside_world(),Ref<World3D>());
 	return data.viewport->find_world();
 
 }
 
 #ifdef TOOLS_ENABLED
-void Spatial::set_import_transform(const Transform& p_transform) {
+void Node3D::set_import_transform(const Transform& p_transform) {
 	data.import_transform=p_transform;
 }
 
-Transform Spatial::get_import_transform() const {
+Transform Node3D::get_import_transform() const {
 
 	return data.import_transform;
 }
 #endif
 
 
-void Spatial::_propagate_visibility_changed() {
+void Node3D::_propagate_visibility_changed() {
 
 	notification(NOTIFICATION_VISIBILITY_CHANGED);
 	emit_signal(SceneStringNames::get_singleton()->visibility_changed);
@@ -520,9 +520,9 @@ void Spatial::_propagate_visibility_changed() {
 		_update_gizmo();
 #endif
 
-	for (List<Spatial*>::Element*E=data.children.front();E;E=E->next()) {
+	for (List<Node3D*>::Element*E=data.children.front();E;E=E->next()) {
 
-		Spatial *c=E->get();
+		Node3D *c=E->get();
 		if (!c || !c->data.visible)
 			continue;
 		c->_propagate_visibility_changed();
@@ -530,7 +530,7 @@ void Spatial::_propagate_visibility_changed() {
 }
 
 
-void Spatial::show() {
+void Node3D::show() {
 
 	if (data.visible)
 		return;
@@ -546,7 +546,7 @@ void Spatial::show() {
 	}
 }
 
-void Spatial::hide(){
+void Node3D::hide(){
 
 	if (!data.visible)
 		return;
@@ -560,9 +560,9 @@ void Spatial::hide(){
 	}
 
 }
-bool Spatial::is_visible() const{
+bool Node3D::is_visible() const{
 
-	const Spatial *s=this;
+	const Node3D *s=this;
 
 	while(s) {
 		if (!s->data.visible) {
@@ -575,12 +575,12 @@ bool Spatial::is_visible() const{
 }
 
 
-bool Spatial::is_hidden() const{
+bool Node3D::is_hidden() const{
 
 	return !data.visible;
 }
 
-void Spatial::_set_visible_(bool p_visible) {
+void Node3D::_set_visible_(bool p_visible) {
 
 	if (p_visible)
 		show();
@@ -588,50 +588,50 @@ void Spatial::_set_visible_(bool p_visible) {
 		hide();
 }
 
-bool Spatial::_is_visible_() const {
+bool Node3D::_is_visible_() const {
 
 	return !is_hidden();
 }
 
 
-void Spatial::_bind_methods() {
+void Node3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_transform","local"), &Spatial::set_transform);
-	ObjectTypeDB::bind_method(_MD("get_transform"), &Spatial::get_transform);
-	ObjectTypeDB::bind_method(_MD("set_translation","translation"), &Spatial::set_translation);
-	ObjectTypeDB::bind_method(_MD("get_translation"), &Spatial::get_translation);
-	ObjectTypeDB::bind_method(_MD("set_rotation","rotation"), &Spatial::set_rotation);
-	ObjectTypeDB::bind_method(_MD("get_rotation"), &Spatial::get_rotation);
-	ObjectTypeDB::bind_method(_MD("set_scale","scale"), &Spatial::set_scale);
-	ObjectTypeDB::bind_method(_MD("get_scale"), &Spatial::get_scale);
-	ObjectTypeDB::bind_method(_MD("set_global_transform","global"), &Spatial::set_global_transform);
-	ObjectTypeDB::bind_method(_MD("get_global_transform"), &Spatial::get_global_transform);
-	ObjectTypeDB::bind_method(_MD("get_parent_spatial"), &Spatial::get_parent_spatial);
-	ObjectTypeDB::bind_method(_MD("set_ignore_transform_notification","enabled"), &Spatial::set_ignore_transform_notification);
-	ObjectTypeDB::bind_method(_MD("set_as_toplevel","enable"), &Spatial::set_as_toplevel);
-	ObjectTypeDB::bind_method(_MD("is_set_as_toplevel"), &Spatial::is_set_as_toplevel);
-	ObjectTypeDB::bind_method(_MD("_set_rotation_deg","rotation_deg"), &Spatial::_set_rotation_deg);
-	ObjectTypeDB::bind_method(_MD("_get_rotation_deg"), &Spatial::_get_rotation_deg);
-	ObjectTypeDB::bind_method(_MD("get_world:World"), &Spatial::get_world);
+	ObjectTypeDB::bind_method(_MD("set_transform","local"), &Node3D::set_transform);
+	ObjectTypeDB::bind_method(_MD("get_transform"), &Node3D::get_transform);
+	ObjectTypeDB::bind_method(_MD("set_translation","translation"), &Node3D::set_translation);
+	ObjectTypeDB::bind_method(_MD("get_translation"), &Node3D::get_translation);
+	ObjectTypeDB::bind_method(_MD("set_rotation","rotation"), &Node3D::set_rotation);
+	ObjectTypeDB::bind_method(_MD("get_rotation"), &Node3D::get_rotation);
+	ObjectTypeDB::bind_method(_MD("set_scale","scale"), &Node3D::set_scale);
+	ObjectTypeDB::bind_method(_MD("get_scale"), &Node3D::get_scale);
+	ObjectTypeDB::bind_method(_MD("set_global_transform","global"), &Node3D::set_global_transform);
+	ObjectTypeDB::bind_method(_MD("get_global_transform"), &Node3D::get_global_transform);
+	ObjectTypeDB::bind_method(_MD("get_parent_spatial"), &Node3D::get_parent_spatial);
+	ObjectTypeDB::bind_method(_MD("set_ignore_transform_notification","enabled"), &Node3D::set_ignore_transform_notification);
+	ObjectTypeDB::bind_method(_MD("set_as_toplevel","enable"), &Node3D::set_as_toplevel);
+	ObjectTypeDB::bind_method(_MD("is_set_as_toplevel"), &Node3D::is_set_as_toplevel);
+	ObjectTypeDB::bind_method(_MD("_set_rotation_deg","rotation_deg"), &Node3D::_set_rotation_deg);
+	ObjectTypeDB::bind_method(_MD("_get_rotation_deg"), &Node3D::_get_rotation_deg);
+	ObjectTypeDB::bind_method(_MD("get_world:World3D"), &Node3D::get_world);
 
 #ifdef TOOLS_ENABLED
-	ObjectTypeDB::bind_method(_MD("_update_gizmo"), &Spatial::_update_gizmo);
-	ObjectTypeDB::bind_method(_MD("_set_import_transform"), &Spatial::set_import_transform);
-	ObjectTypeDB::bind_method(_MD("_get_import_transform"), &Spatial::get_import_transform);
+	ObjectTypeDB::bind_method(_MD("_update_gizmo"), &Node3D::_update_gizmo);
+	ObjectTypeDB::bind_method(_MD("_set_import_transform"), &Node3D::set_import_transform);
+	ObjectTypeDB::bind_method(_MD("_get_import_transform"), &Node3D::get_import_transform);
 	ADD_PROPERTY( PropertyInfo(Variant::TRANSFORM,"_import_transform",PROPERTY_HINT_NONE,"",PROPERTY_USAGE_NOEDITOR),_SCS("_set_import_transform"),_SCS("_get_import_transform"));
 #endif
 
-	ObjectTypeDB::bind_method(_MD("update_gizmo"), &Spatial::update_gizmo);
-	ObjectTypeDB::bind_method(_MD("set_gizmo","gizmo:SpatialGizmo"), &Spatial::set_gizmo);
-	ObjectTypeDB::bind_method(_MD("get_gizmo:SpatialGizmo"), &Spatial::get_gizmo);
+	ObjectTypeDB::bind_method(_MD("update_gizmo"), &Node3D::update_gizmo);
+	ObjectTypeDB::bind_method(_MD("set_gizmo","gizmo:SpatialGizmo"), &Node3D::set_gizmo);
+	ObjectTypeDB::bind_method(_MD("get_gizmo:SpatialGizmo"), &Node3D::get_gizmo);
 
-	ObjectTypeDB::bind_method(_MD("show"), &Spatial::show);
-	ObjectTypeDB::bind_method(_MD("hide"), &Spatial::hide);
-	ObjectTypeDB::bind_method(_MD("is_visible"), &Spatial::is_visible);
-	ObjectTypeDB::bind_method(_MD("is_hidden"), &Spatial::is_hidden);
+	ObjectTypeDB::bind_method(_MD("show"), &Node3D::show);
+	ObjectTypeDB::bind_method(_MD("hide"), &Node3D::hide);
+	ObjectTypeDB::bind_method(_MD("is_visible"), &Node3D::is_visible);
+	ObjectTypeDB::bind_method(_MD("is_hidden"), &Node3D::is_hidden);
 
-	ObjectTypeDB::bind_method(_MD("_set_visible_"), &Spatial::_set_visible_);
-	ObjectTypeDB::bind_method(_MD("_is_visible_"), &Spatial::_is_visible_);
+	ObjectTypeDB::bind_method(_MD("_set_visible_"), &Node3D::_set_visible_);
+	ObjectTypeDB::bind_method(_MD("_is_visible_"), &Node3D::_is_visible_);
 
 	BIND_CONSTANT( NOTIFICATION_TRANSFORM_CHANGED );
 	BIND_CONSTANT( NOTIFICATION_ENTER_WORLD );
@@ -652,7 +652,7 @@ void Spatial::_bind_methods() {
 }
 
 
-Spatial::Spatial() : xform_change(this)
+Node3D::Node3D() : xform_change(this)
 {
 
 	data.dirty=DIRTY_NONE;
@@ -675,7 +675,7 @@ Spatial::Spatial() : xform_change(this)
 }
 
 
-Spatial::~Spatial() {
+Node3D::~Node3D() {
 
 }
 

@@ -114,7 +114,7 @@ class VisualServerRaster : public VisualServer {
 	};
 
 	void _update_baked_light_sampler_dp_cache(BakedLightSampler * blsamp);
-	struct Camera  {
+	struct Camera3D  {
  
 		enum Type {
 			PERSPECTIVE,
@@ -130,7 +130,7 @@ class VisualServerRaster : public VisualServer {
 		
 		Transform transform;
  
- 		Camera() {
+ 		Camera3D() {
  		
 			visible_layers=0xFFFFFFFF;
 			fov=60;
@@ -684,7 +684,7 @@ class VisualServerRaster : public VisualServer {
 	mutable RID_Owner<BakedLight> baked_light_owner;
 	mutable RID_Owner<BakedLightSampler> baked_light_sampler_owner;
 
-	mutable RID_Owner<Camera> camera_owner;
+	mutable RID_Owner<Camera3D> camera_owner;
 	mutable RID_Owner<Viewport> viewport_owner;
 	
 	mutable RID_Owner<Scenario> scenario_owner;
@@ -700,21 +700,21 @@ class VisualServerRaster : public VisualServer {
 	ViewportRect viewport_rect;
 	_FORCE_INLINE_ void _instance_draw(Instance *p_instance);
 	
-	bool _test_portal_cull(Camera *p_camera, Instance *p_portal_from, Instance *p_portal_to);
-	void _cull_portal(Camera *p_camera, Instance *p_portal,Instance *p_from_portal);
-	void _cull_room(Camera *p_camera, Instance *p_room,Instance *p_from_portal=NULL);
+	bool _test_portal_cull(Camera3D *p_camera, Instance *p_portal_from, Instance *p_portal_to);
+	void _cull_portal(Camera3D *p_camera, Instance *p_portal,Instance *p_from_portal);
+	void _cull_room(Camera3D *p_camera, Instance *p_room,Instance *p_from_portal=NULL);
 	void _process_sampled_light(const Transform &p_camera, Instance *p_sampled_light, bool p_linear_colorspace);
 
-	void _render_camera(Viewport *p_viewport,Camera *p_camera, Scenario *p_scenario);
+	void _render_camera(Viewport *p_viewport,Camera3D *p_camera, Scenario *p_scenario);
 	void _render_canvas_item(CanvasItem *p_canvas_item,const Matrix32& p_transform,const Rect2& p_clip_rect,float p_opacity);
 	void _render_canvas(Canvas *p_canvas,const Matrix32 &p_transform);
-	Vector<Vector3> _camera_generate_endpoints(Instance *p_light,Camera *p_camera,float p_range_min, float p_range_max);
-	Vector<Plane> _camera_generate_orthogonal_planes(Instance *p_light,Camera *p_camera,float p_range_min, float p_range_max);
+	Vector<Vector3> _camera_generate_endpoints(Instance *p_light,Camera3D *p_camera,float p_range_min, float p_range_max);
+	Vector<Plane> _camera_generate_orthogonal_planes(Instance *p_light,Camera3D *p_camera,float p_range_min, float p_range_max);
 
-	void _light_instance_update_lispsm_shadow(Instance *p_light,Scenario *p_scenario,Camera *p_camera,const CullRange& p_cull_range);
-	void _light_instance_update_pssm_shadow(Instance *p_light,Scenario *p_scenario,Camera *p_camera,const CullRange& p_cull_range);
+	void _light_instance_update_lispsm_shadow(Instance *p_light,Scenario *p_scenario,Camera3D *p_camera,const CullRange& p_cull_range);
+	void _light_instance_update_pssm_shadow(Instance *p_light,Scenario *p_scenario,Camera3D *p_camera,const CullRange& p_cull_range);
 	
-	void _light_instance_update_shadow(Instance *p_light,Scenario *p_scenario,Camera *p_camera,const CullRange& p_cull_range);
+	void _light_instance_update_shadow(Instance *p_light,Scenario *p_scenario,Camera3D *p_camera,const CullRange& p_cull_range);
 	
 	uint64_t render_pass;
 	int changes;

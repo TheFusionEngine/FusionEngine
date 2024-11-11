@@ -2262,7 +2262,7 @@ RID RasterizerGLES1::immediate_get_material(RID p_immediate) const {
 
 RID RasterizerGLES1::particles_create() {
 
-	Particles *particles = memnew( Particles );
+	Particles3D *particles = memnew( Particles3D );
 	ERR_FAIL_COND_V(!particles,RID());
 	return particles_owner.make_rid(particles);
 }
@@ -2270,7 +2270,7 @@ RID RasterizerGLES1::particles_create() {
 void RasterizerGLES1::particles_set_amount(RID p_particles, int p_amount) {
 
 	ERR_FAIL_COND(p_amount<1);
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.amount=p_amount;
 
@@ -2278,7 +2278,7 @@ void RasterizerGLES1::particles_set_amount(RID p_particles, int p_amount) {
 
 int RasterizerGLES1::particles_get_amount(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.amount;
 
@@ -2286,14 +2286,14 @@ int RasterizerGLES1::particles_get_amount(RID p_particles) const {
 
 void RasterizerGLES1::particles_set_emitting(RID p_particles, bool p_emitting) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.emitting=p_emitting;;
 
 }
 bool RasterizerGLES1::particles_is_emitting(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
 	return particles->data.emitting;
 
@@ -2301,7 +2301,7 @@ bool RasterizerGLES1::particles_is_emitting(RID p_particles) const {
 
 void RasterizerGLES1::particles_set_visibility_aabb(RID p_particles, const AABB& p_visibility) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.visibility_aabb=p_visibility;
 
@@ -2309,14 +2309,14 @@ void RasterizerGLES1::particles_set_visibility_aabb(RID p_particles, const AABB&
 
 void RasterizerGLES1::particles_set_emission_half_extents(RID p_particles, const Vector3& p_half_extents) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.emission_half_extents=p_half_extents;
 }
 Vector3 RasterizerGLES1::particles_get_emission_half_extents(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
 
 	return particles->data.emission_half_extents;
@@ -2324,7 +2324,7 @@ Vector3 RasterizerGLES1::particles_get_emission_half_extents(RID p_particles) co
 
 void RasterizerGLES1::particles_set_emission_base_velocity(RID p_particles, const Vector3& p_base_velocity) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.emission_base_velocity=p_base_velocity;
@@ -2332,7 +2332,7 @@ void RasterizerGLES1::particles_set_emission_base_velocity(RID p_particles, cons
 
 Vector3 RasterizerGLES1::particles_get_emission_base_velocity(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
 
 	return particles->data.emission_base_velocity;
@@ -2341,7 +2341,7 @@ Vector3 RasterizerGLES1::particles_get_emission_base_velocity(RID p_particles) c
 
 void RasterizerGLES1::particles_set_emission_points(RID p_particles, const DVector<Vector3>& p_points) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.emission_points=p_points;
@@ -2349,7 +2349,7 @@ void RasterizerGLES1::particles_set_emission_points(RID p_particles, const DVect
 
 DVector<Vector3> RasterizerGLES1::particles_get_emission_points(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,DVector<Vector3>());
 
 	return particles->data.emission_points;
@@ -2358,7 +2358,7 @@ DVector<Vector3> RasterizerGLES1::particles_get_emission_points(RID p_particles)
 
 void RasterizerGLES1::particles_set_gravity_normal(RID p_particles, const Vector3& p_normal) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.gravity_normal=p_normal;
@@ -2366,7 +2366,7 @@ void RasterizerGLES1::particles_set_gravity_normal(RID p_particles, const Vector
 }
 Vector3 RasterizerGLES1::particles_get_gravity_normal(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
 
 	return particles->data.gravity_normal;
@@ -2375,7 +2375,7 @@ Vector3 RasterizerGLES1::particles_get_gravity_normal(RID p_particles) const {
 
 AABB RasterizerGLES1::particles_get_visibility_aabb(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,AABB());
 	return particles->data.visibility_aabb;
 
@@ -2385,28 +2385,28 @@ void RasterizerGLES1::particles_set_variable(RID p_particles, VS::ParticleVariab
 
 	ERR_FAIL_INDEX(p_variable,VS::PARTICLE_VAR_MAX);
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.particle_vars[p_variable]=p_value;
 
 }
 float RasterizerGLES1::particles_get_variable(RID p_particles, VS::ParticleVariable p_variable) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.particle_vars[p_variable];
 }
 
 void RasterizerGLES1::particles_set_randomness(RID p_particles, VS::ParticleVariable p_variable,float p_randomness) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.particle_randomness[p_variable]=p_randomness;
 
 }
 float RasterizerGLES1::particles_get_randomness(RID p_particles, VS::ParticleVariable p_variable) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.particle_randomness[p_variable];
 
@@ -2414,7 +2414,7 @@ float RasterizerGLES1::particles_get_randomness(RID p_particles, VS::ParticleVar
 
 void RasterizerGLES1::particles_set_color_phases(RID p_particles, int p_phases) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_COND( p_phases<0 || p_phases>VS::MAX_PARTICLE_COLOR_PHASES );
 	particles->data.color_phase_count=p_phases;
@@ -2422,7 +2422,7 @@ void RasterizerGLES1::particles_set_color_phases(RID p_particles, int p_phases) 
 }
 int RasterizerGLES1::particles_get_color_phases(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.color_phase_count;
 }
@@ -2436,7 +2436,7 @@ void RasterizerGLES1::particles_set_color_phase_pos(RID p_particles, int p_phase
 	if (p_pos>1.0)
 		p_pos=1.0;
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.color_phases[p_phase].pos=p_pos;
 
@@ -2445,7 +2445,7 @@ float RasterizerGLES1::particles_get_color_phase_pos(RID p_particles, int p_phas
 
 	ERR_FAIL_INDEX_V(p_phase, VS::MAX_PARTICLE_COLOR_PHASES, -1.0);
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.color_phases[p_phase].pos;
 
@@ -2454,7 +2454,7 @@ float RasterizerGLES1::particles_get_color_phase_pos(RID p_particles, int p_phas
 void RasterizerGLES1::particles_set_color_phase_color(RID p_particles, int p_phase, const Color& p_color) {
 
 	ERR_FAIL_INDEX(p_phase, VS::MAX_PARTICLE_COLOR_PHASES);
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.color_phases[p_phase].color=p_color;
 
@@ -2471,7 +2471,7 @@ Color RasterizerGLES1::particles_get_color_phase_color(RID p_particles, int p_ph
 
 	ERR_FAIL_INDEX_V(p_phase, VS::MAX_PARTICLE_COLOR_PHASES, Color());
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Color());
 	return particles->data.color_phases[p_phase].color;
 
@@ -2479,7 +2479,7 @@ Color RasterizerGLES1::particles_get_color_phase_color(RID p_particles, int p_ph
 
 void RasterizerGLES1::particles_set_attractors(RID p_particles, int p_attractors) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_COND( p_attractors<0 || p_attractors>VisualServer::MAX_PARTICLE_ATTRACTORS );
 	particles->data.attractor_count=p_attractors;
@@ -2487,21 +2487,21 @@ void RasterizerGLES1::particles_set_attractors(RID p_particles, int p_attractors
 }
 int RasterizerGLES1::particles_get_attractors(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.attractor_count;
 }
 
 void RasterizerGLES1::particles_set_attractor_pos(RID p_particles, int p_attractor, const Vector3& p_pos) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_INDEX(p_attractor,particles->data.attractor_count);
 	particles->data.attractors[p_attractor].pos=p_pos;;
 }
 Vector3 RasterizerGLES1::particles_get_attractor_pos(RID p_particles,int p_attractor) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
 	ERR_FAIL_INDEX_V(p_attractor,particles->data.attractor_count,Vector3());
 	return particles->data.attractors[p_attractor].pos;
@@ -2509,7 +2509,7 @@ Vector3 RasterizerGLES1::particles_get_attractor_pos(RID p_particles,int p_attra
 
 void RasterizerGLES1::particles_set_attractor_strength(RID p_particles, int p_attractor, float p_force) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_INDEX(p_attractor,particles->data.attractor_count);
 	particles->data.attractors[p_attractor].force=p_force;
@@ -2517,7 +2517,7 @@ void RasterizerGLES1::particles_set_attractor_strength(RID p_particles, int p_at
 
 float RasterizerGLES1::particles_get_attractor_strength(RID p_particles,int p_attractor) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,0);
 	ERR_FAIL_INDEX_V(p_attractor,particles->data.attractor_count,0);
 	return particles->data.attractors[p_attractor].force;
@@ -2525,7 +2525,7 @@ float RasterizerGLES1::particles_get_attractor_strength(RID p_particles,int p_at
 
 void RasterizerGLES1::particles_set_material(RID p_particles, RID p_material,bool p_owned) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	if (particles->material_owned && particles->material.is_valid())
 		free(particles->material);
@@ -2537,7 +2537,7 @@ void RasterizerGLES1::particles_set_material(RID p_particles, RID p_material,boo
 }
 RID RasterizerGLES1::particles_get_material(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,RID());
 	return particles->material;
 
@@ -2545,7 +2545,7 @@ RID RasterizerGLES1::particles_get_material(RID p_particles) const {
 
 void RasterizerGLES1::particles_set_use_local_coordinates(RID p_particles, bool p_enable) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.local_coordinates=p_enable;
 
@@ -2553,20 +2553,20 @@ void RasterizerGLES1::particles_set_use_local_coordinates(RID p_particles, bool 
 
 bool RasterizerGLES1::particles_is_using_local_coordinates(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
 	return particles->data.local_coordinates;
 }
 bool RasterizerGLES1::particles_has_height_from_velocity(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
 	return particles->data.height_from_velocity;
 }
 
 void RasterizerGLES1::particles_set_height_from_velocity(RID p_particles, bool p_enable) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.height_from_velocity=p_enable;
 
@@ -2574,7 +2574,7 @@ void RasterizerGLES1::particles_set_height_from_velocity(RID p_particles, bool p
 
 AABB RasterizerGLES1::particles_get_aabb(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,AABB());
 	return particles->data.visibility_aabb;
 }
@@ -2583,13 +2583,13 @@ AABB RasterizerGLES1::particles_get_aabb(RID p_particles) const {
 
 RID RasterizerGLES1::skeleton_create() {
 
-	Skeleton *skeleton = memnew( Skeleton );
+	Skeleton3D *skeleton = memnew( Skeleton3D );
 	ERR_FAIL_COND_V(!skeleton,RID());
 	return skeleton_owner.make_rid( skeleton );
 }
 void RasterizerGLES1::skeleton_resize(RID p_skeleton,int p_bones) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
 	if (p_bones == skeleton->bones.size()) {
 		return;
@@ -2600,13 +2600,13 @@ void RasterizerGLES1::skeleton_resize(RID p_skeleton,int p_bones) {
 }
 int RasterizerGLES1::skeleton_get_bone_count(RID p_skeleton) const {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
 void RasterizerGLES1::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
 	ERR_FAIL_INDEX( p_bone, skeleton->bones.size() );
 
@@ -2615,7 +2615,7 @@ void RasterizerGLES1::skeleton_bone_set_transform(RID p_skeleton,int p_bone, con
 
 Transform RasterizerGLES1::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, Transform());
 	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
 
@@ -3266,7 +3266,7 @@ void RasterizerGLES1::add_particles( const RID& p_particle_instance, const Insta
 	//print_line("adding particles");
 	ParticlesInstance *particles_instance = particles_instance_owner.get(p_particle_instance);
 	ERR_FAIL_COND(!particles_instance);
-	Particles *p=particles_owner.get( particles_instance->particles );
+	Particles3D *p=particles_owner.get( particles_instance->particles );
 	ERR_FAIL_COND(!p);
 
 	_add_geometry(p,p_data,p,particles_instance);
@@ -3704,7 +3704,7 @@ static const int gl_texcoord_index[VS::ARRAY_MAX-1] = {
 };
 
 
-Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Material* p_material, const Skeleton *p_skeleton,const float *p_morphs) {
+Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Material* p_material, const Skeleton3D *p_skeleton,const float *p_morphs) {
 
 
 	switch(p_geometry->type) {
@@ -4059,7 +4059,7 @@ static const GLenum gl_poly_primitive[4]={
 };
 
 
-void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner) {
+void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton3D* p_skeleton, const GeometryOwner *p_owner) {
 
 
 	_rinfo.object_count++;
@@ -4183,7 +4183,7 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 
 
 			//print_line("particulinas");
-			const Particles *particles = static_cast<const Particles*>( p_geometry );
+			const Particles3D *particles = static_cast<const Particles3D*>( p_geometry );
 			ERR_FAIL_COND(!p_owner);
 			ParticlesInstance *particles_instance = (ParticlesInstance*)p_owner;
 
@@ -4313,7 +4313,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 	const Material *prev_material=NULL;
 	uint64_t prev_light_key=0;
-	const Skeleton *prev_skeleton=NULL;
+	const Skeleton3D *prev_skeleton=NULL;
 	const Geometry *prev_geometry=NULL;
 	const BakedLightData *prev_baked_light=NULL;
 	RID prev_baked_light_texture;
@@ -4325,7 +4325,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		RenderList::Element *e = p_render_list->elements[i];
 		const Material *material = e->material;
 		uint64_t light_key = e->light_key;
-		const Skeleton *skeleton = e->skeleton;
+		const Skeleton3D *skeleton = e->skeleton;
 		const Geometry *geometry = e->geometry;
 		const BakedLightData *baked_light = e->instance->baked_light;
 		
@@ -5991,7 +5991,7 @@ void RasterizerGLES1::free(const RID& p_rid) {
 
 	} else if (particles_owner.owns(p_rid)) {
 
-		Particles *particles = particles_owner.get(p_rid);
+		Particles3D *particles = particles_owner.get(p_rid);
 		ERR_FAIL_COND(!particles);
 
 		particles_owner.free(p_rid);
@@ -6013,7 +6013,7 @@ void RasterizerGLES1::free(const RID& p_rid) {
 
 	} else if (skeleton_owner.owns(p_rid)) {
 
-		Skeleton *skeleton = skeleton_owner.get( p_rid );
+		Skeleton3D *skeleton = skeleton_owner.get( p_rid );
 		ERR_FAIL_COND(!skeleton)
 
 		skeleton_owner.free(p_rid);

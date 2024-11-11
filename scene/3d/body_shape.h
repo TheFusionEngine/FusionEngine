@@ -32,9 +32,9 @@
 #include "scene/3d/spatial.h"
 #include "scene/resources/shape.h"
 
-class CollisionShape : public Spatial {
+class CollisionShape3D : public Node3D {
 
-	OBJ_TYPE( CollisionShape, Spatial );
+	OBJ_TYPE( CollisionShape3D, Node3D );
 	OBJ_CATEGORY("3D Physics Nodes");
 
 	Ref<Shape> shape;
@@ -76,8 +76,8 @@ public:
     void set_trigger(bool p_trigger);
     bool is_trigger() const;
 
-	CollisionShape();
-	~CollisionShape();
+	CollisionShape3D();
+	~CollisionShape3D();
 };
 
 #endif // BODY_VOLUME_H

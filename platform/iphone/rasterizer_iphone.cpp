@@ -1392,13 +1392,13 @@ AABB RasterizerIPhone::beam_get_aabb(RID p_particles) const {
 
 RID RasterizerIPhone::skeleton_create() {
 
-	Skeleton *skeleton = memnew( Skeleton );
+	Skeleton3D *skeleton = memnew( Skeleton3D );
 	ERR_FAIL_COND_V(!skeleton,RID());
 	return skeleton_owner.make_rid( skeleton );
 }
 void RasterizerIPhone::skeleton_resize(RID p_skeleton,int p_bones) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
 	if (p_bones == skeleton->bones.size()) {
 		return;
@@ -1410,13 +1410,13 @@ void RasterizerIPhone::skeleton_resize(RID p_skeleton,int p_bones) {
 }
 int RasterizerIPhone::skeleton_get_bone_count(RID p_skeleton) const {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
 void RasterizerIPhone::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
 	ERR_FAIL_INDEX( p_bone, skeleton->bones.size() );
 
@@ -1424,7 +1424,7 @@ void RasterizerIPhone::skeleton_bone_set_transform(RID p_skeleton,int p_bone, co
 }
 Transform RasterizerIPhone::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, Transform());
 	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
 
@@ -1828,7 +1828,7 @@ void RasterizerIPhone::add_light( RID p_light_instance ) {
 	light_instances[light_instance_count++]=li;
 }
 
-void RasterizerIPhone::_add_geometry( const Geometry* p_geometry, const Transform& p_world, uint32_t p_vertex_format, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides,const Skeleton* p_skeleton, GeometryOwner *p_owner) {
+void RasterizerIPhone::_add_geometry( const Geometry* p_geometry, const Transform& p_world, uint32_t p_vertex_format, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides,const Skeleton3D* p_skeleton, GeometryOwner *p_owner) {
 
 	Material *m=NULL;
 
@@ -1869,7 +1869,7 @@ void RasterizerIPhone::add_mesh( RID p_mesh, const Transform* p_world, const RID
 	for (int i=0;i<ssize;i++) {
 
 		Surface *s = mesh->surfaces[i];
-		Skeleton *sk = p_skeleton.is_valid()?skeleton_owner.get(p_skeleton):NULL;
+		Skeleton3D *sk = p_skeleton.is_valid()?skeleton_owner.get(p_skeleton):NULL;
 
 		_add_geometry(s,*p_world,s->format,p_light_instances,p_light_count,p_material_overrides,sk,NULL);
 	}
@@ -2201,7 +2201,7 @@ static const GLenum gl_primitive[]={
 	GL_TRIANGLE_FAN
 };
 
-void RasterizerIPhone::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton) {
+void RasterizerIPhone::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton3D* p_skeleton) {
 
 
 	switch(p_geometry->type) {
@@ -2239,7 +2239,7 @@ void RasterizerIPhone::_render_list_forward(RenderList *p_render_list) {
 
 	const Material *prev_material=NULL;
 	uint64_t prev_light_hash=0;
-	const Skeleton *prev_skeleton=NULL;
+	const Skeleton3D *prev_skeleton=NULL;
 	const Geometry *prev_geometry=NULL;
 	const ParamOverrideMap* prev_overrides=NULL; // make it diferent than NULL
 
@@ -2253,7 +2253,7 @@ void RasterizerIPhone::_render_list_forward(RenderList *p_render_list) {
 		RenderList::Element *e = p_render_list->elements[i];
 		const Material *material = e->material;
 		uint64_t light_hash = e->light_hash;
-		const Skeleton *skeleton = e->skeleton;
+		const Skeleton3D *skeleton = e->skeleton;
 		const Geometry *geometry = e->geometry;
 		const ParamOverrideMap* material_overrides=e->material_overrides;
 
@@ -2698,7 +2698,7 @@ void RasterizerIPhone::free(const RID& p_rid) const {
 
 	} else if (skeleton_owner.owns(p_rid)) {
 
-		Skeleton *skeleton = skeleton_owner.get( p_rid );
+		Skeleton3D *skeleton = skeleton_owner.get( p_rid );
 		ERR_FAIL_COND(!skeleton)
 
 		skeleton_owner.free(p_rid);

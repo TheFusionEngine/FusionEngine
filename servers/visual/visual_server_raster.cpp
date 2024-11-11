@@ -1376,16 +1376,16 @@ int VisualServerRaster::baked_light_sampler_get_resolution(RID p_baked_light_sam
 
 RID VisualServerRaster::camera_create() {
 
-	Camera * camera = memnew( Camera );
+	Camera3D * camera = memnew( Camera3D );
 	return camera_owner.make_rid( camera );
 
 }
 
 void VisualServerRaster::camera_set_perspective(RID p_camera,float p_fovy_degrees, float p_z_near, float p_z_far) {
 	VS_CHANGED
-	Camera *camera = camera_owner.get( p_camera );
+	Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND(!camera);
-	camera->type=Camera::PERSPECTIVE;
+	camera->type=Camera3D::PERSPECTIVE;
 	camera->fov=p_fovy_degrees;
 	camera->znear=p_z_near;
 	camera->zfar=p_z_far;
@@ -1394,9 +1394,9 @@ void VisualServerRaster::camera_set_perspective(RID p_camera,float p_fovy_degree
 
 void VisualServerRaster::camera_set_orthogonal(RID p_camera,float p_size, float p_z_near, float p_z_far) {
 	VS_CHANGED;
-	Camera *camera = camera_owner.get( p_camera );
+	Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND(!camera);
-	camera->type=Camera::ORTHOGONAL;
+	camera->type=Camera3D::ORTHOGONAL;
 	camera->size=p_size;
 	camera->znear=p_z_near;
 	camera->zfar=p_z_far;
@@ -1404,7 +1404,7 @@ void VisualServerRaster::camera_set_orthogonal(RID p_camera,float p_size, float 
 
 void VisualServerRaster::camera_set_transform(RID p_camera,const Transform& p_transform) {
 	VS_CHANGED;
-	Camera *camera = camera_owner.get( p_camera );
+	Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND(!camera);
 	camera->transform=p_transform.orthonormalized();
 	
@@ -1414,7 +1414,7 @@ void VisualServerRaster::camera_set_transform(RID p_camera,const Transform& p_tr
 void VisualServerRaster::camera_set_visible_layers(RID p_camera,uint32_t p_layers) {
 
 	VS_CHANGED;
-	Camera *camera = camera_owner.get( p_camera );
+	Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND(!camera);
 
 	camera->visible_layers=p_layers;
@@ -1423,7 +1423,7 @@ void VisualServerRaster::camera_set_visible_layers(RID p_camera,uint32_t p_layer
 
 uint32_t VisualServerRaster::camera_get_visible_layers(RID p_camera) const{
 
-	const Camera *camera = camera_owner.get( p_camera );
+	const Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND_V(!camera,0);
 
 	return camera->visible_layers;
@@ -1431,7 +1431,7 @@ uint32_t VisualServerRaster::camera_get_visible_layers(RID p_camera) const{
 
 void VisualServerRaster::camera_set_environment(RID p_camera,RID p_env) {
 
-	Camera *camera = camera_owner.get( p_camera );
+	Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND(!camera);
 	camera->env=p_env;
 
@@ -1439,7 +1439,7 @@ void VisualServerRaster::camera_set_environment(RID p_camera,RID p_env) {
 
 RID VisualServerRaster::camera_get_environment(RID p_camera) const {
 
-	const Camera *camera = camera_owner.get( p_camera );
+	const Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND_V(!camera,RID());
 	return camera->env;
 
@@ -1447,14 +1447,14 @@ RID VisualServerRaster::camera_get_environment(RID p_camera) const {
 
 void VisualServerRaster::camera_set_use_vertical_aspect(RID p_camera,bool p_enable) {
 
-	Camera *camera = camera_owner.get( p_camera );
+	Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND(!camera);
 	camera->vaspect=p_enable;
 
 }
 bool VisualServerRaster::camera_is_using_vertical_aspect(RID p_camera,bool p_enable) const{
 
-	const Camera *camera = camera_owner.get( p_camera );
+	const Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND_V(!camera,false);
 	return camera->vaspect;
 
@@ -4044,7 +4044,7 @@ void VisualServerRaster::free( RID p_rid ) {
 	} else if (camera_owner.owns(p_rid)) {
 		// delete te camera
 		
-		Camera *camera = camera_owner.get(p_rid);
+		Camera3D *camera = camera_owner.get(p_rid);
 		ERR_FAIL_COND(!camera);
 		
 		camera_owner.free( p_rid );
@@ -4215,18 +4215,18 @@ void VisualServerRaster::_instance_draw(Instance *p_instance) {
 }
 
 
-Vector<Vector3> VisualServerRaster::_camera_generate_endpoints(Instance *p_light,Camera *p_camera,float p_range_min, float p_range_max) {
+Vector<Vector3> VisualServerRaster::_camera_generate_endpoints(Instance *p_light,Camera3D *p_camera,float p_range_min, float p_range_max) {
 
 	// setup a camera matrix for that range!
 	CameraMatrix camera_matrix;
 
 	switch(p_camera->type) {
 
-		case Camera::ORTHOGONAL: {
+		case Camera3D::ORTHOGONAL: {
 
 			camera_matrix.set_orthogonal(p_camera->size,viewport_rect.width / (float)viewport_rect.height,p_range_min,p_range_max,p_camera->vaspect);
 		} break;
-		case Camera::PERSPECTIVE: {
+		case Camera3D::PERSPECTIVE: {
 
 			camera_matrix.set_perspective(
 				p_camera->fov,
@@ -4249,7 +4249,7 @@ Vector<Vector3> VisualServerRaster::_camera_generate_endpoints(Instance *p_light
 	return endpoints;
 }
 
-Vector<Plane> VisualServerRaster::_camera_generate_orthogonal_planes(Instance *p_light,Camera *p_camera,float p_range_min, float p_range_max) {
+Vector<Plane> VisualServerRaster::_camera_generate_orthogonal_planes(Instance *p_light,Camera3D *p_camera,float p_range_min, float p_range_max) {
 
 	Vector<Vector3> endpoints=_camera_generate_endpoints(p_light,p_camera,p_range_min,p_range_max); // frustum plane endpoints
 	ERR_FAIL_COND_V(endpoints.empty(),Vector<Plane>());
@@ -4307,7 +4307,7 @@ Vector<Plane> VisualServerRaster::_camera_generate_orthogonal_planes(Instance *p
 	return light_frustum_planes;
 
 }
-void VisualServerRaster::_light_instance_update_pssm_shadow(Instance *p_light,Scenario *p_scenario,Camera *p_camera,const CullRange& p_cull_range) {
+void VisualServerRaster::_light_instance_update_pssm_shadow(Instance *p_light,Scenario *p_scenario,Camera3D *p_camera,const CullRange& p_cull_range) {
 
 	int splits = rasterizer->light_instance_get_shadow_passes( p_light->light_info->instance );
 	
@@ -4347,7 +4347,7 @@ void VisualServerRaster::_light_instance_update_pssm_shadow(Instance *p_light,Sc
 		
 		switch(p_camera->type) {
 				
-			case Camera::ORTHOGONAL: {
+			case Camera3D::ORTHOGONAL: {
 			
 				camera_matrix.set_orthogonal(
 					p_camera->size,
@@ -4358,7 +4358,7 @@ void VisualServerRaster::_light_instance_update_pssm_shadow(Instance *p_light,Sc
 
 				);
 			} break;
-			case Camera::PERSPECTIVE: {
+			case Camera3D::PERSPECTIVE: {
 			
 
 				camera_matrix.set_perspective(
@@ -4574,7 +4574,7 @@ CameraMatrix _lispm_look( const Vector3 pos, const Vector3 dir, const Vector3 up
 
 #if 1
 
-void VisualServerRaster::_light_instance_update_lispsm_shadow(Instance *p_light,Scenario *p_scenario,Camera *p_camera,const CullRange& p_cull_range) {
+void VisualServerRaster::_light_instance_update_lispsm_shadow(Instance *p_light,Scenario *p_scenario,Camera3D *p_camera,const CullRange& p_cull_range) {
 
 	Vector3 light_vec = -p_light->data.transform.basis.get_axis(2);
 	Vector3 view_vec = -p_camera->transform.basis.get_axis(2);
@@ -4766,7 +4766,7 @@ void VisualServerRaster::_light_instance_update_lispsm_shadow(Instance *p_light,
 #else
 
 
-void VisualServerRaster::_light_instance_update_lispsm_shadow(Instance *p_light,Scenario *p_scenario,Camera *p_camera,const CullRange& p_cull_range) {
+void VisualServerRaster::_light_instance_update_lispsm_shadow(Instance *p_light,Scenario *p_scenario,Camera3D *p_camera,const CullRange& p_cull_range) {
 
 	/* STEP 1: GENERATE LIGHT TRANSFORM */
 
@@ -4952,7 +4952,7 @@ void VisualServerRaster::_light_instance_update_lispsm_shadow(Instance *p_light,
 #endif
 
 
-void VisualServerRaster::_light_instance_update_shadow(Instance *p_light,Scenario *p_scenario,Camera *p_camera,const CullRange& p_cull_range) {
+void VisualServerRaster::_light_instance_update_shadow(Instance *p_light,Scenario *p_scenario,Camera3D *p_camera,const CullRange& p_cull_range) {
 
 
 
@@ -5333,7 +5333,7 @@ void VisualServerRaster::instance_unpair(void *p_self, OctreeElementID, Instance
 	}
 }
 
-bool VisualServerRaster::_test_portal_cull(Camera *p_camera, Instance *p_from_portal, Instance *p_to_portal) {
+bool VisualServerRaster::_test_portal_cull(Camera3D *p_camera, Instance *p_from_portal, Instance *p_to_portal) {
 
 
 	int src_point_count=p_from_portal->portal_info->transformed_point_cache.size();
@@ -5379,7 +5379,7 @@ bool VisualServerRaster::_test_portal_cull(Camera *p_camera, Instance *p_from_po
 
 }
 
-void VisualServerRaster::_cull_portal(Camera *p_camera, Instance *p_portal,Instance *p_from_portal) {
+void VisualServerRaster::_cull_portal(Camera3D *p_camera, Instance *p_portal,Instance *p_from_portal) {
 
 	ERR_FAIL_COND(!p_portal->scenario); //scenario outside
 
@@ -5454,7 +5454,7 @@ void VisualServerRaster::_cull_portal(Camera *p_camera, Instance *p_portal,Insta
 
 }
 
-void VisualServerRaster::_cull_room(Camera *p_camera, Instance *p_room,Instance *p_from_portal) {
+void VisualServerRaster::_cull_room(Camera3D *p_camera, Instance *p_room,Instance *p_from_portal) {
 
 	if (p_room==NULL) {
 		//exterior
@@ -5798,7 +5798,7 @@ void VisualServerRaster::_process_sampled_light(const Transform& p_camera,Instan
 }
 
 
-void VisualServerRaster::_render_camera(Viewport *p_viewport,Camera *p_camera, Scenario *p_scenario) {
+void VisualServerRaster::_render_camera(Viewport *p_viewport,Camera3D *p_camera, Scenario *p_scenario) {
 
 
 	uint64_t t = OS::get_singleton()->get_ticks_usec();
@@ -5809,7 +5809,7 @@ void VisualServerRaster::_render_camera(Viewport *p_viewport,Camera *p_camera, S
 	CameraMatrix camera_matrix;
 	
 	switch(p_camera->type) {
-		case Camera::ORTHOGONAL: {
+		case Camera3D::ORTHOGONAL: {
 		
 			camera_matrix.set_orthogonal(
 				p_camera->size,
@@ -5820,7 +5820,7 @@ void VisualServerRaster::_render_camera(Viewport *p_viewport,Camera *p_camera, S
 
 			);
 		} break;
-		case Camera::PERSPECTIVE: {
+		case Camera3D::PERSPECTIVE: {
 
 			camera_matrix.set_perspective(
 				p_camera->fov,
@@ -6477,11 +6477,11 @@ void VisualServerRaster::_draw_viewport(Viewport *p_viewport,int p_ofs_x, int p_
 
 	}
 
-	/* Camera should always be BEFORE any other 3D */
+	/* Camera3D should always be BEFORE any other 3D */
 
 	if (!p_viewport->hide_scenario && camera_owner.owns(p_viewport->camera) && scenario_owner.owns(p_viewport->scenario)) {
 
-		Camera *camera = camera_owner.get( p_viewport->camera );
+		Camera3D *camera = camera_owner.get( p_viewport->camera );
 		Scenario *scenario = scenario_owner.get( p_viewport->scenario );
 
 		_update_instances(); // check dirty instances before rendering
@@ -6823,7 +6823,7 @@ void VisualServerRaster::finish() {
 	_clean_up_owner( &room_owner,"Room" );
 	_clean_up_owner( &portal_owner,"Portal" );
 	
-	_clean_up_owner( &camera_owner,"Camera" );
+	_clean_up_owner( &camera_owner,"Camera3D" );
 	_clean_up_owner( &viewport_owner,"Viewport" );
 	
 	_clean_up_owner( &scenario_owner,"Scenario" );

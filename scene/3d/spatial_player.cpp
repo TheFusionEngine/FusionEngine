@@ -34,7 +34,7 @@
 #include "scene/resources/surface_tool.h"
 
 
-void SpatialPlayer::_notification(int p_what) {
+void SoundPlayer3D::_notification(int p_what) {
 
 
 	switch(p_what) {
@@ -64,7 +64,7 @@ void SpatialPlayer::_notification(int p_what) {
 }
 
 
-void SpatialPlayer::set_param( Param p_param, float p_value) {
+void SoundPlayer3D::set_param( Param p_param, float p_value) {
 
 	ERR_FAIL_INDEX(p_param,PARAM_MAX);
 	params[p_param]=p_value;
@@ -76,19 +76,19 @@ void SpatialPlayer::set_param( Param p_param, float p_value) {
 
 }
 
-float SpatialPlayer::get_param( Param p_param) const {
+float SoundPlayer3D::get_param( Param p_param) const {
 
 	ERR_FAIL_INDEX_V(p_param,PARAM_MAX,0);
 	return params[p_param];
 
 }
 
-bool SpatialPlayer::_can_gizmo_scale() const {
+bool SoundPlayer3D::_can_gizmo_scale() const {
 
 	return false;
 }
 
-RES SpatialPlayer::_get_gizmo_geometry() const {
+RES SoundPlayer3D::_get_gizmo_geometry() const {
 
 	Ref<SurfaceTool> surface_tool( memnew( SurfaceTool ));
 
@@ -228,11 +228,11 @@ RES SpatialPlayer::_get_gizmo_geometry() const {
 }
 
 
-void SpatialPlayer::_bind_methods() {
+void SoundPlayer3D::_bind_methods() {
 
 
-	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&SpatialPlayer::set_param);
-	ObjectTypeDB::bind_method(_MD("get_param","param"),&SpatialPlayer::get_param);
+	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&SoundPlayer3D::set_param);
+	ObjectTypeDB::bind_method(_MD("get_param","param"),&SoundPlayer3D::get_param);
 
 	BIND_CONSTANT( PARAM_VOLUME_DB );
 	BIND_CONSTANT( PARAM_PITCH_SCALE );
@@ -254,7 +254,7 @@ void SpatialPlayer::_bind_methods() {
 }
 
 
-SpatialPlayer::SpatialPlayer() {
+SoundPlayer3D::SoundPlayer3D() {
 
 	params[PARAM_VOLUME_DB]=0.0;
 	params[PARAM_PITCH_SCALE]=1.0;
@@ -266,7 +266,7 @@ SpatialPlayer::SpatialPlayer() {
 
 }
 
-SpatialPlayer::~SpatialPlayer() {
+SoundPlayer3D::~SoundPlayer3D() {
 
 
 }

@@ -276,7 +276,7 @@ void GridMapEditor::_validate_selection() {
 	_update_selection_transform();
 }
 
-bool GridMapEditor::do_input_action(Camera* p_camera,const Point2& p_point,bool p_click) {
+bool GridMapEditor::do_input_action(Camera3D* p_camera,const Point2& p_point,bool p_click) {
 
 	if (!spatial_editor)
 		return false;
@@ -290,7 +290,7 @@ bool GridMapEditor::do_input_action(Camera* p_camera,const Point2& p_point,bool 
 	if (input_action!=INPUT_COPY && input_action!=INPUT_SELECT && input_action!=INPUT_DUPLICATE && !theme->has_item(selected_pallete))
 		return false;
 
-	Camera *camera = p_camera;
+	Camera3D *camera = p_camera;
 	Vector3 from = camera->project_ray_origin(p_point);
 	Vector3 normal = camera->project_ray_normal(p_point);
 	Transform local_xform = node->get_global_transform().affine_inverse();
@@ -521,7 +521,7 @@ void GridMapEditor::_duplicate_paste() {
 
 }
 
-bool GridMapEditor::forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event) {
+bool GridMapEditor::forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event) {
 
 
 	if (edit_mode->get_selected()==0) { // regular click
@@ -652,7 +652,7 @@ bool GridMapEditor::forward_spatial_input_event(Camera* p_camera,const InputEven
 
 					Point2 point = Point2(p_event.mouse_motion.x,p_event.mouse_motion.y);
 
-					Camera *camera = p_camera;
+					Camera3D *camera = p_camera;
 					Vector3 from = camera->project_ray_origin(point);
 					Vector3 normal = camera->project_ray_normal(point);
 					Transform local_xform = node->get_global_transform().affine_inverse();
@@ -1229,9 +1229,9 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 	options->get_popup()->add_separator();
 	options->get_popup()->add_check_item("Duplicate Selects",MENU_OPTION_DUPLICATE_SELECTS);
 	options->get_popup()->add_separator();
-	options->get_popup()->add_item("Create Area",MENU_OPTION_SELECTION_MAKE_AREA,KEY_CONTROL+KEY_C);
+	options->get_popup()->add_item("Create Area3D",MENU_OPTION_SELECTION_MAKE_AREA,KEY_CONTROL+KEY_C);
 	options->get_popup()->add_item("Create Exterior Connector",MENU_OPTION_SELECTION_MAKE_EXTERIOR_CONNECTOR);
-	options->get_popup()->add_item("Erase Area",MENU_OPTION_REMOVE_AREA);
+	options->get_popup()->add_item("Erase Area3D",MENU_OPTION_REMOVE_AREA);
 	options->get_popup()->add_separator();
 	options->get_popup()->add_item("Selection -> Clear",MENU_OPTION_SELECTION_CLEAR);
 	//options->get_popup()->add_separator();

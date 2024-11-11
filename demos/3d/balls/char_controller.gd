@@ -1,4 +1,4 @@
-extends RigidBody
+extends RigidBody3D
 
 var dir = Vector3()
 export var speed = 6

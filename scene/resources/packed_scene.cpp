@@ -90,8 +90,8 @@ Node *PackedScene::instance(bool p_gen_edit_state) const {
 				}
 				WARN_PRINT(String("Warning node of type "+snames[n.type].operator String()+" does not exist.").ascii().get_data());
 				if (n.parent>=0 && n.parent<nc && ret_nodes[n.parent]) {
-					if (ret_nodes[n.parent]->cast_to<Spatial>()) {
-						obj = memnew( Spatial );
+					if (ret_nodes[n.parent]->cast_to<Node3D>()) {
+						obj = memnew( Node3D );
 					} else if (ret_nodes[n.parent]->cast_to<Control>()) {
 						obj = memnew( Control );
 					} else if (ret_nodes[n.parent]->cast_to<Node2D>()) {

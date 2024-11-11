@@ -40,10 +40,10 @@
 
 class BakedLightInstance;
 
-class GridMap : public Spatial {
+class GridMap : public Node3D {
 
 
-	OBJ_TYPE( GridMap, Spatial );
+	OBJ_TYPE( GridMap, Node3D );
 
 	enum {
 		MAP_DIRTY_TRANSFORMS=1,
@@ -139,7 +139,7 @@ class GridMap : public Spatial {
 
 
 
-	struct Area {
+	struct Area3D {
 
 		String name;
 		RID base_portal;
@@ -156,15 +156,15 @@ class GridMap : public Spatial {
 		Color portal_disable_color;
 		bool exterior_portal;
 
-		Area();
-		~Area();
+		Area3D();
+		~Area3D();
 	};
 
 	Ref<MeshLibrary> theme;
 
 	Map<OctantKey,Octant*> octant_map;
 	Map<IndexKey,Cell> cell_map;
-	Map<int,Area*> area_map;
+	Map<int,Area3D*> area_map;
 
 
 

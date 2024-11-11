@@ -40,9 +40,9 @@ class AnimationCache : public Object {
 
 		RES resource;
 		Object *object;
-		Skeleton *skeleton; // haxor
+		Skeleton3D *skeleton; // haxor
 		Node *node;
-		Spatial *spatial;
+		Node3D *spatial;
 
 		int bone_idx;
 		StringName property;

@@ -32,9 +32,9 @@
 #include "scene/3d/spatial.h"
 #include "scene/resources/shape.h"
 
-class CollisionObject : public Spatial {
+class CollisionObject3D : public Node3D {
 
-	OBJ_TYPE( CollisionObject, Spatial );
+	OBJ_TYPE( CollisionObject3D, Node3D );
 
 	bool area;
 	RID rid;
@@ -57,12 +57,12 @@ class CollisionObject : public Spatial {
 	void _update_pickable();
 	void _update_shapes();
 
-friend class CollisionShape;
-friend class CollisionPolygon;
+friend class CollisionShape3D;
+friend class CollisionPolygon3D;
 	void _update_shapes_from_children();
 protected:
 
-	CollisionObject(RID p_rid, bool p_area);
+	CollisionObject3D(RID p_rid, bool p_area);
 
 	void _notification(int p_what);
 	bool _set(const StringName& p_name, const Variant& p_value);
@@ -97,8 +97,8 @@ public:
 
 	_FORCE_INLINE_ RID get_rid() const { return rid; }
 
-	CollisionObject();
-	~CollisionObject();
+	CollisionObject3D();
+	~CollisionObject3D();
 };
 
 #endif // COLLISION_OBJECT__H

@@ -251,9 +251,9 @@ void AnimationPlayer::_generate_node_caches(AnimationData* p_anim) {
 		uint32_t id=resource.is_valid()?resource->get_instance_ID():child->get_instance_ID();
 		int bone_idx=-1;
 
-		if (a->track_get_path(i).get_property() && child->cast_to<Skeleton>()) {
+		if (a->track_get_path(i).get_property() && child->cast_to<Skeleton3D>()) {
 
-			bone_idx = child->cast_to<Skeleton>()->find_bone( a->track_get_path(i).get_property() );
+			bone_idx = child->cast_to<Skeleton3D>()->find_bone( a->track_get_path(i).get_property() );
 			if (bone_idx==-1) {
 
 				continue;
@@ -285,9 +285,9 @@ void AnimationPlayer::_generate_node_caches(AnimationData* p_anim) {
 				// special cases and caches for transform tracks
 				
 				// cache spatial
-				p_anim->node_cache[i]->spatial=child->cast_to<Spatial>();
+				p_anim->node_cache[i]->spatial=child->cast_to<Node3D>();
 				// cache skeleton
-				p_anim->node_cache[i]->skeleton=child->cast_to<Skeleton>();
+				p_anim->node_cache[i]->skeleton=child->cast_to<Skeleton3D>();
 				if (p_anim->node_cache[i]->skeleton) {
 
 					StringName bone_name=a->track_get_path(i).get_property();

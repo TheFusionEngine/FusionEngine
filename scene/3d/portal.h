@@ -42,9 +42,9 @@
 
 
 
-class Portal : public VisualInstance {
+class Portal : public VisualInstance3D {
 
-	OBJ_TYPE(Portal, VisualInstance);
+	OBJ_TYPE(Portal, VisualInstance3D);
 	
 	RID portal;
 	

@@ -1583,12 +1583,12 @@
   /***** the following formats:                                        *****/
   /*****                                                               *****/
   /*****   - A 16-bit value that isn't part of the Unicode Surrogates  *****/
-  /*****     Area (i.e. U+D800-U+DFFF).                                *****/
+  /*****     Area3D (i.e. U+D800-U+DFFF).                                *****/
   /*****                                                               *****/
   /*****   - A 32-bit value, made of two surrogate values, i.e.. if    *****/
   /*****     `char_code = (char_hi << 16) | char_lo', then both        *****/
-  /*****     `char_hi' and `char_lo' must be in the Surrogates Area.   *****/
-  /*****      Area.                                                    *****/
+  /*****     `char_hi' and `char_lo' must be in the Surrogates Area3D.   *****/
+  /*****      Area3D.                                                    *****/
   /*****                                                               *****/
   /***** The `is32' table embedded in the charmap indicates whether a  *****/
   /***** given 16-bit value is in the surrogates area or not.          *****/

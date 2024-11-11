@@ -84,7 +84,7 @@ Variant PathSpatialGizmo::get_handle_value(int p_idx) const{
 	return ofs;
 
 }
-void PathSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_point){
+void PathSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point){
 
 	Ref<Curve3D> c = path->get_curve();
 	if (c.is_null())
@@ -258,7 +258,7 @@ void PathSpatialGizmo::redraw(){
 
 }
 
-PathSpatialGizmo::PathSpatialGizmo(Path* p_path){
+PathSpatialGizmo::PathSpatialGizmo(Path3D* p_path){
 
 	path=p_path;
 	set_spatial_node(p_path);
@@ -267,12 +267,12 @@ PathSpatialGizmo::PathSpatialGizmo(Path* p_path){
 
 }
 
-bool PathEditorPlugin::create_spatial_gizmo(Spatial* p_spatial) {
+bool PathEditorPlugin::create_spatial_gizmo(Node3D* p_spatial) {
 
-	if (p_spatial->cast_to<Path>()) {
+	if (p_spatial->cast_to<Path3D>()) {
 
 
-		Ref<PathSpatialGizmo> psg = memnew( PathSpatialGizmo(p_spatial->cast_to<Path>()));
+		Ref<PathSpatialGizmo> psg = memnew( PathSpatialGizmo(p_spatial->cast_to<Path3D>()));
 		p_spatial->set_gizmo(psg);
 		return true;
 	}
@@ -280,7 +280,7 @@ bool PathEditorPlugin::create_spatial_gizmo(Spatial* p_spatial) {
 	return false;
 }
 
-bool PathEditorPlugin::forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event) {
+bool PathEditorPlugin::forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event) {
 
 	if (!path)
 		return false;
@@ -430,7 +430,7 @@ bool PathEditorPlugin::forward_spatial_input_event(Camera* p_camera,const InputE
 void PathEditorPlugin::edit(Object *p_object) {
 
 	if (p_object) {
-		path=p_object->cast_to<Path>();
+		path=p_object->cast_to<Path3D>();
 		if (path) {
 
 			if (path->get_curve().is_valid()) {
@@ -438,7 +438,7 @@ void PathEditorPlugin::edit(Object *p_object) {
 			}
 		}
 	} else {
-		Path *pre=path;
+		Path3D *pre=path;
 		path=NULL;
 		if (pre) {
 			pre->get_curve()->emit_signal("changed");
@@ -470,7 +470,7 @@ void PathEditorPlugin::make_visible(bool p_visible) {
         sep->hide();
 
 		{
-			Path *pre=path;
+			Path3D *pre=path;
 			path=NULL;
 			if (pre && pre->get_curve().is_valid()) {
 				pre->get_curve()->emit_signal("changed");

@@ -54,7 +54,7 @@ void ParticlesEditor::_node_selected(const NodePath& p_path){
 	if (!sel)
 		return;
 
-	VisualInstance *vi = sel->cast_to<VisualInstance>();
+	VisualInstance3D *vi = sel->cast_to<VisualInstance3D>();
 	if (!vi) {
 
 		err_dialog->set_text("Node does not contain geometry.");
@@ -62,7 +62,7 @@ void ParticlesEditor::_node_selected(const NodePath& p_path){
 		return;
 	}
 
-	geometry = vi->get_faces(VisualInstance::FACES_SOLID);
+	geometry = vi->get_faces(VisualInstance3D::FACES_SOLID);
 
 	if (geometry.size()==0) {
 
@@ -127,8 +127,8 @@ void ParticlesEditor::_menu_option(int p_option) {
 			ParticleSystemSW pssw;
 			for(int i=0;i<VS::PARTICLE_VAR_MAX;i++) {
 
-				pssw.particle_vars[i]=node->get_variable((Particles::Variable)i);
-				pssw.particle_randomness[i]=node->get_randomness((Particles::Variable)i);
+				pssw.particle_vars[i]=node->get_variable((Particles3D::Variable)i);
+				pssw.particle_randomness[i]=node->get_randomness((Particles3D::Variable)i);
 			}
 
 			pssw.emission_half_extents=node->get_emission_half_extents();
@@ -190,7 +190,7 @@ void ParticlesEditor::_menu_option(int p_option) {
 }
 
 
-void ParticlesEditor::edit(Particles *p_particles) {
+void ParticlesEditor::edit(Particles3D *p_particles) {
 
 	node=p_particles;
 
@@ -347,7 +347,7 @@ ParticlesEditor::ParticlesEditor() {
 	particles_editor_hb->add_child(options);
 	particles_editor_hb->hide();
 
-	options->set_text("Particles");
+	options->set_text("Particles3D");
 	options->get_popup()->add_item("Generate AABB",MENU_OPTION_GENERATE_AABB);
 	options->get_popup()->add_separator();
 	options->get_popup()->add_item("Create Emitter From Mesh",MENU_OPTION_CREATE_EMISSION_VOLUME_FROM_MESH);
@@ -420,12 +420,12 @@ ParticlesEditor::ParticlesEditor() {
 
 void ParticlesEditorPlugin::edit(Object *p_object) {
 
-	particles_editor->edit(p_object->cast_to<Particles>());
+	particles_editor->edit(p_object->cast_to<Particles3D>());
 }
 
 bool ParticlesEditorPlugin::handles(Object *p_object) const {
 
-	return p_object->is_type("Particles");
+	return p_object->is_type("Particles3D");
 }
 
 void ParticlesEditorPlugin::make_visible(bool p_visible) {

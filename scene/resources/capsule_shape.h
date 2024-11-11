@@ -31,9 +31,9 @@
 
 #include "scene/resources/shape.h"
 
-class CapsuleShape : public Shape {
+class CapsuleShape3D : public Shape {
 
-	OBJ_TYPE(CapsuleShape,Shape);
+	OBJ_TYPE(CapsuleShape3D,Shape);
 	float radius;
 	float height;
 
@@ -50,7 +50,7 @@ public:
 	void set_height(float p_height);
 	float get_height() const;
 
-	CapsuleShape();
+	CapsuleShape3D();
 };
 
 #endif // CAPSULE_SHAPE_H

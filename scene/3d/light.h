@@ -37,9 +37,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class Light : public VisualInstance {
+class Light : public VisualInstance3D {
 
-	OBJ_TYPE( Light, VisualInstance );
+	OBJ_TYPE( Light, VisualInstance3D );
 	OBJ_CATEGORY("3D Light Nodes");
 
 public:
@@ -154,9 +154,9 @@ VARIANT_ENUM_CAST( Light::Operator );
 VARIANT_ENUM_CAST( Light::BakeMode);
 
 
-class DirectionalLight : public Light {
+class DirectionalLight3D : public Light {
 
-	OBJ_TYPE( DirectionalLight, Light );
+	OBJ_TYPE( DirectionalLight3D, Light );
 
 public:
 
@@ -187,34 +187,34 @@ public:
 	void set_shadow_param(ShadowParam p_param, float p_value);
 	float get_shadow_param(ShadowParam p_param) const;
 
-	DirectionalLight();
+	DirectionalLight3D();
 };
 
-VARIANT_ENUM_CAST( DirectionalLight::ShadowMode );
-VARIANT_ENUM_CAST( DirectionalLight::ShadowParam );
+VARIANT_ENUM_CAST( DirectionalLight3D::ShadowMode );
+VARIANT_ENUM_CAST( DirectionalLight3D::ShadowParam );
 
 
-class OmniLight : public Light {
+class OmniLight3D : public Light {
 
-	OBJ_TYPE( OmniLight, Light );
+	OBJ_TYPE( OmniLight3D, Light );
 protected:
 	static void _bind_methods();
 
 public:
 
 
-	OmniLight() : Light( VisualServer::LIGHT_OMNI ) { set_parameter(PARAM_SHADOW_Z_OFFSET,0.001);}
+	OmniLight3D() : Light( VisualServer::LIGHT_OMNI ) { set_parameter(PARAM_SHADOW_Z_OFFSET,0.001);}
 };
 
-class SpotLight : public Light {
+class SpotLight3D : public Light {
 
-	OBJ_TYPE( SpotLight, Light );
+	OBJ_TYPE( SpotLight3D, Light );
 protected:
 	static void _bind_methods();
 public:
 
 
-	SpotLight() : Light( VisualServer::LIGHT_SPOT ) {}
+	SpotLight3D() : Light( VisualServer::LIGHT_SPOT ) {}
 };
 
 

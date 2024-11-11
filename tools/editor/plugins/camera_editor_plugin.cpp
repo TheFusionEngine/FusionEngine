@@ -102,19 +102,19 @@ CameraEditor::CameraEditor() {
 
 void CameraEditorPlugin::edit(Object *p_object) {
 
-	SpatialEditor::get_singleton()->set_can_preview(p_object->cast_to<Camera>());
+	SpatialEditor::get_singleton()->set_can_preview(p_object->cast_to<Camera3D>());
 	//camera_editor->edit(p_object->cast_to<Node>());
 }
 
 bool CameraEditorPlugin::handles(Object *p_object) const {
 
-	return p_object->is_type("Camera");
+	return p_object->is_type("Camera3D");
 }
 
 void CameraEditorPlugin::make_visible(bool p_visible) {
 
 	if (p_visible) {
-//	SpatialEditor::get_singleton()->set_can_preview(p_object->cast_to<Camera>());
+//	SpatialEditor::get_singleton()->set_can_preview(p_object->cast_to<Camera3D>());
 
 	} else {
 

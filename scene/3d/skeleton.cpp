@@ -34,7 +34,7 @@
 #include "core/globals.h"
 
 
-bool Skeleton::_set(const StringName& p_path, const Variant& p_value) {
+bool Skeleton3D::_set(const StringName& p_path, const Variant& p_value) {
 
 	String path = p_path;
 
@@ -81,7 +81,7 @@ bool Skeleton::_set(const StringName& p_path, const Variant& p_value) {
 	return true;
 }
 
-bool Skeleton::_get(const StringName& p_name,Variant &r_ret) const {
+bool Skeleton3D::_get(const StringName& p_name,Variant &r_ret) const {
 
 	String path=p_name;
 
@@ -124,7 +124,7 @@ bool Skeleton::_get(const StringName& p_name,Variant &r_ret) const {
 	return true;
 
 }
-void Skeleton::_get_property_list( List<PropertyInfo>* p_list ) const {
+void Skeleton3D::_get_property_list( List<PropertyInfo>* p_list ) const {
 
 	for (int i=0;i<bones.size();i++) {
 		
@@ -138,7 +138,7 @@ void Skeleton::_get_property_list( List<PropertyInfo>* p_list ) const {
 	}
 }
 
-void Skeleton::_notification(int p_what) {
+void Skeleton3D::_notification(int p_what) {
 
 	switch(p_what) {
 	
@@ -219,7 +219,7 @@ void Skeleton::_notification(int p_what) {
 
 					Object *obj=ObjectDB::get_instance(E->get());
 					ERR_CONTINUE(!obj);
-					Spatial *sp = obj->cast_to<Spatial>();
+					Node3D *sp = obj->cast_to<Node3D>();
 					ERR_CONTINUE(!sp);
 					sp->set_transform(b.pose_global * b.rest_global_inverse);
 				}
@@ -230,15 +230,15 @@ void Skeleton::_notification(int p_what) {
 	}
 }
 
-Transform Skeleton::get_bone_transform(int p_bone) const {
+Transform Skeleton3D::get_bone_transform(int p_bone) const {
 	ERR_FAIL_INDEX_V(p_bone,bones.size(),Transform());
 	if (dirty)
-		const_cast<Skeleton*>(this)->notification(NOTIFICATION_UPDATE_SKELETON);
+		const_cast<Skeleton3D*>(this)->notification(NOTIFICATION_UPDATE_SKELETON);
 	return bones[p_bone].pose_global * bones[p_bone].rest_global_inverse;
 }
 
 
-void Skeleton::set_bone_global_pose(int p_bone,const Transform& p_pose) {
+void Skeleton3D::set_bone_global_pose(int p_bone,const Transform& p_pose) {
 
 	ERR_FAIL_INDEX(p_bone,bones.size());
 	if (bones[p_bone].parent==-1) {
@@ -252,21 +252,21 @@ void Skeleton::set_bone_global_pose(int p_bone,const Transform& p_pose) {
 
 }
 
-Transform Skeleton::get_bone_global_pose(int p_bone) const {
+Transform Skeleton3D::get_bone_global_pose(int p_bone) const {
 
 	ERR_FAIL_INDEX_V(p_bone,bones.size(),Transform());
 	if (dirty)
-		const_cast<Skeleton*>(this)->notification(NOTIFICATION_UPDATE_SKELETON);
+		const_cast<Skeleton3D*>(this)->notification(NOTIFICATION_UPDATE_SKELETON);
 	return bones[p_bone].pose_global;
 }
 
-RID Skeleton::get_skeleton() const {
+RID Skeleton3D::get_skeleton() const {
 
 	return skeleton;
 }
 
 // skeleton creation api
-void Skeleton::add_bone(const String& p_name) {
+void Skeleton3D::add_bone(const String& p_name) {
 
 	ERR_FAIL_COND( p_name=="" || p_name.find(":")!=-1 || p_name.find("/")!=-1 );
 	
@@ -283,7 +283,7 @@ void Skeleton::add_bone(const String& p_name) {
 	_make_dirty();
 	update_gizmo();
 }
-int Skeleton::find_bone(String p_name) const {
+int Skeleton3D::find_bone(String p_name) const {
 
 	for (int i=0;i<bones.size();i++) {
 	
@@ -293,19 +293,19 @@ int Skeleton::find_bone(String p_name) const {
 	
 	return -1;
 }
-String Skeleton::get_bone_name(int p_bone) const {
+String Skeleton3D::get_bone_name(int p_bone) const {
 
 	ERR_FAIL_INDEX_V( p_bone, bones.size(), "" );
 
 	return bones[p_bone].name;
 }
 
-int Skeleton::get_bone_count() const {
+int Skeleton3D::get_bone_count() const {
 
 	return bones.size();
 }
 
-void Skeleton::set_bone_parent(int p_bone, int p_parent) {
+void Skeleton3D::set_bone_parent(int p_bone, int p_parent) {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 	ERR_FAIL_COND( p_parent!=-1 && (p_parent<0 || p_parent>=p_bone));
@@ -315,14 +315,14 @@ void Skeleton::set_bone_parent(int p_bone, int p_parent) {
 	_make_dirty();
 }
 
-int Skeleton::get_bone_parent(int p_bone) const {
+int Skeleton3D::get_bone_parent(int p_bone) const {
 
 	ERR_FAIL_INDEX_V( p_bone, bones.size(), -1 );
 	
 	return bones[p_bone].parent;
 }
 
-void Skeleton::set_bone_rest(int p_bone, const Transform& p_rest) {
+void Skeleton3D::set_bone_rest(int p_bone, const Transform& p_rest) {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 	
@@ -331,7 +331,7 @@ void Skeleton::set_bone_rest(int p_bone, const Transform& p_rest) {
 	_make_dirty();
 
 }
-Transform Skeleton::get_bone_rest(int p_bone) const {
+Transform Skeleton3D::get_bone_rest(int p_bone) const {
 
 	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform() );
 	
@@ -339,7 +339,7 @@ Transform Skeleton::get_bone_rest(int p_bone) const {
 
 }
 
-void Skeleton::set_bone_enabled(int p_bone, bool p_enabled) {
+void Skeleton3D::set_bone_enabled(int p_bone, bool p_enabled) {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 	
@@ -347,14 +347,14 @@ void Skeleton::set_bone_enabled(int p_bone, bool p_enabled) {
 	rest_global_inverse_dirty=true;
 	_make_dirty();
 }
-bool Skeleton::is_bone_enabled(int p_bone) const {
+bool Skeleton3D::is_bone_enabled(int p_bone) const {
 
 	ERR_FAIL_INDEX_V( p_bone, bones.size(), false );
 	return bones[p_bone].enabled;
 
 }
 
-void Skeleton::bind_child_node_to_bone(int p_bone,Node *p_node) {
+void Skeleton3D::bind_child_node_to_bone(int p_bone,Node *p_node) {
 
 	ERR_FAIL_NULL(p_node);
 	ERR_FAIL_INDEX( p_bone, bones.size() );
@@ -370,7 +370,7 @@ void Skeleton::bind_child_node_to_bone(int p_bone,Node *p_node) {
 	bones[p_bone].nodes_bound.push_back(id);
 	
 }
-void Skeleton::unbind_child_node_from_bone(int p_bone,Node *p_node) {
+void Skeleton3D::unbind_child_node_from_bone(int p_bone,Node *p_node) {
 
 	ERR_FAIL_NULL(p_node);
 	ERR_FAIL_INDEX( p_bone, bones.size() );
@@ -379,7 +379,7 @@ void Skeleton::unbind_child_node_from_bone(int p_bone,Node *p_node) {
 	bones[p_bone].nodes_bound.erase(id);
 
 }
-void Skeleton::get_bound_child_nodes_to_bone(int p_bone,List<Node*> *p_bound) const {
+void Skeleton3D::get_bound_child_nodes_to_bone(int p_bone,List<Node*> *p_bound) const {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 	
@@ -392,7 +392,7 @@ void Skeleton::get_bound_child_nodes_to_bone(int p_bone,List<Node*> *p_bound) co
 
 }
 
-void Skeleton::clear_bones() {
+void Skeleton3D::clear_bones() {
 
 	bones.clear();
 	rest_global_inverse_dirty=true;
@@ -401,7 +401,7 @@ void Skeleton::clear_bones() {
 
 // posing api
 
-void Skeleton::set_bone_pose(int p_bone, const Transform& p_pose) {
+void Skeleton3D::set_bone_pose(int p_bone, const Transform& p_pose) {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 	ERR_FAIL_COND( !is_inside_tree() );
@@ -410,14 +410,14 @@ void Skeleton::set_bone_pose(int p_bone, const Transform& p_pose) {
 	bones[p_bone].pose=p_pose;
 	_make_dirty();
 }
-Transform Skeleton::get_bone_pose(int p_bone) const {
+Transform Skeleton3D::get_bone_pose(int p_bone) const {
 
 	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform() );
 	return bones[p_bone].pose;
 
 }
 
-void Skeleton::set_bone_custom_pose(int p_bone, const Transform& p_custom_pose) {
+void Skeleton3D::set_bone_custom_pose(int p_bone, const Transform& p_custom_pose) {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 //	ERR_FAIL_COND( !is_inside_scene() );
@@ -429,7 +429,7 @@ void Skeleton::set_bone_custom_pose(int p_bone, const Transform& p_custom_pose) 
 	_make_dirty();
 }
 
-Transform Skeleton::get_bone_custom_pose(int p_bone) const {
+Transform Skeleton3D::get_bone_custom_pose(int p_bone) const {
 
 	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform() );
 	return bones[p_bone].custom_pose;
@@ -437,7 +437,7 @@ Transform Skeleton::get_bone_custom_pose(int p_bone) const {
 }
 
 
-void Skeleton::_make_dirty() {
+void Skeleton3D::_make_dirty() {
 
 	if (dirty)
 		return;
@@ -451,7 +451,7 @@ void Skeleton::_make_dirty() {
 }
 
 
-RES Skeleton::_get_gizmo_geometry() const {
+RES Skeleton3D::_get_gizmo_geometry() const {
 
 	if (!GLOBAL_DEF("debug/draw_skeleton", true))
 		return RES();
@@ -497,7 +497,7 @@ RES Skeleton::_get_gizmo_geometry() const {
 
 }
 
-void Skeleton::localize_rests() {
+void Skeleton3D::localize_rests() {
 
 	for(int i=bones.size()-1;i>=0;i--) {
 
@@ -508,46 +508,46 @@ void Skeleton::localize_rests() {
 
 
 
-void Skeleton::_bind_methods() {
+void Skeleton3D::_bind_methods() {
 
 
 
 
-	ObjectTypeDB::bind_method(_MD("add_bone","name"),&Skeleton::add_bone);
-	ObjectTypeDB::bind_method(_MD("find_bone","name"),&Skeleton::find_bone);
-	ObjectTypeDB::bind_method(_MD("get_bone_name","bone_idx"),&Skeleton::get_bone_name);
+	ObjectTypeDB::bind_method(_MD("add_bone","name"),&Skeleton3D::add_bone);
+	ObjectTypeDB::bind_method(_MD("find_bone","name"),&Skeleton3D::find_bone);
+	ObjectTypeDB::bind_method(_MD("get_bone_name","bone_idx"),&Skeleton3D::get_bone_name);
 	
-	ObjectTypeDB::bind_method(_MD("get_bone_parent","bone_idx"),&Skeleton::get_bone_parent);
-	ObjectTypeDB::bind_method(_MD("set_bone_parent","bone_idx","parent_idx"),&Skeleton::set_bone_parent);
+	ObjectTypeDB::bind_method(_MD("get_bone_parent","bone_idx"),&Skeleton3D::get_bone_parent);
+	ObjectTypeDB::bind_method(_MD("set_bone_parent","bone_idx","parent_idx"),&Skeleton3D::set_bone_parent);
 	
-	ObjectTypeDB::bind_method(_MD("get_bone_count"),&Skeleton::get_bone_count);
+	ObjectTypeDB::bind_method(_MD("get_bone_count"),&Skeleton3D::get_bone_count);
 
-	ObjectTypeDB::bind_method(_MD("get_bone_rest","bone_idx"),&Skeleton::get_bone_rest);
-	ObjectTypeDB::bind_method(_MD("set_bone_rest","bone_idx","rest"),&Skeleton::set_bone_rest);
+	ObjectTypeDB::bind_method(_MD("get_bone_rest","bone_idx"),&Skeleton3D::get_bone_rest);
+	ObjectTypeDB::bind_method(_MD("set_bone_rest","bone_idx","rest"),&Skeleton3D::set_bone_rest);
 
-	ObjectTypeDB::bind_method(_MD("bind_child_node_to_bone","bone_idx","node:Node"),&Skeleton::bind_child_node_to_bone);
-	ObjectTypeDB::bind_method(_MD("unbind_child_node_from_bone","bone_idx","node:Node"),&Skeleton::unbind_child_node_from_bone);
-	ObjectTypeDB::bind_method(_MD("get_bound_child_nodes_to_bone","bone_idx"),&Skeleton::_get_bound_child_nodes_to_bone);
+	ObjectTypeDB::bind_method(_MD("bind_child_node_to_bone","bone_idx","node:Node"),&Skeleton3D::bind_child_node_to_bone);
+	ObjectTypeDB::bind_method(_MD("unbind_child_node_from_bone","bone_idx","node:Node"),&Skeleton3D::unbind_child_node_from_bone);
+	ObjectTypeDB::bind_method(_MD("get_bound_child_nodes_to_bone","bone_idx"),&Skeleton3D::_get_bound_child_nodes_to_bone);
 	
-	ObjectTypeDB::bind_method(_MD("clear_bones"),&Skeleton::clear_bones);
+	ObjectTypeDB::bind_method(_MD("clear_bones"),&Skeleton3D::clear_bones);
 	
-	ObjectTypeDB::bind_method(_MD("get_bone_pose","bone_idx"),&Skeleton::get_bone_pose);
-	ObjectTypeDB::bind_method(_MD("set_bone_pose","bone_idx","pose"),&Skeleton::set_bone_pose);
+	ObjectTypeDB::bind_method(_MD("get_bone_pose","bone_idx"),&Skeleton3D::get_bone_pose);
+	ObjectTypeDB::bind_method(_MD("set_bone_pose","bone_idx","pose"),&Skeleton3D::set_bone_pose);
 
-	ObjectTypeDB::bind_method(_MD("set_bone_global_pose","bone_idx","pose"),&Skeleton::set_bone_global_pose);
-	ObjectTypeDB::bind_method(_MD("get_bone_global_pose","bone_idx"),&Skeleton::get_bone_global_pose);
+	ObjectTypeDB::bind_method(_MD("set_bone_global_pose","bone_idx","pose"),&Skeleton3D::set_bone_global_pose);
+	ObjectTypeDB::bind_method(_MD("get_bone_global_pose","bone_idx"),&Skeleton3D::get_bone_global_pose);
 
-	ObjectTypeDB::bind_method(_MD("get_bone_custom_pose","bone_idx"),&Skeleton::get_bone_custom_pose);
-	ObjectTypeDB::bind_method(_MD("set_bone_custom_pose","bone_idx","custom_pose"),&Skeleton::set_bone_custom_pose);
+	ObjectTypeDB::bind_method(_MD("get_bone_custom_pose","bone_idx"),&Skeleton3D::get_bone_custom_pose);
+	ObjectTypeDB::bind_method(_MD("set_bone_custom_pose","bone_idx","custom_pose"),&Skeleton3D::set_bone_custom_pose);
 
-	ObjectTypeDB::bind_method(_MD("get_bone_transform","bone_idx"),&Skeleton::get_bone_transform);
+	ObjectTypeDB::bind_method(_MD("get_bone_transform","bone_idx"),&Skeleton3D::get_bone_transform);
 
 	BIND_CONSTANT( NOTIFICATION_UPDATE_SKELETON );
 }
 
 
 
-Skeleton::Skeleton() {
+Skeleton3D::Skeleton3D() {
 
 	rest_global_inverse_dirty=true;
 	dirty=false;
@@ -555,7 +555,7 @@ Skeleton::Skeleton() {
 }
 
 
-Skeleton::~Skeleton() {
+Skeleton3D::~Skeleton3D() {
 
 	VisualServer::get_singleton()->free( skeleton );
 }

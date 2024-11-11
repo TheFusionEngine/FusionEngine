@@ -11,11 +11,11 @@
 				<string> "Node" </string>
 				<string> "__meta__" </string>
 				<string> "sphere" </string>
-				<string> "Spatial" </string>
+				<string> "Node3D" </string>
 				<string> "transform/local" </string>
 				<string> "box" </string>
 				<string> "convex" </string>
-				<string> "Camera" </string>
+				<string> "Camera3D" </string>
 				<string> "projection" </string>
 				<string> "fov" </string>
 				<string> "near" </string>
@@ -24,7 +24,7 @@
 				<string> "current" </string>
 				<string> "visible_layers" </string>
 				<string> "environment" </string>
-				<string> "OmniLight" </string>
+				<string> "OmniLight3D" </string>
 				<string> "layers" </string>
 				<string> "params/energy" </string>
 				<string> "colors/ambient" </string>

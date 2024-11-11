@@ -2796,7 +2796,7 @@ CanvasItemEditor::CanvasItemEditor(EditorNode *p_editor) {
 	p->add_separator();
 	p->add_item("Expand to Parent",EXPAND_TO_PARENT,KEY_MASK_CMD|KEY_P);
 	p->add_separator();
-	p->add_submenu_item("Skeleton..","skeleton");
+	p->add_submenu_item("Skeleton3D..","skeleton");
 	PopupMenu *p2 = memnew(PopupMenu);
 	p->add_child(p2);
 	p2->set_name("skeleton");

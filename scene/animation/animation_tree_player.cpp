@@ -1431,8 +1431,8 @@ AnimationTreePlayer::Track* AnimationTreePlayer::_find_track(const NodePath& p_p
 
 	if (p_path.get_property()) {
 
-		if (child->cast_to<Skeleton>())
-			bone_idx = child->cast_to<Skeleton>()->find_bone( p_path.get_property() );
+		if (child->cast_to<Skeleton3D>())
+			bone_idx = child->cast_to<Skeleton3D>()->find_bone( p_path.get_property() );
 		if (bone_idx==-1)
 			property=p_path.get_property();
 	}
@@ -1447,8 +1447,8 @@ AnimationTreePlayer::Track* AnimationTreePlayer::_find_track(const NodePath& p_p
 		Track tr;
 		tr.id=id;
 		tr.node=child;
-		tr.skeleton=child->cast_to<Skeleton>();
-		tr.spatial=child->cast_to<Spatial>();
+		tr.skeleton=child->cast_to<Skeleton3D>();
+		tr.spatial=child->cast_to<Node3D>();
 		tr.bone_idx=bone_idx;
 		tr.property=property;
 

@@ -32,9 +32,9 @@
 #include "scene/resources/curve.h"
 #include "scene/3d/spatial.h"
 
-class Path : public Spatial {
+class Path3D : public Node3D {
 
-	OBJ_TYPE( Path, Spatial );
+	OBJ_TYPE( Path3D, Node3D );
 
 	Ref<Curve3D> curve;
 
@@ -51,12 +51,12 @@ public:
 	Ref<Curve3D> get_curve() const;
 
 
-	Path();
+	Path3D();
 };
 
-class PathFollow : public Spatial {
+class PathFollow3D : public Node3D {
 
-	OBJ_TYPE(PathFollow,Spatial);
+	OBJ_TYPE(PathFollow3D,Node3D);
 public:
 
 	enum RotationMode {
@@ -68,7 +68,7 @@ public:
 	};
 
 private:
-	Path *path;
+	Path3D *path;
 	real_t offset;
 	real_t h_offset;
 	real_t v_offset;
@@ -114,9 +114,9 @@ public:
 	void set_cubic_interpolation(bool p_enable);
 	bool get_cubic_interpolation() const;
 
-	PathFollow();
+	PathFollow3D();
 };
 
-VARIANT_ENUM_CAST(PathFollow::RotationMode);
+VARIANT_ENUM_CAST(PathFollow3D::RotationMode);
 
 #endif // PATH_H

@@ -598,36 +598,36 @@ Light::~Light() {
 /////////////////////////////////////////
 
 
-void DirectionalLight::set_shadow_mode(ShadowMode p_mode) {
+void DirectionalLight3D::set_shadow_mode(ShadowMode p_mode) {
 
 	shadow_mode=p_mode;
 	VS::get_singleton()->light_directional_set_shadow_mode(light,(VS::LightDirectionalShadowMode)p_mode);
 
 }
 
-DirectionalLight::ShadowMode DirectionalLight::get_shadow_mode() const{
+DirectionalLight3D::ShadowMode DirectionalLight3D::get_shadow_mode() const{
 
 	return shadow_mode;
 }
 
-void DirectionalLight::set_shadow_param(ShadowParam p_param, float p_value) {
+void DirectionalLight3D::set_shadow_param(ShadowParam p_param, float p_value) {
 
 	ERR_FAIL_INDEX(p_param,3);
 	shadow_param[p_param]=p_value;
 	VS::get_singleton()->light_directional_set_shadow_param(light,VS::LightDirectionalShadowParam(p_param),p_value);
 }
 
-float DirectionalLight::get_shadow_param(ShadowParam p_param) const {
+float DirectionalLight3D::get_shadow_param(ShadowParam p_param) const {
 	ERR_FAIL_INDEX_V(p_param,3,0);
 	return shadow_param[p_param];
 }
 
-void DirectionalLight::_bind_methods() {
+void DirectionalLight3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_shadow_mode","mode"),&DirectionalLight::set_shadow_mode);
-	ObjectTypeDB::bind_method(_MD("get_shadow_mode"),&DirectionalLight::get_shadow_mode);
-	ObjectTypeDB::bind_method(_MD("set_shadow_param","param","value"),&DirectionalLight::set_shadow_param);
-	ObjectTypeDB::bind_method(_MD("get_shadow_param","param"),&DirectionalLight::get_shadow_param);
+	ObjectTypeDB::bind_method(_MD("set_shadow_mode","mode"),&DirectionalLight3D::set_shadow_mode);
+	ObjectTypeDB::bind_method(_MD("get_shadow_mode"),&DirectionalLight3D::get_shadow_mode);
+	ObjectTypeDB::bind_method(_MD("set_shadow_param","param","value"),&DirectionalLight3D::set_shadow_param);
+	ObjectTypeDB::bind_method(_MD("get_shadow_param","param"),&DirectionalLight3D::get_shadow_param);
 
 	ADD_PROPERTY( PropertyInfo(Variant::INT,"shadow/mode",PROPERTY_HINT_ENUM,"Orthogonal,Perspective,PSSM 2 Splits,PSSM 4 Splits"),_SCS("set_shadow_mode"),_SCS("get_shadow_mode"));
 	ADD_PROPERTYI( PropertyInfo(Variant::REAL,"shadow/max_distance",PROPERTY_HINT_EXP_RANGE,"0.00,99999,0.01"),_SCS("set_shadow_param"),_SCS("get_shadow_param"), SHADOW_PARAM_MAX_DISTANCE);
@@ -645,7 +645,7 @@ void DirectionalLight::_bind_methods() {
 }
 
 
-DirectionalLight::DirectionalLight() : Light( VisualServer::LIGHT_DIRECTIONAL ) {
+DirectionalLight3D::DirectionalLight3D() : Light( VisualServer::LIGHT_DIRECTIONAL ) {
 
 	shadow_mode=SHADOW_ORTHOGONAL;
 	shadow_param[SHADOW_PARAM_MAX_DISTANCE]=0;
@@ -656,14 +656,14 @@ DirectionalLight::DirectionalLight() : Light( VisualServer::LIGHT_DIRECTIONAL ) 
 }
 
 
-void OmniLight::_bind_methods() {
+void OmniLight3D::_bind_methods() {
 
 	ADD_PROPERTYI( PropertyInfo( Variant::REAL, "params/radius", PROPERTY_HINT_EXP_RANGE, "0.2,4096,0.01"), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_RADIUS );
 	ADD_PROPERTYI( PropertyInfo( Variant::REAL, "params/attenuation", PROPERTY_HINT_EXP_EASING, "attenuation"), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_ATTENUATION );
 
 }
 
-void SpotLight::_bind_methods() {
+void SpotLight3D::_bind_methods() {
 
 	ADD_PROPERTYI( PropertyInfo( Variant::REAL, "params/radius", PROPERTY_HINT_EXP_RANGE, "0.2,4096,0.01"), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_RADIUS );
 	ADD_PROPERTYI( PropertyInfo( Variant::REAL, "params/attenuation", PROPERTY_HINT_EXP_EASING, "attenuation"), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_ATTENUATION );

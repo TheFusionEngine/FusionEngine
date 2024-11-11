@@ -1,5 +1,5 @@
 
-extends VehicleBody
+extends VehicleBody3D
 
 # member variables here, example:
 # var a=2

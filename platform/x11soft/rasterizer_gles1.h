@@ -420,17 +420,17 @@ class RasterizerGLES1 : public Rasterizer {
 
 	mutable RID_Owner<Immediate> immediate_owner;
 
-	struct Particles : public Geometry {
+	struct Particles3D : public Geometry {
 
 		ParticleSystemSW data; // software particle system
 
-		Particles() {
+		Particles3D() {
 			type=GEOMETRY_PARTICLES;
 
 		}
 	};
 
-	mutable RID_Owner<Particles> particles_owner;
+	mutable RID_Owner<Particles3D> particles_owner;
 
 	struct ParticlesInstance : public GeometryOwner {
 
@@ -445,13 +445,13 @@ class RasterizerGLES1 : public Rasterizer {
 	mutable RID_Owner<ParticlesInstance> particles_instance_owner;
 	ParticleSystemDrawInfoSW particle_draw_info;
 
-	struct Skeleton {
+	struct Skeleton3D {
 
 		Vector<Transform> bones;
 
 	};
 
-	mutable RID_Owner<Skeleton> skeleton_owner;
+	mutable RID_Owner<Skeleton3D> skeleton_owner;
 
 
 	struct Light {
@@ -610,7 +610,7 @@ class RasterizerGLES1 : public Rasterizer {
 
 			float depth;
 			const InstanceData *instance;
-			const Skeleton *skeleton;
+			const Skeleton3D *skeleton;
 			union {
 				uint16_t lights[MAX_HW_LIGHTS];
 				uint64_t light_key;
@@ -796,8 +796,8 @@ class RasterizerGLES1 : public Rasterizer {
 	void _setup_fixed_material(const Geometry *p_geometry,const Material *p_material);
 	void _setup_material(const Geometry *p_geometry,const Material *p_material);
 
-	Error _setup_geometry(const Geometry *p_geometry, const Material* p_material,const Skeleton *p_skeleton, const float *p_morphs);
-	void _render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner);
+	Error _setup_geometry(const Geometry *p_geometry, const Material* p_material,const Skeleton3D *p_skeleton, const float *p_morphs);
+	void _render(const Geometry *p_geometry,const Material *p_material, const Skeleton3D* p_skeleton, const GeometryOwner *p_owner);
 
 
 	/***********/

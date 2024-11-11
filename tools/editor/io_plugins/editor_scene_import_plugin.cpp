@@ -1390,9 +1390,9 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 
 
 
-	if (p_flags&SCENE_FLAG_CREATE_BILLBOARDS && p_node->cast_to<MeshInstance>()) {
+	if (p_flags&SCENE_FLAG_CREATE_BILLBOARDS && p_node->cast_to<MeshInstance3D>()) {
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 
 		bool bb=false;
 
@@ -1404,7 +1404,7 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		}
 
 		if (bb) {
-			mi->set_flag(GeometryInstance::FLAG_BILLBOARD,true);
+			mi->set_flag(GeometryInstance3D::FLAG_BILLBOARD,true);
 			if (mi->get_mesh().is_valid()) {
 
 				Ref<Mesh> m = mi->get_mesh();
@@ -1423,9 +1423,9 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 	}
 
 
-	if (p_flags&(SCENE_FLAG_DETECT_ALPHA|SCENE_FLAG_DETECT_VCOLOR|SCENE_FLAG_SET_LIGHTMAP_TO_UV2_IF_EXISTS) && p_node->cast_to<MeshInstance>()) {
+	if (p_flags&(SCENE_FLAG_DETECT_ALPHA|SCENE_FLAG_DETECT_VCOLOR|SCENE_FLAG_SET_LIGHTMAP_TO_UV2_IF_EXISTS) && p_node->cast_to<MeshInstance3D>()) {
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 
 		Ref<Mesh> m = mi->get_mesh();
 
@@ -1483,9 +1483,9 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 	}
 
 
-	if (p_flags&SCENE_FLAG_CREATE_IMPOSTORS && p_node->cast_to<MeshInstance>()) {
+	if (p_flags&SCENE_FLAG_CREATE_IMPOSTORS && p_node->cast_to<MeshInstance3D>()) {
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 
 		String str;
 
@@ -1497,17 +1497,17 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		}
 
 
-		if (p_node->get_parent() && p_node->get_parent()->cast_to<MeshInstance>()) {
-			MeshInstance *mi = p_node->cast_to<MeshInstance>();
-			MeshInstance *mip = p_node->get_parent()->cast_to<MeshInstance>();
+		if (p_node->get_parent() && p_node->get_parent()->cast_to<MeshInstance3D>()) {
+			MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
+			MeshInstance3D *mip = p_node->get_parent()->cast_to<MeshInstance3D>();
 			String d=str.substr(str.find("imp")+3,str.length());
 			if (d!="") {
 				if ((d[0]<'0' || d[0]>'9'))
 					d=d.substr(1,d.length());
 				if (d.length() && d[0]>='0' && d[0]<='9') {
 					float dist = d.to_double();
-					mi->set_flag(GeometryInstance::FLAG_BILLBOARD,true);
-					mi->set_flag(GeometryInstance::FLAG_BILLBOARD_FIX_Y,true);
+					mi->set_flag(GeometryInstance3D::FLAG_BILLBOARD,true);
+					mi->set_flag(GeometryInstance3D::FLAG_BILLBOARD_FIX_Y,true);
 					mi->set_draw_range_begin(dist);
 					mi->set_draw_range_end(100000);
 
@@ -1533,9 +1533,9 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		}
 	}
 
-    if (p_flags&SCENE_FLAG_CREATE_LODS && p_node->cast_to<MeshInstance>()) {
+    if (p_flags&SCENE_FLAG_CREATE_LODS && p_node->cast_to<MeshInstance3D>()) {
 
-	MeshInstance *mi = p_node->cast_to<MeshInstance>();
+	MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 
 	String str;
 
@@ -1547,9 +1547,9 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 	}
 
 
-	if (p_node->get_parent() && p_node->get_parent()->cast_to<MeshInstance>()) {
-	    MeshInstance *mi = p_node->cast_to<MeshInstance>();
-	    MeshInstance *mip = p_node->get_parent()->cast_to<MeshInstance>();
+	if (p_node->get_parent() && p_node->get_parent()->cast_to<MeshInstance3D>()) {
+	    MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
+	    MeshInstance3D *mip = p_node->get_parent()->cast_to<MeshInstance3D>();
 	    String d=str.substr(str.find("lod")+3,str.length());
 	    if (d!="") {
 		if ((d[0]<'0' || d[0]>'9'))
@@ -1582,42 +1582,42 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
     }
 
 
-	if (p_flags&SCENE_FLAG_DETECT_LIGHTMAP_LAYER && _teststr(name,"lm") && p_node->cast_to<MeshInstance>()) {
+	if (p_flags&SCENE_FLAG_DETECT_LIGHTMAP_LAYER && _teststr(name,"lm") && p_node->cast_to<MeshInstance3D>()) {
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 
 		String str=name;
 		int layer = str.substr(str.find("lm")+3,str.length()).to_int();
 		mi->set_baked_light_texture_id(layer);
 	}
 
-	if (p_flags&SCENE_FLAG_CREATE_COLLISIONS && _teststr(name,"colonly") && p_node->cast_to<MeshInstance>()) {
+	if (p_flags&SCENE_FLAG_CREATE_COLLISIONS && _teststr(name,"colonly") && p_node->cast_to<MeshInstance3D>()) {
 
 		if (isroot)
 			return p_node;
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 		Node * col = mi->create_trimesh_collision_node();
 		ERR_FAIL_COND_V(!col,NULL);
 
 		col->set_name(_fixstr(name,"colonly"));
-		col->cast_to<Spatial>()->set_transform(mi->get_transform());
+		col->cast_to<Node3D>()->set_transform(mi->get_transform());
 		p_node->replace_by(col);
 		memdelete(p_node);
 		p_node=col;
 
-		StaticBody *sb = col->cast_to<StaticBody>();
-		CollisionShape *colshape = memnew( CollisionShape);
+		StaticBody3D *sb = col->cast_to<StaticBody3D>();
+		CollisionShape3D *colshape = memnew( CollisionShape3D);
 		colshape->set_shape(sb->get_shape(0));
 		colshape->set_name("shape");
 		sb->add_child(colshape);
 		colshape->set_owner(p_node->get_owner());
 
 
-	} else if (p_flags&SCENE_FLAG_CREATE_COLLISIONS &&_teststr(name,"col") && p_node->cast_to<MeshInstance>()) {
+	} else if (p_flags&SCENE_FLAG_CREATE_COLLISIONS &&_teststr(name,"col") && p_node->cast_to<MeshInstance3D>()) {
 
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 
 		mi->set_name(_fixstr(name,"col"));
 		Node *col= mi->create_trimesh_collision_node();
@@ -1626,20 +1626,20 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		col->set_name("col");
 		p_node->add_child(col);
 
-		StaticBody *sb=col->cast_to<StaticBody>();
-		CollisionShape *colshape = memnew( CollisionShape);
+		StaticBody3D *sb=col->cast_to<StaticBody3D>();
+		CollisionShape3D *colshape = memnew( CollisionShape3D);
 		colshape->set_shape(sb->get_shape(0));
 		colshape->set_name("shape");
 		col->add_child(colshape);
 		colshape->set_owner(p_node->get_owner());
 		sb->set_owner(p_node->get_owner());
 
-	} else if (p_flags&SCENE_FLAG_CREATE_NAVMESH &&_teststr(name,"navmesh") && p_node->cast_to<MeshInstance>()) {
+	} else if (p_flags&SCENE_FLAG_CREATE_NAVMESH &&_teststr(name,"navmesh") && p_node->cast_to<MeshInstance3D>()) {
 
 		if (isroot)
 			return p_node;
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 
 		Ref<Mesh> mesh=mi->get_mesh();
 		ERR_FAIL_COND_V(mesh.is_null(),NULL);
@@ -1650,7 +1650,7 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		Ref<NavigationMesh> nmesh = memnew( NavigationMesh);
 		nmesh->create_from_mesh(mesh);
 		nmi->set_navigation_mesh(nmesh);
-		nmi->cast_to<Spatial>()->set_transform(mi->get_transform());
+		nmi->cast_to<Node3D>()->set_transform(mi->get_transform());
 		p_node->replace_by(nmi);
 		memdelete(p_node);
 		p_node=nmi;
@@ -1660,8 +1660,8 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 			return p_node;
 
 		Node *owner = p_node->get_owner();
-		Spatial *s = p_node->cast_to<Spatial>();
-		VehicleBody *bv = memnew( VehicleBody );
+		Node3D *s = p_node->cast_to<Node3D>();
+		VehicleBody3D *bv = memnew( VehicleBody3D );
 		String n = _fixstr(p_node->get_name(),"vehicle");
 		bv->set_name(n);
 		p_node->replace_by(bv);
@@ -1681,8 +1681,8 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 			return p_node;
 
 		Node *owner = p_node->get_owner();
-		Spatial *s = p_node->cast_to<Spatial>();
-		VehicleWheel *bv = memnew( VehicleWheel );
+		Node3D *s = p_node->cast_to<Node3D>();
+		VehicleWheel3D *bv = memnew( VehicleWheel3D );
 		String n = _fixstr(p_node->get_name(),"wheel");
 		bv->set_name(n);
 		p_node->replace_by(bv);
@@ -1695,14 +1695,14 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 
 		p_node=bv;
 
-	} else if (p_flags&SCENE_FLAG_CREATE_ROOMS && _teststr(name,"room") && p_node->cast_to<MeshInstance>()) {
+	} else if (p_flags&SCENE_FLAG_CREATE_ROOMS && _teststr(name,"room") && p_node->cast_to<MeshInstance3D>()) {
 
 
 		if (isroot)
 			return p_node;
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
-		DVector<Face3> faces = mi->get_faces(VisualInstance::FACES_SOLID);
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
+		DVector<Face3> faces = mi->get_faces(VisualInstance3D::FACES_SOLID);
 
 
 		BSP_Tree bsptree(faces);
@@ -1726,7 +1726,7 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		if (isroot)
 			return p_node;
 
-		Spatial *dummy = p_node->cast_to<Spatial>();
+		Node3D *dummy = p_node->cast_to<Node3D>();
 		ERR_FAIL_COND_V(!dummy,NULL);
 
 		Room * room = memnew( Room );
@@ -1739,13 +1739,13 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 
 		room->compute_room_from_subtree();
 
-	} else if (p_flags&SCENE_FLAG_CREATE_PORTALS &&_teststr(name,"portal") && p_node->cast_to<MeshInstance>()) {
+	} else if (p_flags&SCENE_FLAG_CREATE_PORTALS &&_teststr(name,"portal") && p_node->cast_to<MeshInstance3D>()) {
 
 		if (isroot)
 			return p_node;
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
-		DVector<Face3> faces = mi->get_faces(VisualInstance::FACES_SOLID);
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
+		DVector<Face3> faces = mi->get_faces(VisualInstance3D::FACES_SOLID);
 
 		ERR_FAIL_COND_V(faces.size()==0,NULL);
 		//step 1 compute the plane
@@ -1820,11 +1820,11 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		memdelete(p_node);
 		p_node=portal;
 
-	} else if (p_node->cast_to<MeshInstance>()) {
+	} else if (p_node->cast_to<MeshInstance3D>()) {
 
 		//last attempt, maybe collision insde the mesh data
 
-		MeshInstance *mi = p_node->cast_to<MeshInstance>();
+		MeshInstance3D *mi = p_node->cast_to<MeshInstance3D>();
 
 		Ref<Mesh> mesh = mi->get_mesh();
 		if (!mesh.is_null()) {
@@ -1848,7 +1848,7 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 
 				if (!shape.is_null()) {
 #if 0
-					StaticBody* static_body = memnew( StaticBody );
+					StaticBody3D* static_body = memnew( StaticBody3D );
 					ERR_FAIL_COND_V(!static_body,NULL);
 					static_body->set_name( String(mesh->get_name()) + "_col" );
 					shape->set_name(static_body->get_name());
@@ -1901,11 +1901,11 @@ void EditorSceneImportPlugin::_merge_existing_node(Node *p_node,Node *p_imported
 		if (imported_node->get_type()==p_node->get_type()) {
 			//same thing, check what it is
 
-			if (p_node->get_type()=="MeshInstance") {
+			if (p_node->get_type()=="MeshInstance3D") {
 
 				//merge mesh instance, this is a special case!
-				MeshInstance *mi_imported=imported_node->cast_to<MeshInstance>();
-				MeshInstance *mi_node=p_node->cast_to<MeshInstance>();
+				MeshInstance3D *mi_imported=imported_node->cast_to<MeshInstance3D>();
+				MeshInstance3D *mi_node=p_node->cast_to<MeshInstance3D>();
 
 				Ref<Mesh> mesh_imported = mi_imported->get_mesh();
 				Ref<Mesh> mesh_node = mi_node->get_mesh();
@@ -1944,8 +1944,8 @@ void EditorSceneImportPlugin::_merge_existing_node(Node *p_node,Node *p_imported
 				}
 			} else if (p_node->get_type()=="Path") {
 				//for paths, overwrite path
-				Path *path_imported =imported_node->cast_to<Path>();
-				Path *path_node =p_node->cast_to<Path>();
+				Path3D *path_imported =imported_node->cast_to<Path3D>();
+				Path3D *path_node =p_node->cast_to<Path3D>();
 
 				if (path_imported->get_curve().is_valid()) {
 
@@ -1967,11 +1967,11 @@ void EditorSceneImportPlugin::_merge_existing_node(Node *p_node,Node *p_imported
 
 				room_node->set_room( room_imported->get_room() );
 
-			} else if (p_node->get_type()=="Skeleton") {
+			} else if (p_node->get_type()=="Skeleton3D") {
 				//for paths, overwrite path
 
-				Skeleton *skeleton_imported =imported_node->cast_to<Skeleton>();
-				Skeleton *skeleton_node =p_node->cast_to<Skeleton>();
+				Skeleton3D *skeleton_imported =imported_node->cast_to<Skeleton3D>();
+				Skeleton3D *skeleton_node =p_node->cast_to<Skeleton3D>();
 
 				//use imported bones, obviously
 				skeleton_node->clear_bones();
@@ -2050,20 +2050,20 @@ void EditorSceneImportPlugin::_merge_existing_node(Node *p_node,Node *p_imported
 					aplayer_node->add_animation(N->get(), candidate);
 				}
 
-			} else if (p_node->get_type()=="CollisionShape") {
+			} else if (p_node->get_type()=="CollisionShape3D") {
 				//for paths, overwrite path
 
-				CollisionShape *collision_imported =imported_node->cast_to<CollisionShape>();
-				CollisionShape *collision_node =p_node->cast_to<CollisionShape>();
+				CollisionShape3D *collision_imported =imported_node->cast_to<CollisionShape3D>();
+				CollisionShape3D *collision_node =p_node->cast_to<CollisionShape3D>();
 
 				collision_node->set_shape( collision_imported->get_shape() );
 			}
 		}
 
-		if (p_node->cast_to<Spatial>() && imported_node->cast_to<Spatial>()) {
+		if (p_node->cast_to<Node3D>() && imported_node->cast_to<Node3D>()) {
 			//apply transform if changed
-			Spatial *snode = p_node->cast_to<Spatial>();
-			Spatial *simp = imported_node->cast_to<Spatial>();
+			Node3D *snode = p_node->cast_to<Node3D>();
+			Node3D *simp = imported_node->cast_to<Node3D>();
 
 			if (snode->get_import_transform() == snode->get_transform()) {
 				//not moved, apply new
@@ -2186,7 +2186,7 @@ void EditorSceneImportPlugin::_scan_materials(Node*p_base,Node *p_node,Map<Strin
 
 	if (!p_base && p_node->get_owner()!=p_base)
 		return;
-	MeshInstance *mi=p_node->cast_to<MeshInstance>();
+	MeshInstance3D *mi=p_node->cast_to<MeshInstance3D>();
 
 	if (mi) {
 		if (mi->get_material_override().is_valid()) {
@@ -2217,7 +2217,7 @@ void EditorSceneImportPlugin::_apply_materials(Node*p_base,Node *p_node,Map<Stri
 	if (!p_base && p_node->get_owner()!=p_base)
 		return;
 
-	MeshInstance *mi=p_node->cast_to<MeshInstance>();
+	MeshInstance3D *mi=p_node->cast_to<MeshInstance3D>();
 
 	if (mi) {
 
@@ -2272,7 +2272,7 @@ void EditorSceneImportPlugin::_tag_import_paths(Node *p_scene,Node *p_node) {
 	NodePath path = p_scene->get_path_to(p_node);
 	p_node->set_import_path( path );
 
-	Spatial *snode=p_node->cast_to<Spatial>();
+	Node3D *snode=p_node->cast_to<Node3D>();
 
 	if (snode) {
 

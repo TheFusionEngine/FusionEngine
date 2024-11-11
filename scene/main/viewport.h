@@ -38,7 +38,7 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
-class Camera;
+class Camera3D;
 class Viewport;
 
 class RenderTargetTexture : public Texture {
@@ -84,8 +84,8 @@ private:
 friend class RenderTargetTexture;
 	Viewport *parent;
 
-	Camera *camera;
-	Set<Camera*> cameras;
+	Camera3D *camera;
+	Set<Camera3D*> cameras;
 
 	RID viewport;
 	RID canvas_item;
@@ -131,8 +131,8 @@ friend class RenderTargetTexture;
 	void _parent_visibility_changed();
 
 	Ref<World2D> world_2d;
-	Ref<World> world;
-	Ref<World> own_world;
+	Ref<World3D> world;
+	Ref<World3D> own_world;
 
 	StringName input_group;
 	StringName gui_input_group;
@@ -166,9 +166,9 @@ friend class RenderTargetTexture;
 	void _vp_unhandled_input(const InputEvent& p_ev);
 	void _make_input_local(InputEvent& ev);
 
-friend class Camera;
+friend class Camera3D;
 	void _camera_transform_changed_notify();
-	void _set_camera(Camera* p_camera);
+	void _set_camera(Camera3D* p_camera);
 
 protected:	
 	void _notification(int p_what);
@@ -176,7 +176,7 @@ protected:
 public:
 
 
-	Camera* get_camera() const;
+	Camera3D* get_camera() const;
 
 	void set_as_audio_listener(bool p_enable);
 	bool is_audio_listener() const;
@@ -189,9 +189,9 @@ public:
 	Rect2 get_visible_rect() const;
 	RID get_viewport() const;
 
-	void set_world(const Ref<World>& p_world);
-	Ref<World> get_world() const;
-	Ref<World> find_world() const;
+	void set_world(const Ref<World3D>& p_world);
+	Ref<World3D> get_world() const;
+	Ref<World3D> find_world() const;
 
 	Ref<World2D> find_world_2d() const;
 

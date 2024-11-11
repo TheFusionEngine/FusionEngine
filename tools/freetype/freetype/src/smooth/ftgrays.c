@@ -1072,7 +1072,7 @@ typedef ptrdiff_t  FT_PtrDist;
       /* Decide whether to split or draw. See `Rapid Termination          */
       /* Evaluation for Recursive Subdivision of Bezier Curves' by Thomas */
       /* F. Hain, at                                                      */
-      /* http://www.cis.southalabama.edu/~hain/general/Publications/Bezier/Camera-ready%20CISST02%202.pdf */
+      /* http://www.cis.southalabama.edu/~hain/general/Publications/Bezier/Camera3D-ready%20CISST02%202.pdf */
 
       {
         TPos  dx, dy, dx_, dy_;

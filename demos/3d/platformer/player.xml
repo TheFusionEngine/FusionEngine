@@ -8,7 +8,7 @@
 	<ext_resource path="res://osb_down.png" type="Texture"></ext_resource>
 	<ext_resource path="res://osb_right.png" type="Texture"></ext_resource>
 	<ext_resource path="res://sound_shoot.wav" type="Sample"></ext_resource>
-	<resource type="CapsuleShape" path="local://1">
+	<resource type="CapsuleShape3D" path="local://1">
 		<real name="radius"> 0.4 </real>
 		<real name="height"> 0.4 </real>
 
@@ -1087,7 +1087,7 @@
 			<string> "names" </string>
 			<string_array  len="248">
 				<string> "player" </string>
-				<string> "RigidBody" </string>
+				<string> "RigidBody3D" </string>
 				<string> "shape_count" </string>
 				<string> "shapes/0/shape" </string>
 				<string> "shapes/0/transform" </string>
@@ -1110,15 +1110,15 @@
 				<string> "script/script" </string>
 				<string> "__meta__" </string>
 				<string> "collision_capsule" </string>
-				<string> "CollisionShape" </string>
+				<string> "CollisionShape3D" </string>
 				<string> "transform/local" </string>
 				<string> "shape" </string>
 				<string> "trigger" </string>
 				<string> "collision_ray" </string>
 				<string> "target" </string>
-				<string> "Spatial" </string>
+				<string> "Node3D" </string>
 				<string> "camera" </string>
-				<string> "Camera" </string>
+				<string> "Camera3D" </string>
 				<string> "projection" </string>
 				<string> "fov" </string>
 				<string> "near" </string>
@@ -1270,7 +1270,7 @@
 				<string> "bones/26/enabled" </string>
 				<string> "bones/26/bound_childs" </string>
 				<string> "robot" </string>
-				<string> "MeshInstance" </string>
+				<string> "MeshInstance3D" </string>
 				<string> "layers" </string>
 				<string> "geometry/visible" </string>
 				<string> "geometry/material_override" </string>
@@ -1286,7 +1286,7 @@
 				<string> "bullet" </string>
 				<string> "Position3D" </string>
 				<string> "sfx" </string>
-				<string> "SpatialSamplePlayer" </string>
+				<string> "SamplePlayer3D" </string>
 				<string> "params/volume_db" </string>
 				<string> "params/pitch_scale" </string>
 				<string> "params/attenuation/min_distance" </string>

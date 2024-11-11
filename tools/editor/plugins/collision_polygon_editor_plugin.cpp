@@ -118,7 +118,7 @@ void CollisionPolygonEditor::_wip_close() {
 
 }
 
-bool CollisionPolygonEditor::forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event) {
+bool CollisionPolygonEditor::forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event) {
 
 
 	Transform gt = node->get_global_transform();
@@ -511,7 +511,7 @@ void CollisionPolygonEditor::edit(Node *p_collision_polygon) {
 
 	if (p_collision_polygon) {
 
-		node=p_collision_polygon->cast_to<CollisionPolygon>();
+		node=p_collision_polygon->cast_to<CollisionPolygon3D>();
 		wip.clear();
 		wip_active=false;
 		edited_point=-1;
@@ -569,7 +569,7 @@ CollisionPolygonEditor::CollisionPolygonEditor(EditorNode *p_editor) {
 
 	mode = MODE_EDIT;
 	wip_active=false;
-	imgeom = memnew( ImmediateGeometry );
+	imgeom = memnew( ImmediateGeometry3D );
 	imgeom->set_transform(Transform(Matrix3(),Vector3(0,0,0.00001)));
 
 
@@ -593,7 +593,7 @@ CollisionPolygonEditor::CollisionPolygonEditor(EditorNode *p_editor) {
 	handle_material->set_point_size(handle->get_width());
 	handle_material->set_texture(FixedMaterial::PARAM_DIFFUSE,handle);
 
-	pointsm = memnew( MeshInstance );
+	pointsm = memnew( MeshInstance3D );
 	imgeom->add_child(pointsm);
 	m = Ref<Mesh>( memnew( Mesh ) );
 	pointsm->set_mesh(m);
@@ -615,7 +615,7 @@ void CollisionPolygonEditorPlugin::edit(Object *p_object) {
 
 bool CollisionPolygonEditorPlugin::handles(Object *p_object) const {
 
-	return p_object->is_type("CollisionPolygon");
+	return p_object->is_type("CollisionPolygon3D");
 }
 
 void CollisionPolygonEditorPlugin::make_visible(bool p_visible) {

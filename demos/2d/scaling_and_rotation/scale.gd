@@ -1,4 +1,4 @@
-extends Sprite
+extends Sprite2D
 
 var scalex = 0
 var scaley = 0

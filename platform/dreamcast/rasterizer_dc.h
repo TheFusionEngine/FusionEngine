@@ -244,17 +244,17 @@ class RasterizerDC : public Rasterizer {
 
 	mutable RID_Owner<Immediate> immediate_owner;
 
-	struct Particles : public Geometry {
+	struct Particles3D : public Geometry {
 
 		ParticleSystemSW data; // software particle system
 
-		Particles() {
+		Particles3D() {
 			type=GEOMETRY_PARTICLES;
 
 		}
 	};
 
-	mutable RID_Owner<Particles> particles_owner;
+	mutable RID_Owner<Particles3D> particles_owner;
 
 	struct ParticlesInstance : public GeometryOwner {
 
@@ -269,13 +269,13 @@ class RasterizerDC : public Rasterizer {
 	mutable RID_Owner<ParticlesInstance> particles_instance_owner;
 	ParticleSystemDrawInfoSW particle_draw_info;
 
-	struct Skeleton {
+	struct Skeleton3D {
 
 		Vector<Transform> bones;
 
 	};
 
-	mutable RID_Owner<Skeleton> skeleton_owner;
+	mutable RID_Owner<Skeleton3D> skeleton_owner;
 
 
 	struct Light {

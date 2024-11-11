@@ -4,9 +4,9 @@
 #include "scene/3d/spatial.h"
 #include "scene/3d/navigation_mesh.h"
 
-class Navigation : public Spatial {
+class Navigation : public Node3D {
 
-	OBJ_TYPE( Navigation, Spatial);
+	OBJ_TYPE( Navigation, Node3D);
 
 
 	union Point {

@@ -31,9 +31,9 @@
 
 #include "scene/3d/spatial.h"
 
-class Position3D : public Spatial  {
+class Position3D : public Node3D  {
 
-	OBJ_TYPE(Position3D,Spatial);
+	OBJ_TYPE(Position3D,Node3D);
 
 	virtual RES _get_gizmo_geometry() const;
 

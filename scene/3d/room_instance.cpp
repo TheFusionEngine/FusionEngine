@@ -167,7 +167,7 @@ Ref<RoomBounds> Room::get_room() const {
 
 void Room::_parse_node_faces(DVector<Face3> &all_faces,const Node *p_node) const {
 
-	const VisualInstance *vi=p_node->cast_to<VisualInstance>();
+	const VisualInstance3D *vi=p_node->cast_to<VisualInstance3D>();
 
 	if (vi) {
 		DVector<Face3> faces=vi->get_faces(FACES_ENCLOSING);
@@ -277,7 +277,7 @@ void Room::_bind_methods() {
 
 
 
-	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "room/room", PROPERTY_HINT_RESOURCE_TYPE, "Area" ), _SCS("set_room"), _SCS("get_room") );
+	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "room/room", PROPERTY_HINT_RESOURCE_TYPE, "Area3D" ), _SCS("set_room"), _SCS("get_room") );
 	ADD_PROPERTY( PropertyInfo( Variant::BOOL, "room/simulate_acoustics"), _SCS("set_simulate_acoustics"), _SCS("is_simulating_acoustics") );
 }
 

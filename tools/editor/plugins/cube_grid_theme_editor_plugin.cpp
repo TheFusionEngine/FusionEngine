@@ -76,10 +76,10 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 
 		Node *child = p_scene->get_child(i);
 
-		if (!child->cast_to<MeshInstance>()) {
+		if (!child->cast_to<MeshInstance3D>()) {
 			if (child->get_child_count()>0) {
 				child=child->get_child(0);
-				if (!child->cast_to<MeshInstance>()) {
+				if (!child->cast_to<MeshInstance3D>()) {
 					continue;
 				}
 
@@ -89,7 +89,7 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 
 		}
 
-		MeshInstance *mi = child->cast_to<MeshInstance>();
+		MeshInstance3D *mi = child->cast_to<MeshInstance3D>();
 		Ref<Mesh> mesh=mi->get_mesh();
 		if (mesh.is_null())
 			 continue;
@@ -110,9 +110,9 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 		for(int j=0;j<mi->get_child_count();j++) {
 #if 1
 			Node *child2 = mi->get_child(j);
-			if (!child2->cast_to<StaticBody>())
+			if (!child2->cast_to<StaticBody3D>())
 				continue;
-			StaticBody *sb = child2->cast_to<StaticBody>();
+			StaticBody3D *sb = child2->cast_to<StaticBody3D>();
 			if (sb->get_shape_count()==0)
 				continue;
 			collision=sb->get_shape(0);

@@ -297,7 +297,7 @@ public:
 	void set_anim_pos(float p_pos);
 	void insert_node_value_key(Node* p_node, const String& p_property,const Variant& p_value,bool p_only_if_exists=false);
 	void insert_value_key(const String& p_property,const Variant& p_value);
-	void insert_transform_key(Spatial *p_node,const String& p_sub,const Transform& p_xform);
+	void insert_transform_key(Node3D *p_node,const String& p_sub,const Transform& p_xform);
 
 	AnimationKeyEditor(UndoRedo *p_undo_redo, EditorHistory *p_history, EditorSelection *p_selection);
 	~AnimationKeyEditor();

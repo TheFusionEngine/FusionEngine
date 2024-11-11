@@ -74,7 +74,7 @@ void PhysicsBody2D::add_collision_exception_with(Node* p_node) {
 	ERR_FAIL_NULL(p_node);
 	PhysicsBody2D *physics_body = p_node->cast_to<PhysicsBody2D>();
 	if (!physics_body) {
-		ERR_EXPLAIN("Collision exception only works between two objects of PhysicsBody type");
+		ERR_EXPLAIN("Collision exception only works between two objects of PhysicsBody3D type");
 	}
 	ERR_FAIL_COND(!physics_body);
 	Physics2DServer::get_singleton()->body_add_collision_exception(get_rid(),physics_body->get_rid());
@@ -86,7 +86,7 @@ void PhysicsBody2D::remove_collision_exception_with(Node* p_node) {
 	ERR_FAIL_NULL(p_node);
 	PhysicsBody2D *physics_body = p_node->cast_to<PhysicsBody2D>();
 	if (!physics_body) {
-		ERR_EXPLAIN("Collision exception only works between two objects of PhysicsBody type");
+		ERR_EXPLAIN("Collision exception only works between two objects of PhysicsBody3D type");
 	}
 	ERR_FAIL_COND(!physics_body);
 	Physics2DServer::get_singleton()->body_remove_collision_exception(get_rid(),physics_body->get_rid());

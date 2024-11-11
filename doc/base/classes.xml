@@ -1857,12 +1857,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="AnimatedSprite" inherits="Node2D" category="Core">
+<class name="AnimatedSprite2D" inherits="Node2D" category="Core">
 	<brief_description>
-	Sprite node that can use multiple textures for animation.
+	Sprite2D node that can use multiple textures for animation.
 	</brief_description>
 	<description>
-	Sprite node that can use multiple textures for animation.
+	Sprite2D node that can use multiple textures for animation.
 	</description>
 	<methods>
 		<method name="set_sprite_frames"  >
@@ -3191,7 +3191,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="Area" inherits="CollisionObject" category="Core">
+<class name="Area3D" inherits="CollisionObject3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -4679,7 +4679,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="BakedLightInstance" inherits="VisualInstance" category="Core">
+<class name="BakedLightInstance" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -4713,7 +4713,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="BakedLightSampler" inherits="VisualInstance" category="Core">
+<class name="BakedLightSampler" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -4926,7 +4926,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="BoneAttachment" inherits="Spatial" category="Core">
+<class name="BoneAttachment3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -4948,12 +4948,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="BoxShape" inherits="Shape" category="Core">
+<class name="BoxShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	Box shape resource.
 	</brief_description>
 	<description>
-	Box shape resource, which can be set into a [PhysicsBody] or area.
+	Box shape resource, which can be set into a [PhysicsBody3D] or area.
 	</description>
 	<methods>
 		<method name="set_extents"  >
@@ -5249,12 +5249,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="Camera" inherits="Spatial" category="Core">
+<class name="Camera3D" inherits="Node3D" category="Core">
 	<brief_description>
-	Camera node, displays from a point of view.
+	Camera3D node, displays from a point of view.
 	</brief_description>
 	<description>
-	Camera is a special node that displays what is visible from its current location. Cameras register themselves in the nearest [Viewport] node (when ascending the tree). Only one camera can be active per viewport. If no viewport is available ascending the tree, the Camera will register in the global viewport. In other words, a Camera just provides [i]3D[/i] display capabilities to a [Viewport], and, without one, a [Scene] registered in that [Viewport] (or higher viewports) can't be displayed.
+	Camera3D is a special node that displays what is visible from its current location. Cameras register themselves in the nearest [Viewport] node (when ascending the tree). Only one camera can be active per viewport. If no viewport is available ascending the tree, the Camera3D will register in the global viewport. In other words, a Camera3D just provides [i]3D[/i] display capabilities to a [Viewport], and, without one, a [Scene] registered in that [Viewport] (or higher viewports) can't be displayed.
 	</description>
 	<methods>
 		<method name="project_ray_normal" qualifiers="const" >
@@ -5324,7 +5324,7 @@
 		</method>
 		<method name="make_current"  >
 			<description>
-			Make this camera the current Camera for the [Viewport] (see class description). If the Camera Node is outside the scene tree, it will attempt to become current once it"apos;s added.
+			Make this camera the current Camera3D for the [Viewport] (see class description). If the Camera3D Node is outside the scene tree, it will attempt to become current once it"apos;s added.
 			</description>
 		</method>
 		<method name="clear_current"  >
@@ -5335,7 +5335,7 @@
 			<return type="bool">
 			</return>
 			<description>
-			Return wether the Camera is the current one in the [Viewport], or plans to become current (if outside the scene tree).
+			Return wether the Camera3D is the current one in the [Viewport], or plans to become current (if outside the scene tree).
 			</description>
 		</method>
 		<method name="get_camera_transform" qualifiers="const" >
@@ -5445,10 +5445,10 @@
 </class>
 <class name="Camera2D" inherits="Node2D" category="Core">
 	<brief_description>
-	Camera node for 2D scenes.
+	Camera3D node for 2D scenes.
 	</brief_description>
 	<description>
-	Camera node for 2D scenes. It forces the screen (current layer) to scroll following this node. This makes it easier (and faster) to program scrollable scenes than manually changing the position of [CanvasItem] based nodes.
+	Camera3D node for 2D scenes. It forces the screen (current layer) to scroll following this node. This makes it easier (and faster) to program scrollable scenes than manually changing the position of [CanvasItem] based nodes.
 	This node is intended to be a simple helper get get things going quickly
 	and it may happen often that more functionality is desired to change
 	how the camera works. To make your own custom camera node, simply
@@ -6138,12 +6138,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="CapsuleShape" inherits="Shape" category="Core">
+<class name="CapsuleShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	Capsule shape resource.
 	</brief_description>
 	<description>
-	Capsule shape resource, which can be set into a [PhysicsBody] or area.
+	Capsule shape resource, which can be set into a [PhysicsBody3D] or area.
 	</description>
 	<methods>
 		<method name="set_radius"  >
@@ -6310,7 +6310,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="CollisionObject" inherits="Spatial" category="Core">
+<class name="CollisionObject3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -6558,7 +6558,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="CollisionPolygon" inherits="Spatial" category="Core">
+<class name="CollisionPolygon3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -6616,7 +6616,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="CollisionShape" inherits="Spatial" category="Core">
+<class name="CollisionShape3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -6962,12 +6962,12 @@
 		</theme_item>
 	</theme_items>
 </class>
-<class name="ConcavePolygonShape" inherits="Shape" category="Core">
+<class name="ConcavePolygonShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	Concave polygon shape.
 	</brief_description>
 	<description>
-	Concave polygon shape resource, which can be set into a [PhysicsBody] or area."#10;           This shape is created by feeding a list of triangles.
+	Concave polygon shape resource, which can be set into a [PhysicsBody3D] or area."#10;           This shape is created by feeding a list of triangles.
 	</description>
 	<methods>
 		<method name="set_faces"  >
@@ -6993,7 +6993,7 @@
 	Concave polygon 2D shape resource for physics.
 	</brief_description>
 	<description>
-	Concave polygon 2D shape resource for physics. It is made out of segments and is very optimal for complex polygonal concave collisions. It is really not advised to use for RigidBody nodes. A CollisionPolygon2D in convex decomposition mode (solids) or several convex objects are advised for that instead. Otherwise, a concave polygon 2D shape is better for static collisions.
+	Concave polygon 2D shape resource for physics. It is made out of segments and is very optimal for complex polygonal concave collisions. It is really not advised to use for RigidBody3D nodes. A CollisionPolygon2D in convex decomposition mode (solids) or several convex objects are advised for that instead. Otherwise, a concave polygon 2D shape is better for static collisions.
 	</description>
 	<methods>
 		<method name="set_segments"  >
@@ -7847,12 +7847,12 @@
 		</constant>
 	</constants>
 </class>
-<class name="ConvexPolygonShape" inherits="Shape" category="Core">
+<class name="ConvexPolygonShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	Convex Polygon Shape
 	</brief_description>
 	<description>
-	Convex polygon shape resource, which can be set into a [PhysicsBody] or area.
+	Convex polygon shape resource, which can be set into a [PhysicsBody3D] or area.
 	</description>
 	<methods>
 		<method name="set_points"  >
@@ -8443,12 +8443,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="DirectionalLight" inherits="Light" category="Core">
+<class name="DirectionalLight3D" inherits="Light" category="Core">
 	<brief_description>
 	Directional Light, such as the Sun or the Moon.
 	</brief_description>
 	<description>
-	A DirectionalLight is a type of [Light] node that emits light constantly in one direction (the negative z axis of the node). It is used lights with strong intensity that are located far away from the scene to model sunlight or moonlight. The worldpace location of the DirectionalLight transform (origin) is ignored, only the basis is used do determine light direction.
+	A DirectionalLight3D is a type of [Light] node that emits light constantly in one direction (the negative z axis of the node). It is used lights with strong intensity that are located far away from the scene to model sunlight or moonlight. The worldpace location of the DirectionalLight3D transform (origin) is ignored, only the basis is used do determine light direction.
 	</description>
 	<methods>
 		<method name="set_shadow_mode"  >
@@ -8708,7 +8708,7 @@
 		<method name="forward_spatial_input_event" qualifiers="virtual" >
 			<return type="bool">
 			</return>
-			<argument index="0" name="camera" type="Camera">
+			<argument index="0" name="camera" type="Camera3D">
 			</argument>
 			<argument index="1" name="event" type="InputEvent">
 			</argument>
@@ -10414,7 +10414,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="GeometryInstance" inherits="VisualInstance" category="Core">
+<class name="GeometryInstance3D" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	Base node for geometry based visual instances.
 	</brief_description>
@@ -10646,7 +10646,7 @@
 		</theme_item>
 	</theme_items>
 </class>
-<class name="GridMap" inherits="Spatial" category="Core">
+<class name="GridMap" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -11364,7 +11364,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="HingeJoint" inherits="Joint" category="Core">
+<class name="HingeJoint3D" inherits="Joint" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -11827,7 +11827,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="ImmediateGeometry" inherits="GeometryInstance" category="Core">
+<class name="ImmediateGeometry3D" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -11969,7 +11969,7 @@
 			<description>
 			Return the global, unscaled, screen pointer coordinates.
 			If the 2D viewport has been scaled, it may not work well
-			with [Camera] or controls.
+			with [Camera3D] or controls.
 			</description>
 		</method>
 		<method name="get_mouse_speed" qualifiers="const" >
@@ -12819,7 +12819,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="InterpolatedCamera" inherits="Camera" category="Core">
+<class name="InterpolatedCamera" inherits="Camera3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12838,7 +12838,7 @@
 			</description>
 		</method>
 		<method name="set_target"  >
-			<argument index="0" name="target" type="Camera">
+			<argument index="0" name="target" type="Camera3D">
 			</argument>
 			<description>
 			</description>
@@ -12871,7 +12871,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Joint" inherits="Spatial" category="Core">
+<class name="Joint" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12969,7 +12969,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="KinematicBody" inherits="PhysicsBody" category="Core">
+<class name="CharacterBody3D" inherits="PhysicsBody3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -13455,7 +13455,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Light" inherits="VisualInstance" category="Core">
+<class name="Light" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	Provides a base class for different kinds of light nodes.
 	</brief_description>
@@ -13853,7 +13853,7 @@
 	Abstract base [Resource] for coloring and shading geometry.
 	</brief_description>
 	<description>
-	Material is a base [Resource] used for coloring and shading geometry. All materials inherit from it and almost all [VisualInstance] derived nodes carry a Material. A few flags and parameters are shared between all material types and are configured here.
+	Material is a base [Resource] used for coloring and shading geometry. All materials inherit from it and almost all [VisualInstance3D] derived nodes carry a Material. A few flags and parameters are shared between all material types and are configured here.
 	</description>
 	<methods>
 		<method name="set_flag"  >
@@ -14842,12 +14842,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="MeshInstance" inherits="GeometryInstance" category="Core">
+<class name="MeshInstance3D" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	Node that instances meshes into a [Scenario].
 	</brief_description>
 	<description>
-	MeshInstance is a [Node] that takes a [Mesh] resource and adds it to the current [Scenario] by creating an instance of it. This is the class most often used to get 3D geometry rendered and can be used to instance a sigle [Mesh] in many places. This allows to reuse geometry and save on resources. When a [Mesh] has to be instanced more than thousands of times at close proximity, consider using a [MultiMesh] in a [MultiMeshInstance] instead.
+	MeshInstance3D is a [Node] that takes a [Mesh] resource and adds it to the current [Scenario] by creating an instance of it. This is the class most often used to get 3D geometry rendered and can be used to instance a sigle [Mesh] in many places. This allows to reuse geometry and save on resources. When a [Mesh] has to be instanced more than thousands of times at close proximity, consider using a [MultiMesh] in a [MultiMeshInstance3D] instead.
 	</description>
 	<methods>
 		<method name="set_mesh"  >
@@ -14885,7 +14885,7 @@
 		</method>
 		<method name="create_trimesh_collision"  >
 			<description>
-			This helper creates a [StaticBody] child [Node] using the mesh geometry as collision. It"apos;s mainly used for testing.
+			This helper creates a [StaticBody3D] child [Node] using the mesh geometry as collision. It"apos;s mainly used for testing.
 			</description>
 		</method>
 		<method name="create_convex_collision"  >
@@ -14998,7 +14998,7 @@
 	Provides high perfomance mesh instancing.
 	</brief_description>
 	<description>
-	MultiMesh provides low level mesh instancing. If the amount of [Mesh] instances needed goes from hundreds to thousands (and most need to be visible at close proximity) creating such a large amount of [MeshInstance] nodes may affect performance by using too much CPU or video memory. [br]For this case a MultiMesh becomes very useful, as it can draw thousands of instances with little API overhead.[br] As a drawback, if the instances are too far away of each other, performance may be reduced as every sigle instance will always rendered (they are spatially indexed as one, for the whole object).[br] Since instances may have any  behavior, the AABB used for visibility must be provided by the user, or generated with [method generate_aabb].
+	MultiMesh provides low level mesh instancing. If the amount of [Mesh] instances needed goes from hundreds to thousands (and most need to be visible at close proximity) creating such a large amount of [MeshInstance3D] nodes may affect performance by using too much CPU or video memory. [br]For this case a MultiMesh becomes very useful, as it can draw thousands of instances with little API overhead.[br] As a drawback, if the instances are too far away of each other, performance may be reduced as every sigle instance will always rendered (they are spatially indexed as one, for the whole object).[br] Since instances may have any  behavior, the AABB used for visibility must be provided by the user, or generated with [method generate_aabb].
 	</description>
 	<methods>
 		<method name="set_mesh"  >
@@ -15088,12 +15088,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="MultiMeshInstance" inherits="GeometryInstance" category="Core">
+<class name="MultiMeshInstance3D" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	Node that instances a [MultiMesh].
 	</brief_description>
 	<description>
-	MultiMeshInstance is a [Node] that takes a [MultiMesh] resource and adds it to the current [Scenario] by creating an instance of it (yes, this is an instance of instances).
+	MultiMeshInstance3D is a [Node] that takes a [MultiMesh] resource and adds it to the current [Scenario] by creating an instance of it (yes, this is an instance of instances).
 	</description>
 	<methods>
 		<method name="set_multimesh"  >
@@ -15138,7 +15138,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Navigation" inherits="Spatial" category="Core">
+<class name="Navigation" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -15270,7 +15270,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="NavigationMeshInstance" inherits="Spatial" category="Core">
+<class name="NavigationMeshInstance" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -16996,7 +16996,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="OmniLight" inherits="Light" category="Core">
+<class name="OmniLight3D" inherits="Light" category="Core">
 	<brief_description>
 	OmniDirectional Light, such as a lightbulb or a candle.
 	</brief_description>
@@ -17697,12 +17697,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="Particles" inherits="GeometryInstance" category="Core">
+<class name="Particles3D" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	Particle system 3D Node
 	</brief_description>
 	<description>
-	Particles is a particle system 3D [Node] that is used to simulate several types of particle effects, such as explosions, rain, snow, fireflies, or other magical-like shinny sparkles. Particles are drawn using impostors, and given their dynamic behavior, the user must provide a visibility AABB (although helpers to create one automatically exist).
+	Particles3D is a particle system 3D [Node] that is used to simulate several types of particle effects, such as explosions, rain, snow, fireflies, or other magical-like shinny sparkles. Particles3D are drawn using impostors, and given their dynamic behavior, the user must provide a visibility AABB (although helpers to create one automatically exist).
 	</description>
 	<methods>
 		<method name="set_amount"  >
@@ -18287,7 +18287,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="Path" inherits="Spatial" category="Core">
+<class name="Path3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -18331,7 +18331,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PathFollow" inherits="Spatial" category="Core">
+<class name="PathFollow3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -19912,12 +19912,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsBody" inherits="CollisionObject" category="Core">
+<class name="PhysicsBody3D" inherits="CollisionObject3D" category="Core">
 	<brief_description>
 	Base class for differnt types of Physics bodies.
 	</brief_description>
 	<description>
-	PhysicsBody is an abstract base class for implementing a physics body. All PhysicsBody types inherit from it.
+	PhysicsBody3D is an abstract base class for implementing a physics body. All PhysicsBody3D types inherit from it.
 	</description>
 	<methods>
 		<method name="set_layer_mask"  >
@@ -19933,13 +19933,13 @@
 			</description>
 		</method>
 		<method name="add_collision_exception_with"  >
-			<argument index="0" name="body" type="PhysicsBody">
+			<argument index="0" name="body" type="PhysicsBody3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="remove_collision_exception_with"  >
-			<argument index="0" name="body" type="PhysicsBody">
+			<argument index="0" name="body" type="PhysicsBody3D">
 			</argument>
 			<description>
 			</description>
@@ -21471,7 +21471,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PinJoint" inherits="Joint" category="Core">
+<class name="PinJoint3D" inherits="Joint" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -22297,7 +22297,7 @@
 		</theme_item>
 	</theme_items>
 </class>
-<class name="Portal" inherits="VisualInstance" category="Core">
+<class name="Portal" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	Portals provide virtual openings to rooms.
 	</brief_description>
@@ -22392,12 +22392,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="Position3D" inherits="Spatial" category="Core">
+<class name="Position3D" inherits="Node3D" category="Core">
 	<brief_description>
 	Generic 3D Position hint for editing
 	</brief_description>
 	<description>
-	Generic 3D Position hint for editing. It's just like a plain [Spatial] but displays as a cross in the 3D-Editor at all times.
+	Generic 3D Position hint for editing. It's just like a plain [Node3D] but displays as a cross in the 3D-Editor at all times.
 	</description>
 	<methods>
 	</methods>
@@ -22440,7 +22440,7 @@
 		</theme_item>
 	</theme_items>
 </class>
-<class name="ProximityGroup" inherits="Spatial" category="Core">
+<class name="ProximityGroup" inherits="Node3D" category="Core">
 	<brief_description>
 	General purpose proximity-detection node.
 	</brief_description>
@@ -22494,7 +22494,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Quad" inherits="GeometryInstance" category="Core">
+<class name="Quad" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -22904,7 +22904,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="RayCast" inherits="Spatial" category="Core">
+<class name="RayCast3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -24005,7 +24005,7 @@
 		</theme_item>
 	</theme_items>
 </class>
-<class name="RigidBody" inherits="PhysicsBody" category="Core">
+<class name="RigidBody3D" inherits="PhysicsBody3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -24547,7 +24547,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="Room" inherits="VisualInstance" category="Core">
+<class name="Room" inherits="VisualInstance3D" category="Core">
 	<brief_description>
 	Room data resource.
 	</brief_description>
@@ -25979,12 +25979,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="Skeleton" inherits="Spatial" category="Core">
+<class name="Skeleton3D" inherits="Node3D" category="Core">
 	<brief_description>
-	Skeleton for characters and animated objects.
+	Skeleton3D for characters and animated objects.
 	</brief_description>
 	<description>
-	Skeleton provides a hierachial interface for managing bones, including pose, rest and animation (see [Animation]). Skeleton will support rag doll dynamics in the future.
+	Skeleton3D provides a hierachial interface for managing bones, including pose, rest and animation (see [Animation]). Skeleton3D will support rag doll dynamics in the future.
 	</description>
 	<methods>
 		<method name="add_bone"  >
@@ -26191,7 +26191,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SliderJoint" inherits="Joint" category="Core">
+<class name="SliderJoint3D" inherits="Joint" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -26353,12 +26353,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="Spatial" inherits="Node" category="Core">
+<class name="Node3D" inherits="Node" category="Core">
 	<brief_description>
 	Base class for all 3D nodes.
 	</brief_description>
 	<description>
-	Spatial is the base for every type of 3D [Node]. It contains a 3D [Transform] which can be set or get as local or global. If a Spatial [Node] has Spatial children, their transforms will be relative to the parent.
+	Node3D is the base for every type of 3D [Node]. It contains a 3D [Transform] which can be set or get as local or global. If a Node3D [Node] has Node3D children, their transforms will be relative to the parent.
 	</description>
 	<methods>
 		<method name="set_transform"  >
@@ -26429,7 +26429,7 @@
 			<return type="Object">
 			</return>
 			<description>
-			Return the parent [Spatial], or an empty [Object] if no parent exists or parent is not of type [Spatial.
+			Return the parent [Node3D], or an empty [Object] if no parent exists or parent is not of type [Node3D.
 			</description>
 		</method>
 		<method name="set_ignore_transform_notification"  >
@@ -26451,7 +26451,7 @@
 			</description>
 		</method>
 		<method name="get_world" qualifiers="const" >
-			<return type="World">
+			<return type="World3D">
 			</return>
 			<description>
 			</description>
@@ -26501,7 +26501,7 @@
 	</signals>
 	<constants>
 		<constant name="NOTIFICATION_TRANSFORM_CHANGED" value="29">
-			Spatial nodes receive this notifacation with their global transform changes. This means that either the current or a parent node changed it's transform.
+			Node3D nodes receive this notifacation with their global transform changes. This means that either the current or a parent node changed it's transform.
 		</constant>
 		<constant name="NOTIFICATION_ENTER_WORLD" value="41">
 		</constant>
@@ -26511,7 +26511,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="SpatialPlayer" inherits="Spatial" category="Core">
+<class name="SoundPlayer3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -26553,7 +26553,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="SpatialSamplePlayer" inherits="SpatialPlayer" category="Core">
+<class name="SamplePlayer3D" inherits="SoundPlayer3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -26637,10 +26637,10 @@
 </class>
 <class name="SpatialSound2DServer" inherits="Object" category="Core">
 	<brief_description>
-	Server for Spatial 2D Sound.
+	Server for Node3D 2D Sound.
 	</brief_description>
 	<description>
-	Server for Spatial 2D Sound.
+	Server for Node3D 2D Sound.
 	</description>
 	<methods>
 	</methods>
@@ -26677,7 +26677,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SpatialStreamPlayer" inherits="SpatialPlayer" category="Core">
+<class name="StreamPlayer3D" inherits="SoundPlayer3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -26749,7 +26749,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SphereShape" inherits="Shape" category="Core">
+<class name="SphereShape3D" inherits="Shape" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -26886,24 +26886,24 @@
 	<constants>
 	</constants>
 </class>
-<class name="SpotLight" inherits="Light" category="Core">
+<class name="SpotLight3D" inherits="Light" category="Core">
 	<brief_description>
 	Spotlight Light, such as a reflector spotlight or a latern.
 	</brief_description>
 	<description>
-	A SpotLight light is a type of [Light] node that emits lights in a specific direction, in the shape of a cone. The light is attenuated through the distance and this attenuation can be configured by changing the energy, radius and attenuation parameters of [Light]. TODO: Image of a spotlight.
+	A SpotLight3D light is a type of [Light] node that emits lights in a specific direction, in the shape of a cone. The light is attenuated through the distance and this attenuation can be configured by changing the energy, radius and attenuation parameters of [Light]. TODO: Image of a spotlight.
 	</description>
 	<methods>
 	</methods>
 	<constants>
 	</constants>
 </class>
-<class name="Sprite" inherits="Node2D" category="Core">
+<class name="Sprite2D" inherits="Node2D" category="Core">
 	<brief_description>
-	General purpose Sprite node.
+	General purpose Sprite2D node.
 	</brief_description>
 	<description>
-	General purpose Sprite node. This Sprite node can show any texture as a sprite. The texture can be used as a spritesheet for animation, or only a region from a bigger texture can referenced, like an atlas.
+	General purpose Sprite2D node. This Sprite2D node can show any texture as a sprite. The texture can be used as a spritesheet for animation, or only a region from a bigger texture can referenced, like an atlas.
 	</description>
 	<methods>
 		<method name="set_texture"  >
@@ -27146,7 +27146,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SpriteBase3D" inherits="GeometryInstance" category="Core">
+<class name="SpriteBase3D" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -27300,10 +27300,10 @@
 </class>
 <class name="SpriteFrames" inherits="Resource" category="Core">
 	<brief_description>
-	Sprite frame library for AnimatedSprite.
+	Sprite2D frame library for AnimatedSprite2D.
 	</brief_description>
 	<description>
-	Sprite frame library for [AnimatedSprite].
+	Sprite2D frame library for [AnimatedSprite2D].
 	</description>
 	<methods>
 		<method name="add_frame"  >
@@ -27355,12 +27355,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="StaticBody" inherits="PhysicsBody" category="Core">
+<class name="StaticBody3D" inherits="PhysicsBody3D" category="Core">
 	<brief_description>
-	PhysicsBody for static collision objects.
+	PhysicsBody3D for static collision objects.
 	</brief_description>
 	<description>
-	StaticBody implements a static collision [Node], by utilizing a rigid body in the [PhysicsServer]. Static bodies are used for static collision. For more information on physics body nodes, see [PhysicsBody].
+	StaticBody3D implements a static collision [Node], by utilizing a rigid body in the [PhysicsServer]. Static bodies are used for static collision. For more information on physics body nodes, see [PhysicsBody3D].
 	</description>
 	<methods>
 		<method name="set_constant_linear_velocity"  >
@@ -28905,7 +28905,7 @@
 		</theme_item>
 	</theme_items>
 </class>
-<class name="TestCube" inherits="GeometryInstance" category="Core">
+<class name="TestCube" inherits="GeometryInstance3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -29255,7 +29255,7 @@
 	Texture for 2D and 3D.
 	</brief_description>
 	<description>
-	A texture works by registering an image in the video hardware, which then can be used in 3D models or 2D [Sprite] or GUI [Control]s.
+	A texture works by registering an image in the video hardware, which then can be used in 3D models or 2D [Sprite2D] or GUI [Control]s.
 	</description>
 	<methods>
 		<method name="get_width" qualifiers="const" >
@@ -32366,7 +32366,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="VehicleBody" inherits="PhysicsBody" category="Core">
+<class name="VehicleBody3D" inherits="PhysicsBody3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -32436,7 +32436,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="VehicleWheel" inherits="Spatial" category="Core">
+<class name="VehicleWheel3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -32713,7 +32713,7 @@
 	Creates a sub-view into the screen.
 	</brief_description>
 	<description>
-	A Viewport creates a different view into the screen, or a sub-view inside another viewport. Children 2D Nodes will display on it, and children Camera 3D nodes will renderon it too.[br]
+	A Viewport creates a different view into the screen, or a sub-view inside another viewport. Children 2D Nodes will display on it, and children Camera3D 3D nodes will renderon it too.[br]
 	Optionally, a viewport can have it's own 2D or 3D world, so they don't share what they draw with other viewports.[br]
 	If a viewport is a child of a [Control], it will automatically take up it's same rect and position, otherwise they must be set manually.[br]
 	Viewports can also choose to be audio listeners, so they generate positional audio depending on a 2D or 3D camera child of it.[br]
@@ -32742,19 +32742,19 @@
 			</description>
 		</method>
 		<method name="set_world"  >
-			<argument index="0" name="world" type="World">
+			<argument index="0" name="world" type="World3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_world" qualifiers="const" >
-			<return type="World">
+			<return type="World3D">
 			</return>
 			<description>
 			</description>
 		</method>
 		<method name="find_world" qualifiers="const" >
-			<return type="World">
+			<return type="World3D">
 			</return>
 			<description>
 			</description>
@@ -32968,7 +32968,7 @@
 			</description>
 		</method>
 		<method name="get_camera" qualifiers="const" >
-			<return type="Camera">
+			<return type="Camera3D">
 			</return>
 			<description>
 			</description>
@@ -33079,7 +33079,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="VisibilityEnabler" inherits="VisibilityNotifier" category="Core">
+<class name="VisibilityEnabler3D" inherits="VisibilityNotifier3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -33143,7 +33143,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="VisibilityNotifier" inherits="Spatial" category="Core">
+<class name="VisibilityNotifier3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -33243,7 +33243,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="VisualInstance" inherits="Spatial" category="Core">
+<class name="VisualInstance3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -34939,12 +34939,12 @@
 		</theme_item>
 	</theme_items>
 </class>
-<class name="World" inherits="Resource" category="Core">
+<class name="World3D" inherits="Resource" category="Core">
 	<brief_description>
 	Class that has everything pertaining to a world.
 	</brief_description>
 	<description>
-	Class that has everything pertaining to a world. A physics space, a visual scenario and a sound space. Spatial nodes register their resources into the current world.
+	Class that has everything pertaining to a world. A physics space, a visual scenario and a sound space. Node3D nodes register their resources into the current world.
 	</description>
 	<methods>
 		<method name="get_space" qualifiers="const" >
@@ -35011,7 +35011,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="WorldEnvironment" inherits="Spatial" category="Core">
+<class name="WorldEnvironment" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>

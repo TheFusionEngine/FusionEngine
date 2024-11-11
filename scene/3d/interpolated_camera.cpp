@@ -44,7 +44,7 @@ void InterpolatedCamera::_notification(int p_what) {
 				break;
 			if (has_node(target)) {
 
-				Spatial *node = get_node(target)->cast_to<Spatial>();
+				Node3D *node = get_node(target)->cast_to<Node3D>();
 				if (!node)
 					break;
 
@@ -54,8 +54,8 @@ void InterpolatedCamera::_notification(int p_what) {
 				local_transform = local_transform.interpolate_with(target_xform,delta);
 				set_global_transform(local_transform);
 
-				if (node->cast_to<Camera>()) {
-					Camera *cam = node->cast_to<Camera>();
+				if (node->cast_to<Camera3D>()) {
+					Camera3D *cam = node->cast_to<Camera3D>();
 					if (cam->get_projection()==get_projection())  {
 
 						float new_near = Math::lerp(get_znear(),cam->get_znear(),delta);
@@ -83,10 +83,10 @@ void InterpolatedCamera::_notification(int p_what) {
 void InterpolatedCamera::_set_target(const Object *p_target) {
 
 	ERR_FAIL_NULL(p_target);
-	set_target(p_target->cast_to<Spatial>());
+	set_target(p_target->cast_to<Node3D>());
 }
 
-void InterpolatedCamera::set_target(const Spatial *p_target) {
+void InterpolatedCamera::set_target(const Node3D *p_target) {
 
 	ERR_FAIL_NULL(p_target);
 	target=get_path_to(p_target);
@@ -136,7 +136,7 @@ void InterpolatedCamera::_bind_methods() {
 
 	ObjectTypeDB::bind_method(_MD("set_target_path","target_path"),&InterpolatedCamera::set_target_path);
 	ObjectTypeDB::bind_method(_MD("get_target_path"),&InterpolatedCamera::get_target_path);
-	ObjectTypeDB::bind_method(_MD("set_target","target:Camera"),&InterpolatedCamera::_set_target);
+	ObjectTypeDB::bind_method(_MD("set_target","target:Camera3D"),&InterpolatedCamera::_set_target);
 
 	ObjectTypeDB::bind_method(_MD("set_speed","speed"),&InterpolatedCamera::set_speed);
 	ObjectTypeDB::bind_method(_MD("get_speed"),&InterpolatedCamera::get_speed);

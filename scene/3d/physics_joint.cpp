@@ -51,8 +51,8 @@ void Joint::_update_joint(bool p_only_free) {
 	if (!node_a && !node_b)
 		return;
 
-	PhysicsBody *body_a=node_a ? node_a->cast_to<PhysicsBody>() : (PhysicsBody*)NULL;
-	PhysicsBody *body_b=node_b ? node_b->cast_to<PhysicsBody>() : (PhysicsBody*)NULL;
+	PhysicsBody3D *body_a=node_a ? node_a->cast_to<PhysicsBody3D>() : (PhysicsBody3D*)NULL;
+	PhysicsBody3D *body_b=node_b ? node_b->cast_to<PhysicsBody3D>() : (PhysicsBody3D*)NULL;
 
 	if (!body_a && !body_b)
 		return;
@@ -173,10 +173,10 @@ Joint::Joint() {
 
 ///////////////////////////////////
 
-void PinJoint::_bind_methods() {
+void PinJoint3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&PinJoint::set_param);
-	ObjectTypeDB::bind_method(_MD("get_param","param"),&PinJoint::get_param);
+	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&PinJoint3D::set_param);
+	ObjectTypeDB::bind_method(_MD("get_param","param"),&PinJoint3D::get_param);
 
 	ADD_PROPERTYI( PropertyInfo(Variant::REAL,"params/bias",PROPERTY_HINT_RANGE,"0.01,0.99,0.01"),_SCS("set_param"),_SCS("get_param"), PARAM_BIAS );
 	ADD_PROPERTYI( PropertyInfo(Variant::REAL,"params/damping",PROPERTY_HINT_RANGE,"0.01,8.0,0.01"),_SCS("set_param"),_SCS("get_param"), PARAM_DAMPING );
@@ -187,21 +187,21 @@ void PinJoint::_bind_methods() {
 	BIND_CONSTANT( PARAM_IMPULSE_CLAMP );
 }
 
-void PinJoint::set_param(Param p_param,float p_value){
+void PinJoint3D::set_param(Param p_param,float p_value){
 
 	ERR_FAIL_INDEX(p_param,3);
 	params[p_param]=p_value;
 	if (get_joint().is_valid())
 		PhysicsServer::get_singleton()->pin_joint_set_param(get_joint(),PhysicsServer::PinJointParam(p_param),p_value);
 }
-float PinJoint::get_param(Param p_param) const{
+float PinJoint3D::get_param(Param p_param) const{
 
 	ERR_FAIL_INDEX_V(p_param,3,0);
 	return params[p_param];
 }
 
 
-RID PinJoint::_configure_joint(PhysicsBody *body_a,PhysicsBody *body_b) {
+RID PinJoint3D::_configure_joint(PhysicsBody3D *body_a,PhysicsBody3D *body_b) {
 
 
 	Vector3 pinpos = get_global_transform().origin;
@@ -221,7 +221,7 @@ RID PinJoint::_configure_joint(PhysicsBody *body_a,PhysicsBody *body_b) {
 }
 
 
-PinJoint::PinJoint() {
+PinJoint3D::PinJoint3D() {
 
 	params[PARAM_BIAS]=0.3;
 	params[PARAM_DAMPING]=1;
@@ -239,42 +239,42 @@ PinJoint::PinJoint() {
 ///////////////////////////////////
 
 
-void HingeJoint::_set_upper_limit(float p_limit) {
+void HingeJoint3D::_set_upper_limit(float p_limit) {
 
 	set_param(PARAM_LIMIT_UPPER,Math::deg2rad(p_limit));
 }
 
-float HingeJoint::_get_upper_limit() const {
+float HingeJoint3D::_get_upper_limit() const {
 
 	return Math::rad2deg(get_param(PARAM_LIMIT_UPPER));
 }
 
-void HingeJoint::_set_lower_limit(float p_limit) {
+void HingeJoint3D::_set_lower_limit(float p_limit) {
 
 	set_param(PARAM_LIMIT_LOWER,Math::deg2rad(p_limit));
 
 }
 
-float HingeJoint::_get_lower_limit() const {
+float HingeJoint3D::_get_lower_limit() const {
 
 	return Math::rad2deg(get_param(PARAM_LIMIT_LOWER));
 
 }
 
 
-void HingeJoint::_bind_methods() {
+void HingeJoint3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&HingeJoint::set_param);
-	ObjectTypeDB::bind_method(_MD("get_param","param"),&HingeJoint::get_param);
+	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&HingeJoint3D::set_param);
+	ObjectTypeDB::bind_method(_MD("get_param","param"),&HingeJoint3D::get_param);
 
-	ObjectTypeDB::bind_method(_MD("set_flag","flag","enabled"),&HingeJoint::set_flag);
-	ObjectTypeDB::bind_method(_MD("get_flag","flag"),&HingeJoint::get_flag);
+	ObjectTypeDB::bind_method(_MD("set_flag","flag","enabled"),&HingeJoint3D::set_flag);
+	ObjectTypeDB::bind_method(_MD("get_flag","flag"),&HingeJoint3D::get_flag);
 
-	ObjectTypeDB::bind_method(_MD("_set_upper_limit","upper_limit"),&HingeJoint::_set_upper_limit);
-	ObjectTypeDB::bind_method(_MD("_get_upper_limit"),&HingeJoint::_get_upper_limit);
+	ObjectTypeDB::bind_method(_MD("_set_upper_limit","upper_limit"),&HingeJoint3D::_set_upper_limit);
+	ObjectTypeDB::bind_method(_MD("_get_upper_limit"),&HingeJoint3D::_get_upper_limit);
 
-	ObjectTypeDB::bind_method(_MD("_set_lower_limit","lower_limit"),&HingeJoint::_set_lower_limit);
-	ObjectTypeDB::bind_method(_MD("_get_lower_limit"),&HingeJoint::_get_lower_limit);
+	ObjectTypeDB::bind_method(_MD("_set_lower_limit","lower_limit"),&HingeJoint3D::_set_lower_limit);
+	ObjectTypeDB::bind_method(_MD("_get_lower_limit"),&HingeJoint3D::_get_lower_limit);
 
 	ADD_PROPERTYI( PropertyInfo(Variant::REAL,"params/bias",PROPERTY_HINT_RANGE,"0.01,0.99,0.01"),_SCS("set_param"),_SCS("get_param"), PARAM_BIAS );
 
@@ -306,7 +306,7 @@ void HingeJoint::_bind_methods() {
 
 }
 
-void HingeJoint::set_param(Param p_param,float p_value){
+void HingeJoint3D::set_param(Param p_param,float p_value){
 
 	ERR_FAIL_INDEX(p_param,PARAM_MAX);
 	params[p_param]=p_value;
@@ -316,14 +316,14 @@ void HingeJoint::set_param(Param p_param,float p_value){
 	update_gizmo();
 
 }
-float HingeJoint::get_param(Param p_param) const{
+float HingeJoint3D::get_param(Param p_param) const{
 
 	ERR_FAIL_INDEX_V(p_param,PARAM_MAX,0);
 	return params[p_param];
 }
 
 
-void HingeJoint::set_flag(Flag p_flag,bool p_value){
+void HingeJoint3D::set_flag(Flag p_flag,bool p_value){
 
 	ERR_FAIL_INDEX(p_flag,FLAG_MAX);
 	flags[p_flag]=p_value;
@@ -332,13 +332,13 @@ void HingeJoint::set_flag(Flag p_flag,bool p_value){
 
 	update_gizmo();
 }
-bool HingeJoint::get_flag(Flag p_flag) const{
+bool HingeJoint3D::get_flag(Flag p_flag) const{
 
 	ERR_FAIL_INDEX_V(p_flag,FLAG_MAX,false);
 	return flags[p_flag];
 }
 
-RID HingeJoint::_configure_joint(PhysicsBody *body_a,PhysicsBody *body_b) {
+RID HingeJoint3D::_configure_joint(PhysicsBody3D *body_a,PhysicsBody3D *body_b) {
 
 
 	Transform gt = get_global_transform();
@@ -370,7 +370,7 @@ RID HingeJoint::_configure_joint(PhysicsBody *body_a,PhysicsBody *body_b) {
 }
 
 
-HingeJoint::HingeJoint() {
+HingeJoint3D::HingeJoint3D() {
 
 	params[PARAM_BIAS]=0.3;
 	params[PARAM_LIMIT_UPPER]=Math_PI*0.5;
@@ -397,40 +397,40 @@ HingeJoint::HingeJoint() {
 
 
 
-void SliderJoint::_set_upper_limit_angular(float p_limit_angular) {
+void SliderJoint3D::_set_upper_limit_angular(float p_limit_angular) {
 
 	set_param(PARAM_ANGULAR_LIMIT_UPPER,Math::deg2rad(p_limit_angular));
 }
 
-float SliderJoint::_get_upper_limit_angular() const {
+float SliderJoint3D::_get_upper_limit_angular() const {
 
 	return Math::rad2deg(get_param(PARAM_ANGULAR_LIMIT_UPPER));
 }
 
-void SliderJoint::_set_lower_limit_angular(float p_limit_angular) {
+void SliderJoint3D::_set_lower_limit_angular(float p_limit_angular) {
 
 	set_param(PARAM_ANGULAR_LIMIT_LOWER,Math::deg2rad(p_limit_angular));
 
 }
 
-float SliderJoint::_get_lower_limit_angular() const {
+float SliderJoint3D::_get_lower_limit_angular() const {
 
 	return Math::rad2deg(get_param(PARAM_ANGULAR_LIMIT_LOWER));
 
 }
 
 
-void SliderJoint::_bind_methods() {
+void SliderJoint3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&SliderJoint::set_param);
-	ObjectTypeDB::bind_method(_MD("get_param","param"),&SliderJoint::get_param);
+	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&SliderJoint3D::set_param);
+	ObjectTypeDB::bind_method(_MD("get_param","param"),&SliderJoint3D::get_param);
 
 
-	ObjectTypeDB::bind_method(_MD("_set_upper_limit_angular","upper_limit_angular"),&SliderJoint::_set_upper_limit_angular);
-	ObjectTypeDB::bind_method(_MD("_get_upper_limit_angular"),&SliderJoint::_get_upper_limit_angular);
+	ObjectTypeDB::bind_method(_MD("_set_upper_limit_angular","upper_limit_angular"),&SliderJoint3D::_set_upper_limit_angular);
+	ObjectTypeDB::bind_method(_MD("_get_upper_limit_angular"),&SliderJoint3D::_get_upper_limit_angular);
 
-	ObjectTypeDB::bind_method(_MD("_set_lower_limit_angular","lower_limit_angular"),&SliderJoint::_set_lower_limit_angular);
-	ObjectTypeDB::bind_method(_MD("_get_lower_limit_angular"),&SliderJoint::_get_lower_limit_angular);
+	ObjectTypeDB::bind_method(_MD("_set_lower_limit_angular","lower_limit_angular"),&SliderJoint3D::_set_lower_limit_angular);
+	ObjectTypeDB::bind_method(_MD("_get_lower_limit_angular"),&SliderJoint3D::_get_lower_limit_angular);
 
 
 	ADD_PROPERTYI( PropertyInfo(Variant::REAL,"linear_limit/upper_distance",PROPERTY_HINT_RANGE,"-1024,1024,0.01"),_SCS("set_param"),_SCS("get_param"), PARAM_LINEAR_LIMIT_UPPER);
@@ -485,7 +485,7 @@ void SliderJoint::_bind_methods() {
 	BIND_CONSTANT( PARAM_MAX);
 }
 
-void SliderJoint::set_param(Param p_param,float p_value){
+void SliderJoint3D::set_param(Param p_param,float p_value){
 
 	ERR_FAIL_INDEX(p_param,PARAM_MAX);
 	params[p_param]=p_value;
@@ -494,14 +494,14 @@ void SliderJoint::set_param(Param p_param,float p_value){
 	update_gizmo();
 
 }
-float SliderJoint::get_param(Param p_param) const{
+float SliderJoint3D::get_param(Param p_param) const{
 
 	ERR_FAIL_INDEX_V(p_param,PARAM_MAX,0);
 	return params[p_param];
 }
 
 
-RID SliderJoint::_configure_joint(PhysicsBody *body_a,PhysicsBody *body_b) {
+RID SliderJoint3D::_configure_joint(PhysicsBody3D *body_a,PhysicsBody3D *body_b) {
 
 
 	Transform gt = get_global_transform();
@@ -530,7 +530,7 @@ RID SliderJoint::_configure_joint(PhysicsBody *body_a,PhysicsBody *body_b) {
 }
 
 
-SliderJoint::SliderJoint() {
+SliderJoint3D::SliderJoint3D() {
 
 
 
@@ -633,7 +633,7 @@ float ConeTwistJoint::get_param(Param p_param) const{
 }
 
 
-RID ConeTwistJoint::_configure_joint(PhysicsBody *body_a,PhysicsBody *body_b) {
+RID ConeTwistJoint::_configure_joint(PhysicsBody3D *body_a,PhysicsBody3D *body_b) {
 
 
 	Transform gt = get_global_transform();
@@ -956,7 +956,7 @@ bool Generic6DOFJoint::get_flag_z(Flag p_flag) const{
 
 }
 
-RID Generic6DOFJoint::_configure_joint(PhysicsBody *body_a,PhysicsBody *body_b) {
+RID Generic6DOFJoint::_configure_joint(PhysicsBody3D *body_a,PhysicsBody3D *body_b) {
 
 
 	Transform gt = get_global_transform();
@@ -1236,8 +1236,8 @@ void PhysicsJoint::_disconnect() {
 	Node *nA = get_node(body_A);
 	Node *nB = get_node(body_B);
 
-	PhysicsBody *A = nA?nA->cast_to<PhysicsBody>():NULL;
-	PhysicsBody *B = nA?nB->cast_to<PhysicsBody>():NULL;
+	PhysicsBody3D *A = nA?nA->cast_to<PhysicsBody3D>():NULL;
+	PhysicsBody3D *B = nA?nB->cast_to<PhysicsBody3D>():NULL;
 
 	if (!A ||!B)
 		return;
@@ -1256,8 +1256,8 @@ void PhysicsJoint::_connect() {
 	Node *nA = get_node(body_A);
 	Node *nB = get_node(body_B);
 
-	PhysicsBody *A = nA?nA->cast_to<PhysicsBody>():NULL;
-	PhysicsBody *B = nA?nB->cast_to<PhysicsBody>():NULL;
+	PhysicsBody3D *A = nA?nA->cast_to<PhysicsBody3D>():NULL;
+	PhysicsBody3D *B = nA?nB->cast_to<PhysicsBody3D>():NULL;
 
 	if (!A && !B)
 		return;
@@ -1334,7 +1334,7 @@ void PhysicsJointPin::_update_indicator() {
 
 }
 
-RID PhysicsJointPin::create(PhysicsBody*A,PhysicsBody*B) {
+RID PhysicsJointPin::create(PhysicsBody3D*A,PhysicsBody3D*B) {
 
 	RID body_A = A->get_body();
 	RID body_B = B?B->get_body():RID();

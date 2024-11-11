@@ -31,9 +31,9 @@
 
 #include "scene/3d/spatial.h"
 
-class RayCast : public Spatial {
+class RayCast3D : public Node3D {
 
-	OBJ_TYPE(RayCast,Spatial);
+	OBJ_TYPE(RayCast3D,Node3D);
 
 
 	bool enabled;
@@ -66,7 +66,7 @@ public:
 	Vector3 get_collision_point() const;
 	Vector3 get_collision_normal() const;
 
-	RayCast();
+	RayCast3D();
 };
 
 #endif // RAY_CAST_H

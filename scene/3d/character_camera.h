@@ -32,9 +32,9 @@
 
 #include "scene/3d/camera.h"
 #if 0
-class CharacterCamera : public Camera {
+class CharacterCamera : public Camera3D {
 
-	OBJ_TYPE( CharacterCamera, Camera );
+	OBJ_TYPE( CharacterCamera, Camera3D );
 public:
 
 	enum CameraType {

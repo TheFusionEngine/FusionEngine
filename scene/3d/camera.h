@@ -36,9 +36,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class Camera : public Spatial {
+class Camera3D : public Node3D {
 
-	OBJ_TYPE( Camera, Spatial );
+	OBJ_TYPE( Camera3D, Node3D );
 public:
 	enum Projection {
 		
@@ -141,13 +141,13 @@ public:
 	void look_at_from_pos(const Vector3& p_pos,const Vector3& p_target, const Vector3& p_up_normal);
 
 
-	Camera();	
-	~Camera();
+	Camera3D();	
+	~Camera3D();
 
 };
 
 
-VARIANT_ENUM_CAST( Camera::Projection );
-VARIANT_ENUM_CAST( Camera::KeepAspect );
+VARIANT_ENUM_CAST( Camera3D::Projection );
+VARIANT_ENUM_CAST( Camera3D::KeepAspect );
 
 #endif
