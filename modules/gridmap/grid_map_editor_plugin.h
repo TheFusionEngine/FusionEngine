@@ -91,8 +91,8 @@ class GridMapEditor : public VBoxContainer {
 	ClipMode clip_mode;
 
 	bool lock_view;
-	Transform grid_xform;
-	Transform edit_grid_xform;
+	Transform3D grid_xform;
+	Transform3D edit_grid_xform;
 	Vector3::Axis edit_axis;
 	int edit_floor[3];
 	Vector3 grid_ofs;
@@ -120,7 +120,7 @@ class GridMapEditor : public VBoxContainer {
 	} selection;
 
 	bool cursor_visible;
-	Transform cursor_transform;
+	Transform3D cursor_transform;
 
 	Vector3 cursor_origin;
 	Vector3 last_mouseover;

@@ -37,9 +37,9 @@ class EditorExportPlatform;
 class FileAccess;
 class EditorProgress;
 
-class EditorImportPlugin : public Reference {
+class EditorImportPlugin : public RefCounted {
 
-	OBJ_TYPE( EditorImportPlugin, Reference);
+	OBJ_TYPE( EditorImportPlugin, RefCounted);
 
 protected:
 
@@ -60,9 +60,9 @@ public:
 	EditorImportPlugin();
 };
 
-class EditorExportPlugin : public Reference {
+class EditorExportPlugin : public RefCounted {
 
-	OBJ_TYPE( EditorExportPlugin, Reference);
+	OBJ_TYPE( EditorExportPlugin, RefCounted);
 
 protected:
 	static void _bind_methods();
@@ -74,9 +74,9 @@ public:
 	EditorExportPlugin();
 };
 
-class EditorExportPlatform : public Reference {
+class EditorExportPlatform : public RefCounted {
 
-	OBJ_TYPE( EditorExportPlatform,Reference );
+	OBJ_TYPE( EditorExportPlatform,RefCounted );
 
 public:
 

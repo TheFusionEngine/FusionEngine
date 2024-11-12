@@ -48,9 +48,9 @@
 class EditorNode;
 class EditorSceneImportDialog;
 
-class EditorSceneImporter : public Reference {
+class EditorSceneImporter : public RefCounted {
 
-	OBJ_TYPE(EditorSceneImporter,Reference );
+	OBJ_TYPE(EditorSceneImporter,RefCounted );
 public:
 
 	enum ImportFlags {
@@ -79,9 +79,9 @@ public:
 
 //Plugin for post processing scenes or images
 
-class EditorScenePostImport : public Reference {
+class EditorScenePostImport : public RefCounted {
 
-	OBJ_TYPE(EditorScenePostImport,Reference );
+	OBJ_TYPE(EditorScenePostImport,RefCounted );
 protected:
 
 	static void _bind_methods();

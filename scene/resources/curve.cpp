@@ -286,7 +286,7 @@ void Curve2D::get_approx_position_from_offset(real_t p_offset,int &r_index, real
 
 }
 
-void Curve2D::set_points_in(const Vector2Array& p_points) {
+void Curve2D::set_points_in(const PackedVector2Array& p_points) {
 
 	points.resize(p_points.size());
 	for (int i=0; i<p_points.size(); i++) {
@@ -297,7 +297,7 @@ void Curve2D::set_points_in(const Vector2Array& p_points) {
 	};
 };
 
-void Curve2D::set_points_out(const Vector2Array& p_points) {
+void Curve2D::set_points_out(const PackedVector2Array& p_points) {
 
 	points.resize(p_points.size());
 	for (int i=0; i<p_points.size(); i++) {
@@ -308,7 +308,7 @@ void Curve2D::set_points_out(const Vector2Array& p_points) {
 	};
 };
 
-void Curve2D::set_points_pos(const Vector2Array& p_points) {
+void Curve2D::set_points_pos(const PackedVector2Array& p_points) {
 
 	points.resize(p_points.size());
 	for (int i=0; i<p_points.size(); i++) {
@@ -319,8 +319,8 @@ void Curve2D::set_points_pos(const Vector2Array& p_points) {
 	};
 };
 
-Vector2Array Curve2D::get_points_in() const {
-	Vector2Array ret;
+PackedVector2Array Curve2D::get_points_in() const {
+	PackedVector2Array ret;
 	ret.resize(points.size());
 	for (int i=0; i<points.size(); i++) {
 		ret.set(i, points[i].in);
@@ -328,8 +328,8 @@ Vector2Array Curve2D::get_points_in() const {
 	return ret;
 };
 
-Vector2Array Curve2D::get_points_out() const {
-	Vector2Array ret;
+PackedVector2Array Curve2D::get_points_out() const {
+	PackedVector2Array ret;
 	ret.resize(points.size());
 	for (int i=0; i<points.size(); i++) {
 		ret.set(i, points[i].out);
@@ -337,8 +337,8 @@ Vector2Array Curve2D::get_points_out() const {
 	return ret;
 };
 
-Vector2Array Curve2D::get_points_pos() const {
-	Vector2Array ret;
+PackedVector2Array Curve2D::get_points_pos() const {
+	PackedVector2Array ret;
 	ret.resize(points.size());
 	for (int i=0; i<points.size(); i++) {
 		ret.set(i, points[i].pos);
@@ -608,7 +608,7 @@ void Curve2D::_bake() const {
 	pointlist.push_back(lastpos);
 
 	baked_point_cache.resize(pointlist.size());
-	Vector2Array::Write w = baked_point_cache.write();
+	PackedVector2Array::Write w = baked_point_cache.write();
 	int idx=0;
 
 
@@ -643,7 +643,7 @@ Vector2 Curve2D::interpolate_baked(float p_offset,bool p_cubic) const{
 		return baked_point_cache.get(0);
 
 	int bpc=baked_point_cache.size();
-	Vector2Array::Read r = baked_point_cache.read();
+	PackedVector2Array::Read r = baked_point_cache.read();
 
 	if (p_offset<0)
 		return r[0];
@@ -672,7 +672,7 @@ Vector2 Curve2D::interpolate_baked(float p_offset,bool p_cubic) const{
 }
 
 
-Vector2Array Curve2D::get_baked_points() const {
+PackedVector2Array Curve2D::get_baked_points() const {
 
 	if (baked_cache_dirty)
 		_bake();
@@ -698,9 +698,9 @@ Dictionary Curve2D::_get_data() const {
 
 	Dictionary dc;
 
-	Vector2Array d;
+	PackedVector2Array d;
 	d.resize(points.size()*3);
-	Vector2Array::Write w = d.write();
+	PackedVector2Array::Write w = d.write();
 
 
 	for(int i=0;i<points.size();i++) {
@@ -711,7 +711,7 @@ Dictionary Curve2D::_get_data() const {
 
 	}
 
-	w=Vector2Array::Write();
+	w=PackedVector2Array::Write();
 
 	dc["points"]=d;
 
@@ -722,11 +722,11 @@ void Curve2D::_set_data(const Dictionary& p_data){
 
 	ERR_FAIL_COND(!p_data.has("points"));
 
-	Vector2Array rp=p_data["points"];
+	PackedVector2Array rp=p_data["points"];
 	int pc = rp.size();
 	ERR_FAIL_COND(pc%3!=0);
 	points.resize(pc/3);
-	Vector2Array::Read r = rp.read();
+	PackedVector2Array::Read r = rp.read();
 
 	for(int i=0;i<points.size();i++) {
 
@@ -740,9 +740,9 @@ void Curve2D::_set_data(const Dictionary& p_data){
 }
 
 
-Vector2Array Curve2D::tesselate(int p_max_stages,float p_tolerance) const {
+PackedVector2Array Curve2D::tesselate(int p_max_stages,float p_tolerance) const {
 
-	Vector2Array tess;
+	PackedVector2Array tess;
 
 
 	if (points.size()==0) {
@@ -762,7 +762,7 @@ Vector2Array Curve2D::tesselate(int p_max_stages,float p_tolerance) const {
 	}
 
 	tess.resize(pc);
-	Vector2Array::Write bpw=tess.write();
+	PackedVector2Array::Write bpw=tess.write();
 	bpw[0]=points[0].pos;
 	int pidx=0;
 
@@ -779,7 +779,7 @@ Vector2Array Curve2D::tesselate(int p_max_stages,float p_tolerance) const {
 
 	}
 
-	bpw=Vector2Array::Write ();
+	bpw=PackedVector2Array::Write ();
 
 	return tess;
 
@@ -1084,11 +1084,11 @@ void Curve3D::_bake() const {
 	pointlist.push_back(Plane(lastpos,lastilt));
 
 	baked_point_cache.resize(pointlist.size());
-	Vector3Array::Write w = baked_point_cache.write();
+	PackedVector3Array::Write w = baked_point_cache.write();
 	int idx=0;
 
 	baked_tilt_cache.resize(pointlist.size());
-	RealArray::Write wt = baked_tilt_cache.write();
+	PackedFloatArray::Write wt = baked_tilt_cache.write();
 
 	for(List<Plane>::Element *E=pointlist.front();E;E=E->next()) {
 
@@ -1122,7 +1122,7 @@ Vector3 Curve3D::interpolate_baked(float p_offset,bool p_cubic) const{
 		return baked_point_cache.get(0);
 
 	int bpc=baked_point_cache.size();
-	Vector3Array::Read r = baked_point_cache.read();
+	PackedVector3Array::Read r = baked_point_cache.read();
 
 	if (p_offset<0)
 		return r[0];
@@ -1166,7 +1166,7 @@ float Curve3D::interpolate_baked_tilt(float p_offset) const{
 		return baked_tilt_cache.get(0);
 
 	int bpc=baked_tilt_cache.size();
-	RealArray::Read r = baked_tilt_cache.read();
+	PackedFloatArray::Read r = baked_tilt_cache.read();
 
 	if (p_offset<0)
 		return r[0];
@@ -1190,7 +1190,7 @@ float Curve3D::interpolate_baked_tilt(float p_offset) const{
 }
 
 
-Vector3Array Curve3D::get_baked_points() const {
+PackedVector3Array Curve3D::get_baked_points() const {
 
 	if (baked_cache_dirty)
 		_bake();
@@ -1199,7 +1199,7 @@ Vector3Array Curve3D::get_baked_points() const {
 }
 
 
-RealArray Curve3D::get_baked_tilts() const {
+PackedFloatArray Curve3D::get_baked_tilts() const {
 
 	if (baked_cache_dirty)
 		_bake();
@@ -1225,12 +1225,12 @@ Dictionary Curve3D::_get_data() const {
 
 	Dictionary dc;
 
-	Vector3Array d;
+	PackedVector3Array d;
 	d.resize(points.size()*3);
-	Vector3Array::Write w = d.write();
-	RealArray t;
+	PackedVector3Array::Write w = d.write();
+	PackedFloatArray t;
 	t.resize(points.size());
-	RealArray::Write wt = t.write();
+	PackedFloatArray::Write wt = t.write();
 
 
 	for(int i=0;i<points.size();i++) {
@@ -1241,8 +1241,8 @@ Dictionary Curve3D::_get_data() const {
 		wt[i]=points[i].tilt;
 	}
 
-	w=Vector3Array::Write();
-	wt=RealArray::Write();
+	w=PackedVector3Array::Write();
+	wt=PackedFloatArray::Write();
 
 	dc["points"]=d;
 	dc["tilts"]=t;
@@ -1255,13 +1255,13 @@ void Curve3D::_set_data(const Dictionary& p_data){
 	ERR_FAIL_COND(!p_data.has("points"));
 	ERR_FAIL_COND(!p_data.has("tilts"));
 
-	Vector3Array rp=p_data["points"];
+	PackedVector3Array rp=p_data["points"];
 	int pc = rp.size();
 	ERR_FAIL_COND(pc%3!=0);
 	points.resize(pc/3);
-	Vector3Array::Read r = rp.read();
-	RealArray rtl=p_data["tilts"];
-	RealArray::Read rt=rtl.read();
+	PackedVector3Array::Read r = rp.read();
+	PackedFloatArray rtl=p_data["tilts"];
+	PackedFloatArray::Read rt=rtl.read();
 
 	for(int i=0;i<points.size();i++) {
 
@@ -1276,9 +1276,9 @@ void Curve3D::_set_data(const Dictionary& p_data){
 }
 
 
-Vector3Array Curve3D::tesselate(int p_max_stages,float p_tolerance) const {
+PackedVector3Array Curve3D::tesselate(int p_max_stages,float p_tolerance) const {
 
-	Vector3Array tess;
+	PackedVector3Array tess;
 
 
 	if (points.size()==0) {
@@ -1298,7 +1298,7 @@ Vector3Array Curve3D::tesselate(int p_max_stages,float p_tolerance) const {
 	}
 
 	tess.resize(pc);
-	Vector3Array::Write bpw=tess.write();
+	PackedVector3Array::Write bpw=tess.write();
 	bpw[0]=points[0].pos;
 	int pidx=0;
 
@@ -1315,7 +1315,7 @@ Vector3Array Curve3D::tesselate(int p_max_stages,float p_tolerance) const {
 
 	}
 
-	bpw=Vector3Array::Write ();
+	bpw=PackedVector3Array::Write ();
 
 	return tess;
 

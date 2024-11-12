@@ -69,7 +69,7 @@ protected:
 	void _set_current(bool p_current);
 protected:
 
-	virtual Matrix32 get_camera_transform();
+	virtual Transform2D get_camera_transform();
 	void _notification(int p_what);
 	static void _bind_methods();
 public:

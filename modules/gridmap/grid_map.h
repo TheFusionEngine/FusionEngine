@@ -121,7 +121,7 @@ class GridMap : public Node3D {
 		OctantKey() { key=0; }
 	};
 
-	Transform last_transform;
+	Transform3D last_transform;
 
 	bool _in_tree;
 	float cell_size;
@@ -147,7 +147,7 @@ class GridMap : public Node3D {
 		IndexKey from;
 		IndexKey to;
 		struct Portal {
-			Transform xform;
+			Transform3D xform;
 			RID instance;
 			~Portal();
 		};

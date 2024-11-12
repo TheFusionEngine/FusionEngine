@@ -122,7 +122,7 @@ void StaticBody2D::_update_xform() {
 	setting=true;
 
 
-	Matrix32 new_xform = get_global_transform(); //obtain the new one
+	Transform2D new_xform = get_global_transform(); //obtain the new one
 
 	set_block_transform_notify(true);
 	Physics2DServer::get_singleton()->body_set_state(get_rid(),Physics2DServer::BODY_STATE_TRANSFORM,*pre_xform); //then simulate motion!
@@ -793,9 +793,9 @@ Variant CharacterBody2D::_get_collider() const {
 	if (!obj)
 		return Variant();
 
-	Reference *ref = obj->cast_to<Reference>();
+	RefCounted *ref = obj->cast_to<RefCounted>();
 	if (ref) {
-		return Ref<Reference>(ref);
+		return Ref<RefCounted>(ref);
 	}
 
 	return obj;
@@ -886,7 +886,7 @@ Vector2 CharacterBody2D::move(const Vector2& p_motion) {
 			break;
 		}
 
-		Matrix32 gt = get_global_transform();
+		Transform2D gt = get_global_transform();
 		gt.elements[2]+=recover_motion;
 		set_global_transform(gt);
 
@@ -932,7 +932,7 @@ Vector2 CharacterBody2D::move(const Vector2& p_motion) {
 	} else {
 
 		//it collided, let's get the rest info in unsafe advance
-		Matrix32 ugt = get_global_transform();
+		Transform2D ugt = get_global_transform();
 		ugt.elements[2]+=p_motion*unsafe;
 		Physics2DDirectSpaceState::ShapeRestInfo rest_info;
 		bool c2 = dss->rest_info(get_shape(best_shape)->get_rid(), ugt*get_shape_transform(best_shape), Vector2(), margin,&rest_info,exclude,get_layer_mask(),mask);
@@ -954,7 +954,7 @@ Vector2 CharacterBody2D::move(const Vector2& p_motion) {
 	}
 
 	Vector2 motion=p_motion*safe;
-	Matrix32 gt = get_global_transform();
+	Transform2D gt = get_global_transform();
 	gt.elements[2]+=motion;
 	set_global_transform(gt);
 
@@ -984,7 +984,7 @@ bool CharacterBody2D::can_move_to(const Vector2& p_position, bool p_discrete) {
 		mask|=Physics2DDirectSpaceState::TYPE_MASK_CHARACTER_BODY;
 
 	Vector2 motion = p_position-get_global_pos();
-	Matrix32 xform=get_global_transform();
+	Transform2D xform=get_global_transform();
 
 	if (p_discrete) {
 

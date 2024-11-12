@@ -129,11 +129,11 @@ RID PhysicsShapeQueryParameters::get_shape_rid() const {
 	return shape;
 }
 
-void PhysicsShapeQueryParameters::set_transform(const Transform& p_transform){
+void PhysicsShapeQueryParameters::set_transform(const Transform3D& p_transform){
 
 	transform=p_transform;
 }
-Transform PhysicsShapeQueryParameters::get_transform() const{
+Transform3D PhysicsShapeQueryParameters::get_transform() const{
 
 	return transform;
 }
@@ -221,7 +221,7 @@ PhysicsShapeQueryParameters::PhysicsShapeQueryParameters() {
 /////////////////////////////////////
 
 /*
-Variant PhysicsDirectSpaceState::_intersect_shape(const RID& p_shape, const Transform& p_xform,int p_result_max,const Vector<RID>& p_exclude,uint32_t p_user_mask) {
+Variant PhysicsDirectSpaceState::_intersect_shape(const RID& p_shape, const Transform3D& p_xform,int p_result_max,const Vector<RID>& p_exclude,uint32_t p_user_mask) {
 
 
 
@@ -440,7 +440,7 @@ void PhysicsServer::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("area_set_space_override_mode","area","mode"),&PhysicsServer::area_set_space_override_mode);
 	ObjectTypeDB::bind_method(_MD("area_get_space_override_mode","area"),&PhysicsServer::area_get_space_override_mode);
 
-	ObjectTypeDB::bind_method(_MD("area_add_shape","area","shape","transform"),&PhysicsServer::area_add_shape,DEFVAL(Transform()));
+	ObjectTypeDB::bind_method(_MD("area_add_shape","area","shape","transform"),&PhysicsServer::area_add_shape,DEFVAL(Transform3D()));
 	ObjectTypeDB::bind_method(_MD("area_set_shape","area","shape_idx","shape"),&PhysicsServer::area_set_shape);
 	ObjectTypeDB::bind_method(_MD("area_set_shape_transform","area","shape_idx","transform"),&PhysicsServer::area_set_shape_transform);
 
@@ -474,7 +474,7 @@ void PhysicsServer::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("body_set_mode","body","mode"),&PhysicsServer::body_set_mode);
 	ObjectTypeDB::bind_method(_MD("body_get_mode","body"),&PhysicsServer::body_get_mode);
 
-	ObjectTypeDB::bind_method(_MD("body_add_shape","body","shape","transform"),&PhysicsServer::body_add_shape,DEFVAL(Transform()));
+	ObjectTypeDB::bind_method(_MD("body_add_shape","body","shape","transform"),&PhysicsServer::body_add_shape,DEFVAL(Transform3D()));
 	ObjectTypeDB::bind_method(_MD("body_set_shape","body","shape_idx","shape"),&PhysicsServer::body_set_shape);
 	ObjectTypeDB::bind_method(_MD("body_set_shape_transform","body","shape_idx","transform"),&PhysicsServer::body_set_shape_transform);
 
@@ -493,7 +493,7 @@ void PhysicsServer::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("body_is_continuous_collision_detection_enabled","body"),&PhysicsServer::body_is_continuous_collision_detection_enabled);
 
 
-	//ObjectTypeDB::bind_method(_MD("body_set_user_flags","flags""),&PhysicsServer::body_set_shape,DEFVAL(Transform));
+	//ObjectTypeDB::bind_method(_MD("body_set_user_flags","flags""),&PhysicsServer::body_set_shape,DEFVAL(Transform3D));
 	//ObjectTypeDB::bind_method(_MD("body_get_user_flags","body","shape_idx","shape"),&PhysicsServer::body_get_shape);
 
 	ObjectTypeDB::bind_method(_MD("body_set_param","body","param","value"),&PhysicsServer::body_set_param);

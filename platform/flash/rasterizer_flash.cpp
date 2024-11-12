@@ -684,7 +684,7 @@ void RasterizerFlash::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 	ERR_FAIL_COND(!multimesh);
 	multimesh->aabb=p_aabb;
 }
-void RasterizerFlash::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void RasterizerFlash::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -738,15 +738,15 @@ AABB RasterizerFlash::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform RasterizerFlash::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D RasterizerFlash::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
-	ERR_FAIL_COND_V(!multimesh,Transform());
+	ERR_FAIL_COND_V(!multimesh,Transform3D());
 
-	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform());
+	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform3D());
 	MultiMesh::Element &e=multimesh->elements[p_index];
 
-	Transform tr;
+	Transform3D tr;
 
 	tr.basis.elements[0][0]=e.matrix[0];
 	tr.basis.elements[1][0]=e.matrix[1];
@@ -1142,7 +1142,7 @@ int RasterizerFlash::skeleton_get_bone_count(RID p_skeleton) const {
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void RasterizerFlash::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void RasterizerFlash::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
@@ -1151,11 +1151,11 @@ void RasterizerFlash::skeleton_bone_set_transform(RID p_skeleton,int p_bone, con
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform RasterizerFlash::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D RasterizerFlash::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
-	ERR_FAIL_COND_V(!skeleton, Transform());
-	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
+	ERR_FAIL_COND_V(!skeleton, Transform3D());
+	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform3D() );
 
 	// something
 	return skeleton->bones[p_bone];
@@ -1349,7 +1349,7 @@ RID RasterizerFlash::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void RasterizerFlash::light_instance_set_transform(RID p_light_instance,const Transform& p_transform) {
+void RasterizerFlash::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1421,7 +1421,7 @@ int RasterizerFlash::light_instance_get_shadow_passes(RID p_light_instance) cons
 		return 1;
 }
 
-void RasterizerFlash::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerFlash::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1445,7 +1445,7 @@ RID RasterizerFlash::particles_instance_create(RID p_particles) {
 	return particles_instance_owner.make_rid(particles_instance);
 }
 
-void RasterizerFlash::particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform) {
+void RasterizerFlash::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 	ParticlesInstance *particles_instance=particles_instance_owner.get(p_particles_instance);
 	ERR_FAIL_COND(!particles_instance);
@@ -1478,7 +1478,7 @@ void RasterizerFlash::begin_shadow_map( RID p_light_instance, int p_shadow_pass 
 
 }
 
-void RasterizerFlash::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
+void RasterizerFlash::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
 
 	camera_transform=p_world;
 	camera_transform_inverse=camera_transform.inverse();
@@ -1861,7 +1861,7 @@ void RasterizerFlash::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 }
 
 
-void RasterizerFlash::canvas_begin_rect(const Matrix32& p_transform) {
+void RasterizerFlash::canvas_begin_rect(const Transform2D& p_transform) {
 
 }
 
@@ -2018,7 +2018,7 @@ void RasterizerFlash::canvas_draw_polygon(int p_vertex_count, const int* p_indic
 };
 
 
-void RasterizerFlash::canvas_set_transform(const Matrix32& p_transform) {
+void RasterizerFlash::canvas_set_transform(const Transform2D& p_transform) {
 
 }
 

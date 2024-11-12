@@ -49,13 +49,13 @@ protected:
 
 	static void _bind_methods();
 
-	void set_points_in(const Vector2Array& p_points_in);
-	void set_points_out(const Vector2Array& p_points_out);
-	void set_points_pos(const Vector2Array& p_points_pos);
+	void set_points_in(const PackedVector2Array& p_points_in);
+	void set_points_out(const PackedVector2Array& p_points_out);
+	void set_points_pos(const PackedVector2Array& p_points_pos);
 
-	Vector2Array get_points_in() const;
-	Vector2Array get_points_out() const;
-	Vector2Array get_points_pos() const;
+	PackedVector2Array get_points_in() const;
+	PackedVector2Array get_points_out() const;
+	PackedVector2Array get_points_pos() const;
 
 public:
 
@@ -103,7 +103,7 @@ class Curve2D : public Resource {
 	};
 
 	mutable bool baked_cache_dirty;
-	mutable Vector2Array baked_point_cache;
+	mutable PackedVector2Array baked_point_cache;
 	mutable float baked_max_ofs;
 
 
@@ -144,9 +144,9 @@ public:
 
 	float get_baked_length() const;
 	Vector2 interpolate_baked(float p_offset,bool p_cubic=false) const;
-	Vector2Array get_baked_points() const; //useful for going thru
+	PackedVector2Array get_baked_points() const; //useful for going thru
 
-	Vector2Array tesselate(int p_max_stages=5,float p_tolerance=4) const; //useful for display
+	PackedVector2Array tesselate(int p_max_stages=5,float p_tolerance=4) const; //useful for display
 
 
 	Curve2D();
@@ -178,8 +178,8 @@ class Curve3D : public Resource {
 	};
 
 	mutable bool baked_cache_dirty;
-	mutable Vector3Array baked_point_cache;
-	mutable RealArray baked_tilt_cache;
+	mutable PackedVector3Array baked_point_cache;
+	mutable PackedFloatArray baked_tilt_cache;
 	mutable float baked_max_ofs;
 
 
@@ -223,10 +223,10 @@ public:
 	float get_baked_length() const;
 	Vector3 interpolate_baked(float p_offset,bool p_cubic=false) const;
 	float interpolate_baked_tilt(float p_offset) const;
-	Vector3Array get_baked_points() const; //useful for going thru
-	RealArray get_baked_tilts() const; //useful for going thru
+	PackedVector3Array get_baked_points() const; //useful for going thru
+	PackedFloatArray get_baked_tilts() const; //useful for going thru
 
-	Vector3Array tesselate(int p_max_stages=5,float p_tolerance=4) const; //useful for display
+	PackedVector3Array tesselate(int p_max_stages=5,float p_tolerance=4) const; //useful for display
 
 
 	Curve3D();

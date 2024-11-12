@@ -38,7 +38,7 @@ func _process(delta):
 		var atdir = to_watch
 		atdir.y=0
 		
-		var t = Transform()
+		var t = Transform3D()
 		t.origin=atpos
 		t=t.looking_at(atpos+atdir,Vector3(0,1,0))
 		get_node("robot_base").set_transform(t)

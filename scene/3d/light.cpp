@@ -209,8 +209,8 @@ RES Light3D::_get_gizmo_geometry() const {
 			for(int i = 0; i < arrow_sides ; i++) {
 
 
-				Matrix3 ma(Vector3(0,0,1),Math_PI*2*float(i)/arrow_sides);
-				Matrix3 mb(Vector3(0,0,1),Math_PI*2*float(i+1)/arrow_sides);
+				Basis ma(Vector3(0,0,1),Math_PI*2*float(i)/arrow_sides);
+				Basis mb(Vector3(0,0,1),Math_PI*2*float(i+1)/arrow_sides);
 
 
 				for(int j=0;j<arrow_points-1;j++) {

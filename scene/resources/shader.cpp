@@ -348,7 +348,7 @@ RES ResourceFormatLoaderShader::load(const String &p_path,const String& p_origin
 				} else if (type=="xform") {
 
 					if (param=="") {
-						value=Transform();
+						value=Transform3D();
 					} else {
 
 						Vector<String> params = param.split(",");
@@ -359,7 +359,7 @@ RES ResourceFormatLoaderShader::load(const String &p_path,const String& p_origin
 
 						}
 
-						Transform t;
+						Transform3D t;
 						for(int i=0;i<9;i++)
 							t.basis[i%3][i/3]=params[i].to_double();
 						for(int i=0;i<3;i++)

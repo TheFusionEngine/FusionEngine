@@ -182,7 +182,7 @@ void Room::_parse_node_faces(DVector<Face3> &all_faces,const Node *p_node) const
 			DVector<Face3>::Read facesr=faces.read();
 			const Face3 * facesptr=facesr.ptr();
 
-			Transform tr=vi->get_relative_transform(this);
+			Transform3D tr=vi->get_relative_transform(this);
 
 			for(int i=old_len;i<new_len;i++) {
 

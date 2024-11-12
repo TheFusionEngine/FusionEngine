@@ -707,8 +707,8 @@ public:
 	FUNC2(fixed_material_set_light_shader,RID,FixedMaterialLightShader);
 	FUNC1RC(FixedMaterialLightShader, fixed_material_get_light_shader,RID);
 
-	FUNC2(fixed_material_set_uv_transform,RID,const Transform&);
-	FUNC1RC(Transform, fixed_material_get_uv_transform,RID);
+	FUNC2(fixed_material_set_uv_transform,RID,const Transform3D&);
+	FUNC1RC(Transform3D, fixed_material_get_uv_transform,RID);
 
 	FUNC2(fixed_material_set_point_size,RID ,float);
 	FUNC1RC(float,fixed_material_get_point_size,RID);
@@ -753,12 +753,12 @@ public:
 
 	FUNC2(multimesh_set_mesh,RID,RID);
 	FUNC2(multimesh_set_aabb,RID,const AABB&);
-	FUNC3(multimesh_instance_set_transform,RID,int,const Transform&);
+	FUNC3(multimesh_instance_set_transform,RID,int,const Transform3D&);
 	FUNC3(multimesh_instance_set_color,RID,int,const Color&);
 
 	FUNC1RC(RID,multimesh_get_mesh,RID);
 	FUNC2RC(AABB,multimesh_get_aabb,RID,const AABB&);
-	FUNC2RC(Transform,multimesh_instance_get_transform,RID,int);
+	FUNC2RC(Transform3D,multimesh_instance_get_transform,RID,int);
 	FUNC2RC(Color,multimesh_instance_get_color,RID,int);
 
 	FUNC2(multimesh_set_visible_instances,RID,int);
@@ -878,8 +878,8 @@ public:
 	FUNC0R(RID,skeleton_create);
 	FUNC2(skeleton_resize,RID,int );
 	FUNC1RC(int,skeleton_get_bone_count,RID) ;
-	FUNC3(skeleton_bone_set_transform,RID,int, const Transform&);
-	FUNC2R(Transform,skeleton_bone_get_transform,RID,int );
+	FUNC3(skeleton_bone_set_transform,RID,int, const Transform3D&);
+	FUNC2R(Transform3D,skeleton_bone_get_transform,RID,int );
 
 	/* ROOM API */
 
@@ -935,7 +935,7 @@ public:
 	FUNC0R(RID,camera_create);
 	FUNC4(camera_set_perspective,RID,float , float , float );
 	FUNC4(camera_set_orthogonal,RID,float, float , float );
-	FUNC2(camera_set_transform,RID,const Transform& );
+	FUNC2(camera_set_transform,RID,const Transform3D& );
 
 	FUNC2(camera_set_visible_layers,RID,uint32_t);
 	FUNC1RC(uint32_t,camera_get_visible_layers,RID);
@@ -979,10 +979,10 @@ public:
 	FUNC1RC(RID,viewport_get_scenario,RID );
 	FUNC2(viewport_attach_canvas,RID,RID);
 	FUNC2(viewport_remove_canvas,RID,RID);
-	FUNC3(viewport_set_canvas_transform,RID,RID,const Matrix32&);
-	FUNC2RC(Matrix32,viewport_get_canvas_transform,RID,RID);
-	FUNC2(viewport_set_global_canvas_transform,RID,const Matrix32&);
-	FUNC1RC(Matrix32,viewport_get_global_canvas_transform,RID);
+	FUNC3(viewport_set_canvas_transform,RID,RID,const Transform2D&);
+	FUNC2RC(Transform2D,viewport_get_canvas_transform,RID,RID);
+	FUNC2(viewport_set_global_canvas_transform,RID,const Transform2D&);
+	FUNC1RC(Transform2D,viewport_get_global_canvas_transform,RID);
 	FUNC3(viewport_set_canvas_layer,RID,RID ,int);
 	FUNC2(viewport_set_transparent_background,RID,bool);
 	FUNC1RC(bool,viewport_has_transparent_background,RID);
@@ -1043,8 +1043,8 @@ public:
 	FUNC3(instance_set_morph_target_weight,RID,int, float);
 	FUNC2RC(float,instance_get_morph_target_weight,RID,int);
 
-	FUNC2(instance_set_transform,RID, const Transform&);
-	FUNC1RC(Transform,instance_get_transform,RID);
+	FUNC2(instance_set_transform,RID, const Transform3D&);
+	FUNC1RC(Transform3D,instance_get_transform,RID);
 
 	FUNC2(instance_set_exterior,RID, bool );
 	FUNC1RC(bool,instance_is_exterior,RID);
@@ -1099,7 +1099,7 @@ public:
 
 
 	//FUNC(canvas_item_set_rect,RID, const Rect2& p_rect);
-	FUNC2(canvas_item_set_transform,RID, const Matrix32& );
+	FUNC2(canvas_item_set_transform,RID, const Transform2D& );
 	FUNC2(canvas_item_set_clip,RID, bool );
 	FUNC3(canvas_item_set_custom_rect,RID, bool ,const Rect2&);
 	FUNC2(canvas_item_set_opacity,RID, float );
@@ -1125,7 +1125,7 @@ public:
 	FUNC7(canvas_item_add_triangle_array_ptr,RID, int , const int* , const Point2* , const Color* ,const Point2* , RID );
 
 
-	FUNC2(canvas_item_add_set_transform,RID,const Matrix32& );
+	FUNC2(canvas_item_add_set_transform,RID,const Transform2D& );
 	FUNC2(canvas_item_add_set_blend_mode,RID, MaterialBlendMode );
 	FUNC2(canvas_item_add_clip_ignore,RID, bool );
 

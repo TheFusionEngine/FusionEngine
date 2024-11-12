@@ -223,7 +223,7 @@ void Node3D::_notification(int p_what) {
 	}
 }
 
-void Node3D::set_transform(const Transform& p_transform) {
+void Node3D::set_transform(const Transform3D& p_transform) {
 
 	data.local_transform=p_transform;
 	data.dirty|=DIRTY_VECTORS;
@@ -234,9 +234,9 @@ void Node3D::set_transform(const Transform& p_transform) {
 
 }
 
-void Node3D::set_global_transform(const Transform& p_transform) {
+void Node3D::set_global_transform(const Transform3D& p_transform) {
 
-	Transform xform =
+	Transform3D xform =
 			(data.parent && !data.toplevel_active) ?
 			data.parent->get_global_transform().affine_inverse() * p_transform :
 			p_transform;
@@ -246,7 +246,7 @@ void Node3D::set_global_transform(const Transform& p_transform) {
 }
 
 
-Transform Node3D::get_transform() const {
+Transform3D Node3D::get_transform() const {
 
 	if (data.dirty & DIRTY_LOCAL) {
 
@@ -255,9 +255,9 @@ Transform Node3D::get_transform() const {
 	
 	return data.local_transform;
 }
-Transform Node3D::get_global_transform() const {
+Transform3D Node3D::get_global_transform() const {
 
-	ERR_FAIL_COND_V(!is_inside_tree(), Transform());
+	ERR_FAIL_COND_V(!is_inside_tree(), Transform3D());
 
 	if (data.dirty & DIRTY_GLOBAL) {
 
@@ -317,12 +317,12 @@ Node3D *Node3D::get_parent_spatial() const {
 
 }
 
-Transform Node3D::get_relative_transform(const Node *p_parent) const {
+Transform3D Node3D::get_relative_transform(const Node *p_parent) const {
 
 	if (p_parent==this)
-		return Transform();
+		return Transform3D();
 
-	ERR_FAIL_COND_V(!data.parent,Transform());
+	ERR_FAIL_COND_V(!data.parent,Transform3D());
 
 	if (p_parent==data.parent)
 		return get_transform();
@@ -499,11 +499,11 @@ Ref<World3D> Node3D::get_world() const {
 }
 
 #ifdef TOOLS_ENABLED
-void Node3D::set_import_transform(const Transform& p_transform) {
+void Node3D::set_import_transform(const Transform3D& p_transform) {
 	data.import_transform=p_transform;
 }
 
-Transform Node3D::get_import_transform() const {
+Transform3D Node3D::get_import_transform() const {
 
 	return data.import_transform;
 }

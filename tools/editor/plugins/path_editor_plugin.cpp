@@ -90,8 +90,8 @@ void PathSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_
 	if (c.is_null())
 		return;
 
-	Transform gt = path->get_global_transform();
-	Transform gi = gt.affine_inverse();
+	Transform3D gt = path->get_global_transform();
+	Transform3D gi = gt.affine_inverse();
 	Vector3 ray_from = p_camera->project_ray_origin(p_point);
 	Vector3 ray_dir = p_camera->project_ray_normal(p_point);
 
@@ -209,14 +209,14 @@ void PathSpatialGizmo::redraw(){
 	if (c.is_null())
 		return;
 
-	Vector3Array v3a=c->tesselate();
-	//Vector3Array v3a=c->get_baked_points();
+	PackedVector3Array v3a=c->tesselate();
+	//PackedVector3Array v3a=c->get_baked_points();
 
 	int v3s = v3a.size();
 	if (v3s==0)
 		return;
 	Vector<Vector3> v3p;
-	Vector3Array::Read r = v3a.read();
+	PackedVector3Array::Read r = v3a.read();
 
 	for(int i=0;i<v3s-1;i++) {
 
@@ -287,8 +287,8 @@ bool PathEditorPlugin::forward_spatial_input_event(Camera3D* p_camera,const Inpu
 	Ref<Curve3D> c=path->get_curve();
 	if (c.is_null())
 		return false;
-	Transform gt = path->get_global_transform();
-	Transform it = gt.affine_inverse();
+	Transform3D gt = path->get_global_transform();
+	Transform3D it = gt.affine_inverse();
 
 	static const int click_dist = 10; //should make global
 
@@ -300,7 +300,7 @@ bool PathEditorPlugin::forward_spatial_input_event(Camera3D* p_camera,const Inpu
 
 		if (mb.pressed && mb.button_index==BUTTON_LEFT && (curve_create->is_pressed() || (curve_edit->is_pressed() && mb.mod.control))) {
 			//click into curve, break it down
-			Vector3Array v3a = c->tesselate();
+			PackedVector3Array v3a = c->tesselate();
 			int idx=0;
 			int rc=v3a.size();
 			int closest_seg=-1;
@@ -308,7 +308,7 @@ bool PathEditorPlugin::forward_spatial_input_event(Camera3D* p_camera,const Inpu
 			float closest_d=1e20;
 
 			if (rc>=2) {
-				Vector3Array::Read r = v3a.read();
+				PackedVector3Array::Read r = v3a.read();
 
 				if (p_camera->unproject_position(gt.xform(c->get_point_pos(0))).distance_to(mbpos)<click_dist)
 					return false; //nope, existing

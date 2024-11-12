@@ -43,7 +43,7 @@
 
 
 
-_FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
+_FORCE_INLINE_ static void _gl_load_transform(const Transform3D& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
 		tr.basis.elements[0][0],
@@ -68,7 +68,7 @@ _FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
 };
 
 
-_FORCE_INLINE_ static void _gl_mult_transform(const Transform& tr) {
+_FORCE_INLINE_ static void _gl_mult_transform(const Transform3D& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
 		tr.basis.elements[0][0],
@@ -92,7 +92,7 @@ _FORCE_INLINE_ static void _gl_mult_transform(const Transform& tr) {
 	glMultMatrixf(matrix);
 };
 
-_FORCE_INLINE_ static void _gl_mult_transform(const Matrix32& tr) {
+_FORCE_INLINE_ static void _gl_mult_transform(const Transform2D& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
 		tr.elements[0][0],
@@ -1240,7 +1240,7 @@ VS::FixedMaterialTexCoordMode RasterizerGLES1::fixed_material_get_texcoord_mode(
 	return m->texcoord_mode[p_parameter]; // for now
 }
 
-void RasterizerGLES1::fixed_material_set_uv_transform(RID p_material,const Transform& p_transform) {
+void RasterizerGLES1::fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
@@ -1248,10 +1248,10 @@ void RasterizerGLES1::fixed_material_set_uv_transform(RID p_material,const Trans
 	m->uv_transform = p_transform;
 }
 
-Transform RasterizerGLES1::fixed_material_get_uv_transform(RID p_material) const {
+Transform3D RasterizerGLES1::fixed_material_get_uv_transform(RID p_material) const {
 
 	Material *m=material_owner.get( p_material );
-	ERR_FAIL_COND_V(!m, Transform());
+	ERR_FAIL_COND_V(!m, Transform3D());
 
 	return m->uv_transform;
 }
@@ -1305,11 +1305,11 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 		if (i==VS::ARRAY_VERTEX) {
 
-			array_len=Vector3Array(p_arrays[i]).size();
+			array_len=PackedVector3Array(p_arrays[i]).size();
 			ERR_FAIL_COND(array_len==0);
 		} else if (i==VS::ARRAY_INDEX) {
 
-			index_array_len=IntArray(p_arrays[i]).size();
+			index_array_len=PackedIntArray(p_arrays[i]).size();
 		}
 	}
 
@@ -2082,7 +2082,7 @@ void RasterizerGLES1::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 	ERR_FAIL_COND(!multimesh);
 	multimesh->aabb=p_aabb;
 }
-void RasterizerGLES1::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void RasterizerGLES1::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -2136,15 +2136,15 @@ AABB RasterizerGLES1::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform RasterizerGLES1::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D RasterizerGLES1::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
-	ERR_FAIL_COND_V(!multimesh,Transform());
+	ERR_FAIL_COND_V(!multimesh,Transform3D());
 
-	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform());
+	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform3D());
 	MultiMesh::Element &e=multimesh->elements[p_index];
 
-	Transform tr;
+	Transform3D tr;
 
 	tr.basis.elements[0][0]=e.matrix[0];
 	tr.basis.elements[1][0]=e.matrix[1];
@@ -2608,7 +2608,7 @@ int RasterizerGLES1::skeleton_get_bone_count(RID p_skeleton) const {
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void RasterizerGLES1::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void RasterizerGLES1::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
@@ -2617,11 +2617,11 @@ void RasterizerGLES1::skeleton_bone_set_transform(RID p_skeleton,int p_bone, con
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform RasterizerGLES1::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D RasterizerGLES1::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
-	ERR_FAIL_COND_V(!skeleton, Transform());
-	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
+	ERR_FAIL_COND_V(!skeleton, Transform3D());
+	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform3D() );
 
 	// something
 	return skeleton->bones[p_bone];
@@ -2804,7 +2804,7 @@ RID RasterizerGLES1::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void RasterizerGLES1::light_instance_set_transform(RID p_light_instance,const Transform& p_transform) {
+void RasterizerGLES1::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -2865,7 +2865,7 @@ Rasterizer::ShadowType RasterizerGLES1::light_instance_get_shadow_type(RID p_lig
 
 	return SHADOW_NONE;
 }
-void RasterizerGLES1::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerGLES1::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 
 }
@@ -2880,7 +2880,7 @@ bool RasterizerGLES1::light_instance_get_pssm_shadow_overlap(RID p_light_instanc
 	return false;
 }
 
-void RasterizerGLES1::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerGLES1::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -2918,7 +2918,7 @@ RID RasterizerGLES1::particles_instance_create(RID p_particles) {
 	return particles_instance_owner.make_rid(particles_instance);
 }
 
-void RasterizerGLES1::particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform) {
+void RasterizerGLES1::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 	ParticlesInstance *particles_instance=particles_instance_owner.get(p_particles_instance);
 	ERR_FAIL_COND(!particles_instance);
@@ -3035,7 +3035,7 @@ void RasterizerGLES1::begin_shadow_map( RID p_light_instance, int p_shadow_pass 
 
 }
 
-void RasterizerGLES1::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
+void RasterizerGLES1::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
 
 	camera_transform=p_world;
 	camera_transform_inverse=camera_transform.inverse();
@@ -3109,7 +3109,7 @@ void RasterizerGLES1::add_light( RID p_light_instance ) {
 				//CameraMatrix proj;
 				//proj.set_perspective( angle*2.0, 1.0, near, far );
 
-				//Transform modelview=Transform(camera_transform_inverse * li->transform).inverse();
+				//Transform3D modelview=Transform3D(camera_transform_inverse * li->transform).inverse();
 				//li->projector_mtx= proj * modelview;
 
 			}*/
@@ -3852,7 +3852,7 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 					const uint8_t *src_bones=&surf->array_local[surf->array[VS::ARRAY_BONES].ofs];
 					int src_stride = surf->stride;
 					int count = surf->array_len;
-					const Transform *skeleton = &p_skeleton->bones[0];
+					const Transform3D *skeleton = &p_skeleton->bones[0];
 
 					for(int i=0;i<VS::ARRAY_MAX-1;i++) {
 
@@ -4160,7 +4160,7 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			// glBindBuffer(GL_ARRAY_BUFFER,0);
 
 
-			Transform camera;
+			Transform3D camera;
 			if (shadow)
 				camera=shadow->transform;
 			else
@@ -4394,7 +4394,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 		if (e->instance->billboard || e->instance->depth_scale) {
 
-			Transform xf=e->instance->transform;
+			Transform3D xf=e->instance->transform;
 			if (e->instance->depth_scale) {
 
 				if (camera_projection.matrix[3][3]) {
@@ -4705,7 +4705,7 @@ void RasterizerGLES1::end_shadow_map() {
 	glClear(GL_DEPTH_BUFFER_BIT);
 	CameraMatrix cm;
 	float z_near,z_far;
-	Transform light_transform;
+	Transform3D light_transform;
 
 	float dp_direction=0.0;
 	bool flip_facing=false;
@@ -4748,7 +4748,7 @@ void RasterizerGLES1::end_shadow_map() {
 		} break;
 	}
 
-	Transform light_transform_inverse = light_transform.inverse();
+	Transform3D light_transform_inverse = light_transform.inverse();
 
 	opaque_render_list.sort_mat();
 
@@ -4790,7 +4790,7 @@ void RasterizerGLES1::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
 
 
 /*
-	Transform modelview;
+	Transform3D modelview;
 	modelview.translate(-(viewport.width / 2.0f), -(viewport.height / 2.0f), 0.0f);
 	modelview.scale( Vector3( 2.0f / viewport.width, -2.0f / viewport.height, 1.0f ) );
 	modelview.translate(p_rect.pos.x, p_rect.pos.y, 0);
@@ -4818,7 +4818,7 @@ void RasterizerGLES1::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
 
 	_draw_primitive(4,coords,0,0,texcoords);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);*/
-	Matrix32 modelview;
+	Transform2D modelview;
 	modelview.translate(p_rect.pos.x, p_rect.pos.y);
 	// canvas_shader.set_uniform(CanvasShaderGLES2::MODELVIEW_MATRIX, modelview);
 	_gl_mult_transform(modelview);
@@ -5020,7 +5020,7 @@ void RasterizerGLES1::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 }
 
 
-void RasterizerGLES1::canvas_begin_rect(const Matrix32& p_transform) {
+void RasterizerGLES1::canvas_begin_rect(const Transform2D& p_transform) {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -5328,7 +5328,7 @@ void RasterizerGLES1::canvas_draw_polygon(int p_vertex_count, const int* p_indic
 
 }
 
-void RasterizerGLES1::canvas_set_transform(const Matrix32& p_transform) {
+void RasterizerGLES1::canvas_set_transform(const Transform2D& p_transform) {
 
 	//restore
 	glPopMatrix();

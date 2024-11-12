@@ -42,7 +42,7 @@ func _fixed_process(dt):
 	
 	#turn a little up or down
 	var t = get_transform()
-	t.basis = Matrix3(t.basis[0],deg2rad(angle_v_adjust)) * t.basis
+	t.basis = Basis(t.basis[0],deg2rad(angle_v_adjust)) * t.basis
 	set_transform(t)
 	
 	

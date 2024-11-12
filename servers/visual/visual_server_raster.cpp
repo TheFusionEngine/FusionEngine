@@ -291,12 +291,12 @@ float VisualServerRaster::fixed_material_get_point_size(RID p_material) const{
 }
 
 
-void VisualServerRaster::fixed_material_set_uv_transform(RID p_material,const Transform& p_transform) {
+void VisualServerRaster::fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform) {
 	VS_CHANGED;
 	rasterizer->fixed_material_set_uv_transform(p_material,p_transform);
 }
 
-Transform VisualServerRaster::fixed_material_get_uv_transform(RID p_material) const {
+Transform3D VisualServerRaster::fixed_material_get_uv_transform(RID p_material) const {
 
 	return rasterizer->fixed_material_get_uv_transform(p_material);
 }
@@ -474,7 +474,7 @@ void VisualServerRaster::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) 
 
 }
 
-void VisualServerRaster::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void VisualServerRaster::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 	VS_CHANGED;
 	rasterizer->multimesh_instance_set_transform(p_multimesh,p_index,p_transform);
 
@@ -494,7 +494,7 @@ AABB VisualServerRaster::multimesh_get_aabb(RID p_multimesh,const AABB& p_aabb) 
 	return rasterizer->multimesh_get_aabb(p_multimesh);
 }
 
-Transform VisualServerRaster::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D VisualServerRaster::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	return rasterizer->multimesh_instance_get_transform(p_multimesh,p_index);
 }
@@ -886,7 +886,7 @@ int VisualServerRaster::skeleton_get_bone_count(RID p_skeleton) const {
 	return rasterizer->skeleton_get_bone_count(p_skeleton);
 }
 
-void VisualServerRaster::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void VisualServerRaster::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 	VS_CHANGED;
 	rasterizer->skeleton_bone_set_transform(p_skeleton,p_bone,p_transform);
 
@@ -901,7 +901,7 @@ void VisualServerRaster::skeleton_bone_set_transform(RID p_skeleton,int p_bone, 
 	}
 }
 
-Transform VisualServerRaster::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D VisualServerRaster::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 
 	return rasterizer->skeleton_bone_get_transform(p_skeleton,p_bone);
@@ -1402,7 +1402,7 @@ void VisualServerRaster::camera_set_orthogonal(RID p_camera,float p_size, float 
 	camera->zfar=p_z_far;
 }
 
-void VisualServerRaster::camera_set_transform(RID p_camera,const Transform& p_transform) {
+void VisualServerRaster::camera_set_transform(RID p_camera,const Transform3D& p_transform) {
 	VS_CHANGED;
 	Camera3D *camera = camera_owner.get( p_camera );
 	ERR_FAIL_COND(!camera);
@@ -1731,7 +1731,7 @@ void VisualServerRaster::viewport_attach_canvas(RID p_viewport,RID p_canvas) {
 }
 
 
-void VisualServerRaster::viewport_set_canvas_transform(RID p_viewport,RID p_canvas,const Matrix32& p_transform) {
+void VisualServerRaster::viewport_set_canvas_transform(RID p_viewport,RID p_canvas,const Transform2D& p_transform) {
 
 	VS_CHANGED;
 	Viewport *viewport=NULL;
@@ -1748,16 +1748,16 @@ void VisualServerRaster::viewport_set_canvas_transform(RID p_viewport,RID p_canv
 
 }
 
-Matrix32 VisualServerRaster::viewport_get_canvas_transform(RID p_viewport,RID p_canvas) const {
+Transform2D VisualServerRaster::viewport_get_canvas_transform(RID p_viewport,RID p_canvas) const {
 
 	Viewport *viewport=NULL;
 	viewport = viewport_owner.get( p_viewport );
-	ERR_FAIL_COND_V(!viewport,Matrix32());
+	ERR_FAIL_COND_V(!viewport,Transform2D());
 
 	Map<RID,Viewport::CanvasData>::Element *E=viewport->canvas_map.find(p_canvas);
 	if (!E) {
 		ERR_EXPLAIN("Viewport does not contain the canvas");
-		ERR_FAIL_COND_V(!E,Matrix32());
+		ERR_FAIL_COND_V(!E,Transform2D());
 	}
 
 
@@ -1765,7 +1765,7 @@ Matrix32 VisualServerRaster::viewport_get_canvas_transform(RID p_viewport,RID p_
 }
 
 
-void VisualServerRaster::viewport_set_global_canvas_transform(RID p_viewport,const Matrix32& p_transform) {
+void VisualServerRaster::viewport_set_global_canvas_transform(RID p_viewport,const Transform2D& p_transform) {
 
 	VS_CHANGED
 	Viewport *viewport=NULL;
@@ -1776,11 +1776,11 @@ void VisualServerRaster::viewport_set_global_canvas_transform(RID p_viewport,con
 
 }
 
-Matrix32 VisualServerRaster::viewport_get_global_canvas_transform(RID p_viewport) const{
+Transform2D VisualServerRaster::viewport_get_global_canvas_transform(RID p_viewport) const{
 
 	Viewport *viewport=NULL;
 	viewport = viewport_owner.get( p_viewport );
-	ERR_FAIL_COND_V(!viewport,Matrix32());
+	ERR_FAIL_COND_V(!viewport,Transform2D());
 	return viewport->global_transform;
 }
 
@@ -2383,7 +2383,7 @@ float VisualServerRaster::instance_get_morph_target_weight(RID p_instance,int p_
 	return instance->data.morph_values[p_shape];
 }
 
-void VisualServerRaster::instance_set_transform(RID p_instance, const Transform& p_transform) {
+void VisualServerRaster::instance_set_transform(RID p_instance, const Transform3D& p_transform) {
 	VS_CHANGED;
 	Instance *instance = instance_owner.get( p_instance );
 	ERR_FAIL_COND( !instance );
@@ -2398,10 +2398,10 @@ void VisualServerRaster::instance_set_transform(RID p_instance, const Transform&
 
 }
 
-Transform VisualServerRaster::instance_get_transform(RID p_instance) const {
+Transform3D VisualServerRaster::instance_get_transform(RID p_instance) const {
 
 	Instance *instance = instance_owner.get( p_instance );
-	ERR_FAIL_COND_V( !instance, Transform() );
+	ERR_FAIL_COND_V( !instance, Transform3D() );
 	
 	return instance->data.transform;
 
@@ -2918,7 +2918,7 @@ void VisualServerRaster::_update_instance(Instance *p_instance) {
 		p_instance->room_info->affine_inverse=p_instance->data.transform.affine_inverse();
 	} else if (p_instance->base_type == INSTANCE_BAKED_LIGHT) {
 
-		Transform scale;
+		Transform3D scale;
 		scale.basis.scale(p_instance->baked_light_info->baked_light->octree_aabb.size);
 		scale.origin=p_instance->baked_light_info->baked_light->octree_aabb.pos;
 		//print_line("scale: "+scale);
@@ -2934,7 +2934,7 @@ void VisualServerRaster::_update_instance(Instance *p_instance) {
 	if (p_instance->base_type==INSTANCE_PORTAL) {
 
 		//portals need to be transformed in a special way, so they don't become too wide if they have scale..
-		Transform portal_xform = p_instance->data.transform;
+		Transform3D portal_xform = p_instance->data.transform;
 		portal_xform.basis.set_axis(2,portal_xform.basis.get_axis(2).normalized());
 
 		p_instance->portal_info->plane_cache=Plane( p_instance->data.transform.origin, portal_xform.basis.get_axis(2));
@@ -3364,7 +3364,7 @@ const Rect2& VisualServerRaster::CanvasItem::get_rect() const {
 		return rect;
 	}
 
-	Matrix32 xf;
+	Transform2D xf;
 	bool found_xform=false;
 	bool first=true;
 
@@ -3474,7 +3474,7 @@ const Rect2& VisualServerRaster::CanvasItem::get_rect() const {
 	return rect;
 }
 
-void VisualServerRaster::canvas_item_set_transform(RID p_item, const Matrix32& p_transform) {
+void VisualServerRaster::canvas_item_set_transform(RID p_item, const Transform2D& p_transform) {
 
 	VS_CHANGED;
 	CanvasItem *canvas_item = canvas_item_owner.get( p_item );
@@ -3783,7 +3783,7 @@ void VisualServerRaster::canvas_item_add_triangle_array(RID p_item, const Vector
 }
 
 
-void VisualServerRaster::canvas_item_add_set_transform(RID p_item,const Matrix32& p_transform) {
+void VisualServerRaster::canvas_item_add_set_transform(RID p_item,const Transform2D& p_transform) {
 
 	VS_CHANGED;
 	CanvasItem *canvas_item = canvas_item_owner.get( p_item );
@@ -4506,7 +4506,7 @@ void VisualServerRaster::_light_instance_update_pssm_shadow(Instance *p_light,Sc
 
 			ortho_camera.set_orthogonal( -half_x, half_x,-half_y,half_y, 0, (z_max-z_min_cam) );
 
-			Transform ortho_transform;
+			Transform3D ortho_transform;
 			ortho_transform.basis=p_light->data.transform.basis;
 			ortho_transform.origin=x_vec*(x_min_cam+half_x)+y_vec*(y_min_cam+half_y)+z_vec*z_max;
 
@@ -4687,7 +4687,7 @@ void VisualServerRaster::_light_instance_update_lispsm_shadow(Instance *p_light,
 	Vector3 pos = eye - up*(n-near_dist);
 
 	CameraMatrix light_space_basis2 = _lispm_look(pos,light_vec,up);
-	//Transform light_space_basis2;
+	//Transform3D light_space_basis2;
 	//light_space_basis2.set_look_at(pos,light_vec-pos,up);
 	//light_space_basis2.affine_invert();
 
@@ -4778,7 +4778,7 @@ void VisualServerRaster::_light_instance_update_lispsm_shadow(Instance *p_light,
 
 	Vector3 up = light_vec.cross(view_vec).cross(light_vec).normalized();
 
-	Transform light_transform;
+	Transform3D light_transform;
 	light_transform.set_look_at(Vector3(),light_vec,up);
 
 
@@ -5132,7 +5132,7 @@ void VisualServerRaster::_portal_attempt_connect(Instance *p_portal) {
 		return; //wtf
 
 	Instance *found=NULL;
-	Transform affine_inverse = p_portal->data.transform.affine_inverse();
+	Transform3D affine_inverse = p_portal->data.transform.affine_inverse();
 
 	for(Set<Instance*>::Element *E=p_portal->portal_info->candidate_set.front();E;E=E->next()) {
 
@@ -5496,7 +5496,7 @@ void VisualServerRaster::_cull_room(Camera3D *p_camera, Instance *p_room,Instanc
 	
 }
 
-void VisualServerRaster::_process_sampled_light(const Transform& p_camera,Instance *p_sampled_light,bool p_linear_colorspace) {
+void VisualServerRaster::_process_sampled_light(const Transform3D& p_camera,Instance *p_sampled_light,bool p_linear_colorspace) {
 
 
 	BakedLightSampler *sampler_opts = p_sampled_light->baked_light_sampler_info->sampler;
@@ -5531,7 +5531,7 @@ void VisualServerRaster::_process_sampled_light(const Transform& p_camera,Instan
 			continue; //not usable
 
 
-		Matrix3 norm_xform = bl->baked_light_info->affine_inverse.basis;//.inverse();
+		Basis norm_xform = bl->baked_light_info->affine_inverse.basis;//.inverse();
 		for(int i=0;i<dp_size;i++) {
 			dp_normals[i]=norm_xform.xform(dp_src_normals[i]).normalized();
 		}
@@ -6198,7 +6198,7 @@ void VisualServerRaster::_render_camera(Viewport *p_viewport,Camera3D *p_camera,
 	rasterizer->end_scene();
 }
 
-void VisualServerRaster::_render_canvas_item(CanvasItem *p_canvas_item,const Matrix32& p_transform,const Rect2& p_clip_rect, float p_opacity) {
+void VisualServerRaster::_render_canvas_item(CanvasItem *p_canvas_item,const Transform2D& p_transform,const Rect2& p_clip_rect, float p_opacity) {
 
 	CanvasItem *ci = p_canvas_item;
 
@@ -6210,7 +6210,7 @@ void VisualServerRaster::_render_canvas_item(CanvasItem *p_canvas_item,const Mat
 
 
 	Rect2 rect = ci->get_rect();
-	Matrix32 xform = p_transform * ci->xform;
+	Transform2D xform = p_transform * ci->xform;
 	Rect2 global_rect = xform.xform(rect);
 	global_rect.pos+=p_clip_rect.pos;
 
@@ -6412,7 +6412,7 @@ void VisualServerRaster::_render_canvas_item(CanvasItem *p_canvas_item,const Mat
 
 }
 
-void VisualServerRaster::_render_canvas(Canvas *p_canvas,const Matrix32 &p_transform) {
+void VisualServerRaster::_render_canvas(Canvas *p_canvas,const Transform2D &p_transform) {
 
 	rasterizer->canvas_begin();
 
@@ -6426,17 +6426,17 @@ void VisualServerRaster::_render_canvas(Canvas *p_canvas,const Matrix32 &p_trans
 		//mirroring (useful for scrolling backgrounds)
 		if (ci.mirror.x!=0) {
 
-			Matrix32 xform2 = p_transform * Matrix32(0,Vector2(ci.mirror.x,0));
+			Transform2D xform2 = p_transform * Transform2D(0,Vector2(ci.mirror.x,0));
 			_render_canvas_item(ci.item,xform2,Rect2(viewport_rect.x,viewport_rect.y,viewport_rect.width,viewport_rect.height),1);
 		}
 		if (ci.mirror.y!=0) {
 
-			Matrix32 xform2 = p_transform * Matrix32(0,Vector2(0,ci.mirror.y));
+			Transform2D xform2 = p_transform * Transform2D(0,Vector2(0,ci.mirror.y));
 			_render_canvas_item(ci.item,xform2,Rect2(viewport_rect.x,viewport_rect.y,viewport_rect.width,viewport_rect.height),1);
 		}
 		if (ci.mirror.y!=0 && ci.mirror.x!=0) {
 
-			Matrix32 xform2 = p_transform * Matrix32(0,ci.mirror);
+			Transform2D xform2 = p_transform * Transform2D(0,ci.mirror);
 			_render_canvas_item(ci.item,xform2,Rect2(viewport_rect.x,viewport_rect.y,viewport_rect.width,viewport_rect.height),1);
 		}
 
@@ -6509,7 +6509,7 @@ void VisualServerRaster::_draw_viewport(Viewport *p_viewport,int p_ofs_x, int p_
 
 	//		print_line("canvas "+itos(i)+" size: "+itos(I->get()->canvas->child_items.size()));
 			//print_line("GT "+p_viewport->global_transform+". CT: "+E->get()->transform);
-			Matrix32 xform = p_viewport->global_transform * E->get()->transform;
+			Transform2D xform = p_viewport->global_transform * E->get()->transform;
 			_render_canvas( E->get()->canvas,xform );
 			i++;
 
@@ -6604,7 +6604,7 @@ void VisualServerRaster::_draw_viewports() {
 
 		rasterizer->canvas_begin();
 		rasterizer->canvas_disable_blending();
-		rasterizer->canvas_begin_rect(Matrix32());
+		rasterizer->canvas_begin_rect(Transform2D());
 		rasterizer->canvas_draw_rect(E->get()->rt_to_screen_rect,0,Rect2(Point2(),E->get()->rt_to_screen_rect.size),E->get()->render_target_texture,Color(1,1,1));
 
 	}
@@ -6668,7 +6668,7 @@ void VisualServerRaster::_draw_cursors_and_margins() {
 	}
 
 	rasterizer->canvas_begin();
-	rasterizer->canvas_begin_rect(Matrix32());
+	rasterizer->canvas_begin_rect(Transform2D());
 
 	for (int i=0; i<MAX_CURSORS; i++) {
 
@@ -6760,7 +6760,7 @@ void VisualServerRaster::set_boot_image(const Image& p_image, const Color& p_col
 	RID texture = texture_create();
 	texture_allocate(texture,p_image.get_width(),p_image.get_height(),p_image.get_format(),TEXTURE_FLAG_FILTER);
 	texture_set_data(texture,p_image);
-	rasterizer->canvas_begin_rect(Matrix32());
+	rasterizer->canvas_begin_rect(Transform2D());
 	Rect2 imgrect(0,0,p_image.get_width(),p_image.get_height());
 	Rect2 screenrect=imgrect;
 	screenrect.pos+=((Size2(vr.width,vr.height)-screenrect.size)/2.0).floor();

@@ -571,7 +571,7 @@ bool action_pressed
 \end_layout
 
 \begin_layout Subsection
-Matrix3
+Basis
 \end_layout
 
 \begin_layout Standard
@@ -587,7 +587,7 @@ Additional in-place versions of some functions are available: transpose(),
 \end_layout
 
 \begin_layout Subsection
-Transform
+Transform3D
 \end_layout
 
 \begin_layout Standard
@@ -668,7 +668,7 @@ Native Arrays
 \end_layout
 
 \begin_layout Standard
-Native arrays such as RawArray, IntArray,StringArray, etc are not supported.
+Native arrays such as PackedByteArray, PackedIntArray,PackedStringArray, etc are not supported.
  Use regular squirrel arrays instead, since conversion to/from them will
  happen automatically.
 \end_layout
@@ -826,7 +826,7 @@ Godot has a built-in reference counted type used in conjunction with a template
 \begin_inset Quotes eld
 \end_inset
 
-Reference
+RefCounted
 \begin_inset Quotes erd
 \end_inset
 
@@ -840,7 +840,7 @@ Reference
 
 \begin_layout Standard
 When calling Godot API functions, returned references are wrapped inside
- Ref() transparently, but the problem arises when creating a Reference-derived
+ Ref() transparently, but the problem arises when creating a RefCounted-derived
  object from the code.
  In such cases, the reference must be wrapped manually like this:
 \end_layout

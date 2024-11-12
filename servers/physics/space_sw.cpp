@@ -86,7 +86,7 @@ bool PhysicsDirectSpaceStateSW::intersect_ray(const Vector3& p_from, const Vecto
 		const CollisionObjectSW *col_obj=space->intersection_query_results[i];
 
 		int shape_idx=space->intersection_query_subindex_results[i];
-		Transform inv_xform = col_obj->get_shape_inv_transform(shape_idx) * col_obj->get_inv_transform();
+		Transform3D inv_xform = col_obj->get_shape_inv_transform(shape_idx) * col_obj->get_inv_transform();
 
 		Vector3 local_from = inv_xform.xform(begin);
 		Vector3 local_to = inv_xform.xform(end);
@@ -100,7 +100,7 @@ bool PhysicsDirectSpaceStateSW::intersect_ray(const Vector3& p_from, const Vecto
 
 
 
-			Transform xform = col_obj->get_transform() * col_obj->get_shape_transform(shape_idx);
+			Transform3D xform = col_obj->get_transform() * col_obj->get_shape_transform(shape_idx);
 			shape_point=xform.xform(shape_point);
 
 			real_t ld = normal.dot(shape_point);
@@ -138,7 +138,7 @@ bool PhysicsDirectSpaceStateSW::intersect_ray(const Vector3& p_from, const Vecto
 }
 
 
-int PhysicsDirectSpaceStateSW::intersect_shape(const RID& p_shape, const Transform& p_xform,float p_margin,ShapeResult *r_results,int p_result_max,const Set<RID>& p_exclude,uint32_t p_layer_mask,uint32_t p_object_type_mask) {
+int PhysicsDirectSpaceStateSW::intersect_shape(const RID& p_shape, const Transform3D& p_xform,float p_margin,ShapeResult *r_results,int p_result_max,const Set<RID>& p_exclude,uint32_t p_layer_mask,uint32_t p_object_type_mask) {
 
 	if (p_result_max<=0)
 		return 0;
@@ -153,7 +153,7 @@ int PhysicsDirectSpaceStateSW::intersect_shape(const RID& p_shape, const Transfo
 	bool collided=false;
 	int cc=0;
 
-	//Transform ai = p_xform.affine_inverse();
+	//Transform3D ai = p_xform.affine_inverse();
 
 	for(int i=0;i<amount;i++) {
 
@@ -192,7 +192,7 @@ int PhysicsDirectSpaceStateSW::intersect_shape(const RID& p_shape, const Transfo
 }
 
 
-bool PhysicsDirectSpaceStateSW::cast_motion(const RID& p_shape, const Transform& p_xform,const Vector3& p_motion,float p_margin,float &p_closest_safe,float &p_closest_unsafe, const Set<RID>& p_exclude,uint32_t p_layer_mask,uint32_t p_object_type_mask,ShapeRestInfo *r_info) {
+bool PhysicsDirectSpaceStateSW::cast_motion(const RID& p_shape, const Transform3D& p_xform,const Vector3& p_motion,float p_margin,float &p_closest_safe,float &p_closest_unsafe, const Set<RID>& p_exclude,uint32_t p_layer_mask,uint32_t p_object_type_mask,ShapeRestInfo *r_info) {
 
 
 
@@ -211,7 +211,7 @@ bool PhysicsDirectSpaceStateSW::cast_motion(const RID& p_shape, const Transform&
 	float best_safe=1;
 	float best_unsafe=1;
 
-	Transform xform_inv = p_xform.affine_inverse();
+	Transform3D xform_inv = p_xform.affine_inverse();
 	MotionShapeSW mshape;
 	mshape.shape=shape;
 	mshape.motion=xform_inv.basis.xform(p_motion);
@@ -236,7 +236,7 @@ bool PhysicsDirectSpaceStateSW::cast_motion(const RID& p_shape, const Transform&
 		Vector3 point_A,point_B;
 		Vector3 sep_axis=p_motion.normalized();
 
-		Transform col_obj_xform = col_obj->get_transform() * col_obj->get_shape_transform(shape_idx);
+		Transform3D col_obj_xform = col_obj->get_transform() * col_obj->get_shape_transform(shape_idx);
 		//test initial overlap, does it collide if going all the way?
 		if (CollisionSolverSW::solve_distance(&mshape,p_xform,col_obj->get_shape(shape_idx),col_obj_xform,point_A,point_B,aabb,&sep_axis)) {
 			//print_line("failed motion cast (no collision)");
@@ -267,7 +267,7 @@ bool PhysicsDirectSpaceStateSW::cast_motion(const RID& p_shape, const Transform&
 
 		for(int i=0;i<8;i++) { //steps should be customizable..
 
-			Transform xfa = p_xform;
+			Transform3D xfa = p_xform;
 			float ofs = (low+hi)*0.5;
 
 			Vector3 sep=mnormal; //important optimization for this to work fast enough
@@ -321,7 +321,7 @@ bool PhysicsDirectSpaceStateSW::cast_motion(const RID& p_shape, const Transform&
 	return true;
 }
 
-bool PhysicsDirectSpaceStateSW::collide_shape(RID p_shape, const Transform& p_shape_xform,float p_margin,Vector3 *r_results,int p_result_max,int &r_result_count, const Set<RID>& p_exclude,uint32_t p_layer_mask,uint32_t p_object_type_mask){
+bool PhysicsDirectSpaceStateSW::collide_shape(RID p_shape, const Transform3D& p_shape_xform,float p_margin,Vector3 *r_results,int p_result_max,int &r_result_count, const Set<RID>& p_exclude,uint32_t p_layer_mask,uint32_t p_object_type_mask){
 
 	if (p_result_max<=0)
 		return 0;
@@ -407,7 +407,7 @@ static void _rest_cbk_result(const Vector3& p_point_A,const Vector3& p_point_B,v
 	rd->best_shape=rd->shape;
 
 }
-bool PhysicsDirectSpaceStateSW::rest_info(RID p_shape, const Transform& p_shape_xform,float p_margin,ShapeRestInfo *r_info, const Set<RID>& p_exclude,uint32_t p_layer_mask,uint32_t p_object_type_mask) {
+bool PhysicsDirectSpaceStateSW::rest_info(RID p_shape, const Transform3D& p_shape_xform,float p_margin,ShapeRestInfo *r_info, const Set<RID>& p_exclude,uint32_t p_layer_mask,uint32_t p_object_type_mask) {
 
 
 	ShapeSW *shape = static_cast<PhysicsServerSW*>(PhysicsServer::get_singleton())->shape_owner.get(p_shape);

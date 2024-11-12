@@ -565,7 +565,7 @@ void Control::_notification(int p_notification) {
 		} break;
 		case NOTIFICATION_DRAW: {
 
-			Matrix32 xform;
+			Transform2D xform;
 			xform.set_origin(get_pos());
 			VisualServer::get_singleton()->canvas_item_set_transform(get_canvas_item(),xform);
 			VisualServer::get_singleton()->canvas_item_set_custom_rect( get_canvas_item(),true, Rect2(Point2(),get_size()));
@@ -747,12 +747,12 @@ void Control::set_drag_preview(Control *p_control) {
 }
 
 
-Control* Control::_find_next_visible_control_at_pos(Node* p_node,const Point2& p_global,Matrix32& r_xform) const {
+Control* Control::_find_next_visible_control_at_pos(Node* p_node,const Point2& p_global,Transform2D& r_xform) const {
 
 	return NULL;
 }
 
-Control* Control::_find_control_at_pos(CanvasItem* p_node,const Point2& p_global,const Matrix32& p_xform,Matrix32& r_inv_xform)  {
+Control* Control::_find_control_at_pos(CanvasItem* p_node,const Point2& p_global,const Transform2D& p_xform,Transform2D& r_inv_xform)  {
 
 	if (p_node->cast_to<Viewport>())
 		return NULL;
@@ -774,7 +774,7 @@ Control* Control::_find_control_at_pos(CanvasItem* p_node,const Point2& p_global
 			if (!sw->is_visible())
 				continue;
 
-			Matrix32 xform;
+			Transform2D xform;
 			CanvasItem *pci = sw->get_parent_item();
 			if (pci)
 				xform=pci->get_global_transform();
@@ -791,7 +791,7 @@ Control* Control::_find_control_at_pos(CanvasItem* p_node,const Point2& p_global
 		return NULL; //canvas item hidden, discard
 	}
 
-	Matrix32 matrix = p_xform * p_node->get_transform();
+	Transform2D matrix = p_xform * p_node->get_transform();
 
 	if (!c || !c->clips_input() || c->has_point(matrix.affine_inverse().xform(p_global))) {
 
@@ -978,7 +978,7 @@ void Control::_window_input_event(InputEvent p_event) {
 
 
 
-				Matrix32 parent_xform;
+				Transform2D parent_xform;
 
 				if (data.parent_canvas_item)
 					parent_xform=data.parent_canvas_item->get_global_transform();
@@ -1088,7 +1088,7 @@ void Control::_window_input_event(InputEvent p_event) {
 
 			window->key_event_accepted=false;
 
-			Matrix32 localizer = (get_canvas_transform()).affine_inverse();
+			Transform2D localizer = (get_canvas_transform()).affine_inverse();
 			Size2 pos = localizer.xform(Size2(p_event.mouse_motion.x,p_event.mouse_motion.y));
 			Vector2 speed = localizer.basis_xform(Point2(p_event.mouse_motion.speed_x,p_event.mouse_motion.speed_y));
 			Vector2 rel = localizer.basis_xform(Point2(p_event.mouse_motion.relative_x,p_event.mouse_motion.relative_y));
@@ -1097,7 +1097,7 @@ void Control::_window_input_event(InputEvent p_event) {
 			
 			Control *over = NULL;
 
-			Matrix32 parent_xform;
+			Transform2D parent_xform;
 			if (data.parent_canvas_item)
 				parent_xform=data.parent_canvas_item->get_global_transform();
 
@@ -1831,7 +1831,7 @@ Point2 Control::get_global_pos() const {
 
 void Control::set_global_pos(const Point2& p_point) {
 	
-	Matrix32 inv;
+	Transform2D inv;
 
 	if (data.parent_canvas_item) {
 
@@ -2371,9 +2371,9 @@ Control::CursorShape Control::get_cursor_shape(const Point2& p_pos) const {
 	return data.default_cursor;
 }
 
-Matrix32 Control::get_transform() const {
+Transform2D Control::get_transform() const {
 
-	Matrix32 xf;
+	Transform2D xf;
 	xf.set_origin(get_pos());
 	return xf;
 }
@@ -2434,7 +2434,7 @@ Control *Control::_get_focus_neighbour(Margin p_margin,int p_count) {
 
 	Point2 points[4];
 
-	Matrix32 xform = get_global_transform();
+	Transform2D xform = get_global_transform();
 	Rect2 rect = get_item_rect();
 
 	points[0]=xform.xform(rect.pos);
@@ -2494,7 +2494,7 @@ void Control::_window_find_focus_neighbour(const Vector2& p_dir, Node *p_at,cons
 
 		Point2 points[4];
 
-		Matrix32 xform = c->get_global_transform();
+		Transform2D xform = c->get_global_transform();
 		Rect2 rect = c->get_item_rect();
 
 		points[0]=xform.xform(rect.pos);

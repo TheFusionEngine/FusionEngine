@@ -46,14 +46,14 @@ class Skeleton3D : public Node3D {
 		bool enabled;
 		int parent;
 
-		Transform rest;
-		Transform rest_global_inverse;
+		Transform3D rest;
+		Transform3D rest_global_inverse;
 		 
-		Transform pose;
-		Transform pose_global;
+		Transform3D pose;
+		Transform3D pose_global;
 
 		bool custom_pose_enable;
-		Transform custom_pose;
+		Transform3D custom_pose;
 		
 		List<uint32_t> nodes_bound;
 		
@@ -113,12 +113,12 @@ public:
 
 	int get_bone_count() const;
 	
-	void set_bone_rest(int p_bone, const Transform& p_rest);
-	Transform get_bone_rest(int p_bone) const;
-	Transform get_bone_transform(int p_bone) const;
-	Transform get_bone_global_pose(int p_bone) const;
+	void set_bone_rest(int p_bone, const Transform3D& p_rest);
+	Transform3D get_bone_rest(int p_bone) const;
+	Transform3D get_bone_transform(int p_bone) const;
+	Transform3D get_bone_global_pose(int p_bone) const;
 
-	void set_bone_global_pose(int p_bone,const Transform& p_pose);
+	void set_bone_global_pose(int p_bone,const Transform3D& p_pose);
 
 	void set_bone_enabled(int p_bone, bool p_enabled);
 	bool is_bone_enabled(int p_bone) const;
@@ -131,11 +131,11 @@ public:
 	
 	// posing api
 	
-	void set_bone_pose(int p_bone, const Transform& p_pose);
-	Transform get_bone_pose(int p_bone) const;
+	void set_bone_pose(int p_bone, const Transform3D& p_pose);
+	Transform3D get_bone_pose(int p_bone) const;
 
-	void set_bone_custom_pose(int p_bone, const Transform& p_custom_pose);
-	Transform get_bone_custom_pose(int p_bone) const;
+	void set_bone_custom_pose(int p_bone, const Transform3D& p_custom_pose);
+	Transform3D get_bone_custom_pose(int p_bone) const;
 
 	void localize_rests(); // used for loaders and tools
 	

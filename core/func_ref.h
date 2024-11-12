@@ -3,9 +3,9 @@
 
 #include "reference.h"
 
-class FuncRef : public Reference{
+class FuncRef : public RefCounted{
 
-	OBJ_TYPE(FuncRef,Reference);
+	OBJ_TYPE(FuncRef,RefCounted);
 	ObjectID id;
 	StringName function;
 

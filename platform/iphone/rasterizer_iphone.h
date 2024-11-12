@@ -99,7 +99,7 @@ class RasterizerIPhone : public Rasterizer {
 		Variant parameters[VisualServer::FIXED_MATERIAL_PARAM_MAX];
 		RID textures[VisualServer::FIXED_MATERIAL_PARAM_MAX];
 
-		Transform uv_transform;
+		Transform3D uv_transform;
 		VS::FixedMaterialTexCoordMode texcoord_mode[VisualServer::FIXED_MATERIAL_PARAM_MAX];
 
 		VS::MaterialBlendMode detail_blend_mode;
@@ -252,7 +252,7 @@ class RasterizerIPhone : public Rasterizer {
 
 	struct Skeleton3D {
 
-		Vector<Transform> bones;
+		Vector<Transform3D> bones;
 
 	};
 
@@ -292,7 +292,7 @@ class RasterizerIPhone : public Rasterizer {
 		struct SplitInfo {
 
 			CameraMatrix camera;
-			Transform transform;
+			Transform3D transform;
 			float near;
 			float far;
 		};
@@ -300,7 +300,7 @@ class RasterizerIPhone : public Rasterizer {
 		RID light;
 		Light *base;
 		uint64_t last_pass;
-		Transform transform;
+		Transform3D transform;
 
 
 		CameraMatrix projection;
@@ -329,7 +329,7 @@ class RasterizerIPhone : public Rasterizer {
 
 			float depth;
 			const Skeleton3D *skeleton;
-			Transform transform;
+			Transform3D transform;
 			LightInstance* lights[MAX_LIGHTS];
 			int light_count;
 			const Geometry *geometry;
@@ -445,7 +445,7 @@ class RasterizerIPhone : public Rasterizer {
 			}
 		};
 
-		_FORCE_INLINE_ void add_element( const Geometry *p_geometry, const Material* p_material,const Transform& p_transform, LightInstance **p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides, const Skeleton3D *p_skeleton, float p_depth, GeometryOwner *p_owner=NULL) {
+		_FORCE_INLINE_ void add_element( const Geometry *p_geometry, const Material* p_material,const Transform3D& p_transform, LightInstance **p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides, const Skeleton3D *p_skeleton, float p_depth, GeometryOwner *p_owner=NULL) {
 
 
 			ERR_FAIL_COND( element_count >= MAX_ELEMENTS );
@@ -539,15 +539,15 @@ class RasterizerIPhone : public Rasterizer {
 
 	FX *scene_fx;
 	CameraMatrix camera_projection;
-	Transform camera_transform;
-	Transform camera_transform_inverse;
+	Transform3D camera_transform;
+	Transform3D camera_transform_inverse;
 	float camera_z_near;
 	float camera_z_far;
 	Size2 camera_vp_size;
 
 	Plane camera_plane;
 
-	void _add_geometry( const Geometry* p_geometry, const Transform& p_world, uint32_t p_vertex_format, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides,const Skeleton3D* p_skeleton,GeometryOwner *p_owner);
+	void _add_geometry( const Geometry* p_geometry, const Transform3D& p_world, uint32_t p_vertex_format, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides,const Skeleton3D* p_skeleton,GeometryOwner *p_owner);
 	void _render_list_forward(RenderList *p_render_list);
 
 	void _setup_light(LightInstance* p_instance, int p_idx);
@@ -564,7 +564,7 @@ class RasterizerIPhone : public Rasterizer {
 
 	Size2 window_size;
 	VS::ViewportRect viewport;
-	Transform canvas_transform;
+	Transform3D canvas_transform;
 	double last_time;
 	double time_delta;
 	uint64_t frame;
@@ -639,8 +639,8 @@ public:
 	virtual void fixed_material_set_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter, VS::FixedMaterialTexCoordMode p_mode);
 	virtual VS::FixedMaterialTexCoordMode fixed_material_get_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter) const;
 
-	virtual void fixed_material_set_uv_transform(RID p_material,const Transform& p_transform);
-	virtual Transform fixed_material_get_uv_transform(RID p_material) const;
+	virtual void fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform);
+	virtual Transform3D fixed_material_get_uv_transform(RID p_material) const;
 
 	/* SHADER MATERIAL */
 
@@ -684,13 +684,13 @@ public:
 
 	virtual void multimesh_set_mesh(RID p_multimesh,RID p_mesh);
 	virtual void multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb);
-	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform);
+	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform);
 	virtual void multimesh_instance_set_color(RID p_multimesh,int p_index,const Color& p_color);
 
 	virtual RID multimesh_get_mesh(RID p_multimesh) const;
 	virtual AABB multimesh_get_aabb(RID p_multimesh) const;;
 
-	virtual Transform multimesh_instance_get_transform(RID p_multimesh,int p_index) const;
+	virtual Transform3D multimesh_instance_get_transform(RID p_multimesh,int p_index) const;
 	virtual Color multimesh_instance_get_color(RID p_multimesh,int p_index) const;
 
 	/* POLY API */
@@ -773,8 +773,8 @@ public:
 	virtual RID skeleton_create();
 	virtual void skeleton_resize(RID p_skeleton,int p_bones);
 	virtual int skeleton_get_bone_count(RID p_skeleton) const;
-	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform);
-	virtual Transform skeleton_bone_get_transform(RID p_skeleton,int p_bone);
+	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform);
+	virtual Transform3D skeleton_bone_get_transform(RID p_skeleton,int p_bone);
 
 
 	/* LIGHT API */
@@ -801,19 +801,19 @@ public:
 
 
 	virtual RID light_instance_create(RID p_light);
-	virtual void light_instance_set_transform(RID p_light_instance,const Transform& p_transform);
+	virtual void light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform);
 
 	virtual void light_instance_set_active_hint(RID p_light_instance);
 	virtual bool light_instance_has_shadow(RID p_light_instance) const;
 	virtual bool light_instance_assign_shadow(RID p_light_instance);
 	virtual ShadowType light_instance_get_shadow_type(RID p_light_instance) const;
 	virtual int light_instance_get_shadow_passes(RID p_light_instance) const;
-	virtual void light_instance_set_pssm_split_info(RID p_light_instance, int p_split, float p_near,float p_far, const CameraMatrix& p_camera, const Transform& p_transform);
+	virtual void light_instance_set_pssm_split_info(RID p_light_instance, int p_split, float p_near,float p_far, const CameraMatrix& p_camera, const Transform3D& p_transform);
 
 	/* PARTICLES INSTANCE */
 
 	virtual RID particles_instance_create(RID p_particles);
-	virtual void particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform);
+	virtual void particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform);
 
 	/* RENDER API */
 	/* all calls (inside begin/end shadow) are always warranted to be in the following order: */
@@ -825,16 +825,16 @@ public:
 	virtual void begin_scene(RID p_fx=RID(),VS::ScenarioDebugMode p_debug=VS::SCENARIO_DEBUG_DISABLED);
 	virtual void begin_shadow_map( RID p_light_instance, int p_shadow_pass );
 
-	virtual void set_camera(const Transform& p_world,const CameraMatrix& p_projection);
+	virtual void set_camera(const Transform3D& p_world,const CameraMatrix& p_projection);
 
 	virtual void add_light( RID p_light_instance ); ///< all "add_light" calls happen before add_geometry calls
 
 	typedef Map<StringName,Variant> ParamOverrideMap;
 
-	virtual void add_mesh( RID p_mesh, const Transform* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL, RID p_skeleton=RID());
-	virtual void add_multimesh( RID p_multimesh, const Transform* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL);
-	virtual void add_poly( RID p_poly, const Transform* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL);
-	virtual void add_beam( RID p_beam, const Transform* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL);
+	virtual void add_mesh( RID p_mesh, const Transform3D* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL, RID p_skeleton=RID());
+	virtual void add_multimesh( RID p_multimesh, const Transform3D* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL);
+	virtual void add_poly( RID p_poly, const Transform3D* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL);
+	virtual void add_beam( RID p_beam, const Transform3D* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL);
 	virtual void add_particles( RID p_particle_instance, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides = NULL);
 
 	virtual void end_scene();

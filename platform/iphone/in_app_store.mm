@@ -85,11 +85,11 @@ void InAppStore::_bind_methods() {
 	Dictionary ret;
 	ret["type"] = "product_info";
 	ret["result"] = "ok";
-	StringArray titles;
-	StringArray descriptions;
-	RealArray prices;
-	StringArray ids;
-	StringArray localized_prices;
+	PackedStringArray titles;
+	PackedStringArray descriptions;
+	PackedFloatArray prices;
+	PackedStringArray ids;
+	PackedStringArray localized_prices;
 
 	for (int i=0; i<[products count]; i++) {
 
@@ -110,7 +110,7 @@ void InAppStore::_bind_methods() {
 	ret["ids"] = ids;
 	ret["localized_prices"] = localized_prices;
 
-	StringArray invalid_ids;
+	PackedStringArray invalid_ids;
 
 	for (NSString* ipid in response.invalidProductIdentifiers) {
 
@@ -130,7 +130,7 @@ Error InAppStore::request_product_info(Variant p_params) {
 	Dictionary params = p_params;
 	ERR_FAIL_COND_V(!params.has("product_ids"), ERR_INVALID_PARAMETER);
 
-	StringArray pids = params["product_ids"];
+	PackedStringArray pids = params["product_ids"];
 	printf("************ request product info! %i\n", pids.size());
 
 	NSMutableArray* array = [[[NSMutableArray alloc] initWithCapacity:pids.size()] autorelease];

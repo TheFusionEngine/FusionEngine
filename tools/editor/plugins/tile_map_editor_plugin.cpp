@@ -164,8 +164,8 @@ bool TileMapEditor::forward_input_event(const InputEvent& p_event) {
 	if (!node || !node->get_tileset().is_valid())
 		return false;
 
-	Matrix32 xform = CanvasItemEditor::get_singleton()->get_canvas_transform() * node->get_global_transform();
-	Matrix32 xform_inv = xform.affine_inverse();
+	Transform2D xform = CanvasItemEditor::get_singleton()->get_canvas_transform() * node->get_global_transform();
+	Transform2D xform_inv = xform.affine_inverse();
 	Vector2 snap = node->get_cell_size();
 
 
@@ -470,10 +470,10 @@ void TileMapEditor::_canvas_draw() {
 		return;
 
 	Size2 cell_size=node->get_cell_size();
-	Matrix32 cell_xf = node->get_cell_transform();
+	Transform2D cell_xf = node->get_cell_transform();
 
-	Matrix32 xform = CanvasItemEditor::get_singleton()->get_canvas_transform() * node->get_global_transform();
-	Matrix32 xform_inv = xform.affine_inverse();
+	Transform2D xform = CanvasItemEditor::get_singleton()->get_canvas_transform() * node->get_global_transform();
+	Transform2D xform_inv = xform.affine_inverse();
 
 
 	Size2 screen_size=canvas_item_editor->get_size();

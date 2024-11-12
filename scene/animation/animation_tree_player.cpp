@@ -723,7 +723,7 @@ void AnimationTreePlayer::_process_animation() {
 				float blend=tr.weight;
 
 				switch(a->track_get_type(tr.local_track)) {
-					case Animation::TYPE_TRANSFORM: { ///< Transform a node or a bone.
+					case Animation::TYPE_TRANSFORM: { ///< Transform3D a node or a bone.
 
 						Vector3 loc;
 						Quat rot;
@@ -788,7 +788,7 @@ void AnimationTreePlayer::_process_animation() {
 		//if (E->get()->t.type!=Animation::TYPE_TRANSFORM)
 		//	continue;
 
-		Transform xform;
+		Transform3D xform;
 		xform.basis=t.rot;
 		xform.origin=t.loc;
 

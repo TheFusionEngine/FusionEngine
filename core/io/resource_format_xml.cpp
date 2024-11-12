@@ -640,7 +640,7 @@ Error ResourceInteractiveLoaderXML::parse_property(Variant& r_v, String &r_name)
 	} else if (type=="raw_array") {
 
 		if (!tag->args.has("len")) {
-			ERR_EXPLAIN(local_path+":"+itos(get_current_line())+": RawArray missing 'len' field: "+name);
+			ERR_EXPLAIN(local_path+":"+itos(get_current_line())+": PackedByteArray missing 'len' field: "+name);
 			ERR_FAIL_COND_V(!tag->args.has("len"),ERR_FILE_CORRUPT);
 		}
 		int len=tag->args["len"].to_int();
@@ -894,7 +894,7 @@ Error ResourceInteractiveLoaderXML::parse_property(Variant& r_v, String &r_name)
 
 		int len=tag->args["len"].to_int();
 
-		StringArray array;
+		PackedStringArray array;
 		array.resize(len);
 		DVector<String>::Write w = array.write();
 
@@ -1268,7 +1268,7 @@ Error ResourceInteractiveLoaderXML::parse_property(Variant& r_v, String &r_name)
 
 	} else if (type=="matrix32") {
 
-		Matrix32 m3;
+		Transform2D m3;
 		for (int i=0;i<3;i++) {
 			for (int j=0;j<2;j++) {
 				m3.elements[i][j]=data.get_slice(",",i*2+j).to_double();
@@ -1278,7 +1278,7 @@ Error ResourceInteractiveLoaderXML::parse_property(Variant& r_v, String &r_name)
 
 	} else if (type=="matrix3") {
 
-		Matrix3 m3;
+		Basis m3;
 		for (int i=0;i<3;i++) {
 			for (int j=0;j<3;j++) {
 				m3.elements[i][j]=data.get_slice(",",i*3+j).to_double();
@@ -1288,7 +1288,7 @@ Error ResourceInteractiveLoaderXML::parse_property(Variant& r_v, String &r_name)
 
 	} else if (type=="transform") {
 
-		Transform tr;
+		Transform3D tr;
 		for (int i=0;i<3;i++) {
 			for (int j=0;j<3;j++) {
 				tr.basis.elements[i][j]=data.get_slice(",",i*3+j).to_double();
@@ -2134,7 +2134,7 @@ void ResourceFormatSaverXMLInstance::write_property(const String& p_name,const V
 		case Variant::MATRIX32: {
 
 			String s;
-			Matrix32 m3 = p_property;
+			Transform2D m3 = p_property;
 			for (int i=0;i<3;i++) {
 				for (int j=0;j<2;j++) {
 
@@ -2150,7 +2150,7 @@ void ResourceFormatSaverXMLInstance::write_property(const String& p_name,const V
 		case Variant::MATRIX3: {
 
 			String s;
-			Matrix3 m3 = p_property;
+			Basis m3 = p_property;
 			for (int i=0;i<3;i++) {
 				for (int j=0;j<3;j++) {
 
@@ -2166,8 +2166,8 @@ void ResourceFormatSaverXMLInstance::write_property(const String& p_name,const V
 		case Variant::TRANSFORM: {
 
 			String s;
-			Transform t = p_property;
-			Matrix3 &m3 = t.basis;
+			Transform3D t = p_property;
+			Basis &m3 = t.basis;
 			for (int i=0;i<3;i++) {
 				for (int j=0;j<3;j++) {
 

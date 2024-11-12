@@ -280,10 +280,10 @@ Variant _jobject_to_variant(JNIEnv * env, jobject obj) {
 
 		jdoubleArray arr = (jdoubleArray)obj;
 		int fCount = env->GetArrayLength(arr);
-		RealArray sarr;
+		PackedFloatArray sarr;
 		sarr.resize(fCount);
 
-		RealArray::Write w = sarr.write();
+		PackedFloatArray::Write w = sarr.write();
 
 		for (int i=0; i<fCount; i++) {
 
@@ -299,11 +299,11 @@ Variant _jobject_to_variant(JNIEnv * env, jobject obj) {
 
 		jfloatArray arr = (jfloatArray)obj;
 		int fCount = env->GetArrayLength(arr);
-		RealArray sarr;
+		PackedFloatArray sarr;
 		sarr.resize(fCount);
 
 
-		RealArray::Write w = sarr.write();
+		PackedFloatArray::Write w = sarr.write();
 
 		for (int i=0; i<fCount; i++) {
 
@@ -338,7 +338,7 @@ Variant _jobject_to_variant(JNIEnv * env, jobject obj) {
 		jmethodID get_keys = env->GetMethodID(oclass, "get_keys", "()[Ljava/lang/String;");
 		jobjectArray arr = (jobjectArray)env->CallObjectMethod(obj, get_keys);
 
-		StringArray keys = _jobject_to_variant(env, arr);
+		PackedStringArray keys = _jobject_to_variant(env, arr);
 
 		jmethodID get_values = env->GetMethodID(oclass, "get_values", "()[Ljava/lang/Object;");
 		arr = (jobjectArray)env->CallObjectMethod(obj, get_values);

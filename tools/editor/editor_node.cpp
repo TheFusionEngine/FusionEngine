@@ -1313,7 +1313,7 @@ void EditorNode::_edit_current() {
 	p->add_separator();
 	p->add_item("Make Resources Unique",OBJECT_UNIQUE_RESOURCES);
 	p->add_separator();
-	p->add_icon_item(gui_base->get_icon("Help","EditorIcons"),"Class Reference",OBJECT_REQUEST_HELP);
+	p->add_icon_item(gui_base->get_icon("Help","EditorIcons"),"Class RefCounted",OBJECT_REQUEST_HELP);
 	List<MethodInfo> methods;
 	current_obj->get_method_list(&methods);
 
@@ -2746,7 +2746,7 @@ void EditorNode::_property_keyed(const String& p_keyed,const Variant& p_value) {
 	animation_editor->insert_value_key(p_keyed,p_value);
 }
 
-void EditorNode::_transform_keyed(Object *sp,const String& p_sub,const Transform& p_key) {
+void EditorNode::_transform_keyed(Object *sp,const String& p_sub,const Transform3D& p_key) {
 
 	Node3D *s=sp->cast_to<Node3D>();
 	if (!s)

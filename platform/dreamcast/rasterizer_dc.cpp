@@ -361,10 +361,10 @@ void RasterizerDC::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,con
 
 		if (i==VS::ARRAY_VERTEX) {
 
-			Vector3Array v = p_arrays[i];
+			PackedVector3Array v = p_arrays[i];
 			int len = v.size();
 			ERR_FAIL_COND(len==0);
-			Vector3Array::Read r = v.read();
+			PackedVector3Array::Read r = v.read();
 
 
 			for(int i=0;i<len;i++) {
@@ -503,7 +503,7 @@ int RasterizerDC::mesh_surface_get_array_len(RID p_mesh, int p_surface) const {
 	Surface *surface = mesh->surfaces[p_surface];
 	ERR_FAIL_COND_V( !surface, -1 );
 
-	Vector3Array arr = surface->data[VS::ARRAY_VERTEX];
+	PackedVector3Array arr = surface->data[VS::ARRAY_VERTEX];
 	return arr.size();
 
 }
@@ -516,7 +516,7 @@ int RasterizerDC::mesh_surface_get_array_index_len(RID p_mesh, int p_surface) co
 	Surface *surface = mesh->surfaces[p_surface];
 	ERR_FAIL_COND_V( !surface, -1 );
 
-	IntArray arr = surface->data[VS::ARRAY_INDEX];
+	PackedIntArray arr = surface->data[VS::ARRAY_INDEX];
 	return arr.size();
 
 }
@@ -634,7 +634,7 @@ void RasterizerDC::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 	ERR_FAIL_COND(!multimesh);
 	multimesh->aabb=p_aabb;
 }
-void RasterizerDC::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void RasterizerDC::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -666,12 +666,12 @@ AABB RasterizerDC::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform RasterizerDC::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D RasterizerDC::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
-	ERR_FAIL_COND_V(!multimesh,Transform());
+	ERR_FAIL_COND_V(!multimesh,Transform3D());
 
-	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform());
+	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform3D());
 
 	return multimesh->elements[p_index].xform;
 
@@ -1116,7 +1116,7 @@ int RasterizerDC::skeleton_get_bone_count(RID p_skeleton) const {
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void RasterizerDC::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void RasterizerDC::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
@@ -1125,11 +1125,11 @@ void RasterizerDC::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const 
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform RasterizerDC::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D RasterizerDC::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
-	ERR_FAIL_COND_V(!skeleton, Transform());
-	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
+	ERR_FAIL_COND_V(!skeleton, Transform3D());
+	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform3D() );
 
 	// something
 	return skeleton->bones[p_bone];
@@ -1312,7 +1312,7 @@ RID RasterizerDC::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void RasterizerDC::light_instance_set_transform(RID p_light_instance,const Transform& p_transform) {
+void RasterizerDC::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1353,7 +1353,7 @@ Rasterizer::ShadowType RasterizerDC::light_instance_get_shadow_type(RID p_light_
 
 	return SHADOW_NONE;
 }
-void RasterizerDC::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerDC::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 
 }
@@ -1369,7 +1369,7 @@ bool RasterizerDC::light_instance_get_pssm_shadow_overlap(RID p_light_instance) 
 }
 
 
-void RasterizerDC::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerDC::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1407,7 +1407,7 @@ RID RasterizerDC::particles_instance_create(RID p_particles) {
 	return particles_instance_owner.make_rid(particles_instance);
 }
 
-void RasterizerDC::particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform) {
+void RasterizerDC::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 	ParticlesInstance *particles_instance=particles_instance_owner.get(p_particles_instance);
 	ERR_FAIL_COND(!particles_instance);
@@ -1485,7 +1485,7 @@ void RasterizerDC::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) {
 
 }
 
-void RasterizerDC::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
+void RasterizerDC::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
 
 
 }
@@ -1558,7 +1558,7 @@ void RasterizerDC::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 }
 
 
-void RasterizerDC::canvas_begin_rect(const Matrix32& p_transform) {
+void RasterizerDC::canvas_begin_rect(const Transform2D& p_transform) {
 
 
 
@@ -1605,7 +1605,7 @@ void RasterizerDC::canvas_draw_polygon(int p_vertex_count, const int* p_indices,
 
 }
 
-void RasterizerDC::canvas_set_transform(const Matrix32& p_transform) {
+void RasterizerDC::canvas_set_transform(const Transform2D& p_transform) {
 
 
 }

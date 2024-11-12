@@ -513,7 +513,7 @@ void GridMap::_octant_enter_world(const OctantKey &p_key) {
 
 	if (g.baked.is_valid()) {
 
-		Transform xf = get_global_transform();
+		Transform3D xf = get_global_transform();
 		xf.translate(_octant_get_offset(p_key));
 
 		VS::get_singleton()->instance_set_transform(g.bake_instance,xf);
@@ -546,7 +546,7 @@ void GridMap::_octant_transform(const OctantKey &p_key) {
 
 	if (g.baked.is_valid()) {
 
-		Transform xf = get_global_transform();
+		Transform3D xf = get_global_transform();
 		xf.origin+=_octant_get_offset(p_key);
 		VS::get_singleton()->instance_set_transform(g.bake_instance,xf);
 	} else {
@@ -592,7 +592,7 @@ void GridMap::_octant_update(const OctantKey &p_key) {
 
 			Vector3 cellpos = Vector3(ik.x,ik.y,ik.z );
 
-			Transform xform;
+			Transform3D xform;
 
 			if (clip && ( (clip_above && cellpos[clip_axis]>clip_floor) || (!clip_above && cellpos[clip_axis]<clip_floor))) {
 
@@ -711,7 +711,7 @@ void GridMap::_octant_bake(const OctantKey &p_key, const Ref<TriangleMesh>& p_tm
 			ERR_CONTINUE(!C);
 			Vector3 cellpos = Vector3(ik.x,ik.y,ik.z );
 
-			Transform xform;
+			Transform3D xform;
 			xform.basis.set_orthogonal_index(C->get().rot);
 			xform.set_origin( cellpos*cell_size+ofs);
 			if (!p_prebake)
@@ -882,7 +882,7 @@ void GridMap::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_TRANSFORM_CHANGED: {
 
-			Transform new_xform = get_global_transform();
+			Transform3D new_xform = get_global_transform();
 			if (new_xform==last_transform)
 				break;
 			//update run
@@ -1167,7 +1167,7 @@ void GridMap::_update_areas() {
 			if (axis==-1 || !valid)
 				continue;
 
-			Transform xf;
+			Transform3D xf;
 
 
 			for(int i=0;i<3;i++) {
@@ -1197,7 +1197,7 @@ void GridMap::_update_areas() {
 
 void GridMap::_update_area_instances() {
 
-	Transform base_xform;
+	Transform3D base_xform;
 	if (_in_tree)
 		base_xform=get_global_transform();
 
@@ -1233,7 +1233,7 @@ void GridMap::_update_area_instances() {
 		}
 
 		if (a.instance.is_valid()) {
-			Transform xform;
+			Transform3D xform;
 
 			Vector3 from_a(a.from.x,a.from.y,a.from.z);
 			Vector3 to_a(a.to.x,a.to.y,a.to.z);
@@ -1509,7 +1509,7 @@ void GridMap::bake_geometry() {
 				for(int i=0;i<Light3D::PARAM_MAX;i++) {
 					bl.param[i]=l->get_parameter(Light3D::Parameter(i));
 				}
-				Transform t=l->get_global_transform();
+				Transform3D t=l->get_global_transform();
 				bl.pos=t.origin;
 				bl.dir=t.basis.get_axis(2);
 				bl.type=l->get_light_type();
@@ -1592,7 +1592,7 @@ Array GridMap::_get_baked_light_meshes() {
 
 		Vector3 cellpos = Vector3(ik.x,ik.y,ik.z );
 
-		Transform xform;
+		Transform3D xform;
 
 		xform.basis.set_orthogonal_index(E->get().rot);
 

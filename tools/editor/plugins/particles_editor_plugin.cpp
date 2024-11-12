@@ -72,7 +72,7 @@ void ParticlesEditor::_node_selected(const NodePath& p_path){
 
 	}
 
-	Transform geom_xform = node->get_global_transform().affine_inverse() * vi->get_global_transform();
+	Transform3D geom_xform = node->get_global_transform().affine_inverse() * vi->get_global_transform();
 
 	int gc = geometry.size();
 	DVector<Face3>::Write w = geometry.write();
@@ -123,7 +123,7 @@ void ParticlesEditor::_menu_option(int p_option) {
 
 		case MENU_OPTION_GENERATE_AABB: {
 
-			Transform globalizer = node->get_global_transform();
+			Transform3D globalizer = node->get_global_transform();
 			ParticleSystemSW pssw;
 			for(int i=0;i<VS::PARTICLE_VAR_MAX;i++) {
 
@@ -146,7 +146,7 @@ void ParticlesEditor::_menu_option(int p_option) {
 			float lifetime=pssw.particle_vars[VS::PARTICLE_LIFETIME];
 
 
-			Transform localizer = globalizer.affine_inverse();
+			Transform3D localizer = globalizer.affine_inverse();
 			AABB aabb;
 			for(float t=0;t<lifetime;t+=delta) {
 

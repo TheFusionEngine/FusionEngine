@@ -191,7 +191,7 @@
 			</description>
 		</method>
 		<method name="property_track_get_key_indices" qualifiers="const" >
-			<return type="IntArray">
+			<return type="PackedIntArray">
 			</return>
 			<argument index="0" name="idx" type="int">
 			</argument>
@@ -221,7 +221,7 @@
 			</description>
 		</method>
 		<method name="method_track_get_key_indices" qualifiers="const" >
-			<return type="IntArray">
+			<return type="PackedIntArray">
 			</return>
 			<argument index="0" name="idx" type="int">
 			</argument>
@@ -285,7 +285,7 @@
 		<constant name="INTERPOLATION_CUBIC" value="2">
 		</constant>
 		<constant name="TYPE_TRANSFORM" value="0">
-			Transform tracks are used to change node local transforms or skeleton pose bones. Transitions are Interpolated.
+			Transform3D tracks are used to change node local transforms or skeleton pose bones. Transitions are Interpolated.
 		</constant>
 		<constant name="TYPE_BLEND" value="4">
 		</constant>
@@ -356,7 +356,7 @@
 			</description>
 		</method>
 		<method name="get_animation_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<description>
 			Get the list of names of the animations stored in the player.
@@ -972,7 +972,7 @@
 		<method name="sample_set_signed_data"  >
 			<argument index="0" name="sample" type="RID">
 			</argument>
-			<argument index="1" name="data" type="RealArray">
+			<argument index="1" name="data" type="PackedFloatArray">
 			</argument>
 			<description>
 			</description>
@@ -980,13 +980,13 @@
 		<method name="sample_set_data"  >
 			<argument index="0" name="sample" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="RawArray">
+			<argument index="1" name="arg1" type="PackedByteArray">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="sample_get_data" qualifiers="const" >
-			<return type="RawArray">
+			<return type="PackedByteArray">
 			</return>
 			<argument index="0" name="sample" type="RID">
 			</argument>
@@ -1665,7 +1665,7 @@
 			</description>
 		</method>
 		<method name="get_camera_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			Get the camera transform. Subclassed cameras (such as CharacterCamera) may provide different transforms than the [Node] transform.
@@ -1930,13 +1930,13 @@
 	</description>
 	<methods>
 		<method name="set_faces"  >
-			<argument index="0" name="faces" type="Vector3Array">
+			<argument index="0" name="faces" type="PackedVector3Array">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_faces" qualifiers="const" >
-			<return type="Vector3Array">
+			<return type="PackedVector3Array">
 			</return>
 			<description>
 			</description>
@@ -2794,7 +2794,7 @@
 			</description>
 		</method>
 		<method name="get_item_list" qualifiers="const" >
-			<return type="IntArray">
+			<return type="PackedIntArray">
 			</return>
 			<description>
 			Get the list of item IDs contained in this theme.
@@ -3234,14 +3234,14 @@
 			</description>
 		</method>
 		<method name="set_uv_transform"  >
-			<argument index="0" name="transform" type="Transform">
+			<argument index="0" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			Sets a special transform used to post-transform UV coordinates of the uv_xfrom tecoord mode: TEXCOORD_UV_TRANSFORM
 			</description>
 		</method>
 		<method name="get_uv_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			Returns the special transform used to post-transform UV coordinates of the uv_xfrom tecoord mode: TEXCOORD_UV_TRANSFORM
@@ -4742,14 +4742,14 @@
 		<method name="set_instance_transform"  >
 			<argument index="0" name="arg0" type="int">
 			</argument>
-			<argument index="1" name="arg1" type="Transform">
+			<argument index="1" name="arg1" type="Transform3D">
 			</argument>
 			<description>
 			Set the transform for a specific instance.
 			</description>
 		</method>
 		<method name="get_instance_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="int">
 			</argument>
@@ -5361,7 +5361,7 @@
 			</return>
 			<argument index="0" name="path" type="String">
 			</argument>
-			<argument index="1" name="arguments" type="StringArray">
+			<argument index="1" name="arguments" type="PackedStringArray">
 			</argument>
 			<argument index="2" name="blocking" type="bool">
 			</argument>
@@ -5399,7 +5399,7 @@
 			</description>
 		</method>
 		<method name="get_cmdline_args"  >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<description>
 			</description>
@@ -5583,7 +5583,7 @@
 			</description>
 		</method>
 		<method name="get_meta_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<description>
 			</description>
@@ -5968,13 +5968,13 @@
 			</description>
 		</method>
 		<method name="set_emission_points"  >
-			<argument index="0" name="points" type="Vector3Array">
+			<argument index="0" name="points" type="PackedVector3Array">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_emission_points" qualifiers="const" >
-			<return type="Vector3Array">
+			<return type="PackedVector3Array">
 			</return>
 			<description>
 			</description>
@@ -6320,7 +6320,7 @@
 		<method name="add_shape"  >
 			<argument index="0" name="shape" type="Object">
 			</argument>
-			<argument index="1" name="transform" type="Transform" default="Transform()">
+			<argument index="1" name="transform" type="Transform3D" default="Transform3D()">
 			</argument>
 			<description>
 			</description>
@@ -6342,7 +6342,7 @@
 		<method name="set_shape_transform"  >
 			<argument index="0" name="shape_idx" type="int">
 			</argument>
-			<argument index="1" name="transform" type="Transform">
+			<argument index="1" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -6356,7 +6356,7 @@
 			</description>
 		</method>
 		<method name="get_shape_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="shape_idx" type="int">
 			</argument>
@@ -6432,7 +6432,7 @@
 			</description>
 		</method>
 		<method name="get_inverse_inertia_tensor" qualifiers="const" >
-			<return type="Matrix3">
+			<return type="Basis">
 			</return>
 			<description>
 			</description>
@@ -6462,13 +6462,13 @@
 			</description>
 		</method>
 		<method name="set_transform"  >
-			<argument index="0" name="transform" type="Transform">
+			<argument index="0" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			</description>
@@ -6652,7 +6652,7 @@
 		<method name="area_set_transform"  >
 			<argument index="0" name="area" type="RID">
 			</argument>
-			<argument index="1" name="transform" type="Transform">
+			<argument index="1" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -6682,7 +6682,7 @@
 			</description>
 		</method>
 		<method name="area_get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="area" type="RID">
 			</argument>
@@ -6722,7 +6722,7 @@
 			</argument>
 			<argument index="1" name="shape" type="RID">
 			</argument>
-			<argument index="2" name="transform" type="Transform" default="Transform()">
+			<argument index="2" name="transform" type="Transform3D" default="Transform3D()">
 			</argument>
 			<description>
 			</description>
@@ -6742,7 +6742,7 @@
 			</argument>
 			<argument index="1" name="shape_idx" type="int">
 			</argument>
-			<argument index="2" name="transform" type="Transform">
+			<argument index="2" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -6766,7 +6766,7 @@
 			</description>
 		</method>
 		<method name="body_get_shape_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="body" type="RID">
 			</argument>
@@ -6832,7 +6832,7 @@
 		<method name="body_static_simulate_motion"  >
 			<argument index="0" name="body" type="RID">
 			</argument>
-			<argument index="1" name="motion" type="Transform">
+			<argument index="1" name="motion" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -6996,7 +6996,7 @@
 			</argument>
 			<argument index="1" name="shape" type="RID">
 			</argument>
-			<argument index="2" name="arg2" type="Transform">
+			<argument index="2" name="arg2" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -7006,7 +7006,7 @@
 			</argument>
 			<argument index="1" name="bounds" type="Dictionary">
 			</argument>
-			<argument index="2" name="arg2" type="Transform">
+			<argument index="2" name="arg2" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -7680,7 +7680,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Reference" inherits="Object" category="Core">
+<class name="RefCounted" inherits="Object" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7690,7 +7690,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Resource" inherits="Reference" category="Resources">
+<class name="Resource" inherits="RefCounted" category="Resources">
 	<brief_description>
 	Base class for all resources.
 	</brief_description>
@@ -7760,7 +7760,7 @@
 			</description>
 		</method>
 		<method name="get_recognized_extensions_for_type"  >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="type" type="String">
 			</argument>
@@ -7788,7 +7788,7 @@
 			</description>
 		</method>
 		<method name="get_recognized_extensions"  >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="type" type="Object">
 			</argument>
@@ -7988,14 +7988,14 @@
 			</description>
 		</method>
 		<method name="set_geometry_hint"  >
-			<argument index="0" name="triangles" type="Vector3Array">
+			<argument index="0" name="triangles" type="PackedVector3Array">
 			</argument>
 			<description>
 			Set the &quot;geometry&quot; hint of the room. This means, how the room actually looks (an array of [Vector3]s, forming triangles).
 			</description>
 		</method>
 		<method name="get_geometry_hint" qualifiers="const" >
-			<return type="Vector3Array">
+			<return type="PackedVector3Array">
 			</return>
 			<description>
 			Return the &quot;geometry&quot; hint of the room. This means, how the room actually looks (an array of [Vector3]s, forming triangles).
@@ -8099,14 +8099,14 @@
 			</description>
 		</method>
 		<method name="set_data"  >
-			<argument index="0" name="data" type="RawArray">
+			<argument index="0" name="data" type="PackedByteArray">
 			</argument>
 			<description>
 			Set sample data. Data must be little endian, no matter the host platform, and exactly as long to fit all frames. Example, if data is Stereo, 16 bits, 256 frames, it will be 1024 bytes long.
 			</description>
 		</method>
 		<method name="get_data" qualifiers="const" >
-			<return type="RawArray">
+			<return type="PackedByteArray">
 			</return>
 			<description>
 			Return sample data. Data will be endian, no matter with the host platform, and exactly as long to fit all frames. Example, if data is Stereo, 16 bits, 256 frames, it will be 1024 bytes long.
@@ -8835,7 +8835,7 @@
 			</description>
 		</method>
 		<method name="get_param_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<description>
 			</description>
@@ -8939,7 +8939,7 @@
 			</description>
 		</method>
 		<method name="get_bone_rest" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
@@ -8950,7 +8950,7 @@
 		<method name="set_bone_rest"  >
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
-			<argument index="1" name="rest" type="Transform">
+			<argument index="1" name="rest" type="Transform3D">
 			</argument>
 			<description>
 			Set the rest transform for bone &quot;bone_idx&quot;
@@ -8989,7 +8989,7 @@
 			</description>
 		</method>
 		<method name="get_bone_pose" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
@@ -9000,14 +9000,14 @@
 		<method name="set_bone_pose"  >
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
-			<argument index="1" name="pose" type="Transform">
+			<argument index="1" name="pose" type="Transform3D">
 			</argument>
 			<description>
 			Return the pose transform for bone &quot;bone_idx&quot;.
 			</description>
 		</method>
 		<method name="get_bone_custom_pose" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
@@ -9017,13 +9017,13 @@
 		<method name="set_bone_custom_pose"  >
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
-			<argument index="1" name="custom_pose" type="Transform">
+			<argument index="1" name="custom_pose" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_bone_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
@@ -9111,32 +9111,32 @@
 	Base class for all 3D nodes.
 	</brief_description>
 	<description>
-	Node3D is the base for every type of 3D [Node]. It contains a 3D [Transform] which can be set or get as local or global. If a Node3D [Node] has Node3D children, their transforms will be relative to the parent.
+	Node3D is the base for every type of 3D [Node]. It contains a 3D [Transform3D] which can be set or get as local or global. If a Node3D [Node] has Node3D children, their transforms will be relative to the parent.
 	</description>
 	<methods>
 		<method name="set_transform"  >
-			<argument index="0" name="local" type="Transform">
+			<argument index="0" name="local" type="Transform3D">
 			</argument>
 			<description>
 			Set the transform locally, relative to the parent spatial node.
 			</description>
 		</method>
 		<method name="get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			Return the local transform, relative to the bone parent.
 			</description>
 		</method>
 		<method name="set_global_transform"  >
-			<argument index="0" name="global" type="Transform">
+			<argument index="0" name="global" type="Transform3D">
 			</argument>
 			<description>
 			Set the transform globally, relative to worldspace.
 			</description>
 		</method>
 		<method name="get_global_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			Return the gloal transform, relative to worldspace.
@@ -9566,7 +9566,7 @@
 			</description>
 		</method>
 		<method name="simulate_motion"  >
-			<argument index="0" name="new_transform" type="Transform">
+			<argument index="0" name="new_transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -9590,7 +9590,7 @@
 		<method name="put_data"  >
 			<return type="int">
 			</return>
-			<argument index="0" name="data" type="RawArray">
+			<argument index="0" name="data" type="PackedByteArray">
 			</argument>
 			<description>
 			Send a chunk of data through the connection, blocking if necesary until the data is done sending. This function returns an [Error] code.
@@ -9599,7 +9599,7 @@
 		<method name="put_partial_data"  >
 			<return type="Array">
 			</return>
-			<argument index="0" name="data" type="RawArray">
+			<argument index="0" name="data" type="PackedByteArray">
 			</argument>
 			<description>
 			Send a chunk of data through the connection, if all the data could not be sent at once, only part of it will. This function returns two values, an [Error] code and an integer, describing how much data was actually sent.
@@ -10061,7 +10061,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SurfaceTool" inherits="Reference" category="Core">
+<class name="SurfaceTool" inherits="RefCounted" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10110,13 +10110,13 @@
 			</description>
 		</method>
 		<method name="add_bones"  >
-			<argument index="0" name="bones" type="IntArray">
+			<argument index="0" name="bones" type="PackedIntArray">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="add_weights"  >
-			<argument index="0" name="weights" type="RealArray">
+			<argument index="0" name="weights" type="PackedFloatArray">
 			</argument>
 			<description>
 			</description>
@@ -10174,7 +10174,7 @@
 			</return>
 			<argument index="0" name="port" type="int">
 			</argument>
-			<argument index="1" name="accepted_hosts" type="StringArray" default="StringArray()">
+			<argument index="1" name="accepted_hosts" type="PackedStringArray" default="PackedStringArray()">
 			</argument>
 			<description>
 			</description>
@@ -10446,7 +10446,7 @@
 			</description>
 		</method>
 		<method name="search" qualifiers="const" >
-			<return type="IntArray">
+			<return type="PackedIntArray">
 			</return>
 			<argument index="0" name="flags" type="String">
 			</argument>
@@ -10844,7 +10844,7 @@
 			</description>
 		</method>
 		<method name="get_icon_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -10890,7 +10890,7 @@
 			</description>
 		</method>
 		<method name="get_stylebox_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -10936,7 +10936,7 @@
 			</description>
 		</method>
 		<method name="get_font_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -10982,7 +10982,7 @@
 			</description>
 		</method>
 		<method name="get_color_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -11028,7 +11028,7 @@
 			</description>
 		</method>
 		<method name="get_constant_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -11036,7 +11036,7 @@
 			</description>
 		</method>
 		<method name="get_type_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -11885,7 +11885,7 @@
 			</description>
 		</method>
 		<method name="shader_get_param_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="shader" type="RID">
 			</argument>
@@ -12077,13 +12077,13 @@
 		<method name="fixed_material_set_uv_transform"  >
 			<argument index="0" name="arg0" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="Transform">
+			<argument index="1" name="arg1" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="fixed_material_get_uv_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -12225,7 +12225,7 @@
 			</argument>
 			<argument index="1" name="arg1" type="int">
 			</argument>
-			<argument index="2" name="arg2" type="Transform">
+			<argument index="2" name="arg2" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -12259,7 +12259,7 @@
 			</description>
 		</method>
 		<method name="multimesh_instance_get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -12297,13 +12297,13 @@
 		<method name="poly_add_primitive"  >
 			<argument index="0" name="arg0" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="Vector3Array">
+			<argument index="1" name="arg1" type="PackedVector3Array">
 			</argument>
-			<argument index="2" name="arg2" type="Vector3Array">
+			<argument index="2" name="arg2" type="PackedVector3Array">
 			</argument>
-			<argument index="3" name="arg3" type="ColorArray">
+			<argument index="3" name="arg3" type="PackedColorArray">
 			</argument>
-			<argument index="4" name="arg4" type="Vector3Array">
+			<argument index="4" name="arg4" type="PackedVector3Array">
 			</argument>
 			<description>
 			</description>
@@ -12677,13 +12677,13 @@
 			</argument>
 			<argument index="1" name="arg1" type="int">
 			</argument>
-			<argument index="2" name="arg2" type="Transform">
+			<argument index="2" name="arg2" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="skeleton_bone_get_transform"  >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -12817,7 +12817,7 @@
 		<method name="camera_set_transform"  >
 			<argument index="0" name="arg0" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="Transform">
+			<argument index="1" name="arg1" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -12915,7 +12915,7 @@
 			</description>
 		</method>
 		<method name="scenario_fx_get_effects" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -12999,13 +12999,13 @@
 		<method name="instance_set_transform"  >
 			<argument index="0" name="arg0" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="Transform">
+			<argument index="1" name="arg1" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="instance_get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -13283,7 +13283,7 @@
 			</argument>
 			<argument index="2" name="arg2" type="RID">
 			</argument>
-			<argument index="3" name="arg3" type="RealArray">
+			<argument index="3" name="arg3" type="PackedFloatArray">
 			</argument>
 			<argument index="4" name="arg4" type="Color" default="Color(1,1,1,1)">
 			</argument>
@@ -13295,7 +13295,7 @@
 			</argument>
 			<argument index="1" name="arg1" type="Array">
 			</argument>
-			<argument index="2" name="arg2" type="ColorArray">
+			<argument index="2" name="arg2" type="PackedColorArray">
 			</argument>
 			<argument index="3" name="arg3" type="Array" default="Array()">
 			</argument>

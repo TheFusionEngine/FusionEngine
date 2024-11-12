@@ -121,7 +121,7 @@ void CollisionPolygonEditor::_wip_close() {
 bool CollisionPolygonEditor::forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event) {
 
 
-	Transform gt = node->get_global_transform();
+	Transform3D gt = node->get_global_transform();
 	float depth = node->get_depth()*0.5;
 	Vector3 n = gt.basis.get_axis(2).normalized();
 	Plane p(gt.origin+n*depth,n);
@@ -570,7 +570,7 @@ CollisionPolygonEditor::CollisionPolygonEditor(EditorNode *p_editor) {
 	mode = MODE_EDIT;
 	wip_active=false;
 	imgeom = memnew( ImmediateGeometry3D );
-	imgeom->set_transform(Transform(Matrix3(),Vector3(0,0,0.00001)));
+	imgeom->set_transform(Transform3D(Basis(),Vector3(0,0,0.00001)));
 
 
 	line_material = Ref<FixedMaterial>( memnew( FixedMaterial ));
@@ -597,7 +597,7 @@ CollisionPolygonEditor::CollisionPolygonEditor(EditorNode *p_editor) {
 	imgeom->add_child(pointsm);
 	m = Ref<Mesh>( memnew( Mesh ) );
 	pointsm->set_mesh(m);
-	pointsm->set_transform(Transform(Matrix3(),Vector3(0,0,0.00001)));
+	pointsm->set_transform(Transform3D(Basis(),Vector3(0,0,0.00001)));
 
 
 }

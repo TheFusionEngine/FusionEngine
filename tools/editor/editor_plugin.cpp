@@ -177,7 +177,7 @@ void EditorPlugin::apply_changes() {
 void EditorPlugin::get_breakpoints(List<String> *p_breakpoints) {
 
 	if (get_script_instance() && get_script_instance()->has_method("get_breakpoints")) {
-		StringArray arr = get_script_instance()->call("get_breakpoints");
+		PackedStringArray arr = get_script_instance()->call("get_breakpoints");
 		for(int i=0;i<arr.size();i++)
 			p_breakpoints->push_back(arr[i]);
 	}

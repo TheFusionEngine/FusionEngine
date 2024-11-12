@@ -189,7 +189,7 @@ void Skeleton3D::_notification(int p_what) {
 		
 				if (b.enabled) {
 
-					Transform pose=b.pose;
+					Transform3D pose=b.pose;
 					if (b.custom_pose_enable) {
 
 						pose = b.custom_pose * pose;
@@ -230,15 +230,15 @@ void Skeleton3D::_notification(int p_what) {
 	}
 }
 
-Transform Skeleton3D::get_bone_transform(int p_bone) const {
-	ERR_FAIL_INDEX_V(p_bone,bones.size(),Transform());
+Transform3D Skeleton3D::get_bone_transform(int p_bone) const {
+	ERR_FAIL_INDEX_V(p_bone,bones.size(),Transform3D());
 	if (dirty)
 		const_cast<Skeleton3D*>(this)->notification(NOTIFICATION_UPDATE_SKELETON);
 	return bones[p_bone].pose_global * bones[p_bone].rest_global_inverse;
 }
 
 
-void Skeleton3D::set_bone_global_pose(int p_bone,const Transform& p_pose) {
+void Skeleton3D::set_bone_global_pose(int p_bone,const Transform3D& p_pose) {
 
 	ERR_FAIL_INDEX(p_bone,bones.size());
 	if (bones[p_bone].parent==-1) {
@@ -252,9 +252,9 @@ void Skeleton3D::set_bone_global_pose(int p_bone,const Transform& p_pose) {
 
 }
 
-Transform Skeleton3D::get_bone_global_pose(int p_bone) const {
+Transform3D Skeleton3D::get_bone_global_pose(int p_bone) const {
 
-	ERR_FAIL_INDEX_V(p_bone,bones.size(),Transform());
+	ERR_FAIL_INDEX_V(p_bone,bones.size(),Transform3D());
 	if (dirty)
 		const_cast<Skeleton3D*>(this)->notification(NOTIFICATION_UPDATE_SKELETON);
 	return bones[p_bone].pose_global;
@@ -322,7 +322,7 @@ int Skeleton3D::get_bone_parent(int p_bone) const {
 	return bones[p_bone].parent;
 }
 
-void Skeleton3D::set_bone_rest(int p_bone, const Transform& p_rest) {
+void Skeleton3D::set_bone_rest(int p_bone, const Transform3D& p_rest) {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 	
@@ -331,9 +331,9 @@ void Skeleton3D::set_bone_rest(int p_bone, const Transform& p_rest) {
 	_make_dirty();
 
 }
-Transform Skeleton3D::get_bone_rest(int p_bone) const {
+Transform3D Skeleton3D::get_bone_rest(int p_bone) const {
 
-	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform() );
+	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform3D() );
 	
 	return bones[p_bone].rest;
 
@@ -401,7 +401,7 @@ void Skeleton3D::clear_bones() {
 
 // posing api
 
-void Skeleton3D::set_bone_pose(int p_bone, const Transform& p_pose) {
+void Skeleton3D::set_bone_pose(int p_bone, const Transform3D& p_pose) {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 	ERR_FAIL_COND( !is_inside_tree() );
@@ -410,28 +410,28 @@ void Skeleton3D::set_bone_pose(int p_bone, const Transform& p_pose) {
 	bones[p_bone].pose=p_pose;
 	_make_dirty();
 }
-Transform Skeleton3D::get_bone_pose(int p_bone) const {
+Transform3D Skeleton3D::get_bone_pose(int p_bone) const {
 
-	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform() );
+	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform3D() );
 	return bones[p_bone].pose;
 
 }
 
-void Skeleton3D::set_bone_custom_pose(int p_bone, const Transform& p_custom_pose) {
+void Skeleton3D::set_bone_custom_pose(int p_bone, const Transform3D& p_custom_pose) {
 
 	ERR_FAIL_INDEX( p_bone, bones.size() );
 //	ERR_FAIL_COND( !is_inside_scene() );
 
 
-	bones[p_bone].custom_pose_enable=(p_custom_pose!=Transform());
+	bones[p_bone].custom_pose_enable=(p_custom_pose!=Transform3D());
 	bones[p_bone].custom_pose=p_custom_pose;
 
 	_make_dirty();
 }
 
-Transform Skeleton3D::get_bone_custom_pose(int p_bone) const {
+Transform3D Skeleton3D::get_bone_custom_pose(int p_bone) const {
 
-	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform() );
+	ERR_FAIL_INDEX_V( p_bone, bones.size(), Transform3D() );
 	return bones[p_bone].custom_pose;
 
 }
@@ -481,7 +481,7 @@ RES Skeleton3D::_get_gizmo_geometry() const {
 	
 		const Bone &b=bonesptr[i];
 		
-		Transform t;
+		Transform3D t;
 		if (b.parent<0)
 			continue;
 			

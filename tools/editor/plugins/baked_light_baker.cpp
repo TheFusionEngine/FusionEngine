@@ -98,7 +98,7 @@ BakedLightBaker::MeshTexture* BakedLightBaker::_get_mat_tex(const Ref<Texture>& 
 }
 
 
-void BakedLightBaker::_add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_mat_override,const Transform& p_xform,int p_baked_texture) {
+void BakedLightBaker::_add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_mat_override,const Transform3D& p_xform,int p_baked_texture) {
 
 
 	for(int i=0;i<p_mesh->get_surface_count();i++) {
@@ -204,7 +204,7 @@ void BakedLightBaker::_add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_m
 			read_normal=true;
 		}
 
-		Matrix3 normal_xform = p_xform.basis.inverse().transposed();
+		Basis normal_xform = p_xform.basis.inverse().transposed();
 
 
 		if (p_mesh->surface_get_format(i)&Mesh::ARRAY_FORMAT_INDEX) {
@@ -318,7 +318,7 @@ void BakedLightBaker::_parse_geometry(Node* p_node) {
 		Array arr = p_node->call("_get_baked_light_meshes");
 		for(int i=0;i<arr.size();i+=2) {
 
-			Transform xform=arr[i];
+			Transform3D xform=arr[i];
 			Ref<Mesh> mesh=arr[i+1];
 			_add_mesh(mesh,Ref<Material>(),base_inv * (sp->get_global_transform() * xform));
 		}

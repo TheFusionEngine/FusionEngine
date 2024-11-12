@@ -135,7 +135,7 @@ void RayCast3D::_notification(int p_what) {
 			PhysicsDirectSpaceState *dss = PhysicsServer::get_singleton()->space_get_direct_state(w3d->get_space());
 			ERR_BREAK( !dss );
 
-			Transform gt = get_global_transform();
+			Transform3D gt = get_global_transform();
 
 			Vector3 to = cast_to;
 			if (to==Vector3())

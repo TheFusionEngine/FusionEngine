@@ -112,7 +112,7 @@ void PathFollow3D::_update_transform() {
 		o=Math::fposmod(o,c->get_baked_length());
 
 	Vector3 pos = c->interpolate_baked(o,cubic);
-	Transform t=get_transform();
+	Transform3D t=get_transform();
 
 
 	if (rotation_mode!=ROTATION_NONE) {
@@ -137,7 +137,7 @@ void PathFollow3D::_update_transform() {
 			float tilt = c->interpolate_baked_tilt(o);
 			if (tilt!=0) {
 
-				Matrix3 rot(-n,tilt); //remember.. lookat will be znegative.. znegative!! we abide by opengl clan.
+				Basis rot(-n,tilt); //remember.. lookat will be znegative.. znegative!! we abide by opengl clan.
 				up=rot.xform(up);
 			}
 		}

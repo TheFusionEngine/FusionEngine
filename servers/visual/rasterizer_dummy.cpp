@@ -361,10 +361,10 @@ void RasterizerDummy::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 		if (i==VS::ARRAY_VERTEX) {
 
-			Vector3Array v = p_arrays[i];
+			PackedVector3Array v = p_arrays[i];
 			int len = v.size();
 			ERR_FAIL_COND(len==0);
-			Vector3Array::Read r = v.read();
+			PackedVector3Array::Read r = v.read();
 
 
 			for(int i=0;i<len;i++) {
@@ -503,7 +503,7 @@ int RasterizerDummy::mesh_surface_get_array_len(RID p_mesh, int p_surface) const
 	Surface *surface = mesh->surfaces[p_surface];
 	ERR_FAIL_COND_V( !surface, -1 );
 
-	Vector3Array arr = surface->data[VS::ARRAY_VERTEX];
+	PackedVector3Array arr = surface->data[VS::ARRAY_VERTEX];
 	return arr.size();
 
 }
@@ -516,7 +516,7 @@ int RasterizerDummy::mesh_surface_get_array_index_len(RID p_mesh, int p_surface)
 	Surface *surface = mesh->surfaces[p_surface];
 	ERR_FAIL_COND_V( !surface, -1 );
 
-	IntArray arr = surface->data[VS::ARRAY_INDEX];
+	PackedIntArray arr = surface->data[VS::ARRAY_INDEX];
 	return arr.size();
 
 }
@@ -634,7 +634,7 @@ void RasterizerDummy::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 	ERR_FAIL_COND(!multimesh);
 	multimesh->aabb=p_aabb;
 }
-void RasterizerDummy::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void RasterizerDummy::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -666,12 +666,12 @@ AABB RasterizerDummy::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform RasterizerDummy::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D RasterizerDummy::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
-	ERR_FAIL_COND_V(!multimesh,Transform());
+	ERR_FAIL_COND_V(!multimesh,Transform3D());
 
-	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform());
+	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform3D());
 
 	return multimesh->elements[p_index].xform;
 
@@ -1116,7 +1116,7 @@ int RasterizerDummy::skeleton_get_bone_count(RID p_skeleton) const {
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void RasterizerDummy::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void RasterizerDummy::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
@@ -1125,11 +1125,11 @@ void RasterizerDummy::skeleton_bone_set_transform(RID p_skeleton,int p_bone, con
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform RasterizerDummy::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D RasterizerDummy::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
-	ERR_FAIL_COND_V(!skeleton, Transform());
-	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
+	ERR_FAIL_COND_V(!skeleton, Transform3D());
+	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform3D() );
 
 	// something
 	return skeleton->bones[p_bone];
@@ -1312,7 +1312,7 @@ RID RasterizerDummy::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void RasterizerDummy::light_instance_set_transform(RID p_light_instance,const Transform& p_transform) {
+void RasterizerDummy::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1353,7 +1353,7 @@ Rasterizer::ShadowType RasterizerDummy::light_instance_get_shadow_type(RID p_lig
 
 	return SHADOW_NONE;
 }
-void RasterizerDummy::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerDummy::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 
 }
@@ -1369,7 +1369,7 @@ bool RasterizerDummy::light_instance_get_pssm_shadow_overlap(RID p_light_instanc
 }
 
 
-void RasterizerDummy::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerDummy::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1407,7 +1407,7 @@ RID RasterizerDummy::particles_instance_create(RID p_particles) {
 	return particles_instance_owner.make_rid(particles_instance);
 }
 
-void RasterizerDummy::particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform) {
+void RasterizerDummy::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 	ParticlesInstance *particles_instance=particles_instance_owner.get(p_particles_instance);
 	ERR_FAIL_COND(!particles_instance);
@@ -1482,7 +1482,7 @@ void RasterizerDummy::begin_shadow_map( RID p_light_instance, int p_shadow_pass 
 
 }
 
-void RasterizerDummy::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
+void RasterizerDummy::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
 
 
 }
@@ -1555,7 +1555,7 @@ void RasterizerDummy::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 }
 
 
-void RasterizerDummy::canvas_begin_rect(const Matrix32& p_transform) {
+void RasterizerDummy::canvas_begin_rect(const Transform2D& p_transform) {
 
 
 
@@ -1602,7 +1602,7 @@ void RasterizerDummy::canvas_draw_polygon(int p_vertex_count, const int* p_indic
 
 }
 
-void RasterizerDummy::canvas_set_transform(const Matrix32& p_transform) {
+void RasterizerDummy::canvas_set_transform(const Transform2D& p_transform) {
 
 
 }

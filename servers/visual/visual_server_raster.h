@@ -128,7 +128,7 @@ class VisualServerRaster : public VisualServer {
 		bool vaspect;
 		RID env;
 		
-		Transform transform;
+		Transform3D transform;
  
  		Camera3D() {
  		
@@ -202,7 +202,7 @@ class VisualServerRaster : public VisualServer {
 
 		struct RoomInfo {
 
-			Transform affine_inverse;
+			Transform3D affine_inverse;
 			Room *room;
 			List<Instance*> owned_geometry_instances;
 			List<Instance*> owned_portal_instances;			
@@ -253,7 +253,7 @@ class VisualServerRaster : public VisualServer {
 		struct BakedLightInfo {
 
 			BakedLight *baked_light;
-			Transform affine_inverse;
+			Transform3D affine_inverse;
 			List<Instance*> owned_instances;
 		};
 
@@ -266,7 +266,7 @@ class VisualServerRaster : public VisualServer {
 			Vector<Color> light_bufer;
 			RID sampled_light;
 			uint64_t last_pass;
-			Transform xform; // viewspace normal to lightspace, might not use one.
+			Transform3D xform; // viewspace normal to lightspace, might not use one.
 			BakedLightSamplerInfo() {
 				sampler=NULL;
 				last_pass=0;
@@ -467,7 +467,7 @@ class VisualServerRaster : public VisualServer {
 
 		struct CommandTransform : public Command {
 
-			Matrix32 xform;
+			Transform2D xform;
 			CommandTransform() { type = TYPE_TRANSFORM; }
 		};
 
@@ -484,7 +484,7 @@ class VisualServerRaster : public VisualServer {
 
 		RID parent; // canvas it belongs to
 		List<CanvasItem*>::Element *E;
-		Matrix32 xform;
+		Transform2D xform;
 		bool clip;
 		bool visible;
 		bool ontop;
@@ -584,11 +584,11 @@ class VisualServerRaster : public VisualServer {
 		struct CanvasData {
 
 			Canvas *canvas;
-			Matrix32 transform;
+			Transform2D transform;
 			int layer;
 		};
 
-		Matrix32 global_transform;
+		Transform2D global_transform;
 
 		Map<RID,CanvasData> canvas_map;
 
@@ -703,11 +703,11 @@ class VisualServerRaster : public VisualServer {
 	bool _test_portal_cull(Camera3D *p_camera, Instance *p_portal_from, Instance *p_portal_to);
 	void _cull_portal(Camera3D *p_camera, Instance *p_portal,Instance *p_from_portal);
 	void _cull_room(Camera3D *p_camera, Instance *p_room,Instance *p_from_portal=NULL);
-	void _process_sampled_light(const Transform &p_camera, Instance *p_sampled_light, bool p_linear_colorspace);
+	void _process_sampled_light(const Transform3D &p_camera, Instance *p_sampled_light, bool p_linear_colorspace);
 
 	void _render_camera(Viewport *p_viewport,Camera3D *p_camera, Scenario *p_scenario);
-	void _render_canvas_item(CanvasItem *p_canvas_item,const Matrix32& p_transform,const Rect2& p_clip_rect,float p_opacity);
-	void _render_canvas(Canvas *p_canvas,const Matrix32 &p_transform);
+	void _render_canvas_item(CanvasItem *p_canvas_item,const Transform2D& p_transform,const Rect2& p_clip_rect,float p_opacity);
+	void _render_canvas(Canvas *p_canvas,const Transform2D &p_transform);
 	Vector<Vector3> _camera_generate_endpoints(Instance *p_light,Camera3D *p_camera,float p_range_min, float p_range_max);
 	Vector<Plane> _camera_generate_orthogonal_planes(Instance *p_light,Camera3D *p_camera,float p_range_min, float p_range_max);
 
@@ -796,8 +796,8 @@ public:
 	virtual FixedMaterialTexCoordMode fixed_material_get_texcoord_mode(RID p_material,FixedMaterialParam p_parameter) const;
 
 
-	virtual void fixed_material_set_uv_transform(RID p_material,const Transform& p_transform);
-	virtual Transform fixed_material_get_uv_transform(RID p_material) const;
+	virtual void fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform);
+	virtual Transform3D fixed_material_get_uv_transform(RID p_material) const;
 
 	virtual void fixed_material_set_light_shader(RID p_material,FixedMaterialLightShader p_shader);
 	virtual FixedMaterialLightShader fixed_material_get_light_shader(RID p_material) const;
@@ -843,12 +843,12 @@ public:
 
 	virtual void multimesh_set_mesh(RID p_multimesh,RID p_mesh);
 	virtual void multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb);
-	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform);
+	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform);
 	virtual void multimesh_instance_set_color(RID p_multimesh,int p_index,const Color& p_color);
 
 	virtual RID multimesh_get_mesh(RID p_multimesh) const;
 	virtual AABB multimesh_get_aabb(RID p_multimesh,const AABB& p_aabb) const;
-	virtual Transform multimesh_instance_get_transform(RID p_multimesh,int p_index) const;
+	virtual Transform3D multimesh_instance_get_transform(RID p_multimesh,int p_index) const;
 	virtual Color multimesh_instance_get_color(RID p_multimesh,int p_index) const;
 
 	virtual void multimesh_set_visible_instances(RID p_multimesh,int p_visible);
@@ -967,8 +967,8 @@ public:
 	virtual RID skeleton_create();
 	virtual void skeleton_resize(RID p_skeleton,int p_bones);
 	virtual int skeleton_get_bone_count(RID p_skeleton) const;
-	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform);
-	virtual Transform skeleton_bone_get_transform(RID p_skeleton,int p_bone);
+	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform);
+	virtual Transform3D skeleton_bone_get_transform(RID p_skeleton,int p_bone);
 
 	/* ROOM API */
 
@@ -1027,7 +1027,7 @@ public:
 	virtual RID camera_create();
 	virtual void camera_set_perspective(RID p_camera,float p_fovy_degrees, float p_z_near, float p_z_far);
 	virtual void camera_set_orthogonal(RID p_camera,float p_size, float p_z_near, float p_z_far);
-	virtual void camera_set_transform(RID p_camera,const Transform& p_transform);	
+	virtual void camera_set_transform(RID p_camera,const Transform3D& p_transform);	
 	
 	virtual void camera_set_visible_layers(RID p_camera,uint32_t p_layers);
 	virtual uint32_t camera_get_visible_layers(RID p_camera) const;
@@ -1068,10 +1068,10 @@ public:
 	virtual RID viewport_get_scenario(RID  p_viewport) const;
 	virtual void viewport_attach_canvas(RID p_viewport,RID p_canvas);
 	virtual void viewport_remove_canvas(RID p_viewport,RID p_canvas);
-	virtual void viewport_set_canvas_transform(RID p_viewport,RID p_canvas,const Matrix32& p_offset);	
-	virtual Matrix32 viewport_get_canvas_transform(RID p_viewport,RID p_canvas) const;	
-	virtual void viewport_set_global_canvas_transform(RID p_viewport,const Matrix32& p_transform);
-	virtual Matrix32 viewport_get_global_canvas_transform(RID p_viewport) const;
+	virtual void viewport_set_canvas_transform(RID p_viewport,RID p_canvas,const Transform2D& p_offset);	
+	virtual Transform2D viewport_get_canvas_transform(RID p_viewport,RID p_canvas) const;	
+	virtual void viewport_set_global_canvas_transform(RID p_viewport,const Transform2D& p_transform);
+	virtual Transform2D viewport_get_global_canvas_transform(RID p_viewport) const;
 	virtual void viewport_set_canvas_layer(RID p_viewport,RID p_canvas,int p_layer);
 	virtual void viewport_set_transparent_background(RID p_viewport,bool p_enabled);
 	virtual bool viewport_has_transparent_background(RID p_viewport) const;
@@ -1134,8 +1134,8 @@ public:
 	virtual void instance_set_morph_target_weight(RID p_instance,int p_shape, float p_weight);
 	virtual float instance_get_morph_target_weight(RID p_instance,int p_shape) const;
 
-	virtual void instance_set_transform(RID p_instance, const Transform& p_transform);
-	virtual Transform instance_get_transform(RID p_instance) const;
+	virtual void instance_set_transform(RID p_instance, const Transform3D& p_transform);
+	virtual Transform3D instance_get_transform(RID p_instance) const;
 
 	virtual void instance_set_exterior( RID p_instance, bool p_enabled );
 	virtual bool instance_is_exterior( RID p_instance) const;
@@ -1190,7 +1190,7 @@ public:
 
 
 	//virtual void canvas_item_set_rect(RID p_item, const Rect2& p_rect);
-	virtual void canvas_item_set_transform(RID p_item, const Matrix32& p_transform);
+	virtual void canvas_item_set_transform(RID p_item, const Transform2D& p_transform);
 	virtual void canvas_item_set_clip(RID p_item, bool p_clip);
 	virtual void canvas_item_set_custom_rect(RID p_item, bool p_custom_rect,const Rect2& p_rect=Rect2());
 	virtual void canvas_item_set_opacity(RID p_item, float p_opacity);
@@ -1213,7 +1213,7 @@ public:
 	virtual void canvas_item_add_polygon(RID p_item, const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs=Vector<Point2>(), RID p_texture=RID());
 	virtual void canvas_item_add_triangle_array(RID p_item, const Vector<int>& p_indices, const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs=Vector<Point2>(), RID p_texture=RID(), int p_count=-1);
 	virtual void canvas_item_add_triangle_array_ptr(RID p_item, int p_count, const int* p_indices, const Point2* p_points, const Color* p_colors,const Point2* p_uvs=NULL, RID p_texture=RID());
-	virtual void canvas_item_add_set_transform(RID p_item,const Matrix32& p_transform);
+	virtual void canvas_item_add_set_transform(RID p_item,const Transform2D& p_transform);
 	virtual void canvas_item_add_set_blend_mode(RID p_item, MaterialBlendMode p_blend);
 	virtual void canvas_item_add_clip_ignore(RID p_item, bool p_ignore);
 	virtual void canvas_item_set_sort_children_by_y(RID p_item, bool p_enable);

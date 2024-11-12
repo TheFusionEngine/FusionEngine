@@ -36,7 +36,7 @@ Color EditorSceneImporterFBXConv::_get_color(const Array& a) {
 
 }
 
-Transform EditorSceneImporterFBXConv::_get_transform_mixed(const Dictionary& d,const Dictionary& dbase) {
+Transform3D EditorSceneImporterFBXConv::_get_transform_mixed(const Dictionary& d,const Dictionary& dbase) {
 
 
 
@@ -62,7 +62,7 @@ Transform EditorSceneImporterFBXConv::_get_transform_mixed(const Dictionary& d,c
 	else if (dbase.has("scale"))
 		scale=dbase["scale"];
 
-	Transform t;
+	Transform3D t;
 
 
 	if (translation.size()) {
@@ -84,7 +84,7 @@ Transform EditorSceneImporterFBXConv::_get_transform_mixed(const Dictionary& d,c
 			q.y = r[1];
 			q.z = r[2];
 			q.w = r[3];
-			t.basis=Matrix3(q);
+			t.basis=Basis(q);
 		}
 	}
 
@@ -106,10 +106,10 @@ Transform EditorSceneImporterFBXConv::_get_transform_mixed(const Dictionary& d,c
 
 }
 
-Transform EditorSceneImporterFBXConv::_get_transform(const Dictionary& d) {
+Transform3D EditorSceneImporterFBXConv::_get_transform(const Dictionary& d) {
 
 
-	Transform t;
+	Transform3D t;
 
 	if (d.has("translation")) {
 		Array tr = d["translation"];
@@ -130,7 +130,7 @@ Transform EditorSceneImporterFBXConv::_get_transform(const Dictionary& d) {
 			q.y = r[1];
 			q.z = r[2];
 			q.w = r[3];
-			t.basis=Matrix3(q);
+			t.basis=Basis(q);
 		}
 	}
 
@@ -910,7 +910,7 @@ Error EditorSceneImporterFBXConv::_parse_animations(State& state) {
 				for(int k=0;k<keyframes.size();k++) {
 
 					Dictionary key=keyframes[k];
-					Transform xform=_get_transform_mixed(key,xform_dict);
+					Transform3D xform=_get_transform_mixed(key,xform_dict);
 					float time = key["keytime"];
 					time=time/1000.0;
 #if 0
@@ -934,7 +934,7 @@ Error EditorSceneImporterFBXConv::_parse_animations(State& state) {
 
 						}
 
-						Transform t;
+						Transform3D t;
 						if (idx==0) {
 							t=_get_transform_mixed(parent_keyframes[0],parent_xform_dict);
 						} else if (idx==parent_keyframes.size()){
@@ -943,7 +943,7 @@ Error EditorSceneImporterFBXConv::_parse_animations(State& state) {
 							t=_get_transform_mixed(parent_keyframes[idx-1],parent_xform_dict);
 							float d = (time-prev_kt)/(kt-prev_kt);
 							if (d>0) {
-								Transform t2=_get_transform_mixed(parent_keyframes[idx],parent_xform_dict);
+								Transform3D t2=_get_transform_mixed(parent_keyframes[idx],parent_xform_dict);
 								t=t.interpolate_with(t2,d);
 							} else {
 								print_line("exact: "+rtos(kt));
@@ -952,7 +952,7 @@ Error EditorSceneImporterFBXConv::_parse_animations(State& state) {
 
 						xform = t.affine_inverse() * xform; //localize
 					} else if (!parent_xform_dict.empty()) {
-						Transform t = _get_transform(parent_xform_dict);
+						Transform3D t = _get_transform(parent_xform_dict);
 						xform = t.affine_inverse() * xform; //localize
 					}
 #endif

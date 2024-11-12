@@ -32,9 +32,9 @@
 #include "resource.h"
 #include "servers/audio_server.h"
 
-class EventStreamPlayback : public Reference {
+class EventStreamPlayback : public RefCounted {
 
-	OBJ_TYPE(EventStreamPlayback,Reference);
+	OBJ_TYPE(EventStreamPlayback,RefCounted);
 
 	class InternalEventStream : public AudioServer::EventStream {
 	public:

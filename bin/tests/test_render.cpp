@@ -51,7 +51,7 @@ class TestMainLoop : public MainLoop {
 	struct InstanceInfo {
 	
 		RID instance;
-		Transform base;
+		Transform3D base;
 		Vector3 rot_axis;
 	};
 	
@@ -89,7 +89,7 @@ public:
 
 		static const int s = 20;
 		for(int i=0;i<s;i++) {
-			Matrix3 rot(Vector3(0,1,0),i*Math_PI/s);
+			Basis rot(Vector3(0,1,0),i*Math_PI/s);
 
 			for(int j=0;j<s;j++) {
 				Vector3 v;
@@ -170,7 +170,7 @@ public:
 		vs->viewport_attach_to_screen(viewport);
 		vs->viewport_attach_camera( viewport, camera );
 		vs->viewport_set_scenario( viewport, scenario );
-		vs->camera_set_transform(camera, Transform( Matrix3(), Vector3(0,3,30 ) ) );
+		vs->camera_set_transform(camera, Transform3D( Basis(), Vector3(0,3,30 ) ) );
 		vs->camera_set_perspective( camera, 60, 0.1, 1000);
 
 
@@ -189,7 +189,7 @@ public:
 		vs->light_set_color( lightaux, VisualServer::LIGHT_COLOR_DIFFUSE, Color(1.0,1.0,1.0) );
 		//vs->light_set_shadow( lightaux, true );
 		light = vs->instance_create2( lightaux, scenario );
-		Transform lla;
+		Transform3D lla;
 		//lla.set_look_at(Vector3(),Vector3(1,-1,1),Vector3(0,1,0));
 		lla.set_look_at(Vector3(),Vector3(-0.000000,-0.836026,-0.548690),Vector3(0,1,0));
 
@@ -212,7 +212,7 @@ public:
 	virtual bool iteration(float p_time) {
 
 		VisualServer *vs=VisualServer::get_singleton();
-		//Transform t;
+		//Transform3D t;
 		//t.rotate(Vector3(0, 1, 0), ofs);
 		//t.translate(Vector3(0,0,20 ));
 		//vs->camera_set_transform(camera, t);
@@ -223,7 +223,7 @@ public:
 		
 		for(List<InstanceInfo>::Element *E=instances.front();E;E=E->next()) {
 		
-			Transform pre( Matrix3(E->get().rot_axis, ofs), Vector3() );
+			Transform3D pre( Basis(E->get().rot_axis, ofs), Vector3() );
 			vs->instance_set_transform( E->get().instance, pre * E->get().base );
 			/*
 			if( !E->next() ) {

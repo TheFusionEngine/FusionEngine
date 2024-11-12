@@ -86,7 +86,7 @@ protected:
 		bool use_pointsize;
 		bool use_xy_normalmap;
 		float point_size;
-		Transform uv_xform;
+		Transform3D uv_xform;
 		VS::FixedMaterialLightShader light_shader;
 		RID texture[VS::FIXED_MATERIAL_PARAM_MAX];
 		Variant param[VS::FIXED_MATERIAL_PARAM_MAX];
@@ -242,8 +242,8 @@ public:
 	virtual void fixed_material_set_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter, VS::FixedMaterialTexCoordMode p_mode);
 	virtual VS::FixedMaterialTexCoordMode fixed_material_get_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter) const;
 
-	virtual void fixed_material_set_uv_transform(RID p_material,const Transform& p_transform);
-	virtual Transform fixed_material_get_uv_transform(RID p_material) const;
+	virtual void fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform);
+	virtual Transform3D fixed_material_get_uv_transform(RID p_material) const;
 
 	virtual void fixed_material_set_light_shader(RID p_material,VS::FixedMaterialLightShader p_shader);
 	virtual VS::FixedMaterialLightShader fixed_material_get_light_shader(RID p_material) const;
@@ -293,13 +293,13 @@ public:
 
 	virtual void multimesh_set_mesh(RID p_multimesh,RID p_mesh)=0;
 	virtual void multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb)=0;
-	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform)=0;
+	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform)=0;
 	virtual void multimesh_instance_set_color(RID p_multimesh,int p_index,const Color& p_color)=0;
 
 	virtual RID multimesh_get_mesh(RID p_multimesh) const=0;
 	virtual AABB multimesh_get_aabb(RID p_multimesh) const=0;;
 
-	virtual Transform multimesh_instance_get_transform(RID p_multimesh,int p_index) const=0;
+	virtual Transform3D multimesh_instance_get_transform(RID p_multimesh,int p_index) const=0;
 	virtual Color multimesh_instance_get_color(RID p_multimesh,int p_index) const=0;
 
 	virtual void multimesh_set_visible_instances(RID p_multimesh,int p_visible)=0;
@@ -392,8 +392,8 @@ public:
 	virtual RID skeleton_create()=0;
 	virtual void skeleton_resize(RID p_skeleton,int p_bones)=0;
 	virtual int skeleton_get_bone_count(RID p_skeleton) const=0;
-	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform)=0;
-	virtual Transform skeleton_bone_get_transform(RID p_skeleton,int p_bone)=0;
+	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform)=0;
+	virtual Transform3D skeleton_bone_get_transform(RID p_skeleton,int p_bone)=0;
 
 	
 	/* LIGHT API */
@@ -430,7 +430,7 @@ public:
 	virtual AABB light_get_aabb(RID p_poly) const=0;
 						
 	virtual RID light_instance_create(RID p_light)=0;
-	virtual void light_instance_set_transform(RID p_light_instance,const Transform& p_transform)=0;	
+	virtual void light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform)=0;	
 	
 
 	enum ShadowType {
@@ -456,7 +456,7 @@ public:
 
 	virtual ShadowType light_instance_get_shadow_type(RID p_light_instance,bool p_far=false) const=0;
 	virtual int light_instance_get_shadow_passes(RID p_light_instance) const=0;
-	virtual void light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near=0,float p_split_far=0)=0;
+	virtual void light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near=0,float p_split_far=0)=0;
 	virtual int light_instance_get_shadow_size(RID p_light_instance, int p_index=0) const=0;
 	virtual bool light_instance_get_pssm_shadow_overlap(RID p_light_instance) const=0;
 
@@ -469,7 +469,7 @@ public:
 	/* PARTICLES INSTANCE */
 		
 	virtual RID particles_instance_create(RID p_particles)=0;
-	virtual void particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform)=0;
+	virtual void particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform)=0;
 	
 	/* RENDER API */
 	/* all calls (inside begin/end shadow) are always warranted to be in the following order: */
@@ -493,7 +493,7 @@ public:
 	virtual void begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug)=0;
 	virtual void begin_shadow_map( RID p_light_instance, int p_shadow_pass )=0;
 
-	virtual void set_camera(const Transform& p_world,const CameraMatrix& p_projection)=0;
+	virtual void set_camera(const Transform3D& p_world,const CameraMatrix& p_projection)=0;
 	
 	virtual void add_light( RID p_light_instance )=0; ///< all "add_light" calls happen before add_geometry calls
 	
@@ -505,7 +505,7 @@ public:
 		RID octree_texture;
 		RID light_texture;
 		float color_multiplier; //used for both lightmaps and octree
-		Transform octree_transform;
+		Transform3D octree_transform;
 		Map<int,RID> lightmaps;
 		//cache
 
@@ -520,14 +520,14 @@ public:
 
 	struct InstanceData {
 
-		Transform transform;
+		Transform3D transform;
 		RID skeleton;
 		RID material_override;
 		RID sampled_light;
 		Vector<RID> light_instances;
 		Vector<float> morph_values;
 		BakedLightData *baked_light;
-		Transform *baked_light_octree_xform;
+		Transform3D *baked_light_octree_xform;
 		int baked_lightmap_id;
 		bool mirror :8;
 		bool depth_scale :8;
@@ -562,7 +562,7 @@ public:
 	virtual void canvas_disable_blending()=0;
 	virtual void canvas_set_opacity(float p_opacity)=0;
 	virtual void canvas_set_blend_mode(VS::MaterialBlendMode p_mode)=0;
-	virtual void canvas_begin_rect(const Matrix32& p_transform)=0;;
+	virtual void canvas_begin_rect(const Transform2D& p_transform)=0;;
 	virtual void canvas_set_clip(bool p_clip, const Rect2& p_rect)=0;
 	virtual void canvas_end_rect()=0;
 	virtual void canvas_draw_line(const Point2& p_from, const Point2& p_to,const Color& p_color,float p_width)=0;
@@ -570,7 +570,7 @@ public:
 	virtual void canvas_draw_style_box(const Rect2& p_rect, RID p_texture,const float *p_margins, bool p_draw_center=true,const Color& p_modulate=Color(1,1,1))=0;
 	virtual void canvas_draw_primitive(const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs, RID p_texture,float p_width)=0;
 	virtual void canvas_draw_polygon(int p_vertex_count, const int* p_indices, const Vector2* p_vertices, const Vector2* p_uvs, const Color* p_colors,const RID& p_texture,bool p_singlecolor)=0;
-	virtual void canvas_set_transform(const Matrix32& p_transform)=0;
+	virtual void canvas_set_transform(const Transform2D& p_transform)=0;
 	
 	/* ENVIRONMENT */
 	

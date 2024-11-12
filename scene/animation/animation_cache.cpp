@@ -101,7 +101,7 @@ void AnimationCache::_update_cache() {
 			if (animation->track_get_type(i)==Animation::TYPE_TRANSFORM) {
 
 				path_cache.push_back(Path());
-				ERR_EXPLAIN("Transform tracks can't have a subpath: "+np);
+				ERR_EXPLAIN("Transform3D tracks can't have a subpath: "+np);
 				ERR_CONTINUE(animation->track_get_type(i)==Animation::TYPE_TRANSFORM);
 
 			}
@@ -138,7 +138,7 @@ void AnimationCache::_update_cache() {
 				if (!sp) {
 
 					path_cache.push_back(Path());
-					ERR_EXPLAIN("Transform track not of type Node3D: "+np);
+					ERR_EXPLAIN("Transform3D track not of type Node3D: "+np);
 					ERR_CONTINUE(!sp);
 				}
 
@@ -148,7 +148,7 @@ void AnimationCache::_update_cache() {
 					if (!sk) {
 
 						path_cache.push_back(Path());
-						ERR_EXPLAIN("Property defined in Transform track, but not a Skeleton3D!: "+np);
+						ERR_EXPLAIN("Property defined in Transform3D track, but not a Skeleton3D!: "+np);
 						ERR_CONTINUE(!sk);
 					}
 
@@ -156,7 +156,7 @@ void AnimationCache::_update_cache() {
 					if (idx==-1) {
 
 						path_cache.push_back(Path());
-						ERR_EXPLAIN("Property defined in Transform track, but not a Skeleton3D Bone!: "+np);
+						ERR_EXPLAIN("Property defined in Transform3D track, but not a Skeleton3D Bone!: "+np);
 						ERR_CONTINUE(idx==-1);
 
 					}
@@ -219,7 +219,7 @@ void AnimationCache::_update_cache() {
 	cache_valid=true;
 }
 
-void AnimationCache::set_track_transform(int p_idx,const Transform& p_transform) {
+void AnimationCache::set_track_transform(int p_idx,const Transform3D& p_transform) {
 
 	if (cache_dirty)
 		_update_cache();
@@ -292,7 +292,7 @@ void AnimationCache::set_all(float p_time, float p_delta) {
 				Vector3 loc,scale;
 				Quat rot;
 				animation->transform_track_interpolate(i,p_time,&loc,&rot,&scale);
-				Transform tr( Matrix3(rot), loc );
+				Transform3D tr( Basis(rot), loc );
 				tr.basis.scale(scale);
 
 				set_track_transform(i,tr);

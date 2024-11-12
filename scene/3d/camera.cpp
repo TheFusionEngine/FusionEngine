@@ -175,7 +175,7 @@ void Camera3D::_get_property_list( List<PropertyInfo> *p_list) const {
 
 void Camera3D::_update_camera() {
 
-	Transform tr = get_camera_transform();
+	Transform3D tr = get_camera_transform();
 	VisualServer::get_singleton()->camera_set_transform( camera, tr );
 
 // here goes listener stuff
@@ -265,7 +265,7 @@ void Camera3D::_notification(int p_what) {
 }
 
 
-Transform Camera3D::get_camera_transform() const {
+Transform3D Camera3D::get_camera_transform() const {
 
 	return get_global_transform().orthonormalized();
 }
@@ -742,7 +742,7 @@ Vector<Plane> Camera3D::get_frustum() const {
 
 void Camera3D::look_at(const Vector3& p_target, const Vector3& p_up_normal) {
 
-	Transform lookat;
+	Transform3D lookat;
 	lookat.origin=get_camera_transform().origin;
 	lookat=lookat.looking_at(p_target,p_up_normal);
 	set_global_transform(lookat);
@@ -750,7 +750,7 @@ void Camera3D::look_at(const Vector3& p_target, const Vector3& p_up_normal) {
 
 void Camera3D::look_at_from_pos(const Vector3& p_pos,const Vector3& p_target, const Vector3& p_up_normal) {
 
-	Transform lookat;
+	Transform3D lookat;
 	lookat.origin=p_pos;
 	lookat=lookat.looking_at(p_target,p_up_normal);
 	set_global_transform(lookat);

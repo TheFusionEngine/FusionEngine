@@ -145,7 +145,7 @@ public:
 				Dictionary d_new = d_old;
 				d_new[p_name]=p_value;
 				setting=true;
-				undo_redo->create_action("Anim Change Transform");
+				undo_redo->create_action("Anim Change Transform3D");
 				undo_redo->add_do_method(animation.ptr(),"track_set_key_value",track,key,d_new);
 				undo_redo->add_undo_method(animation.ptr(),"track_set_key_value",track,key,d_old);
 				undo_redo->add_do_method(this,"_update_obj",animation);
@@ -2324,7 +2324,7 @@ void AnimationKeyEditor::_notification(int p_what) {
 				zoomicon->set_texture( get_icon("Zoom","EditorIcons") );				
 				//menu_track->set_icon(get_icon("AddTrack","EditorIcons"));
 				menu_track->get_popup()->add_icon_item(get_icon("KeyValue","EditorIcons"),"Add Normal Track",TRACK_MENU_ADD_VALUE_TRACK);
-				menu_track->get_popup()->add_icon_item(get_icon("KeyXform","EditorIcons"),"Add Transform Track",TRACK_MENU_ADD_TRANSFORM_TRACK);
+				menu_track->get_popup()->add_icon_item(get_icon("KeyXform","EditorIcons"),"Add Transform3D Track",TRACK_MENU_ADD_TRANSFORM_TRACK);
 				menu_track->get_popup()->add_icon_item(get_icon("KeyCall","EditorIcons"),"Add Call Func Track",TRACK_MENU_ADD_CALL_TRACK);
 				menu_track->get_popup()->add_separator();
 				menu_track->get_popup()->add_item("Scale Selection",TRACK_MENU_SCALE);
@@ -2554,7 +2554,7 @@ void AnimationKeyEditor::_query_insert(const InsertData& p_id) {
 
 }
 
-void AnimationKeyEditor::insert_transform_key(Node3D *p_node,const String& p_sub,const Transform& p_xform) {
+void AnimationKeyEditor::insert_transform_key(Node3D *p_node,const String& p_sub,const Transform3D& p_xform) {
 
 	if (!keying)
 		return;
@@ -2779,7 +2779,7 @@ int AnimationKeyEditor::_confirm_insert(InsertData p_id,int p_last_track) {
 		case Animation::TYPE_TRANSFORM: {
 
 
-			Transform tr = p_id.value;
+			Transform3D tr = p_id.value;
 			Dictionary d;
 			d["loc"]=tr.origin;
 			d["scale"]=tr.basis.get_scale();

@@ -118,7 +118,7 @@ private:
 	Vector3 _get_ray_pos(const Vector2& p_pos) const;
 	Vector3 _get_ray(const Vector2& p_pos);
 	Point2 _point_to_screen(const Vector3& p_point);
-	Transform _get_camera_transform() const;
+	Transform3D _get_camera_transform() const;
 	int get_selected_count() const;
 
 	Vector3 _get_camera_pos() const;
@@ -167,7 +167,7 @@ private:
 	struct EditData {
 		TransformMode mode;
 		TransformPlane plane;
-		Transform original;
+		Transform3D original;
 		Vector3 click_ray;
 		Vector3 click_ray_pos;
 		Vector3 center;
@@ -245,8 +245,8 @@ class SpatialEditorSelectedItem : public Object {
 public:
 
 	AABB aabb;
-	Transform original; // original location when moving
-	Transform last_xform; // last transform
+	Transform3D original; // original location when moving
+	Transform3D last_xform; // last transform
 	Node3D *sp;
 	RID sbox_instance;
 
@@ -290,7 +290,7 @@ private:
 
 	RID light;
 	RID light_instance;
-	Transform light_transform;
+	Transform3D light_transform;
 
 
 	RID origin;
@@ -320,8 +320,8 @@ private:
 /*
 	struct Selected {
 		AABB aabb;
-		Transform original; // original location when moving
-		Transform last_xform; // last transform
+		Transform3D original; // original location when moving
+		Transform3D last_xform; // last transform
 		Node3D *sp;
 		RID poly_instance;
 	};
@@ -332,7 +332,7 @@ private:
 
 		bool visible;
 		float scale;
-		Transform transform;
+		Transform3D transform;
 	} gizmo;
 	
 	
@@ -464,7 +464,7 @@ public:
 	float get_zfar() const { return settings_zfar->get_val(); }
 	float get_fov() const { return settings_fov->get_val(); }
 
-	Transform get_gizmo_transform() const { return gizmo.transform; }
+	Transform3D get_gizmo_transform() const { return gizmo.transform; }
 	bool is_gizmo_visible() const { return gizmo.visible; }
 
 	ToolMode get_tool_mode() const { return tool_mode; }

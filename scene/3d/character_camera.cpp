@@ -145,7 +145,7 @@ void CharacterCamera::_compute_camera() {
 				amount = CLAMP(amount,0,1);
 
 
-				rel=Matrix3(Vector3(0,1,0)),
+				rel=Basis(Vector3(0,1,0)),
 				rotate_orbit(Vector2(0,autoturn_speed*time*amount));
 			}
 			if (clip_ray[2].clipped && !clip_ray[0].clipped) {
@@ -161,7 +161,7 @@ void CharacterCamera::_compute_camera() {
 	}
 
 
-	Transform final;
+	Transform3D final;
 
 	static float pos_ratio = 0.9;
 	static float rot_ratio = 10;
@@ -254,7 +254,7 @@ void CharacterCamera::_compute_camera() {
 		if (orbit.x>max_orbit_x)
 			orbit.x=max_orbit_x;
 
-		Matrix3 m;
+		Basis m;
 		m.rotate(Vector3(0,1,0),Math::deg2rad(orbit.y));
 		m.rotate(Vector3(1,0,0),Math::deg2rad(orbit.x));
 
@@ -262,19 +262,19 @@ void CharacterCamera::_compute_camera() {
 
 		if (use_lookat_target) {
 
-			Transform t = get_global_transform();
+			Transform3D t = get_global_transform();
 			Vector3 y = t.basis.get_axis(1).normalized();
 			Vector3 z = lookat_target - character_pos;
 			z= (z - y * y.dot(z)).normalized();
 			orbit.y = -Math::rad2deg(Math::atan2(z.x,z.z)) + 180;
 
 			/*
-			Transform t = get_global_transform();
+			Transform3D t = get_global_transform();
 			Vector3 y = t.basis.get_axis(1).normalized();
 			Vector3 z = lookat_target  - t.origin;
 			z= (z - y * y.dot(z)).normalized();
 			Vector3 x = z.cross(y).normalized();
-			Transform t2;
+			Transform3D t2;
 			t2.basis.set_axis(0,x);
 			t2.basis.set_axis(1,y);
 			t2.basis.set_axis(2,z);
@@ -313,7 +313,7 @@ void CharacterCamera::_compute_camera() {
 	};
 
 	proposed.set_look_at(new_pos,target,Vector3(0,1,0));
-	proposed = proposed * Transform(Matrix3(Vector3(1,0,0),Math::deg2rad(inclination)),Vector3()); //inclination
+	proposed = proposed * Transform3D(Basis(Vector3(1,0,0),Math::deg2rad(inclination)),Vector3()); //inclination
 
 
 	Vector<RID> exclude;
@@ -326,7 +326,7 @@ void CharacterCamera::_compute_camera() {
 	for(int i=0;i<3;i++) {
 
 		PhysicsServer::get_singleton()->query_intersection(clip_ray[i].query,get_world().get_space(),exclude);
-		PhysicsServer::get_singleton()->query_intersection_segment(clip_ray[i].query,target,target+Matrix3(Vector3(0,1,0),Math::deg2rad(autoturn_tolerance*(i-1.0))).xform(rel));
+		PhysicsServer::get_singleton()->query_intersection_segment(clip_ray[i].query,target,target+Basis(Vector3(0,1,0),Math::deg2rad(autoturn_tolerance*(i-1.0))).xform(rel));
 		clip_ray[i].clipped=false;
 		clip_ray[i].clip_pos=Vector3();
 	}
@@ -431,7 +431,7 @@ void CharacterCamera::set_orbit(const Vector2& p_orbit) {
 		char_pos.y+=height;
 		float d = char_pos.distance_to(follow_pos);
 
-		Matrix3 m;
+		Basis m;
 		m.rotate(Vector3(0,1,0),orbit.y);
 		m.rotate(Vector3(1,0,0),orbit.x);
 
@@ -474,7 +474,7 @@ void CharacterCamera::rotate_orbit(const Vector2& p_relative) {
 
 	if (type == CAMERA_FOLLOW && is_inside_scene()) {
 
-		Matrix3 m;
+		Basis m;
 		m.rotate(Vector3(0,1,0),Math::deg2rad(p_relative.y));
 		m.rotate(Vector3(1,0,0),Math::deg2rad(p_relative.x));
 
@@ -670,7 +670,7 @@ void CharacterCamera::_ray_collision(Vector3 p_point, Vector3 p_normal, int p_su
 	clip_ray[p_idx].clipped=true;
 };
 
-Transform CharacterCamera::get_camera_transform() const {
+Transform3D CharacterCamera::get_camera_transform() const {
 
 	return accepted;
 }

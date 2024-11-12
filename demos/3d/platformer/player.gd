@@ -148,9 +148,9 @@ func _integrate_forces( state ):
 		var facing_mesh=-mesh_xform.basis[0].normalized()
 		facing_mesh = (facing_mesh - up*facing_mesh.dot(up)).normalized()
 		facing_mesh = adjust_facing(facing_mesh,target_dir,delta,1.0/hspeed*turn_speed,up)
-		var m3 = Matrix3(-facing_mesh,up,-facing_mesh.cross(up).normalized()).scaled( CHAR_SCALE )
+		var m3 = Basis(-facing_mesh,up,-facing_mesh.cross(up).normalized()).scaled( CHAR_SCALE )
 		
-		get_node("Armature").set_transform(Transform(m3,mesh_xform.origin))
+		get_node("Armature").set_transform(Transform3D(m3,mesh_xform.origin))
 				
 		if (not jumping and jump_attempt):
 			vv = 7.0

@@ -349,7 +349,7 @@ void SceneTree::input_event( const InputEvent& p_event ) {
 
 		case InputEvent::MOUSE_BUTTON: {
 
-			Matrix32 ai = root->get_final_transform().affine_inverse();
+			Transform2D ai = root->get_final_transform().affine_inverse();
 			Vector2 g = ai.xform(Vector2(ev.mouse_button.global_x,ev.mouse_button.global_y));
 			Vector2 l = ai.xform(Vector2(ev.mouse_button.x,ev.mouse_button.y));
 			ev.mouse_button.x=l.x;
@@ -360,7 +360,7 @@ void SceneTree::input_event( const InputEvent& p_event ) {
 		} break;
 		case InputEvent::MOUSE_MOTION: {
 
-			Matrix32 ai = root->get_final_transform().affine_inverse();
+			Transform2D ai = root->get_final_transform().affine_inverse();
 			Vector2 g = ai.xform(Vector2(ev.mouse_motion.global_x,ev.mouse_motion.global_y));
 			Vector2 l = ai.xform(Vector2(ev.mouse_motion.x,ev.mouse_motion.y));
 			Vector2 r = ai.xform(Vector2(ev.mouse_motion.relative_x,ev.mouse_motion.relative_y));
@@ -374,7 +374,7 @@ void SceneTree::input_event( const InputEvent& p_event ) {
 		} break;
 		case InputEvent::SCREEN_TOUCH: {
 
-			Matrix32 ai = root->get_final_transform().affine_inverse();
+			Transform2D ai = root->get_final_transform().affine_inverse();
 			Vector2 t = ai.xform(Vector2(ev.screen_touch.x,ev.screen_touch.y));
 			ev.screen_touch.x=t.x;
 			ev.screen_touch.y=t.y;
@@ -382,7 +382,7 @@ void SceneTree::input_event( const InputEvent& p_event ) {
 		} break;
 		case InputEvent::SCREEN_DRAG: {
 
-			Matrix32 ai = root->get_final_transform().affine_inverse();
+			Transform2D ai = root->get_final_transform().affine_inverse();
 			Vector2 t = ai.xform(Vector2(ev.screen_drag.x,ev.screen_drag.y));
 			Vector2 r = ai.xform(Vector2(ev.screen_drag.relative_x,ev.screen_drag.relative_y));
 			Vector2 s = ai.xform(Vector2(ev.screen_drag.speed_x,ev.screen_drag.speed_y));

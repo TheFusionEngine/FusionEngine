@@ -13,7 +13,7 @@ class EditorSceneImporterFBXConv : public EditorSceneImporter {
 	struct BoneInfo {
 
 		Skeleton3D *skeleton;
-		Transform rest;
+		Transform3D rest;
 		int index;
 		bool has_anim_chan;
 		bool has_rest;
@@ -51,8 +51,8 @@ class EditorSceneImporterFBXConv : public EditorSceneImporter {
 
 	String _id(const String& p_id) const;
 
-	Transform _get_transform_mixed(const Dictionary& d, const Dictionary& dbase);
-	Transform _get_transform(const Dictionary& d);
+	Transform3D _get_transform_mixed(const Dictionary& d, const Dictionary& dbase);
+	Transform3D _get_transform(const Dictionary& d);
 	Color _get_color(const Array& a);
 	void _detect_bones_in_nodes(State& state,const Array& p_nodes);
 	void _detect_bones(State& state);

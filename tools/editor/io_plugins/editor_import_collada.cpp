@@ -83,7 +83,7 @@ struct ColladaImport {
 	Error _create_scene(Collada::Node *p_node, Node3D *p_parent);
 	Error _create_resources(Collada::Node *p_node);
 	Error _create_material(const String& p_material);
-	Error _create_mesh_surfaces(Ref<Mesh>& p_mesh,const Map<String,Collada::NodeGeometry::Material>& p_material_map,const Collada::MeshData &meshdata,const Transform& p_local_xform,const Vector<int> &bone_remap, const Collada::SkinControllerData *p_skin_data, const Collada::MorphControllerData *p_morph_data);
+	Error _create_mesh_surfaces(Ref<Mesh>& p_mesh,const Map<String,Collada::NodeGeometry::Material>& p_material_map,const Collada::MeshData &meshdata,const Transform3D& p_local_xform,const Vector<int> &bone_remap, const Collada::SkinControllerData *p_skin_data, const Collada::MorphControllerData *p_morph_data);
 	Error load(const String& p_path, int p_flags, bool p_force_make_tangents=false);
 	void _fix_param_animation_tracks();
 	void create_animation(int p_clip,bool p_make_tracks_in_all_bones);
@@ -341,7 +341,7 @@ Error ColladaImport::_create_scene(Collada::Node *p_node, Node3D *p_parent) {
 	NodeMap nm;
 	nm.node=node;
 	node_map[p_node->id]=nm;
-	Transform xf = p_node->default_transform;
+	Transform3D xf = p_node->default_transform;
 
 	xf = collada.fix_transform( xf ) * p_node->post_transform;
 	node->set_transform(xf);
@@ -585,7 +585,7 @@ static void _generate_tangents_and_binormals(const DVector<int>& p_indices,const
 	}
 }
 
-Error ColladaImport::_create_mesh_surfaces(Ref<Mesh>& p_mesh,const Map<String,Collada::NodeGeometry::Material>& p_material_map,const Collada::MeshData &meshdata,const Transform& p_local_xform,const Vector<int> &bone_remap, const Collada::SkinControllerData *skin_controller, const Collada::MorphControllerData *p_morph_data) {
+Error ColladaImport::_create_mesh_surfaces(Ref<Mesh>& p_mesh,const Map<String,Collada::NodeGeometry::Material>& p_material_map,const Collada::MeshData &meshdata,const Transform3D& p_local_xform,const Vector<int> &bone_remap, const Collada::SkinControllerData *skin_controller, const Collada::MorphControllerData *p_morph_data) {
 
 
 	bool local_xform_mirror=p_local_xform.basis.determinant() < 0;
@@ -984,7 +984,7 @@ Error ColladaImport::_create_mesh_surfaces(Ref<Mesh>& p_mesh,const Map<String,Co
 
 			//vertices need to be localized
 
-			Transform local_xform = p_local_xform;
+			Transform3D local_xform = p_local_xform;
 			for(int i=0;i<vertex_array.size();i++) {
 
 				vertex_array[i].vertex=local_xform.xform(vertex_array[i].vertex);
@@ -1508,7 +1508,7 @@ Error ColladaImport::_create_resources(Collada::Node *p_node) {
 			Collada::SkinControllerData *skin=NULL;
 			Collada::MorphControllerData *morph=NULL;
 			String meshid;
-			Transform apply_xform;
+			Transform3D apply_xform;
 			Vector<int> bone_remap;
 
 			print_line("mesh: "+String(mi->get_name()));
@@ -1548,9 +1548,9 @@ Error ColladaImport::_create_resources(Collada::Node *p_node) {
 
 					if (apply_mesh_xform_to_vertices) {
 						apply_xform=collada.fix_transform(p_node->default_transform);
-						node->set_transform(Transform());
+						node->set_transform(Transform3D());
 					} else {
-						apply_xform=Transform();
+						apply_xform=Transform3D();
 					}
 
 					Collada::SkinControllerData::Source *joint_src=NULL;
@@ -2012,7 +2012,7 @@ void ColladaImport::create_animation(int p_clip, bool p_make_tracks_in_all_bones
 				}
 			}
 
-			Transform xform = cn->compute_transform(collada);
+			Transform3D xform = cn->compute_transform(collada);
 			xform = collada.fix_transform(xform) * cn->post_transform;
 
 
@@ -2080,7 +2080,7 @@ void ColladaImport::create_animation(int p_clip, bool p_make_tracks_in_all_bones
 			animation->track_set_path( track , path );
 
 
-			Transform xform = cn->compute_transform(collada);
+			Transform3D xform = cn->compute_transform(collada);
 			xform = collada.fix_transform(xform) * cn->post_transform;
 
 			xform = sk->get_bone_rest(nm.bone).affine_inverse() * xform;

@@ -139,7 +139,7 @@ float SpatialEditorViewport::get_fov() const{
 
 
 
-Transform SpatialEditorViewport::_get_camera_transform() const {
+Transform3D SpatialEditorViewport::_get_camera_transform() const {
 
 	return camera->get_global_transform();
 }
@@ -388,7 +388,7 @@ Vector3 SpatialEditorViewport::_get_screen_to_space(const Vector3& p_pos) {
 	float screen_w,screen_h;
 	cm.get_viewport_size(screen_w,screen_h);
 
-	Transform camera_transform;
+	Transform3D camera_transform;
 	camera_transform.translate( cursor.pos );
 	camera_transform.basis.rotate(Vector3(0,1,0),cursor.y_rot);
 	camera_transform.basis.rotate(Vector3(1,0,0),cursor.x_rot);
@@ -552,7 +552,7 @@ bool SpatialEditorViewport::_gizmo_select(const Vector2& p_screenpos,bool p_hili
 	Vector3 cn=_get_camera_normal();
 	Plane cplane(ray_pos,cn.normalized());
 
-	Transform gt = spatial_editor->get_gizmo_transform();
+	Transform3D gt = spatial_editor->get_gizmo_transform();
 	float gs=gizmo_scale;
 	/*
 	if (orthogonal) {
@@ -775,7 +775,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 							if (found) {
 
 								//cursor.cursor_pos=ray_origin+ray_dir*min_d;
-								//VisualServer::get_singleton()->instance_set_transform(cursor_instance,Transform(Matrix3(),cursor.cursor_pos));
+								//VisualServer::get_singleton()->instance_set_transform(cursor_instance,Transform3D(Basis(),cursor.cursor_pos));
 
 							}
 
@@ -784,7 +784,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 							if (cursor_plane.intersects_ray(ray_origin,ray_dir,&new_pos)) {
 
 								//cursor.cursor_pos=new_pos;
-								//VisualServer::get_singleton()->instance_set_transform(cursor_instance,Transform(Matrix3(),cursor.cursor_pos));
+								//VisualServer::get_singleton()->instance_set_transform(cursor_instance,Transform3D(Basis(),cursor.cursor_pos));
 							}
 						}
 					}
@@ -811,7 +811,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 						}
 						surface->update();
 						//VisualServer::get_singleton()->poly_clear(indicators);
-						set_message("Transform Aborted.",3);
+						set_message("Transform3D Aborted.",3);
 					}
 				} break;
 				case BUTTON_MIDDLE: {
@@ -823,24 +823,24 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 							case TRANSFORM_VIEW: {
 
 								_edit.plane=TRANSFORM_X_AXIS;
-								set_message("View Plane Transform.",2);
+								set_message("View Plane Transform3D.",2);
 							} break;
 							case TRANSFORM_X_AXIS: {
 
 								_edit.plane=TRANSFORM_Y_AXIS;
-								set_message("X-Axis Transform.",2);
+								set_message("X-Axis Transform3D.",2);
 
 							} break;
 							case TRANSFORM_Y_AXIS: {
 
 								_edit.plane=TRANSFORM_Z_AXIS;
-								set_message("Y-Axis Transform.",2);
+								set_message("Y-Axis Transform3D.",2);
 
 							} break;
 							case TRANSFORM_Z_AXIS: {
 
 								_edit.plane=TRANSFORM_VIEW;
-								set_message("Z-Axis Transform.",2);
+								set_message("Z-Axis Transform3D.",2);
 
 							} break;
 						}
@@ -1178,7 +1178,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 							set_message("Scaling to "+String::num(scale,1)+"%.");
 							scale/=100.0;
 
-							Transform r;
+							Transform3D r;
 							r.basis.scale(Vector3(scale,scale,scale));
 
 							List<Node*> &selection = editor_selection->get_selected_node_list();
@@ -1194,10 +1194,10 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 									continue;
 
 
-								Transform original=se->original;
+								Transform3D original=se->original;
 
-								Transform base=Transform( Matrix3(), _edit.center);
-								Transform t=base * (r * (base.inverse() * original));
+								Transform3D base=Transform3D( Basis(), _edit.center);
+								Transform3D t=base * (r * (base.inverse() * original));
 
 								sp->set_global_transform(t);
 							}
@@ -1269,7 +1269,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 									continue;
 								}
 
-								Transform t=se->original;
+								Transform3D t=se->original;
 								t.origin+=motion;
 								sp->set_global_transform(t);
 							}
@@ -1327,7 +1327,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 
 
 
-							Transform r;
+							Transform3D r;
 							r.basis.rotate(plane.normal,-angle);
 
 							List<Node*> &selection = editor_selection->get_selected_node_list();
@@ -1343,10 +1343,10 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 									continue;
 
 
-								Transform original=se->original;
+								Transform3D original=se->original;
 
-								Transform base=Transform( Matrix3(), _edit.center);
-								Transform t=base * (r * (base.inverse() * original));
+								Transform3D base=Transform3D( Basis(), _edit.center);
+								Transform3D t=base * (r * (base.inverse() * original));
 
 								sp->set_global_transform(t);
 							}
@@ -1411,7 +1411,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 					if (nav_scheme==NAVIGATION_MAYA && m.mod.shift)
 						pan_speed *= pan_speed_modifier;
 
-					Transform camera_transform;
+					Transform3D camera_transform;
 
 					camera_transform.translate(cursor.pos);
 					camera_transform.basis.rotate(Vector3(0,1,0),cursor.y_rot);
@@ -1602,7 +1602,7 @@ void SpatialEditorViewport::_notification(int p_what) {
 		} else
 			camera->set_perspective(get_fov(),get_znear(),get_zfar());
 
-		Transform camera_transform;
+		Transform3D camera_transform;
 		camera_transform.translate( cursor.pos );
 		camera_transform.basis.rotate(Vector3(0,1,0),cursor.y_rot);
 		camera_transform.basis.rotate(Vector3(1,0,0),cursor.x_rot);
@@ -1651,7 +1651,7 @@ void SpatialEditorViewport::_notification(int p_what) {
 				se->aabb=vi?vi->get_aabb():AABB( Vector3(-0.2,-0.2,-0.2),Vector3(0.4,0.4,0.4));
 			}
 
-			Transform t=sp->get_global_transform();
+			Transform3D t=sp->get_global_transform();
 			t.translate(se->aabb.pos);
 			t.basis.scale( se->aabb.size );
 
@@ -1702,7 +1702,7 @@ void SpatialEditorViewport::_notification(int p_what) {
 
 
 			last_grid_snap=spatial_editor->get_translate_snap()
-			Transform gridt;
+			Transform3D gridt;
 			gridt.basis.scale(Vector3(last_grid_snap,last_grid_snap,last_grid_snap));
 			for(int i=0;i<3;i++)
 				VisualServer::get_singleton()->instance_set_transform(grid_instance[i],gridt);
@@ -1878,7 +1878,7 @@ void SpatialEditorViewport::_menu_option(int p_option) {
 			if (!get_selected_count())
 				break;
 
-			Transform camera_transform = camera->get_global_transform();
+			Transform3D camera_transform = camera->get_global_transform();
 
 			List<Node*> &selection = editor_selection->get_selected_node_list();
 
@@ -2039,10 +2039,10 @@ void SpatialEditorViewport::update_transform_gizmo_view() {
 	if (!is_visible())
 		return;
 
-	Transform xform = spatial_editor->get_gizmo_transform();
+	Transform3D xform = spatial_editor->get_gizmo_transform();
 
 
-	Transform camera_xform = camera->get_transform();
+	Transform3D camera_xform = camera->get_transform();
 	Vector3 camz = -camera_xform.get_basis().get_axis(2).normalized();
 	Vector3 camy = -camera_xform.get_basis().get_axis(1).normalized();
 	Plane p(camera_xform.origin,camz);
@@ -2253,7 +2253,7 @@ void SpatialEditor::update_transform_gizmo() {
 	AABB center;
 	bool first=true;
 
-	Matrix3 gizmo_basis;
+	Basis gizmo_basis;
 	bool local_gizmo_coords = transform_menu->get_popup()->is_item_checked( transform_menu->get_popup()->get_item_index(MENU_TRANSFORM_LOCAL_COORDS) );
 
 
@@ -2267,7 +2267,7 @@ void SpatialEditor::update_transform_gizmo() {
 		if (!se)
 			continue;
 
-		Transform xf = se->sp->get_global_transform();
+		Transform3D xf = se->sp->get_global_transform();
 		if (first) {
 			center.pos=xf.origin;
 			first=false;
@@ -2277,7 +2277,7 @@ void SpatialEditor::update_transform_gizmo() {
 			}
 		} else {
 			center.expand_to(xf.origin);
-			gizmo_basis=Matrix3();
+			gizmo_basis=Basis();
 		}
 //		count++;
 	}
@@ -2540,7 +2540,7 @@ void SpatialEditor::edit(Node3D *p_spatial) {
 
 void SpatialEditor::_xform_dialog_action() {
 
-	Transform t;
+	Transform3D t;
 	//translation
 	Vector3 scale;
 	Vector3 rotate;
@@ -2584,7 +2584,7 @@ void SpatialEditor::_xform_dialog_action() {
 
 		bool post = xform_type->get_selected()>0;
 
-		Transform tr = sp->get_global_transform();
+		Transform3D tr = sp->get_global_transform();
 		if (post)
 			tr = tr * t;
 		else {
@@ -3099,8 +3099,8 @@ void SpatialEditor::_init_indicators() {
 				for(int i = 0; i < 7 ; i++) {
 
 
-					Matrix3 ma(ivec,Math_PI*2*float(i)/arrow_sides);
-					Matrix3 mb(ivec,Math_PI*2*float(i+1)/arrow_sides);
+					Basis ma(ivec,Math_PI*2*float(i)/arrow_sides);
+					Basis mb(ivec,Math_PI*2*float(i+1)/arrow_sides);
 
 
 					for(int j=0;j<arrow_points-1;j++) {
@@ -3144,8 +3144,8 @@ void SpatialEditor::_init_indicators() {
 				for(int k = 0; k < 33 ; k++) {
 
 
-					Matrix3 ma(ivec,Math_PI*2*float(k)/32);
-					Matrix3 mb(ivec,Math_PI*2*float(k+1)/32);
+					Basis ma(ivec,Math_PI*2*float(k)/32);
+					Basis mb(ivec,Math_PI*2*float(k+1)/32);
 
 
 					for(int j=0;j<4;j++) {
@@ -3232,7 +3232,7 @@ void SpatialEditor::_instance_scene() {
 	Node3D *s = scene->cast_to<Node3D>();
 	if (s) {
 
-		undo_redo->add_do_method(s,"set_global_transform",Transform(Matrix3(),cursor.cursor_pos));
+		undo_redo->add_do_method(s,"set_global_transform",Transform3D(Basis(),cursor.cursor_pos));
 	}
 
 	undo_redo->commit_action();
@@ -3512,7 +3512,7 @@ void SpatialEditor::_update_ambient_light_color(const Color& p_color) {
 
 void SpatialEditor::_update_default_light_angle() {
 
-	Transform t;
+	Transform3D t;
 	t.basis.rotate(Vector3(1,0,0),settings_default_light_rot_x);
 	t.basis.rotate(Vector3(0,1,0),settings_default_light_rot_y);
 	settings_dlight->set_transform(t);
@@ -3608,7 +3608,7 @@ SpatialEditor::SpatialEditor(EditorNode *p_editor) {
 	PopupMenu *p;
 
 	transform_menu = memnew( MenuButton );
-	transform_menu->set_text("Transform");
+	transform_menu->set_text("Transform3D");
 	hbc_menu->add_child( transform_menu );
 
 	p = transform_menu->get_popup();
@@ -3618,7 +3618,7 @@ SpatialEditor::SpatialEditor(EditorNode *p_editor) {
 	p->add_check_item("Local Coords",MENU_TRANSFORM_LOCAL_COORDS);
 	//p->set_item_checked(p->get_item_count()-1,true);
 	p->add_separator();
-	p->add_item("Transform Dialog..",MENU_TRANSFORM_DIALOG);
+	p->add_item("Transform3D Dialog..",MENU_TRANSFORM_DIALOG);
 
 	p->connect("item_pressed", this,"_menu_item_pressed");
 
@@ -3800,7 +3800,7 @@ SpatialEditor::SpatialEditor(EditorNode *p_editor) {
 	/* XFORM DIALOG */
 
 	xform_dialog = memnew( ConfirmationDialog );
-	xform_dialog->set_title("Transform Change");
+	xform_dialog->set_title("Transform3D Change");
 	add_child(xform_dialog);
 	l = memnew(Label);
 	l->set_text("Translate:");
@@ -3840,7 +3840,7 @@ SpatialEditor::SpatialEditor(EditorNode *p_editor) {
 	}
 
 	l = memnew(Label);
-	l->set_text("Transform Type");
+	l->set_text("Transform3D Type");
 	l->set_pos(Point2(5,125));
 	xform_dialog->add_child(l);
 

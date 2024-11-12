@@ -40,7 +40,7 @@
 #include "gl_context/context_gl.h"
 #include <string.h>
 
-_FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
+_FORCE_INLINE_ static void _gl_load_transform(const Transform3D& tr) {
 
 	sceGumLoadMatrix(gumake<ScePspFMatrix4>({ /* build a 16x16 matrix */
 		tr.basis.elements[0][0],
@@ -63,7 +63,7 @@ _FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
 };
 
 
-_FORCE_INLINE_ static void _gl_mult_transform(const Transform& tr) {
+_FORCE_INLINE_ static void _gl_mult_transform(const Transform3D& tr) {
 
 	sceGumMultMatrix(gumake<ScePspFMatrix4>({ /* build a 16x16 matrix */
 		tr.basis.elements[0][0],
@@ -85,7 +85,7 @@ _FORCE_INLINE_ static void _gl_mult_transform(const Transform& tr) {
 	}));
 };
 
-_FORCE_INLINE_ static void _gl_mult_transform(const Matrix32& tr) {
+_FORCE_INLINE_ static void _gl_mult_transform(const Transform2D& tr) {
 
 	sceGumMultMatrix(gumake<ScePspFMatrix4>({ /* build a 16x16 matrix */
 		tr.elements[0][0],
@@ -1281,7 +1281,7 @@ VS::FixedMaterialTexCoordMode RasterizerPSP::fixed_material_get_texcoord_mode(RI
 	return m->texcoord_mode[p_parameter]; // for now
 }
 
-void RasterizerPSP::fixed_material_set_uv_transform(RID p_material,const Transform& p_transform) {
+void RasterizerPSP::fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
@@ -1289,10 +1289,10 @@ void RasterizerPSP::fixed_material_set_uv_transform(RID p_material,const Transfo
 	m->uv_transform = p_transform;
 }
 
-Transform RasterizerPSP::fixed_material_get_uv_transform(RID p_material) const {
+Transform3D RasterizerPSP::fixed_material_get_uv_transform(RID p_material) const {
 
 	Material *m=material_owner.get( p_material );
-	ERR_FAIL_COND_V(!m, Transform());
+	ERR_FAIL_COND_V(!m, Transform3D());
 
 	return m->uv_transform;
 }
@@ -1346,11 +1346,11 @@ void RasterizerPSP::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,co
 
 		if (i==VS::ARRAY_VERTEX) {
 
-			array_len=Vector3Array(p_arrays[i]).size();
+			array_len=PackedVector3Array(p_arrays[i]).size();
 			ERR_FAIL_COND(array_len==0);
 		} else if (i==VS::ARRAY_INDEX) {
 
-			index_array_len=IntArray(p_arrays[i]).size();
+			index_array_len=PackedIntArray(p_arrays[i]).size();
 		}
 	}
 
@@ -2091,7 +2091,7 @@ void RasterizerPSP::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 	ERR_FAIL_COND(!multimesh);
 	multimesh->aabb=p_aabb;
 }
-void RasterizerPSP::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void RasterizerPSP::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -2145,15 +2145,15 @@ AABB RasterizerPSP::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform RasterizerPSP::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D RasterizerPSP::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
-	ERR_FAIL_COND_V(!multimesh,Transform());
+	ERR_FAIL_COND_V(!multimesh,Transform3D());
 
-	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform());
+	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform3D());
 	MultiMesh::Element &e=multimesh->elements[p_index];
 
-	Transform tr;
+	Transform3D tr;
 
 	tr.basis.elements[0][0]=e.matrix[0];
 	tr.basis.elements[1][0]=e.matrix[1];
@@ -2617,7 +2617,7 @@ int RasterizerPSP::skeleton_get_bone_count(RID p_skeleton) const {
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void RasterizerPSP::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void RasterizerPSP::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
@@ -2626,11 +2626,11 @@ void RasterizerPSP::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform RasterizerPSP::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D RasterizerPSP::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
-	ERR_FAIL_COND_V(!skeleton, Transform());
-	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
+	ERR_FAIL_COND_V(!skeleton, Transform3D());
+	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform3D() );
 
 	// something
 	return skeleton->bones[p_bone];
@@ -2813,7 +2813,7 @@ RID RasterizerPSP::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void RasterizerPSP::light_instance_set_transform(RID p_light_instance,const Transform& p_transform) {
+void RasterizerPSP::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -2874,7 +2874,7 @@ Rasterizer::ShadowType RasterizerPSP::light_instance_get_shadow_type(RID p_light
 
 	return SHADOW_NONE;
 }
-void RasterizerPSP::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerPSP::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 
 }
@@ -2889,7 +2889,7 @@ bool RasterizerPSP::light_instance_get_pssm_shadow_overlap(RID p_light_instance)
 	return false;
 }
 
-void RasterizerPSP::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerPSP::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -2927,7 +2927,7 @@ RID RasterizerPSP::particles_instance_create(RID p_particles) {
 	return particles_instance_owner.make_rid(particles_instance);
 }
 
-void RasterizerPSP::particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform) {
+void RasterizerPSP::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 	ParticlesInstance *particles_instance=particles_instance_owner.get(p_particles_instance);
 	ERR_FAIL_COND(!particles_instance);
@@ -3040,7 +3040,7 @@ void RasterizerPSP::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) 
 
 }
 
-void RasterizerPSP::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
+void RasterizerPSP::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
 
 	camera_transform=p_world;
 	camera_transform_inverse=camera_transform.inverse();
@@ -3114,7 +3114,7 @@ void RasterizerPSP::add_light( RID p_light_instance ) {
 				//CameraMatrix proj;
 				//proj.set_perspective( angle*2.0, 1.0, near, far );
 
-				//Transform modelview=Transform(camera_transform_inverse * li->transform).inverse();
+				//Transform3D modelview=Transform3D(camera_transform_inverse * li->transform).inverse();
 				//li->projector_mtx= proj * modelview;
 
 			}*/
@@ -3744,7 +3744,7 @@ Error RasterizerPSP::_setup_geometry(const Geometry *p_geometry, const Material*
 					// FIXME:XXX: this is wrong; see the GLES1 renderer; morph transforms are stored somewhere else
 					if (skeleton_valid) {
 						for (int k = 0; k < VS::ARRAY_WEIGHTS_SIZE; ++k) {
-							const auto t = reinterpret_cast<const Transform *>(&base[ad.ofs])[k];
+							const auto t = reinterpret_cast<const Transform3D *>(&base[ad.ofs])[k];
 							auto *m = gumake<ScePspFMatrix4>({});
 							gumLoadIdentity(m);
 							const auto euler = t.basis.get_euler();
@@ -3876,7 +3876,7 @@ void RasterizerPSP::_render(const Geometry *p_geometry,const Material *p_materia
 			ERR_FAIL_COND(!pp.valid);
 
 
-			Transform camera;
+			Transform3D camera;
 			if (shadow)
 				camera=shadow->transform;
 			else
@@ -3990,7 +3990,7 @@ void RasterizerPSP::_render_list_forward(RenderList *p_render_list,bool p_revers
 
 		if (e->instance->billboard || e->instance->depth_scale) {
 
-			Transform xf=e->instance->transform;
+			Transform3D xf=e->instance->transform;
 			if (e->instance->depth_scale) {
 
 				if (camera_projection.matrix[3][3]) {
@@ -4397,7 +4397,7 @@ void RasterizerPSP::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 }
 
 
-void RasterizerPSP::canvas_begin_rect(const Matrix32& p_transform) {
+void RasterizerPSP::canvas_begin_rect(const Transform2D& p_transform) {
 	// glMatrixMode(GL_MODELVIEW);
 	sceGumMatrixMode(GU_MODEL);
 	sceGumLoadIdentity();
@@ -4693,7 +4693,7 @@ void RasterizerPSP::canvas_draw_polygon(int p_vertex_count, const int* p_indices
 */
 }
 
-void RasterizerPSP::canvas_set_transform(const Matrix32& p_transform) {
+void RasterizerPSP::canvas_set_transform(const Transform2D& p_transform) {
 
 	//restore
 	sceGumPopMatrix();

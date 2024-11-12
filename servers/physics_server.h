@@ -46,7 +46,7 @@ public:
 
 	virtual float get_inverse_mass() const=0; // get the mass
 	virtual Vector3 get_inverse_inertia() const=0; // get density of this body space
-	virtual Matrix3 get_inverse_inertia_tensor() const=0; // get density of this body space
+	virtual Basis get_inverse_inertia_tensor() const=0; // get density of this body space
 
 	virtual void set_linear_velocity(const Vector3& p_velocity)=0;
 	virtual Vector3 get_linear_velocity() const=0;
@@ -54,8 +54,8 @@ public:
 	virtual void set_angular_velocity(const Vector3& p_velocity)=0;
 	virtual Vector3 get_angular_velocity() const=0;
 
-	virtual void set_transform(const Transform& p_transform)=0;
-	virtual Transform get_transform() const=0;
+	virtual void set_transform(const Transform3D& p_transform)=0;
+	virtual Transform3D get_transform() const=0;
 
 	virtual void add_force(const Vector3& p_force, const Vector3& p_pos)=0;
 	virtual void apply_impulse(const Vector3& p_pos, const Vector3& p_j)=0;
@@ -87,12 +87,12 @@ public:
 
 class PhysicsShapeQueryResult;
 
-class PhysicsShapeQueryParameters : public Reference {
+class PhysicsShapeQueryParameters : public RefCounted {
 
-	OBJ_TYPE(PhysicsShapeQueryParameters, Reference);
+	OBJ_TYPE(PhysicsShapeQueryParameters, RefCounted);
 friend class PhysicsDirectSpaceState;
 	RID shape;
-	Transform transform;
+	Transform3D transform;
 	float margin;
 	Set<RID> exclude;
 	uint32_t layer_mask;
@@ -106,8 +106,8 @@ public:
 	void set_shape_rid(const RID& p_shape);
 	RID get_shape_rid() const;
 
-	void set_transform(const Transform& p_transform);
-	Transform get_transform() const;
+	void set_transform(const Transform3D& p_transform);
+	Transform3D get_transform() const;
 
 	void set_margin(float p_margin);
 	float get_margin() const;
@@ -132,7 +132,7 @@ class PhysicsDirectSpaceState : public Object {
 	OBJ_TYPE( PhysicsDirectSpaceState, Object );
 
 //	Variant _intersect_ray(const Vector3& p_from, const Vector3& p_to,const Vector<RID>& p_exclude=Vector<RID>(),uint32_t p_user_mask=0);
-//	Variant _intersect_shape(const RID& p_shape, const Transform& p_xform,int p_result_max=64,const Vector<RID>& p_exclude=Vector<RID>(),uint32_t p_user_mask=0);
+//	Variant _intersect_shape(const RID& p_shape, const Transform3D& p_xform,int p_result_max=64,const Vector<RID>& p_exclude=Vector<RID>(),uint32_t p_user_mask=0);
 public:
 
 	enum ObjectTypeMask {
@@ -180,7 +180,7 @@ public:
 
 	};
 
-	virtual int intersect_shape(const RID& p_shape, const Transform& p_xform,float p_margin,ShapeResult *r_results,int p_result_max,const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
+	virtual int intersect_shape(const RID& p_shape, const Transform3D& p_xform,float p_margin,ShapeResult *r_results,int p_result_max,const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
 
 	struct ShapeRestInfo {
 
@@ -193,20 +193,20 @@ public:
 
 	};
 
-	virtual bool cast_motion(const RID& p_shape, const Transform& p_xform,const Vector3& p_motion,float p_margin,float &p_closest_safe,float &p_closest_unsafe, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION,ShapeRestInfo *r_info=NULL)=0;
+	virtual bool cast_motion(const RID& p_shape, const Transform3D& p_xform,const Vector3& p_motion,float p_margin,float &p_closest_safe,float &p_closest_unsafe, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION,ShapeRestInfo *r_info=NULL)=0;
 
-	virtual bool collide_shape(RID p_shape, const Transform& p_shape_xform,float p_margin,Vector3 *r_results,int p_result_max,int &r_result_count, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
+	virtual bool collide_shape(RID p_shape, const Transform3D& p_shape_xform,float p_margin,Vector3 *r_results,int p_result_max,int &r_result_count, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
 
-	virtual bool rest_info(RID p_shape, const Transform& p_shape_xform,float p_margin,ShapeRestInfo *r_info, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
+	virtual bool rest_info(RID p_shape, const Transform3D& p_shape_xform,float p_margin,ShapeRestInfo *r_info, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
 
 
 	PhysicsDirectSpaceState();
 };
 
 
-class PhysicsShapeQueryResult : public Reference {
+class PhysicsShapeQueryResult : public RefCounted {
 
-	OBJ_TYPE( PhysicsShapeQueryResult, Reference );
+	OBJ_TYPE( PhysicsShapeQueryResult, RefCounted );
 
 	Vector<PhysicsDirectSpaceState::ShapeResult> result;
 
@@ -318,13 +318,13 @@ public:
 	virtual void area_set_space_override_mode(RID p_area, AreaSpaceOverrideMode p_mode)=0;
 	virtual AreaSpaceOverrideMode area_get_space_override_mode(RID p_area) const=0;
 
-	virtual void area_add_shape(RID p_area, RID p_shape, const Transform& p_transform=Transform())=0;
+	virtual void area_add_shape(RID p_area, RID p_shape, const Transform3D& p_transform=Transform3D())=0;
 	virtual void area_set_shape(RID p_area, int p_shape_idx,RID p_shape)=0;
-	virtual void area_set_shape_transform(RID p_area, int p_shape_idx, const Transform& p_transform)=0;
+	virtual void area_set_shape_transform(RID p_area, int p_shape_idx, const Transform3D& p_transform)=0;
 
 	virtual int area_get_shape_count(RID p_area) const=0;
 	virtual RID area_get_shape(RID p_area, int p_shape_idx) const=0;
-	virtual Transform area_get_shape_transform(RID p_area, int p_shape_idx) const=0;
+	virtual Transform3D area_get_shape_transform(RID p_area, int p_shape_idx) const=0;
 
 	virtual void area_remove_shape(RID p_area, int p_shape_idx)=0;
 	virtual void area_clear_shapes(RID p_area)=0;
@@ -333,10 +333,10 @@ public:
 	virtual ObjectID area_get_object_instance_ID(RID p_area) const=0;
 
 	virtual void area_set_param(RID p_area,AreaParameter p_param,const Variant& p_value)=0;
-	virtual void area_set_transform(RID p_area, const Transform& p_transform)=0;
+	virtual void area_set_transform(RID p_area, const Transform3D& p_transform)=0;
 
 	virtual Variant area_get_param(RID p_parea,AreaParameter p_param) const=0;
-	virtual Transform area_get_transform(RID p_area) const=0;
+	virtual Transform3D area_get_transform(RID p_area) const=0;
 
 	virtual void area_set_monitor_callback(RID p_area,Object *p_receiver,const StringName& p_method)=0;
 	virtual void area_set_area_monitor_callback(RID p_area,Object *p_receiver,const StringName& p_method)=0;
@@ -365,13 +365,13 @@ public:
 	virtual void body_set_mode(RID p_body, BodyMode p_mode)=0;
 	virtual BodyMode body_get_mode(RID p_body, BodyMode p_mode) const=0;
 
-	virtual void body_add_shape(RID p_body, RID p_shape, const Transform& p_transform=Transform())=0;
+	virtual void body_add_shape(RID p_body, RID p_shape, const Transform3D& p_transform=Transform3D())=0;
 	virtual void body_set_shape(RID p_body, int p_shape_idx,RID p_shape)=0;
-	virtual void body_set_shape_transform(RID p_body, int p_shape_idx, const Transform& p_transform)=0;
+	virtual void body_set_shape_transform(RID p_body, int p_shape_idx, const Transform3D& p_transform)=0;
 
 	virtual int body_get_shape_count(RID p_body) const=0;
 	virtual RID body_get_shape(RID p_body, int p_shape_idx) const=0;
-	virtual Transform body_get_shape_transform(RID p_body, int p_shape_idx) const=0;
+	virtual Transform3D body_get_shape_transform(RID p_body, int p_shape_idx) const=0;
 
 	virtual void body_set_shape_as_trigger(RID p_body, int p_shape_idx,bool p_enable)=0;
 	virtual bool body_is_shape_set_as_trigger(RID p_body, int p_shape_idx) const=0;
@@ -510,7 +510,7 @@ public:
 		HINGE_JOINT_FLAG_MAX
 	};
 
-	virtual RID joint_create_hinge(RID p_body_A,const Transform& p_hinge_A,RID p_body_B,const Transform& p_hinge_B)=0;
+	virtual RID joint_create_hinge(RID p_body_A,const Transform3D& p_hinge_A,RID p_body_B,const Transform3D& p_hinge_B)=0;
 	virtual RID joint_create_hinge_simple(RID p_body_A,const Vector3& p_pivot_A,const Vector3& p_axis_A,RID p_body_B,const Vector3& p_pivot_B,const Vector3& p_axis_B)=0;
 
 
@@ -549,7 +549,7 @@ public:
 
 	};
 
-	virtual RID joint_create_slider(RID p_body_A,const Transform& p_local_frame_A,RID p_body_B,const Transform& p_local_frame_B)=0; //reference frame is A
+	virtual RID joint_create_slider(RID p_body_A,const Transform3D& p_local_frame_A,RID p_body_B,const Transform3D& p_local_frame_B)=0; //reference frame is A
 
 	virtual void slider_joint_set_param(RID p_joint,SliderJointParam p_param, float p_value)=0;
 	virtual float slider_joint_get_param(RID p_joint,SliderJointParam p_param) const=0;
@@ -564,7 +564,7 @@ public:
 	};
 
 
-	virtual RID joint_create_cone_twist(RID p_body_A,const Transform& p_local_frame_A,RID p_body_B,const Transform& p_local_frame_B)=0; //reference frame is A
+	virtual RID joint_create_cone_twist(RID p_body_A,const Transform3D& p_local_frame_A,RID p_body_B,const Transform3D& p_local_frame_B)=0; //reference frame is A
 
 	virtual void cone_twist_joint_set_param(RID p_joint,ConeTwistJointParam p_param, float p_value)=0;
 	virtual float cone_twist_joint_get_param(RID p_joint,ConeTwistJointParam p_param) const=0;
@@ -598,7 +598,7 @@ public:
 
 
 
-	virtual RID joint_create_generic_6dof(RID p_body_A,const Transform& p_local_frame_A,RID p_body_B,const Transform& p_local_frame_B)=0; //reference frame is A
+	virtual RID joint_create_generic_6dof(RID p_body_A,const Transform3D& p_local_frame_A,RID p_body_B,const Transform3D& p_local_frame_B)=0; //reference frame is A
 
 	virtual void generic_6dof_joint_set_param(RID p_joint,Vector3::Axis,G6DOFJointAxisParam p_param, float p_value)=0;
 	virtual float generic_6dof_joint_get_param(RID p_joint,Vector3::Axis,G6DOFJointAxisParam p_param)=0;

@@ -116,15 +116,15 @@ RES SoundPlayer3D::_get_gizmo_geometry() const {
 
 	for(int j=0;j<sections;j++) {
 
-		Vector3 p1=Matrix3(Vector3(1,0,0),deg*j/sections).xform(to);
-		Vector3 p2=Matrix3(Vector3(1,0,0),deg*(j+1)/sections).xform(to);
+		Vector3 p1=Basis(Vector3(1,0,0),deg*j/sections).xform(to);
+		Vector3 p2=Basis(Vector3(1,0,0),deg*(j+1)/sections).xform(to);
 
 		for(int i=0;i<sides;i++) {
 
-			Vector3 p1r = Matrix3(Vector3(0,0,1),Math_PI*2*float(i)/sides).xform(p1);
-			Vector3 p1s = Matrix3(Vector3(0,0,1),Math_PI*2*float(i+1)/sides).xform(p1);
-			Vector3 p2s = Matrix3(Vector3(0,0,1),Math_PI*2*float(i+1)/sides).xform(p2);
-			Vector3 p2r = Matrix3(Vector3(0,0,1),Math_PI*2*float(i)/sides).xform(p2);
+			Vector3 p1r = Basis(Vector3(0,0,1),Math_PI*2*float(i)/sides).xform(p1);
+			Vector3 p1s = Basis(Vector3(0,0,1),Math_PI*2*float(i+1)/sides).xform(p1);
+			Vector3 p2s = Basis(Vector3(0,0,1),Math_PI*2*float(i+1)/sides).xform(p2);
+			Vector3 p2r = Basis(Vector3(0,0,1),Math_PI*2*float(i)/sides).xform(p2);
 
 			surface_tool->add_normal(p1r.normalized());
 			surface_tool->add_vertex(p1r);
@@ -187,8 +187,8 @@ RES SoundPlayer3D::_get_gizmo_geometry() const {
 	for(int i = 0; i < speaker_sides ; i++) {
 
 
-		Matrix3 ma(Vector3(0,0,1),Math_PI*2*float(i)/speaker_sides);
-		Matrix3 mb(Vector3(0,0,1),Math_PI*2*float(i+1)/speaker_sides);
+		Basis ma(Vector3(0,0,1),Math_PI*2*float(i)/speaker_sides);
+		Basis mb(Vector3(0,0,1),Math_PI*2*float(i+1)/speaker_sides);
 
 
 		for(int j=0;j<speaker_points-1;j++) {

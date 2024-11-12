@@ -118,7 +118,7 @@ public:
 	float get_znear() const;
 	Projection get_projection() const;
 
-	virtual Transform get_camera_transform() const;
+	virtual Transform3D get_camera_transform() const;
 
 	Vector3 project_ray_normal(const Point2& p_point) const;
 	Vector3 project_ray_origin(const Point2& p_point) const;

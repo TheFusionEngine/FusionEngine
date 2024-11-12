@@ -228,8 +228,8 @@ void ScriptTextEditor::_load_theme_settings() {
 	get_text_edit()->add_keyword_color("Plane",basetype_color);
 	get_text_edit()->add_keyword_color("Quat",basetype_color);
 	get_text_edit()->add_keyword_color("AABB",basetype_color);
-	get_text_edit()->add_keyword_color("Matrix3",basetype_color);
-	get_text_edit()->add_keyword_color("Transform",basetype_color);
+	get_text_edit()->add_keyword_color("Basis",basetype_color);
+	get_text_edit()->add_keyword_color("Transform3D",basetype_color);
 	get_text_edit()->add_keyword_color("Color",basetype_color);
 	get_text_edit()->add_keyword_color("Image",basetype_color);
 	get_text_edit()->add_keyword_color("InputEvent",basetype_color);
@@ -1492,7 +1492,7 @@ void ScriptEditor::_update_window_menu() {
 	}
 }
 
-void ScriptEditor::_add_callback(Object *p_obj, const String& p_function, const StringArray& p_args) {
+void ScriptEditor::_add_callback(Object *p_obj, const String& p_function, const PackedStringArray& p_args) {
 
 	print_line("add callback! hohoho");
 	ERR_FAIL_COND(!p_obj);

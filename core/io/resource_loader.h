@@ -35,9 +35,9 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
-class ResourceInteractiveLoader : public Reference {
+class ResourceInteractiveLoader : public RefCounted {
 
-	OBJ_TYPE(ResourceInteractiveLoader,Reference);
+	OBJ_TYPE(ResourceInteractiveLoader,RefCounted);
 protected:
 
 	static void _bind_methods();

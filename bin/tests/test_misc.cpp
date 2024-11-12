@@ -153,7 +153,7 @@ struct neCollisionResult {
 
 	float depth;
 	bool penetrate;
-	Matrix3 collisionFrame;
+	Basis collisionFrame;
 	Vector3 contactA;
 	Vector3 contactB;
 };
@@ -190,7 +190,7 @@ float GetDistanceFromLine2(Vector3 v, Vector3 & project, const Vector3 & pointA,
 }
 
 void TestCylinderVertEdge(neCollisionResult & result, Vector3 & edgeA1, Vector3 & edgeA2, Vector3 & vertB,
-						  TConvex & cA, TConvex & cB, Transform & transA, Transform & transB, bool flip)
+						  TConvex & cA, TConvex & cB, Transform3D & transA, Transform3D & transB, bool flip)
 {
 	Vector3 project;
 
@@ -228,7 +228,7 @@ void TestCylinderVertEdge(neCollisionResult & result, Vector3 & edgeA1, Vector3 
 }
 
 void TestCylinderVertVert(neCollisionResult & result, Vector3 & vertA, Vector3 & vertB,
-						  TConvex & cA, TConvex & cB, Transform & transA, Transform & transB)
+						  TConvex & cA, TConvex & cB, Transform3D & transA, Transform3D & transB)
 {
 	Vector3 diff = vertA - vertB;
 
@@ -253,7 +253,7 @@ void TestCylinderVertVert(neCollisionResult & result, Vector3 & vertA, Vector3 &
 	result.contactB = vertB + result.collisionFrame.get_axis(2) * cB.CylinderRadius();
 }
 
-void Cylinder2CylinderTest(neCollisionResult & result, TConvex & cA, Transform & transA, TConvex & cB, Transform & transB)
+void Cylinder2CylinderTest(neCollisionResult & result, TConvex & cA, Transform3D & transA, TConvex & cB, Transform3D & transB)
 {
 	result.penetrate = false;
 
@@ -361,8 +361,8 @@ class TestMainLoop : public MainLoop {
 	RID boxB;
 	RID scenario;
 
-	Transform rot_a;
-	Transform rot_b;
+	Transform3D rot_a;
+	Transform3D rot_b;
 
 	bool quit;
 public:
@@ -382,7 +382,7 @@ public:
 
 			float rot_x=-p_event.mouse_motion.relative_y/100.0;
 			float rot_y=p_event.mouse_motion.relative_x/100.0;
-			rot_b.basis = rot_b.basis * Matrix3(Vector3(1,0,0),rot_x) * Matrix3(Vector3(0,1,0),rot_y);
+			rot_b.basis = rot_b.basis * Basis(Vector3(1,0,0),rot_x) * Basis(Vector3(0,1,0),rot_y);
 		}
 
 	}
@@ -399,7 +399,7 @@ public:
 		viewport = vs->viewport_create();
 		vs->viewport_attach_to_screen(viewport);
 		vs->viewport_attach_camera( viewport, camera );
-		vs->camera_set_transform(camera, Transform( Matrix3(), Vector3(0,0,3 ) ) );
+		vs->camera_set_transform(camera, Transform3D( Basis(), Vector3(0,0,3 ) ) );
 
 		/* CONVEX SHAPE */
 
@@ -433,8 +433,8 @@ public:
 		//vs->light_set_shadow( lightaux, true );
 		RID light = vs->instance_create2( lightaux,scenario );
 
-		//rot_a=Transform(Matrix3(Vector3(1,0,0),Math_PI/2.0),Vector3());
-		rot_b=Transform(Matrix3(),Vector3(2,0,0));
+		//rot_a=Transform3D(Basis(Vector3(1,0,0),Math_PI/2.0),Vector3());
+		rot_b=Transform3D(Basis(),Vector3(2,0,0));
 
 		//rot_x=0;
 		//rot_y=0;
@@ -455,17 +455,17 @@ public:
 		Cylinder2CylinderTest(res,a,rot_a,a,rot_b);
 		if (res.penetrate) {
 
-			Matrix3 scale;
+			Basis scale;
 			scale.scale(Vector3(0.1,0.1,0.1));
-			vs->instance_set_transform(boxA,Transform(scale,res.contactA));
-			vs->instance_set_transform(boxB,Transform(scale,res.contactB));
+			vs->instance_set_transform(boxA,Transform3D(scale,res.contactA));
+			vs->instance_set_transform(boxB,Transform3D(scale,res.contactB));
 			print_line("depth: "+rtos(res.depth));
 		} else  {
 
-			Matrix3 scale;
+			Basis scale;
 			scale.scale(Vector3());
-			vs->instance_set_transform(boxA,Transform(scale,res.contactA));
-			vs->instance_set_transform(boxB,Transform(scale,res.contactB));
+			vs->instance_set_transform(boxA,Transform3D(scale,res.contactA));
+			vs->instance_set_transform(boxB,Transform3D(scale,res.contactB));
 
 		}
 		print_line("collided: "+itos(res.penetrate));

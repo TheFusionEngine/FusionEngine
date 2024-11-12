@@ -1670,7 +1670,7 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		bv->set_owner(owner);
 		p_node->set_owner(owner);
 		bv->set_transform(s->get_transform());
-		s->set_transform(Transform());
+		s->set_transform(Transform3D());
 
 		p_node=bv;
 
@@ -1691,7 +1691,7 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 		bv->set_owner(owner);
 		p_node->set_owner(owner);
 		bv->set_transform(s->get_transform());
-		s->set_transform(Transform());
+		s->set_transform(Transform3D());
 
 		p_node=bv;
 
@@ -1777,7 +1777,7 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 
 		//step 2, create points
 
-		Transform t;
+		Transform3D t;
 		t.basis.from_z(plane.normal);
 		t.basis.transpose();
 		t.origin=center;
@@ -2073,7 +2073,7 @@ void EditorSceneImportPlugin::_merge_existing_node(Node *p_node,Node *p_imported
 				//do nothing, nothing changed keep local changes
 			} else {
 				//changed both, imported and edited, merge
-				Transform local_xform = snode->get_import_transform().affine_inverse() * snode->get_transform();
+				Transform3D local_xform = snode->get_import_transform().affine_inverse() * snode->get_transform();
 				snode->set_import_transform(simp->get_import_transform());
 				snode->set_transform(simp->get_import_transform() * local_xform);
 			}

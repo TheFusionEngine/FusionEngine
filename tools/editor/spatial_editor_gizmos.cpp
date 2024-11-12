@@ -372,7 +372,7 @@ bool SpatialGizmoTool::intersect_frustum(const Camera3D *p_camera,const Vector<P
 
 		int vc=collision_segments.size();
 		const Vector3* vptr=collision_segments.ptr();
-		Transform t = spatial_node->get_global_transform();
+		Transform3D t = spatial_node->get_global_transform();
 
 		for(int i=0;i<vc/2;i++) {
 
@@ -408,12 +408,12 @@ bool SpatialGizmoTool::intersect_ray(const Camera3D *p_camera,const Point2& p_po
 
 	if (r_gizmo_handle) {
 
-		Transform t = spatial_node->get_global_transform();
+		Transform3D t = spatial_node->get_global_transform();
 		t.orthonormalize();
 		if (billboard_handle) {
 			t.set_look_at(t.origin,t.origin+p_camera->get_transform().basis.get_axis(2),p_camera->get_transform().basis.get_axis(1));
 		}
-		Transform ti=t.affine_inverse();
+		Transform3D ti=t.affine_inverse();
 
 		Vector3 ray_from=ti.xform(p_camera->project_ray_origin(p_point));
 		Vector3 ray_dir=t.basis.xform_inv(p_camera->project_ray_normal(p_point)).normalized();
@@ -536,7 +536,7 @@ bool SpatialGizmoTool::intersect_ray(const Camera3D *p_camera,const Point2& p_po
 
 		int vc=collision_segments.size();
 		const Vector3* vptr=collision_segments.ptr();
-		Transform t = spatial_node->get_global_transform();
+		Transform3D t = spatial_node->get_global_transform();
 		if (billboard_handle) {
 			t.set_look_at(t.origin,t.origin+p_camera->get_transform().basis.get_axis(2),p_camera->get_transform().basis.get_axis(1));
 		}
@@ -592,13 +592,13 @@ bool SpatialGizmoTool::intersect_ray(const Camera3D *p_camera,const Point2& p_po
 
 
 	if (collision_mesh.is_valid()) {
-		Transform gt = spatial_node->get_global_transform();
+		Transform3D gt = spatial_node->get_global_transform();
 
 		if (billboard_handle) {
 			gt.set_look_at(gt.origin,gt.origin+p_camera->get_transform().basis.get_axis(2),p_camera->get_transform().basis.get_axis(1));
 		}
 
-		Transform ai=gt.affine_inverse();
+		Transform3D ai=gt.affine_inverse();
 		Vector3 ray_from = ai.xform(p_camera->project_ray_origin(p_point));
 		Vector3 ray_dir=ai.basis.xform(p_camera->project_ray_normal(p_point)).normalized();
 		Vector3 rpos,rnorm;
@@ -718,7 +718,7 @@ Variant LightSpatialGizmo::get_handle_value(int p_idx) const{
 }
 
 
-static float _find_closest_angle_to_half_pi_arc(const Vector3& p_from, const Vector3& p_to, float p_arc_radius,const Transform& p_arc_xform) {
+static float _find_closest_angle_to_half_pi_arc(const Vector3& p_from, const Vector3& p_to, float p_arc_radius,const Transform3D& p_arc_xform) {
 
 	//bleh, discrete is simpler
 	static const int arc_test_points=64;
@@ -752,9 +752,9 @@ static float _find_closest_angle_to_half_pi_arc(const Vector3& p_from, const Vec
 
 void LightSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point) {
 
-	Transform gt = light->get_global_transform();
+	Transform3D gt = light->get_global_transform();
 	gt.orthonormalize();
-	Transform gi = gt.affine_inverse();
+	Transform3D gi = gt.affine_inverse();
 
 	Vector3 ray_from = p_camera->project_ray_origin(p_point);
 	Vector3 ray_dir = p_camera->project_ray_normal(p_point);
@@ -841,8 +841,8 @@ void LightSpatialGizmo::redraw() {
 		for(int i = 0; i < arrow_sides ; i++) {
 
 
-			Matrix3 ma(Vector3(0,0,1),Math_PI*2*float(i)/arrow_sides);
-			Matrix3 mb(Vector3(0,0,1),Math_PI*2*float(i+1)/arrow_sides);
+			Basis ma(Vector3(0,0,1),Math_PI*2*float(i)/arrow_sides);
+			Basis mb(Vector3(0,0,1),Math_PI*2*float(i+1)/arrow_sides);
 
 
 			for(int j=1;j<arrow_points-1;j++) {
@@ -1016,9 +1016,9 @@ Variant CameraSpatialGizmo::get_handle_value(int p_idx) const{
 }
 void CameraSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point){
 
-	Transform gt = camera->get_global_transform();
+	Transform3D gt = camera->get_global_transform();
 	gt.orthonormalize();
-	Transform gi = gt.affine_inverse();
+	Transform3D gi = gt.affine_inverse();
 
 	Vector3 ray_from = p_camera->project_ray_origin(p_point);
 	Vector3 ray_dir = p_camera->project_ray_normal(p_point);
@@ -1026,7 +1026,7 @@ void CameraSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& 
 	Vector3 s[2]={gi.xform(ray_from),gi.xform(ray_from+ray_dir*4096)};
 
 	if (camera->get_projection()==Camera3D::PROJECTION_PERSPECTIVE) {
-		Transform gt=camera->get_global_transform();
+		Transform3D gt=camera->get_global_transform();
 		float a = _find_closest_angle_to_half_pi_arc(s[0],s[1],1.0,gt);
 		camera->set("fov",a);
 	} else {
@@ -1222,7 +1222,7 @@ void SkeletonSpatialGizmo::redraw() {
 
 	surface_tool->begin(Mesh::PRIMITIVE_LINES);
 	surface_tool->set_material(SpatialEditorGizmos::singleton->skeleton_material);
-	Vector<Transform> grests;
+	Vector<Transform3D> grests;
 	grests.resize(skel->get_bone_count());
 
 	Vector<int> bones;
@@ -1359,7 +1359,7 @@ void SkeletonSpatialGizmo::redraw() {
 			bones[0]=i;
 		}
 /*
-		Transform  t = grests[i];
+		Transform3D  t = grests[i];
 		t.orthonormalize();
 
 		for (int i=0;i<6;i++) {
@@ -1721,9 +1721,9 @@ void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const 
 	if (s.is_null())
 		return;
 
-	Transform gt = cs->get_global_transform();
+	Transform3D gt = cs->get_global_transform();
 	gt.orthonormalize();
-	Transform gi = gt.affine_inverse();
+	Transform3D gi = gt.affine_inverse();
 
 	Vector3 ray_from = p_camera->project_ray_origin(p_point);
 	Vector3 ray_dir = p_camera->project_ray_normal(p_point);
@@ -2177,9 +2177,9 @@ Variant VisibilityNotifierGizmo::get_handle_value(int p_idx) const{
 void VisibilityNotifierGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point){
 
 
-	Transform gt = notifier->get_global_transform();
+	Transform3D gt = notifier->get_global_transform();
 	//gt.orthonormalize();
-	Transform gi = gt.affine_inverse();
+	Transform3D gi = gt.affine_inverse();
 
 	AABB aabb = notifier->get_aabb();
 	Vector3 ray_from = p_camera->project_ray_origin(p_point);

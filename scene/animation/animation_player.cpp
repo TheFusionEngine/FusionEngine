@@ -581,7 +581,7 @@ void AnimationPlayer::_animation_update_transforms() {
 
 		if (nc->spatial) {
 		
-			Transform t;
+			Transform3D t;
 			t.origin=nc->loc_accum;
 			t.basis=nc->rot_accum;
 			t.basis.scale( nc->scale_accum );

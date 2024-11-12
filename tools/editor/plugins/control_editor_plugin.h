@@ -63,7 +63,7 @@ class ControlEditor : public Control {
 	HScrollBar *h_scroll;
 	VScrollBar *v_scroll;
 
-	Matrix32 transform;
+	Transform2D transform;
 	float zoom;
 
 	Control *current_window;

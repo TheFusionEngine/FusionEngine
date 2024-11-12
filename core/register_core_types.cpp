@@ -109,7 +109,7 @@ void register_core_types() {
 	ObjectTypeDB::register_type<Object>();
 
 
-	ObjectTypeDB::register_type<Reference>();
+	ObjectTypeDB::register_type<RefCounted>();
 	ObjectTypeDB::register_type<ResourceImportMetadata>();
 	ObjectTypeDB::register_type<Resource>();
 	ObjectTypeDB::register_type<FuncRef>();

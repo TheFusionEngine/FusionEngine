@@ -40,7 +40,7 @@ class CollisionObject3D : public Node3D {
 	RID rid;
 
 	struct ShapeData {
-		Transform xform;
+		Transform3D xform;
 		Ref<Shape> shape;
         bool trigger;
 
@@ -77,12 +77,12 @@ friend class Viewport;
 public:
 
 
-	void add_shape(const Ref<Shape>& p_shape, const Transform& p_transform=Transform());
+	void add_shape(const Ref<Shape>& p_shape, const Transform3D& p_transform=Transform3D());
 	int get_shape_count() const;
 	void set_shape(int p_shape_idx, const Ref<Shape>& p_shape);
-	void set_shape_transform(int p_shape_idx, const Transform& p_transform);
+	void set_shape_transform(int p_shape_idx, const Transform3D& p_transform);
 	Ref<Shape> get_shape(int p_shape_idx) const;
-	Transform get_shape_transform(int p_shape_idx) const;
+	Transform3D get_shape_transform(int p_shape_idx) const;
 	void remove_shape(int p_shape_idx);
 	void clear_shapes();
 	void set_shape_as_trigger(int p_shape_idx, bool p_trigger);

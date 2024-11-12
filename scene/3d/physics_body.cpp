@@ -783,9 +783,9 @@ Variant CharacterBody3D::_get_collider() const {
 	if (!obj)
 		return Variant();
 
-	Reference *ref = obj->cast_to<Reference>();
+	RefCounted *ref = obj->cast_to<RefCounted>();
 	if (ref) {
-		return Ref<Reference>(ref);
+		return Ref<RefCounted>(ref);
 	}
 
 	return obj;
@@ -904,7 +904,7 @@ Vector3 CharacterBody3D::move(const Vector3& p_motion) {
 
 		//print_line("**** RECOVER: "+recover_motion);
 
-		Transform gt = get_global_transform();
+		Transform3D gt = get_global_transform();
 		gt.origin+=recover_motion;
 		set_global_transform(gt);
 
@@ -970,7 +970,7 @@ Vector3 CharacterBody3D::move(const Vector3& p_motion) {
 
 		if (true || (safe==0 && unsafe==0)) { //use it always because it's more precise than GJK
 			//no advance, use rest info from collision
-			Transform ugt = get_global_transform();
+			Transform3D ugt = get_global_transform();
 			ugt.origin+=p_motion*unsafe;
 
 			PhysicsDirectSpaceState::ShapeRestInfo rest_info;
@@ -997,7 +997,7 @@ Vector3 CharacterBody3D::move(const Vector3& p_motion) {
 	Vector3 motion=p_motion*safe;
 	//if (colliding)
 	//	motion+=normal*0.001;
-	Transform gt = get_global_transform();
+	Transform3D gt = get_global_transform();
 	gt.origin+=motion;
 	set_global_transform(gt);
 
@@ -1027,7 +1027,7 @@ bool CharacterBody3D::can_move_to(const Vector3& p_position, bool p_discrete) {
 		mask|=PhysicsDirectSpaceState::TYPE_MASK_CHARACTER_BODY;
 
 	Vector3 motion = p_position-get_global_transform().origin;
-	Transform xform=get_global_transform();
+	Transform3D xform=get_global_transform();
 
 	if (true || p_discrete) {
 

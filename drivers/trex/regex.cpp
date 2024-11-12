@@ -119,9 +119,9 @@ String RegEx::get_capture(int p_idx) const {
 	return text.substr(start, len);
 };
 
-StringArray RegEx::_bind_get_captures() const {
+PackedStringArray RegEx::_bind_get_captures() const {
 
-	StringArray ret;
+	PackedStringArray ret;
 	int count = get_capture_count();
 	for (int i=0; i<count; i++) {
 

@@ -54,8 +54,8 @@ private:
 
 	struct Shape {
 
-		Transform xform;
-		Transform xform_inv;
+		Transform3D xform;
+		Transform3D xform_inv;
 		BroadPhaseSW::ID bpid;
 		AABB aabb_cache; //for rayqueries
 		ShapeSW *shape;
@@ -66,8 +66,8 @@ private:
 
 	Vector<Shape> shapes;
 	SpaceSW *space;
-	Transform transform;
-	Transform inv_transform;
+	Transform3D transform;
+	Transform3D inv_transform;
 	bool _static;
 
 	void _update_shapes();
@@ -78,7 +78,7 @@ protected:
 	void _update_shapes_with_motion(const Vector3& p_motion);
 	void _unregister_shapes();
 
-	_FORCE_INLINE_ void _set_transform(const Transform& p_transform,bool p_update_shapes=true) {
+	_FORCE_INLINE_ void _set_transform(const Transform3D& p_transform,bool p_update_shapes=true) {
 
 #ifdef DEBUG_ENABLED
 
@@ -91,7 +91,7 @@ protected:
 		transform=p_transform; if (p_update_shapes) _update_shapes();
 
 	}
-	_FORCE_INLINE_ void _set_inv_transform(const Transform& p_transform) { inv_transform=p_transform; }
+	_FORCE_INLINE_ void _set_inv_transform(const Transform3D& p_transform) { inv_transform=p_transform; }
 	void _set_static(bool p_static);
 
 	virtual void _shapes_changed()=0;
@@ -112,17 +112,17 @@ public:
 	void _shape_changed();
 
 	_FORCE_INLINE_ Type get_type() const { return type; }
-	void add_shape(ShapeSW *p_shape,const Transform& p_transform=Transform());
+	void add_shape(ShapeSW *p_shape,const Transform3D& p_transform=Transform3D());
 	void set_shape(int p_index,ShapeSW *p_shape);
-	void set_shape_transform(int p_index,const Transform& p_transform);
+	void set_shape_transform(int p_index,const Transform3D& p_transform);
 	_FORCE_INLINE_ int get_shape_count() const { return shapes.size(); }
 	_FORCE_INLINE_ ShapeSW *get_shape(int p_index) const { return shapes[p_index].shape; }
-	_FORCE_INLINE_ const Transform& get_shape_transform(int p_index) const { return shapes[p_index].xform; }
-	_FORCE_INLINE_ const Transform& get_shape_inv_transform(int p_index) const { return shapes[p_index].xform_inv; }
+	_FORCE_INLINE_ const Transform3D& get_shape_transform(int p_index) const { return shapes[p_index].xform; }
+	_FORCE_INLINE_ const Transform3D& get_shape_inv_transform(int p_index) const { return shapes[p_index].xform_inv; }
 	_FORCE_INLINE_ const AABB& get_shape_aabb(int p_index) const { return shapes[p_index].aabb_cache; }
 
-	_FORCE_INLINE_ Transform get_transform() const { return transform; }
-	_FORCE_INLINE_ Transform get_inv_transform() const { return inv_transform; }
+	_FORCE_INLINE_ Transform3D get_transform() const { return transform; }
+	_FORCE_INLINE_ Transform3D get_inv_transform() const { return inv_transform; }
 	_FORCE_INLINE_ SpaceSW* get_space() const { return space; }
 
 	_FORCE_INLINE_ void set_ray_pickable(bool p_enable) { ray_pickable=p_enable; }

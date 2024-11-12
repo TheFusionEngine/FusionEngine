@@ -175,7 +175,7 @@ void DocDump::dump(const String& p_file) {
 								default_arg_text="\""+default_arg_text+"\"";
 								break;
 							case Variant::TRANSFORM:
-								if (default_arg.operator Transform()==Transform()) {
+								if (default_arg.operator Transform3D()==Transform3D()) {
 									default_arg_text="";
 								}
 

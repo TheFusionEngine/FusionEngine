@@ -124,7 +124,7 @@ void MultiMeshEditor::_populate() {
 		return;
 	}
 
-	Transform geom_xform = node->get_global_transform().affine_inverse() * ss_instance->get_global_transform();
+	Transform3D geom_xform = node->get_global_transform().affine_inverse() * ss_instance->get_global_transform();
 
 	DVector<Face3> geometry = ss_instance->get_faces(VisualInstance3D::FACES_SOLID);
 
@@ -204,7 +204,7 @@ void MultiMeshEditor::_populate() {
 	float _scale = populate_scale->get_val();
 	int axis = populate_axis->get_selected();
 
-	Transform axis_xform;
+	Transform3D axis_xform;
 	if (axis==Vector3::AXIS_Z) {
 		axis_xform.rotate(Vector3(1,0,0),Math_PI*0.5);
 	}
@@ -229,13 +229,13 @@ void MultiMeshEditor::_populate() {
 		Vector3 normal = face.get_plane().normal;
 		Vector3 op_axis = (face.vertex[0]-face.vertex[1]).normalized();
 
-		Transform xform;
+		Transform3D xform;
 
 		xform.set_look_at(pos, pos+op_axis,normal);
 		xform = xform * axis_xform;
 
 
-		Matrix3 post_xform;
+		Basis post_xform;
 
 		post_xform.rotate(xform.basis.get_axis(0),Math::random(-_tilt_random,_tilt_random)*Math_PI);
 		post_xform.rotate(xform.basis.get_axis(2),Math::random(-_tilt_random,_tilt_random)*Math_PI);

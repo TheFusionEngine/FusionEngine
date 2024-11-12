@@ -223,7 +223,7 @@ bool CollisionObject3D::is_ray_pickable() const {
 
 void CollisionObject3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("add_shape","shape:Shape","transform"),&CollisionObject3D::add_shape,DEFVAL(Transform()));
+	ObjectTypeDB::bind_method(_MD("add_shape","shape:Shape","transform"),&CollisionObject3D::add_shape,DEFVAL(Transform3D()));
 	ObjectTypeDB::bind_method(_MD("get_shape_count"),&CollisionObject3D::get_shape_count);
 	ObjectTypeDB::bind_method(_MD("set_shape","shape_idx","shape:Shape"),&CollisionObject3D::set_shape);
 	ObjectTypeDB::bind_method(_MD("set_shape_transform","shape_idx","transform"),&CollisionObject3D::set_shape_transform);
@@ -250,7 +250,7 @@ void CollisionObject3D::_bind_methods() {
 }
 
 
-void CollisionObject3D::add_shape(const Ref<Shape>& p_shape, const Transform& p_transform) {
+void CollisionObject3D::add_shape(const Ref<Shape>& p_shape, const Transform3D& p_transform) {
 
 	ShapeData sdata;
 	sdata.shape=p_shape;
@@ -271,7 +271,7 @@ void CollisionObject3D::set_shape(int p_shape_idx, const Ref<Shape>& p_shape) {
 	_update_shapes();
 }
 
-void CollisionObject3D::set_shape_transform(int p_shape_idx, const Transform& p_transform) {
+void CollisionObject3D::set_shape_transform(int p_shape_idx, const Transform3D& p_transform) {
 
 	ERR_FAIL_INDEX(p_shape_idx,shapes.size());
 	shapes[p_shape_idx].xform=p_transform;
@@ -285,9 +285,9 @@ Ref<Shape> CollisionObject3D::get_shape(int p_shape_idx) const {
 	return shapes[p_shape_idx].shape;
 
 }
-Transform CollisionObject3D::get_shape_transform(int p_shape_idx) const {
+Transform3D CollisionObject3D::get_shape_transform(int p_shape_idx) const {
 
-	ERR_FAIL_INDEX_V(p_shape_idx,shapes.size(),Transform());
+	ERR_FAIL_INDEX_V(p_shape_idx,shapes.size(),Transform3D());
 	return shapes[p_shape_idx].xform;
 
 }

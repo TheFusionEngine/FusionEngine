@@ -12,8 +12,8 @@ class VehicleWheel3D : public Node3D {
 friend class VehicleBody3D;
 
 
-	Transform m_worldTransform;
-	Transform local_xform;
+	Transform3D m_worldTransform;
+	Transform3D local_xform;
 	bool engine_traction;
 	bool steers;
 
