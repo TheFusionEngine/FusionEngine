@@ -28,6 +28,9 @@
 /*************************************************************************/
 #include "servers/visual/visual_server_raster.h"
 #include "drivers/gles1/rasterizer_gles1.h"
+#include "drivers/unix/tcp_server_posix.h"
+#include "drivers/unix/stream_peer_tcp_posix.h"
+#include "drivers/unix/ip_unix.h"
 #include "os_wii.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,6 +41,7 @@
 #include "drivers/unix/file_access_unix.h"
 #include "os/memory_pool_dynamic_static.h"
 #include "core/os/thread_dummy.h"
+#include "network2.h"
 
 #include "main/main.h"
 
@@ -66,6 +70,10 @@ static MemoryPoolDynamicStatic *mempool_dynamic=NULL;
 	
 	
 void OS_WII::initialize_core() {
+	SYS_STDIO_Report(true);
+
+	net_deinit();
+	while (net_init() == -EAGAIN) ;
 
 	ThreadDummy::make_default();
 	SemaphoreDummy::make_default();
@@ -93,6 +101,10 @@ void OS_WII::initialize_core() {
 	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_RESOURCES);
 	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_USERDATA);
 	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_FILESYSTEM);
+
+	TCPServerPosix::make_default();
+	StreamPeerTCPPosix::make_default();
+	IP_Unix::make_default();
 	
 	SDL_Init(SDL_INIT_VIDEO);
 	videoInfo = SDL_GetVideoInfo();

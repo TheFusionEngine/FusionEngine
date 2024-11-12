@@ -28,10 +28,10 @@
 /*************************************************************************/
 #include "ip_unix.h"
 
-#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED) && !defined(WIN98_ENABLED) || defined(PSP)
+#if defined(POSIX_IP_ENABLED) || defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED) && !defined(WIN98_ENABLED) || defined(PSP)
 
 
-#ifdef WINDOWS_ENABLED
+#if defined(WINDOWS_ENABLED)
  #ifdef WINRT_ENABLED
   #include <ws2tcpip.h>
   #include <winsock2.h>
@@ -45,15 +45,18 @@
   #include <stdio.h>
   #include <iphlpapi.h>
  #endif
+#elif defined(WII_ENABLED)
+ #include "../../platform/wii/network2.h"
+ using namespace gc::net;
 #else
  #include <netdb.h>
-#ifndef PSP
- #ifdef ANDROID_ENABLED
-  #include "platform/android/ifaddrs_android.h"
- #else
-  #include <ifaddrs.h>
+ #ifndef PSP
+  #ifdef ANDROID_ENABLED
+   #include "platform/android/ifaddrs_android.h"
+  #else
+   #include <ifaddrs.h>
+  #endif
  #endif
-#endif
  #include <arpa/inet.h>
  #include <sys/socket.h>
 
@@ -74,7 +77,7 @@ IP_Address IP_Unix::_resolve_hostname(const String& p_hostname) {
 
 }
 
-#if defined(PSP)
+#if defined(PSP) || defined(WII_ENABLED)
 void IP_Unix::get_local_addresses(List<IP_Address> *r_addresses) const {
 
 

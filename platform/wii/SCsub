@@ -1,12 +1,20 @@
-Import('env')
+Import("env")
 import shlex
 from SCons.Node import NodeList
 
-common_wii=[\
-	"os_wii.cpp",\
+common_wii = [
+    "os_wii.cpp",
 ]
 
-prog = env.Program('#bin/fe_wiii',['godot_wii.cpp']+common_wii)
+prog = env.Program("#bin/fe_wiii", ["godot_wii.cpp"] + common_wii)
 env.Command(
-	"#bin/fe_wii.dol", prog, shlex.join(['elf2dol', str(prog if not isinstance(prog, NodeList) else prog[0]),  'bin/fe_wii.dol'])
+    "#bin/fe_wii.dol",
+    prog,
+    shlex.join(
+        [
+            "elf2dol",
+            str(prog if not isinstance(prog, NodeList) else prog[0]),
+            "bin/fe_wii.dol",
+        ]
+    ),
 )

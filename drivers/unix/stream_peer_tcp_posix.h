@@ -26,7 +26,7 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#if defined(UNIX_ENABLED) || defined(PSP)
+#if defined(POSIX_IP_ENABLED) || defined(UNIX_ENABLED) || defined(PSP)
 
 #ifndef STREAM_PEER_TCP_POSIX_H
 #define STREAM_PEER_TCP_POSIX_H
