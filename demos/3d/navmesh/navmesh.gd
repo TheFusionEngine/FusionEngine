@@ -76,8 +76,8 @@ func _input(ev):
 
 	if (ev.type==InputEvent.MOUSE_BUTTON and ev.button_index==BUTTON_LEFT and ev.pressed):
                 
-		var from = get_node("cambase/Camera").project_ray_origin(ev.pos)
-		var to = from+get_node("cambase/Camera").project_ray_normal(ev.pos)*100
+		var from = get_node("cambase/Camera3D").project_ray_origin(ev.pos)
+		var to = from+get_node("cambase/Camera3D").project_ray_normal(ev.pos)*100
 		var p = get_closest_point_to_segment(from,to)
 	
 		begin=get_closest_point(get_node("robot_base").get_translation())

@@ -504,11 +504,11 @@ void register_scene_types() {
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_type<RayShape>();
+	ObjectTypeDB::register_type<RayShape3D>();
 	ObjectTypeDB::register_type<SphereShape3D>();
 	ObjectTypeDB::register_type<BoxShape3D>();
 	ObjectTypeDB::register_type<CapsuleShape3D>();
-	ObjectTypeDB::register_type<PlaneShape>();
+	ObjectTypeDB::register_type<PlaneShape3D>();
 	ObjectTypeDB::register_type<ConvexPolygonShape3D>();
 	ObjectTypeDB::register_type<ConcavePolygonShape3D>();
 

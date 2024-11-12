@@ -1677,7 +1677,7 @@ String CollisionShapeSpatialGizmo::get_handle_name(int p_idx) const {
 		return p_idx==0?"Radius":"Height";
 	}
 
-	if (s->cast_to<RayShape>()) {
+	if (s->cast_to<RayShape3D>()) {
 
 		return "Length";
 	}
@@ -1708,9 +1708,9 @@ Variant CollisionShapeSpatialGizmo::get_handle_value(int p_idx) const{
 		return p_idx==0?cs->get_radius():cs->get_height();
 	}
 
-	if (s->cast_to<RayShape>()) {
+	if (s->cast_to<RayShape3D>()) {
 
-		Ref<RayShape> cs = s;
+		Ref<RayShape3D> cs = s;
 		return cs->get_length();
 	}
 
@@ -1742,9 +1742,9 @@ void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const 
 		ss->set_radius(d);
 	}
 
-	if (s->cast_to<RayShape>()) {
+	if (s->cast_to<RayShape3D>()) {
 
-		Ref<RayShape> rs = s;
+		Ref<RayShape3D> rs = s;
 		Vector3 ra,rb;
 		Geometry::get_closest_points_between_segments(Vector3(),Vector3(0,0,4096),sg[0],sg[1],ra,rb);
 		float d = ra.z;
@@ -1856,9 +1856,9 @@ void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restor
 
 	}
 
-	if (s->cast_to<RayShape>()) {
+	if (s->cast_to<RayShape3D>()) {
 
-		Ref<RayShape> ss=s;
+		Ref<RayShape3D> ss=s;
 		if (p_cancel) {
 			ss->set_length(p_restore);
 			return;
@@ -2039,9 +2039,9 @@ void CollisionShapeSpatialGizmo::redraw(){
 
 	}
 
-	if (s->cast_to<PlaneShape>()) {
+	if (s->cast_to<PlaneShape3D>()) {
 
-		Ref<PlaneShape> ps=s;
+		Ref<PlaneShape3D> ps=s;
 		Plane p = ps->get_plane();
 		Vector<Vector3> points;
 
@@ -2100,9 +2100,9 @@ void CollisionShapeSpatialGizmo::redraw(){
 	}
 
 
-	if (s->cast_to<RayShape>()) {
+	if (s->cast_to<RayShape3D>()) {
 
-		Ref<RayShape> rs=s;
+		Ref<RayShape3D> rs=s;
 
 		Vector<Vector3> points;
 		points.push_back(Vector3());

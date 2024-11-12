@@ -86,9 +86,9 @@ void CollisionShape3D::_update_indicator() {
 
 	VS::PrimitiveType pt = VS::PRIMITIVE_TRIANGLES;
 
-	if (shape->cast_to<RayShape>()) {
+	if (shape->cast_to<RayShape3D>()) {
 
-		RayShape *rs = shape->cast_to<RayShape>();
+		RayShape3D *rs = shape->cast_to<RayShape3D>();
 		points.push_back(Vector3());
 		points.push_back(Vector3(0,0,rs->get_length()));
 		pt = VS::PRIMITIVE_LINES;
@@ -249,9 +249,9 @@ void CollisionShape3D::_update_indicator() {
 			}
 		}
 
-	} else if (shape->cast_to<PlaneShape>()) {
+	} else if (shape->cast_to<PlaneShape3D>()) {
 
-		PlaneShape *shapeptr=shape->cast_to<PlaneShape>();
+		PlaneShape3D *shapeptr=shape->cast_to<PlaneShape3D>();
 
 		Plane p = shapeptr->get_plane();
 		Vector3 n1 = p.get_any_perpendicular_normal();

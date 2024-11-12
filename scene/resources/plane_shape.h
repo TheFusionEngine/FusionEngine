@@ -31,9 +31,9 @@
 
 #include "scene/resources/shape.h"
 
-class PlaneShape : public Shape {
+class PlaneShape3D : public Shape {
 
-	OBJ_TYPE(PlaneShape,Shape);
+	OBJ_TYPE(PlaneShape3D,Shape);
 	Plane plane;
 
 protected:
@@ -47,6 +47,6 @@ public:
 	void set_plane(Plane p_plane);
 	Plane get_plane() const;
 
-	PlaneShape();
+	PlaneShape3D();
 };
 #endif // PLANE_SHAPE_H

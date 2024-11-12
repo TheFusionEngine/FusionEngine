@@ -30,9 +30,9 @@
 #define RAY_SHAPE_H
 #include "scene/resources/shape.h"
 
-class RayShape : public Shape {
+class RayShape3D : public Shape {
 
-	OBJ_TYPE(RayShape,Shape);
+	OBJ_TYPE(RayShape3D,Shape);
 	float length;
 
 protected:
@@ -45,6 +45,6 @@ public:
 	void set_length(float p_length);
 	float get_length() const;
 
-	RayShape();
+	RayShape3D();
 };
 #endif // RAY_SHAPE_H

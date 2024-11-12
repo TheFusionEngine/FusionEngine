@@ -32,35 +32,35 @@
 
 
 
-void RayShape::_update_shape() {
+void RayShape3D::_update_shape() {
 
 	PhysicsServer::get_singleton()->shape_set_data(get_shape(),length);
 	emit_changed();
 }
 
-void RayShape::set_length(float p_length) {
+void RayShape3D::set_length(float p_length) {
 
 	length=p_length;
 	_update_shape();
 	notify_change_to_owners();
 }
 
-float RayShape::get_length() const {
+float RayShape3D::get_length() const {
 
 	return length;
 }
 
 
-void RayShape::_bind_methods() {
+void RayShape3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_length","length"),&RayShape::set_length);
-	ObjectTypeDB::bind_method(_MD("get_length"),&RayShape::get_length);
+	ObjectTypeDB::bind_method(_MD("set_length","length"),&RayShape3D::set_length);
+	ObjectTypeDB::bind_method(_MD("get_length"),&RayShape3D::get_length);
 
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"length",PROPERTY_HINT_RANGE,"0,4096,0.01"), _SCS("set_length"), _SCS("get_length") );
 
 }
 
-RayShape::RayShape() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_RAY)) {
+RayShape3D::RayShape3D() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_RAY)) {
 
 	set_length(1.0);
 }

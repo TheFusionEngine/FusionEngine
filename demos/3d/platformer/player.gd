@@ -214,7 +214,7 @@ func _integrate_forces( state ):
 	
 	if (shoot_attempt and not prev_shoot):
 		shoot_blend = SHOOT_TIME		
-		var bullet = preload("res://bullet.scn").instance()
+		var bullet = preload("res://bullet.xscn").instance()
 		bullet.set_transform( get_node("Armature/bullet").get_global_transform().orthonormalized() )
 		get_parent().add_child( bullet )
 		bullet.set_linear_velocity( get_node("Armature/bullet").get_global_transform().basis[2].normalized() * 20 )

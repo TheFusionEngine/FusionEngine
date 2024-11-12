@@ -7151,7 +7151,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PlaneShape" inherits="Shape" category="Resources">
+<class name="PlaneShape3D" inherits="Shape" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7658,7 +7658,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="RayShape" inherits="Shape" category="Resources">
+<class name="RayShape3D" inherits="Shape" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>

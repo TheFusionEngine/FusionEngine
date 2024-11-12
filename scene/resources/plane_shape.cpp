@@ -32,12 +32,12 @@
 
 
 
-void PlaneShape::_update_shape() {
+void PlaneShape3D::_update_shape() {
 
 	PhysicsServer::get_singleton()->shape_set_data(get_shape(),plane);
 }
 
-void PlaneShape::set_plane(Plane p_plane) {
+void PlaneShape3D::set_plane(Plane p_plane) {
 
 	plane=p_plane;
 	_update_shape();
@@ -45,22 +45,22 @@ void PlaneShape::set_plane(Plane p_plane) {
 	_change_notify("plane");
 }
 
-Plane PlaneShape::get_plane() const {
+Plane PlaneShape3D::get_plane() const {
 
 	return plane;
 }
 
 
-void PlaneShape::_bind_methods() {
+void PlaneShape3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_plane","plane"),&PlaneShape::set_plane);
-	ObjectTypeDB::bind_method(_MD("get_plane"),&PlaneShape::get_plane);
+	ObjectTypeDB::bind_method(_MD("set_plane","plane"),&PlaneShape3D::set_plane);
+	ObjectTypeDB::bind_method(_MD("get_plane"),&PlaneShape3D::get_plane);
 
 	ADD_PROPERTY( PropertyInfo(Variant::PLANE,"plane"), _SCS("set_plane"), _SCS("get_plane") );
 
 }
 
-PlaneShape::PlaneShape() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_PLANE)) {
+PlaneShape3D::PlaneShape3D() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_PLANE)) {
 
 	set_plane(Plane(0,1,0,0));
 }
