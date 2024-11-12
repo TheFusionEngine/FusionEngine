@@ -568,15 +568,14 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 		int size,ofs;
 		img.get_mipmap_offset_and_size(i,ofs,size);
 
+#if !defined(__WII__)
 		if (texture->compressed) {
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-#ifdef __WII__
-			glTexImage2D(blit_target, i, format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
-#else
 			glCompressedTexImage2D( blit_target, i, format,w,h,0,size,&read[ofs] );
+		}
+		else
 #endif
-
-		} else {
+		{
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 //			glTexImage2D(blit_target, i, format==GL_RGB?GL_RGB8:format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
 			glTexImage2D(blit_target, i, format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
@@ -1319,11 +1318,13 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 	Surface *surface = memnew( Surface );
 	ERR_FAIL_COND( !surface );
-#ifdef __WII__
-	bool use_VBO = false;
+	bool use_VBO;
+#if defined(GLAD_ENABLED)
+	use_VBO = glGenBuffers!=NULL;
 #else
-	bool use_VBO = true; //glGenBuffersARB!=NULL; // TODO detect if it's in there
+	use_VBO = true;
 #endif
+	use_VBO= false;
 	if (format&VS::ARRAY_FORMAT_WEIGHTS || mesh->morph_target_count>0) {
 
 		use_VBO=false;
@@ -1525,7 +1526,6 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 	_surface_set_arrays(surface,array_ptr,index_array_ptr,p_arrays,true);
 
-#ifndef __WII__
 	/* create buffers!! */
 	if (use_VBO) {
 		glGenBuffers(1,&surface->vertex_id);
@@ -1543,7 +1543,6 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 		}
 	}
-#endif
 	mesh->surfaces.push_back(surface);
 
 }
@@ -3834,9 +3833,9 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 			if (!use_VBO) {
 
 				base = surf->array_local;
-#ifndef __WII__
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-#endif
+				if (glBindBuffer!=NULL) {
+					glBindBuffer(GL_ARRAY_BUFFER, 0);
+				}
 				bool can_copy_to_local=surf->local_stride * surf->array_len <= skinned_buffer_size;
 				if (!can_copy_to_local)
 					skeleton_valid=false;
@@ -4054,9 +4053,7 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 				}
 
 			} else {
-#ifndef __WII__
 				glBindBuffer(GL_ARRAY_BUFFER, surf->vertex_id);
-#endif
 			};
 
 
@@ -4190,16 +4187,16 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			if (s->index_array_len>0) {
 
 				if (s->index_array_local) {
-#ifndef __WII__
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-#endif
+					if (glBindBuffer!=NULL) {
+						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+					}
 					glDrawElements(gl_primitive[s->primitive], s->index_array_len, (s->array_len>(1<<16))?GL_UNSIGNED_SHORT:GL_UNSIGNED_SHORT, s->index_array_local);
 
 				} else {
 				//	print_line("indices: "+itos(s->index_array_local) );
-#ifndef __WII__
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
-#endif
+					if (glBindBuffer!=NULL) {
+						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
+					}
 					glDrawElements(gl_primitive[s->primitive],s->index_array_len, (s->array_len>(1<<16))?GL_UNSIGNED_SHORT:GL_UNSIGNED_SHORT,0);
 				}
 
@@ -4236,9 +4233,9 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			if (s->index_array_len>0) {
 
 				// glLoadMatrixf(elements[0].matrix);
-#ifndef __WII__
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
-#endif
+				if (glBindBuffer!=NULL) {
+					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
+				}
 				for(int i=0;i<element_count;i++) {
 					//glUniformMatrix4fv(material_shader.get_uniform_location(MaterialShaderGLES1::INSTANCE_TRANSFORM), 1, false, elements[i].matrix);
 					// glMultMatrixf(elements[i].matrix);
@@ -4291,10 +4288,10 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			pp.process(&particles->data,particles_instance->transform,td);
 			ERR_EXPLAIN("A parameter in the particle system is not correct.");
 			ERR_FAIL_COND(!pp.valid);
-#ifndef __WII__
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
-			glBindBuffer(GL_ARRAY_BUFFER,0);
-#endif
+			if (glBindBuffer!=NULL) {
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
+				glBindBuffer(GL_ARRAY_BUFFER,0);
+			}
 
 			Transform camera;
 			if (shadow)
@@ -5166,10 +5163,10 @@ void RasterizerGLES1::end_frame() {
 
 void RasterizerGLES1::reset_state() {
 
-#ifndef __WII__
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
-	glBindBuffer(GL_ARRAY_BUFFER,0);
-#endif
+	if (glBindBuffer!=NULL) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+	}
 
 	glActiveTexture(GL_TEXTURE0);
 	glClientActiveTexture(GL_TEXTURE0);
@@ -6096,12 +6093,10 @@ void RasterizerGLES1::free(const RID& p_rid) {
 				memfree(surface->morph_targets_local);
 				surface->morph_targets_local=NULL;
 			}
-#ifndef __WII__
 			if (surface->vertex_id)
 				glDeleteBuffers(1,&surface->vertex_id);
 			if (surface->index_id)
 				glDeleteBuffers(1,&surface->index_id);
-#endif
 			memdelete( surface );
 		};
 
@@ -6376,8 +6371,7 @@ void RasterizerGLES1::init() {
 	glewInit();
 #endif
 
-
-	
+	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
 	scene_pass=1;
 #if !defined(__psp2__) && !defined(__WII__)
@@ -6454,7 +6448,7 @@ void RasterizerGLES1::init() {
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	// free(data); TODO
-	#ifdef GLES1_SHADOWS
+#ifdef GLES1_SHADOWS
 	ShadowBuffer sb;
 	sb.init(256);
 	near_shadow_buffers.push_back(sb);

@@ -4,6 +4,7 @@ from SCons.Node import NodeList
 
 common_wii = [
     "os_wii.cpp",
+    "glad.c",
 ]
 
 prog = env.Program("#bin/fe_wiii", ["godot_wii.cpp"] + common_wii)

@@ -42,15 +42,14 @@
 #include "sort.h"
 // #include "tools/editor/scene_tree_editor.h"
 #include "platform_config.h"
-#ifndef __WII__
-#ifndef GLES1_INCLUDE_H
-#include <GLES/gl.h>
-
+#if defined(GLAD_ENABLED)
+ #include <glad/glad.h>
+#elif defined(GLES1_INCLUDE_H)
+ #include GLES1_INCLUDE_H
+#elif defined(__WII__)
+ #include <GL/gl.h>
 #else
-#include GLES1_INCLUDE_H
-#endif
-#else
-#include <GL/gl.h>
+ #include <GLES/gl.h>
 #endif
 
 #include "servers/visual/particle_system_sw.h"

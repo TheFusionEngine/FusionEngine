@@ -45,14 +45,12 @@
 
 #include "main/main.h"
 
+#include <glad/glad.h>
 
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/errno.h>
 
-extern "C" {
-	extern void ogx_initialize();
-};
 int OS_WII::get_video_driver_count() const {
 
 	return 1;
@@ -61,6 +59,7 @@ const char * OS_WII::get_video_driver_name(int p_driver) const {
 
 	return "opengx";
 }
+
 OS::VideoMode OS_WII::get_default_video_mode() const {
 
 	return OS::VideoMode(640,480,false);
@@ -68,8 +67,18 @@ OS::VideoMode OS_WII::get_default_video_mode() const {
 
 static MemoryPoolStaticMalloc *mempool_static=NULL;
 static MemoryPoolDynamicStatic *mempool_dynamic=NULL;
-	
-	
+
+extern "C" {
+	void *ogx_get_proc_address(const char *proc);
+	void ogx_initialize();
+}
+
+static void *getprocaddr(const char *proc) {
+	void *addr = ogx_get_proc_address(proc);
+	printf("%s: %s = %p\n", __FUNCTION__, proc, addr);
+	return addr;
+}
+
 void OS_WII::initialize_core() {
 	SYS_STDIO_Report(true);
 
@@ -117,25 +126,26 @@ void OS_WII::initialize_core() {
 	videoInfo = SDL_GetVideoInfo();
 	
 	videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
-    videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
-    videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
-    videoFlags |= SDL_RESIZABLE;       /* Enable window resizing */
+	videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
+	videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
+	videoFlags |= SDL_RESIZABLE;       /* Enable window resizing */
+	videoFlags |= SDL_FULLSCREEN;
 
+	if ( videoInfo->hw_available )
+		videoFlags |= SDL_HWSURFACE;
+	else
+		videoFlags |= SDL_SWSURFACE;
 
-    if ( videoInfo->hw_available )
-	videoFlags |= SDL_HWSURFACE;
-    else
-	videoFlags |= SDL_SWSURFACE;
+	if ( videoInfo->blit_hw )
+		videoFlags |= SDL_HWACCEL;
 
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-    if ( videoInfo->blit_hw )
-	videoFlags |= SDL_HWACCEL;
-
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
-    surface = SDL_SetVideoMode(640, 480, 32, videoFlags);
+	surface = SDL_SetVideoMode(640, 480, 32, videoFlags);
 	ogx_initialize();
-	SYS_Report("ogx init\n");
+
+	gladLoadGLLoader(getprocaddr);
+	printf("glEnableClientState => %p\n", glad_glEnableClientState);
 }
 
 void OS_WII::finalize_core() {

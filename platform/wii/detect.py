@@ -39,7 +39,7 @@ def configure(env):
     devkitarm_path = devkitpro_path + "/devkitPPC"
     ogc_path = devkitpro_path + "/libogc"
 
-    env.Append(CPPPATH=["#platform/wii"])
+    env.Append(CPPPATH=["#platform/wii", "#platform/wii/glad/include"])
     env["CC"] = devkitarm_path + "/bin/powerpc-eabi-gcc"
     env["CXX"] = devkitarm_path + "/bin/powerpc-eabi-g++"
     env["LD"] = devkitarm_path + "/bin/powerpc-eabi-g++"
@@ -62,6 +62,7 @@ def configure(env):
             "-DPTHREAD_NO_RENAME",
             "-DNO_THREADS",
             "-DBIG_ENDIAN_ENABLED",
+            "-DGLAD_ENABLED",
             "-fno-exceptions",
             "-DNO_SAFE_CAST",
             "-fno-rtti",
