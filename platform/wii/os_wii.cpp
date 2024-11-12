@@ -48,6 +48,7 @@
 
 #include <unistd.h>
 #include <sys/time.h>
+#include <sys/errno.h>
 
 extern "C" {
 	extern void ogx_initialize();
@@ -73,7 +74,13 @@ void OS_WII::initialize_core() {
 	SYS_STDIO_Report(true);
 
 	net_deinit();
-	while (net_init() == -EAGAIN) ;
+	int rv;
+	while ((rv = net_init()) == -EAGAIN) ;
+	if (rv < 0) {
+		printf("Error while initializing the network: %s\n", strerror(-rv));
+	} else {
+		printf("Net result: %d\n", rv);
+	}
 
 	ThreadDummy::make_default();
 	SemaphoreDummy::make_default();
