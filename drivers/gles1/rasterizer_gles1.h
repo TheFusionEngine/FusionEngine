@@ -31,7 +31,7 @@
 
 #include "servers/visual/rasterizer.h"
 
-#ifdef GLES1_ENABLED
+#if defined(GLES1_ENABLED) || defined(__psp2__)
 
 #include "image.h"
 #include "rid.h"
@@ -62,7 +62,11 @@ class RasterizerGLES1 : public Rasterizer {
 		MAX_SCENE_LIGHTS=2048,
 		LIGHT_SPOT_BIT=0x80,
 		DEFAULT_SKINNED_BUFFER_SIZE = 1024 * 1024, // 10k vertices
+#ifdef __psp2__
+		MAX_HW_LIGHTS = 8, //Yay! 8 Lights :blush:
+#else
 		MAX_HW_LIGHTS = 4,
+#endif
 	};
 	#ifdef PSP
 	void glActiveTexture(int a1) { };
