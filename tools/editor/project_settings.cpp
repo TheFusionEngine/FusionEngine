@@ -688,7 +688,7 @@ void ProjectSettings::add_translation(const String& p_translation) {
 
 void ProjectSettings::_translation_add(const String& p_path) {
 
-	StringArray translations = Globals::get_singleton()->get("locale/translations");
+	PackedStringArray translations = Globals::get_singleton()->get("locale/translations");
 
 
 	for(int i=0;i<translations.size();i++) {
@@ -794,7 +794,7 @@ void ProjectSettings::_translation_delete(Object *p_item,int p_column, int p_but
 
 	int idx=ti->get_metadata(0);
 
-	StringArray translations = Globals::get_singleton()->get("locale/translations");
+	PackedStringArray translations = Globals::get_singleton()->get("locale/translations");
 
 	ERR_FAIL_INDEX(idx,translations.size());
 
@@ -831,7 +831,7 @@ void ProjectSettings::_translation_res_add(const String& p_path){
 	if (remaps.has(p_path))
 		return; //pointless already has it
 
-	remaps[p_path]=StringArray();
+	remaps[p_path]=PackedStringArray();
 
 	undo_redo->create_action("Add Remapped Path");
 	undo_redo->add_do_property(Globals::get_singleton(),"locale/translation_remaps",remaps);
@@ -862,7 +862,7 @@ void ProjectSettings::_translation_res_option_add(const String& p_path) {
 	String key = k->get_metadata(0);
 
 	ERR_FAIL_COND(!remaps.has(key));
-	StringArray r = remaps[key];
+	PackedStringArray r = remaps[key];
 	r.push_back(p_path+":"+"en");
 	remaps[key]=r;
 
@@ -916,7 +916,7 @@ void ProjectSettings::_translation_res_option_changed() {
 
 
 	ERR_FAIL_COND(!remaps.has(key));
-	StringArray r = remaps[key];
+	PackedStringArray r = remaps[key];
 	ERR_FAIL_INDEX(idx,remaps.size());
 	r.set(idx,path+":"+langs[which]);
 	remaps[key]=r;
@@ -984,7 +984,7 @@ void ProjectSettings::_translation_res_option_delete(Object *p_item,int p_column
 	int idx = ed->get_metadata(0);
 
 	ERR_FAIL_COND(!remaps.has(key));
-	StringArray r = remaps[key];
+	PackedStringArray r = remaps[key];
 	ERR_FAIL_INDEX(idx,remaps.size());
 	r.remove(idx);
 	remaps[key]=r;
@@ -1016,7 +1016,7 @@ void ProjectSettings::_update_translations() {
 	translation_list->set_hide_root(true);
 	if (Globals::get_singleton()->has("locale/translations")) {
 
-		StringArray translations = Globals::get_singleton()->get("locale/translations");
+		PackedStringArray translations = Globals::get_singleton()->get("locale/translations");
 		for(int i=0;i<translations.size();i++) {
 
 			TreeItem *t = translation_list->create_item(root);
@@ -1076,7 +1076,7 @@ void ProjectSettings::_update_translations() {
 				t->select(0);
 				translation_res_option_add_button->set_disabled(false);
 
-				StringArray selected = remaps[keys[i]];
+				PackedStringArray selected = remaps[keys[i]];
 				for(int j=0;j<selected.size();j++) {
 
 					String s = selected[j];

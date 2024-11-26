@@ -34,10 +34,10 @@ var	block_shapes=[
 	
 
 var block_rotations=[
-	Matrix32( Vector2(1,0),Vector2(0,1), Vector2() ),
-	Matrix32( Vector2(0,1),Vector2(-1,0), Vector2() ),
-	Matrix32( Vector2(-1,0),Vector2(0,-1), Vector2() ),
-	Matrix32( Vector2(0,-1),Vector2(1,0), Vector2() )
+	Transform2D( Vector2(1,0),Vector2(0,1), Vector2() ),
+	Transform2D( Vector2(0,1),Vector2(-1,0), Vector2() ),
+	Transform2D( Vector2(-1,0),Vector2(0,-1), Vector2() ),
+	Transform2D( Vector2(0,-1),Vector2(1,0), Vector2() )
 ]
 	
 

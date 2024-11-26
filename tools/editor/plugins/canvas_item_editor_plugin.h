@@ -50,7 +50,7 @@ public:
 	Variant undo_state;
 	Vector2 undo_pivot;
 
-	Matrix32 prev_xform;
+	Transform2D prev_xform;
 	float prev_rot;
 	Rect2 prev_rect;
 
@@ -141,7 +141,7 @@ class CanvasItemEditor : public VBoxContainer {
 	VScrollBar *v_scroll;
 	HBoxContainer *hb;
 
-	Matrix32 transform;
+	Transform2D transform;
 	float zoom;
 	int snap;
 	bool pixel_snap;
@@ -167,14 +167,14 @@ class CanvasItemEditor : public VBoxContainer {
 
 	struct BoneList {
 
-		Matrix32 xform;
+		Transform2D xform;
 		Vector2 from;
 		Vector2 to;
 		ObjectID bone;
 	};
 
 	List<BoneList> bone_list;
-	Matrix32 bone_orig_xform;
+	Transform2D bone_orig_xform;
 
 	struct BoneIK {
 
@@ -230,7 +230,7 @@ class CanvasItemEditor : public VBoxContainer {
 
 		Variant undo_state;
 
-		Matrix32 prev_xform;
+		Transform2D prev_xform;
 		float prev_rot;
 		Rect2 prev_rect;
 		EditInfo() { prev_rot=0; }
@@ -244,8 +244,8 @@ class CanvasItemEditor : public VBoxContainer {
 
 
 	int handle_len;
-	CanvasItem* _select_canvas_item_at_pos(const Point2 &p_pos,Node* p_node,const Matrix32& p_parent_xform,const Matrix32& p_canvas_xform);
-	void _find_canvas_items_at_rect(const Rect2& p_rect,Node* p_node,const Matrix32& p_parent_xform,const Matrix32& p_canvas_xform,List<CanvasItem*> *r_items);
+	CanvasItem* _select_canvas_item_at_pos(const Point2 &p_pos,Node* p_node,const Transform2D& p_parent_xform,const Transform2D& p_canvas_xform);
+	void _find_canvas_items_at_rect(const Rect2& p_rect,Node* p_node,const Transform2D& p_parent_xform,const Transform2D& p_canvas_xform,List<CanvasItem*> *r_items);
 
 	AcceptDialog *value_dialog;
 	Label *dialog_label;
@@ -259,7 +259,7 @@ class CanvasItemEditor : public VBoxContainer {
 	void _visibility_changed(ObjectID p_canvas_item);
 	void _key_move(const Vector2& p_dir, bool p_snap, KeyMoveMODE p_move_mode);
 
-	DragType _find_drag_type(const Matrix32& p_xform, const Rect2& p_local_rect, const Point2& p_click, Vector2& r_point);
+	DragType _find_drag_type(const Transform2D& p_xform, const Rect2& p_local_rect, const Point2& p_click, Vector2& r_point);
 
 	Point2 snapify(const Point2& p_pos) const;
 	void _popup_callback(int p_op);
@@ -276,7 +276,7 @@ class CanvasItemEditor : public VBoxContainer {
 	Point2 _find_topleftmost_point();
 
 
-	void _find_canvas_items_span(Node *p_node, Rect2& r_rect, const Matrix32& p_xform);
+	void _find_canvas_items_span(Node *p_node, Rect2& r_rect, const Transform2D& p_xform);
 
 
 	Object *_get_editor_data(Object *p_what);
@@ -333,7 +333,7 @@ public:
 	bool is_snap_active() const;
 	int get_snap() const { return snap; }
 
-	Matrix32 get_canvas_transform() const { return transform; }
+	Transform2D get_canvas_transform() const { return transform; }
 
 	static CanvasItemEditor *get_singleton() { return singleton; }
 	Dictionary get_state() const;

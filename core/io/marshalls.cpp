@@ -144,7 +144,7 @@ Error decode_variant(Variant& r_variant,const uint8_t *p_buffer, int p_len,int *
 		case Variant::MATRIX32: {
 
 			ERR_FAIL_COND_V(len<(int)4*6,ERR_INVALID_DATA);
-			Matrix32 val;
+			Transform2D val;
 			for(int i=0;i<3;i++) {
 				for(int j=0;j<2;j++) {
 
@@ -205,7 +205,7 @@ Error decode_variant(Variant& r_variant,const uint8_t *p_buffer, int p_len,int *
 		case Variant::MATRIX3: {
 
 			ERR_FAIL_COND_V(len<(int)4*9,ERR_INVALID_DATA);
-			Matrix3 val;
+			Basis val;
 			for(int i=0;i<3;i++) {
 				for(int j=0;j<3;j++) {
 
@@ -222,7 +222,7 @@ Error decode_variant(Variant& r_variant,const uint8_t *p_buffer, int p_len,int *
 		case Variant::TRANSFORM: {
 
 			ERR_FAIL_COND_V(len<(int)4*12,ERR_INVALID_DATA);
-			Transform val;
+			Transform3D val;
 			for(int i=0;i<3;i++) {
 				for(int j=0;j<3;j++) {
 
@@ -947,7 +947,7 @@ Error encode_variant(const Variant& p_variant, uint8_t *r_buffer, int &r_len) {
 		case Variant::MATRIX32: {
 
 			if (buf) {
-				Matrix32 val=p_variant;
+				Transform2D val=p_variant;
 				for(int i=0;i<3;i++) {
 					for(int j=0;j<2;j++) {
 
@@ -1005,7 +1005,7 @@ Error encode_variant(const Variant& p_variant, uint8_t *r_buffer, int &r_len) {
 		case Variant::MATRIX3: {
 
 			if (buf) {
-				Matrix3 val=p_variant;
+				Basis val=p_variant;
 				for(int i=0;i<3;i++) {
 					for(int j=0;j<3;j++) {
 
@@ -1021,7 +1021,7 @@ Error encode_variant(const Variant& p_variant, uint8_t *r_buffer, int &r_len) {
 		case Variant::TRANSFORM: {
 
 			if (buf) {
-				Transform val=p_variant;
+				Transform3D val=p_variant;
 				for(int i=0;i<3;i++) {
 					for(int j=0;j<3;j++) {
 

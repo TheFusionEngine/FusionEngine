@@ -30,7 +30,7 @@
 
 
 
-void SpatialStreamPlayer::_notification(int p_what) {
+void StreamPlayer3D::_notification(int p_what) {
 
 	switch(p_what) {
 
@@ -53,7 +53,7 @@ void SpatialStreamPlayer::_notification(int p_what) {
 
 
 
-void SpatialStreamPlayer::set_stream(const Ref<AudioStream> &p_stream) {
+void StreamPlayer3D::set_stream(const Ref<AudioStream> &p_stream) {
 
 	stop();
 
@@ -66,13 +66,13 @@ void SpatialStreamPlayer::set_stream(const Ref<AudioStream> &p_stream) {
 
 }
 
-Ref<AudioStream> SpatialStreamPlayer::get_stream() const {
+Ref<AudioStream> StreamPlayer3D::get_stream() const {
 
 	return stream;
 }
 
 
-void SpatialStreamPlayer::play() {
+void StreamPlayer3D::play() {
 
 	if (!is_inside_tree())
 		return;
@@ -87,7 +87,7 @@ void SpatialStreamPlayer::play() {
 
 }
 
-void SpatialStreamPlayer::stop() {
+void StreamPlayer3D::stop() {
 
 	if (!is_inside_tree())
 		return;
@@ -99,7 +99,7 @@ void SpatialStreamPlayer::stop() {
 	//set_idle_process(false);
 }
 
-bool SpatialStreamPlayer::is_playing() const {
+bool StreamPlayer3D::is_playing() const {
 
 	if (stream.is_null())
 		return false;
@@ -107,7 +107,7 @@ bool SpatialStreamPlayer::is_playing() const {
 	return stream->is_playing();
 }
 
-void SpatialStreamPlayer::set_loop(bool p_enable) {
+void StreamPlayer3D::set_loop(bool p_enable) {
 
 	loops=p_enable;
 	if (stream.is_null())
@@ -115,14 +115,14 @@ void SpatialStreamPlayer::set_loop(bool p_enable) {
 	stream->set_loop(loops);
 
 }
-bool SpatialStreamPlayer::has_loop() const {
+bool StreamPlayer3D::has_loop() const {
 
 	return loops;
 }
 
 
 
-String SpatialStreamPlayer::get_stream_name() const  {
+String StreamPlayer3D::get_stream_name() const  {
 
 	if (stream.is_null())
 		return "<No Stream>";
@@ -130,7 +130,7 @@ String SpatialStreamPlayer::get_stream_name() const  {
 
 }
 
-int SpatialStreamPlayer::get_loop_count() const  {
+int StreamPlayer3D::get_loop_count() const  {
 
 	if (stream.is_null())
 		return 0;
@@ -138,14 +138,14 @@ int SpatialStreamPlayer::get_loop_count() const  {
 
 }
 
-float SpatialStreamPlayer::get_pos() const  {
+float StreamPlayer3D::get_pos() const  {
 
 	if (stream.is_null())
 		return 0;
 	return stream->get_pos();
 
 }
-void SpatialStreamPlayer::seek_pos(float p_time) {
+void StreamPlayer3D::seek_pos(float p_time) {
 
 	if (stream.is_null())
 		return;
@@ -153,24 +153,24 @@ void SpatialStreamPlayer::seek_pos(float p_time) {
 
 }
 
-void SpatialStreamPlayer::_bind_methods() {
+void StreamPlayer3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_stream","stream:Stream"),&SpatialStreamPlayer::set_stream);
-	ObjectTypeDB::bind_method(_MD("get_stream:Stream"),&SpatialStreamPlayer::get_stream);
+	ObjectTypeDB::bind_method(_MD("set_stream","stream:Stream"),&StreamPlayer3D::set_stream);
+	ObjectTypeDB::bind_method(_MD("get_stream:Stream"),&StreamPlayer3D::get_stream);
 
-	ObjectTypeDB::bind_method(_MD("play"),&SpatialStreamPlayer::play);
-	ObjectTypeDB::bind_method(_MD("stop"),&SpatialStreamPlayer::stop);
+	ObjectTypeDB::bind_method(_MD("play"),&StreamPlayer3D::play);
+	ObjectTypeDB::bind_method(_MD("stop"),&StreamPlayer3D::stop);
 
-	ObjectTypeDB::bind_method(_MD("is_playing"),&SpatialStreamPlayer::is_playing);
+	ObjectTypeDB::bind_method(_MD("is_playing"),&StreamPlayer3D::is_playing);
 
-	ObjectTypeDB::bind_method(_MD("set_loop","enabled"),&SpatialStreamPlayer::set_loop);
-	ObjectTypeDB::bind_method(_MD("has_loop"),&SpatialStreamPlayer::has_loop);
+	ObjectTypeDB::bind_method(_MD("set_loop","enabled"),&StreamPlayer3D::set_loop);
+	ObjectTypeDB::bind_method(_MD("has_loop"),&StreamPlayer3D::has_loop);
 
-	ObjectTypeDB::bind_method(_MD("get_stream_name"),&SpatialStreamPlayer::get_stream_name);
-	ObjectTypeDB::bind_method(_MD("get_loop_count"),&SpatialStreamPlayer::get_loop_count);
+	ObjectTypeDB::bind_method(_MD("get_stream_name"),&StreamPlayer3D::get_stream_name);
+	ObjectTypeDB::bind_method(_MD("get_loop_count"),&StreamPlayer3D::get_loop_count);
 
-	ObjectTypeDB::bind_method(_MD("get_pos"),&SpatialStreamPlayer::get_pos);
-	ObjectTypeDB::bind_method(_MD("seek_pos","time"),&SpatialStreamPlayer::seek_pos);
+	ObjectTypeDB::bind_method(_MD("get_pos"),&StreamPlayer3D::get_pos);
+	ObjectTypeDB::bind_method(_MD("seek_pos","time"),&StreamPlayer3D::seek_pos);
 
 	ADD_PROPERTY( PropertyInfo(Variant::OBJECT, "stream/stream", PROPERTY_HINT_RESOURCE_TYPE,"AudioStream"), _SCS("set_stream"),_SCS("get_stream") );
 	ADD_PROPERTY( PropertyInfo(Variant::BOOL, "stream/loop"), _SCS("set_loop"),_SCS("has_loop") );
@@ -178,12 +178,12 @@ void SpatialStreamPlayer::_bind_methods() {
 }
 
 
-SpatialStreamPlayer::SpatialStreamPlayer() {
+StreamPlayer3D::StreamPlayer3D() {
 
 	loops=false;
 }
 
-SpatialStreamPlayer::~SpatialStreamPlayer() {
+StreamPlayer3D::~StreamPlayer3D() {
 
 }
 

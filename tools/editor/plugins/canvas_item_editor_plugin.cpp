@@ -186,7 +186,7 @@ void CanvasItemEditor::_keying_changed(bool p_changed) {
 }
 
 // slow but modern computers should have no problem
-CanvasItem* CanvasItemEditor::_select_canvas_item_at_pos(const Point2& p_pos,Node* p_node,const Matrix32& p_parent_xform,const Matrix32& p_canvas_xform) {
+CanvasItem* CanvasItemEditor::_select_canvas_item_at_pos(const Point2& p_pos,Node* p_node,const Transform2D& p_parent_xform,const Transform2D& p_canvas_xform) {
 
 	if (!p_node)
 		return NULL;
@@ -229,7 +229,7 @@ CanvasItem* CanvasItemEditor::_select_canvas_item_at_pos(const Point2& p_pos,Nod
 }
 
 
-void CanvasItemEditor::_find_canvas_items_at_rect(const Rect2& p_rect,Node* p_node,const Matrix32& p_parent_xform,const Matrix32& p_canvas_xform,List<CanvasItem*> *r_items) {
+void CanvasItemEditor::_find_canvas_items_at_rect(const Rect2& p_rect,Node* p_node,const Transform2D& p_parent_xform,const Transform2D& p_canvas_xform,List<CanvasItem*> *r_items) {
 
 	if (!p_node)
 		return;
@@ -255,7 +255,7 @@ void CanvasItemEditor::_find_canvas_items_at_rect(const Rect2& p_rect,Node* p_no
 	if (c && c->is_visible() && !c->has_meta("_edit_lock_")) {
 
 		Rect2 rect = c->get_item_rect();
-		Matrix32 xform = p_parent_xform * p_canvas_xform * c->get_transform();
+		Transform2D xform = p_parent_xform * p_canvas_xform * c->get_transform();
 
 		if ( p_rect.has_point( xform.xform( rect.pos ) ) &&
 		     p_rect.has_point( xform.xform( rect.pos+Vector2(rect.size.x,0) ) ) &&
@@ -317,7 +317,7 @@ void CanvasItemEditor::_key_move(const Vector2& p_dir, bool p_snap, KeyMoveMODE 
 			if (Node2D *node_2d = canvas_item->cast_to<Node2D>()) {
 
 				if (p_move_mode == MOVE_LOCAL_WITH_ROT) {
-					Matrix32 m;
+					Transform2D m;
 					m.rotate( node_2d->get_rot() );
 					drag = m.xform(drag);
 				}
@@ -355,7 +355,7 @@ Point2 CanvasItemEditor::_find_topleftmost_point() {
 
 
 		Rect2 rect=canvas_item->get_item_rect();
-		Matrix32 xform=canvas_item->get_global_transform_with_canvas();
+		Transform2D xform=canvas_item->get_global_transform_with_canvas();
 
 		r2.expand_to(xform.xform(rect.pos));
 		r2.expand_to(xform.xform(rect.pos+Vector2(rect.size.x,0)));
@@ -412,15 +412,15 @@ CanvasItem *CanvasItemEditor::get_single_item() {
 	return single_item;
 }
 
-CanvasItemEditor::DragType CanvasItemEditor::_find_drag_type(const Matrix32& p_xform, const Rect2& p_local_rect, const Point2& p_click, Vector2& r_point) {
+CanvasItemEditor::DragType CanvasItemEditor::_find_drag_type(const Transform2D& p_xform, const Rect2& p_local_rect, const Point2& p_click, Vector2& r_point) {
 
 	CanvasItem *canvas_item = get_single_item();
 
 	ERR_FAIL_COND_V(!canvas_item,DRAG_NONE);
 
 	Rect2 rect=canvas_item->get_item_rect();
-	Matrix32 xforml=canvas_item->get_global_transform_with_canvas();
-	Matrix32 xform=transform * xforml;
+	Transform2D xforml=canvas_item->get_global_transform_with_canvas();
+	Transform2D xform=transform * xforml;
 
 	Vector2 endpoints[4]={
 
@@ -782,7 +782,7 @@ void CanvasItemEditor::_viewport_input_event(const InputEvent& p_event) {
 					if (bsfrom.y>bsto.y)
 						SWAP(bsfrom.y,bsto.y);
 
-					_find_canvas_items_at_rect(Rect2(bsfrom,bsto-bsfrom),scene,transform,Matrix32(),&selitems);
+					_find_canvas_items_at_rect(Rect2(bsfrom,bsto-bsfrom),scene,transform,Transform2D(),&selitems);
 
 					for(List<CanvasItem*>::Element *E=selitems.front();E;E=E->next()) {
 
@@ -900,7 +900,7 @@ void CanvasItemEditor::_viewport_input_event(const InputEvent& p_event) {
 				return;
 			}
 
-			Matrix32 xform = transform * canvas_item->get_global_transform_with_canvas();
+			Transform2D xform = transform * canvas_item->get_global_transform_with_canvas();
 			Rect2 rect=canvas_item->get_item_rect();
 		//	float handle_radius = handle_len * 1.4144; //magic number, guess what it means!
 
@@ -988,7 +988,7 @@ void CanvasItemEditor::_viewport_input_event(const InputEvent& p_event) {
 
 		}
 		if (!c) {
-			c =_select_canvas_item_at_pos(click, scene,transform,Matrix32());
+			c =_select_canvas_item_at_pos(click, scene,transform,Transform2D());
 
 
 			CanvasItem* cn = c;
@@ -1154,7 +1154,7 @@ void CanvasItemEditor::_viewport_input_event(const InputEvent& p_event) {
 
 				Vector2 center = canvas_item->get_global_transform_with_canvas().get_origin();
 
-				Matrix32 rot;
+				Transform2D rot;
 				rot.elements[1] = (dfrom - center).normalized();
 				rot.elements[0] = rot.elements[1].tangent();
 				float ang = rot.xform_inv(dto-center).atan2();
@@ -1308,7 +1308,7 @@ void CanvasItemEditor::_viewport_input_event(const InputEvent& p_event) {
 
 
 				Node2D *n2d = canvas_item->cast_to<Node2D>();
-				Matrix32 final_xform = bone_orig_xform;
+				Transform2D final_xform = bone_orig_xform;
 
 
 
@@ -1482,7 +1482,7 @@ void CanvasItemEditor::_viewport_draw() {
 		Size2 s = viewport->get_size();
 
 		int last_cell;
-		Matrix32 xform = transform.affine_inverse();
+		Transform2D xform = transform.affine_inverse();
 		for(int i=0;i<s.width;i++) {
 
 			int cell = Math::fast_ftoi(Math::floor(xform.xform(Vector2(i,0)).x/snap));
@@ -1541,7 +1541,7 @@ void CanvasItemEditor::_viewport_draw() {
 
 		Rect2 rect=canvas_item->get_item_rect();
 
-		Matrix32 xform=transform * canvas_item->get_global_transform_with_canvas();
+		Transform2D xform=transform * canvas_item->get_global_transform_with_canvas();
 		VisualServer::get_singleton()->canvas_item_add_set_transform(ci,xform);
 		Point2 ofs=Point2();//get_global_pos();
 		Rect2 draw_rect=rect;
@@ -1563,7 +1563,7 @@ void CanvasItemEditor::_viewport_draw() {
 
 		Color c = Color(1,0.6,0.4,0.7);
 
-		VisualServer::get_singleton()->canvas_item_add_set_transform(ci,Matrix32());
+		VisualServer::get_singleton()->canvas_item_add_set_transform(ci,Transform2D());
 
 		for(int i=0;i<4;i++) {
 			viewport->draw_line(endpoints[i],endpoints[(i+1)%4],c,2);
@@ -1611,7 +1611,7 @@ void CanvasItemEditor::_viewport_draw() {
 		//E->get().last_rect = rect;
 	}
 
-	VisualServer::get_singleton()->canvas_item_add_set_transform(ci,Matrix32());
+	VisualServer::get_singleton()->canvas_item_add_set_transform(ci,Transform2D());
 
 
 
@@ -1760,7 +1760,7 @@ void CanvasItemEditor::_notification(int p_what) {
 
 			Rect2 r=canvas_item->get_item_rect();
 
-			Matrix32 xform = canvas_item->get_transform();
+			Transform2D xform = canvas_item->get_transform();
 
 			if (r != se->prev_rect || xform!=se->prev_xform) {
 				viewport->update();
@@ -1836,7 +1836,7 @@ void CanvasItemEditor::edit(CanvasItem *p_canvas_item) {
 }
 
 
-void CanvasItemEditor::_find_canvas_items_span(Node *p_node, Rect2& r_rect, const Matrix32& p_xform) {
+void CanvasItemEditor::_find_canvas_items_span(Node *p_node, Rect2& r_rect, const Transform2D& p_xform) {
 
 
 
@@ -1853,7 +1853,7 @@ void CanvasItemEditor::_find_canvas_items_span(Node *p_node, Rect2& r_rect, cons
 		if (c && !c->is_set_as_toplevel())
 			_find_canvas_items_span(p_node->get_child(i),r_rect,p_xform * c->get_transform());
 		else
-			_find_canvas_items_span(p_node->get_child(i),r_rect,Matrix32());
+			_find_canvas_items_span(p_node->get_child(i),r_rect,Transform2D());
 	}
 
 
@@ -1861,7 +1861,7 @@ void CanvasItemEditor::_find_canvas_items_span(Node *p_node, Rect2& r_rect, cons
 	if (c) {
 
 		Rect2 rect = c->get_item_rect();
-		Matrix32 xform = p_xform * c->get_transform();
+		Transform2D xform = p_xform * c->get_transform();
 
 
 		LockList lock;
@@ -1915,7 +1915,7 @@ void CanvasItemEditor::_update_scrollbars() {
 	bone_list.clear();;
 
 	if (editor->get_edited_scene())
-		_find_canvas_items_span(editor->get_edited_scene(),canvas_item_rect,Matrix32());
+		_find_canvas_items_span(editor->get_edited_scene(),canvas_item_rect,Transform2D());
 
 
 	//expand area so it's easier to do animations and stuff at 0,0
@@ -1959,7 +1959,7 @@ void CanvasItemEditor::_update_scrollbars() {
 		ofs.x=h_scroll->get_val();
 	}
 
-//	transform=Matrix32();
+//	transform=Transform2D();
 	transform.elements[2]=-ofs*zoom;
 	editor->get_scene_root()->set_global_canvas_transform(transform);
 
@@ -1983,7 +1983,7 @@ void CanvasItemEditor::_update_scroll(float) {
 
 //	current_window->set_scroll(-ofs);
 
-	transform=Matrix32();
+	transform=Transform2D();
 
 	transform.scale_basis(Size2(zoom,zoom));
 	transform.elements[2]=-ofs;
@@ -2450,7 +2450,7 @@ void CanvasItemEditor::_popup_callback(int p_op) {
 				Vector2 scale = canvas_item->get_global_transform().get_scale();
 				real_t angle = canvas_item->get_global_transform().get_rotation();
 
-				Matrix32 t(angle, Vector2(0.f,0.f));
+				Transform2D t(angle, Vector2(0.f,0.f));
 				item_rect = t.xform(item_rect);
 				Rect2 canvas_item_rect(pos + scale*item_rect.pos, scale*item_rect.size);
 				if (count == 1) {
@@ -2796,7 +2796,7 @@ CanvasItemEditor::CanvasItemEditor(EditorNode *p_editor) {
 	p->add_separator();
 	p->add_item("Expand to Parent",EXPAND_TO_PARENT,KEY_MASK_CMD|KEY_P);
 	p->add_separator();
-	p->add_submenu_item("Skeleton..","skeleton");
+	p->add_submenu_item("Skeleton3D..","skeleton");
 	PopupMenu *p2 = memnew(PopupMenu);
 	p->add_child(p2);
 	p2->set_name("skeleton");

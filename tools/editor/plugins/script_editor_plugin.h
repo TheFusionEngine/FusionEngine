@@ -186,7 +186,7 @@ class ScriptEditor : public VBoxContainer {
 	void _editor_pause();
 	void _editor_stop();
 
-	void _add_callback(Object *p_obj, const String& p_function, const StringArray& p_args);
+	void _add_callback(Object *p_obj, const String& p_function, const PackedStringArray& p_args);
 	void _res_saved_callback(const Ref<Resource>& p_res);
 
 	void _goto_script_line2(int p_line);

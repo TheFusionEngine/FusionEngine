@@ -29,7 +29,7 @@
 #include "path.h"
 #include "scene/scene_string_names.h"
 
-void Path::_notification(int p_what) {
+void Path3D::_notification(int p_what) {
 #if 0
 	if (p_what==NOTIFICATION_DRAW && curve.is_valid() && is_inside_scene() && get_scene()->is_editor_hint()) {
 		//draw the curve!!
@@ -50,7 +50,7 @@ void Path::_notification(int p_what) {
 #endif
 }
 
-void Path::_curve_changed() {
+void Path3D::_curve_changed() {
 
 
 	if (is_inside_tree() && get_tree()->is_editor_hint())
@@ -58,7 +58,7 @@ void Path::_curve_changed() {
 }
 
 
-void Path::set_curve(const Ref<Curve3D>& p_curve) {
+void Path3D::set_curve(const Ref<Curve3D>& p_curve) {
 
 	if (curve.is_valid()) {
 		curve->disconnect("changed",this,"_curve_changed");
@@ -73,21 +73,21 @@ void Path::set_curve(const Ref<Curve3D>& p_curve) {
 
 }
 
-Ref<Curve3D> Path::get_curve() const{
+Ref<Curve3D> Path3D::get_curve() const{
 
 	return curve;
 }
 
-void Path::_bind_methods() {
+void Path3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_curve","curve:Curve3D"),&Path::set_curve);
-	ObjectTypeDB::bind_method(_MD("get_curve:Curve3D","curve"),&Path::get_curve);
-	ObjectTypeDB::bind_method(_MD("_curve_changed"),&Path::_curve_changed);
+	ObjectTypeDB::bind_method(_MD("set_curve","curve:Curve3D"),&Path3D::set_curve);
+	ObjectTypeDB::bind_method(_MD("get_curve:Curve3D","curve"),&Path3D::get_curve);
+	ObjectTypeDB::bind_method(_MD("_curve_changed"),&Path3D::_curve_changed);
 
 	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "curve", PROPERTY_HINT_RESOURCE_TYPE, "Curve3D"), _SCS("set_curve"),_SCS("get_curve"));
 }
 
-Path::Path() {
+Path3D::Path3D() {
 
 	set_curve(Ref<Curve3D>( memnew( Curve3D ))); //create one by default
 }
@@ -96,7 +96,7 @@ Path::Path() {
 //////////////
 
 
-void PathFollow::_update_transform() {
+void PathFollow3D::_update_transform() {
 
 
 	if (!path)
@@ -112,7 +112,7 @@ void PathFollow::_update_transform() {
 		o=Math::fposmod(o,c->get_baked_length());
 
 	Vector3 pos = c->interpolate_baked(o,cubic);
-	Transform t=get_transform();
+	Transform3D t=get_transform();
 
 
 	if (rotation_mode!=ROTATION_NONE) {
@@ -137,7 +137,7 @@ void PathFollow::_update_transform() {
 			float tilt = c->interpolate_baked_tilt(o);
 			if (tilt!=0) {
 
-				Matrix3 rot(-n,tilt); //remember.. lookat will be znegative.. znegative!! we abide by opengl clan.
+				Basis rot(-n,tilt); //remember.. lookat will be znegative.. znegative!! we abide by opengl clan.
 				up=rot.xform(up);
 			}
 		}
@@ -154,7 +154,7 @@ void PathFollow::_update_transform() {
 
 }
 
-void PathFollow::_notification(int p_what) {
+void PathFollow3D::_notification(int p_what) {
 
 
 	switch(p_what) {
@@ -164,7 +164,7 @@ void PathFollow::_notification(int p_what) {
 			Node *parent=get_parent();
 			if (parent) {
 
-				path=parent->cast_to<Path>();
+				path=parent->cast_to<Path3D>();
 				if (path) {
 					_update_transform();
 				}
@@ -180,18 +180,18 @@ void PathFollow::_notification(int p_what) {
 
 }
 
-void PathFollow::set_cubic_interpolation(bool p_enable) {
+void PathFollow3D::set_cubic_interpolation(bool p_enable) {
 
 	cubic=p_enable;
 }
 
-bool PathFollow::get_cubic_interpolation() const {
+bool PathFollow3D::get_cubic_interpolation() const {
 
 	return cubic;
 }
 
 
-bool PathFollow::_set(const StringName& p_name, const Variant& p_value) {
+bool PathFollow3D::_set(const StringName& p_name, const Variant& p_value) {
 
 	if (p_name==SceneStringNames::get_singleton()->offset) {
 		set_offset(p_value);
@@ -215,7 +215,7 @@ bool PathFollow::_set(const StringName& p_name, const Variant& p_value) {
 	return true;
 }
 
-bool PathFollow::_get(const StringName& p_name,Variant &r_ret) const{
+bool PathFollow3D::_get(const StringName& p_name,Variant &r_ret) const{
 
 	if (p_name==SceneStringNames::get_singleton()->offset) {
 		r_ret=get_offset();
@@ -239,7 +239,7 @@ bool PathFollow::_get(const StringName& p_name,Variant &r_ret) const{
 	return true;
 
 }
-void PathFollow::_get_property_list( List<PropertyInfo> *p_list) const{
+void PathFollow3D::_get_property_list( List<PropertyInfo> *p_list) const{
 
 	float max=10000;
 	if (path && path->get_curve().is_valid())
@@ -255,28 +255,28 @@ void PathFollow::_get_property_list( List<PropertyInfo> *p_list) const{
 }
 
 
-void PathFollow::_bind_methods() {
+void PathFollow3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_offset","offset"),&PathFollow::set_offset);
-	ObjectTypeDB::bind_method(_MD("get_offset"),&PathFollow::get_offset);
+	ObjectTypeDB::bind_method(_MD("set_offset","offset"),&PathFollow3D::set_offset);
+	ObjectTypeDB::bind_method(_MD("get_offset"),&PathFollow3D::get_offset);
 
-	ObjectTypeDB::bind_method(_MD("set_h_offset","h_offset"),&PathFollow::set_h_offset);
-	ObjectTypeDB::bind_method(_MD("get_h_offset"),&PathFollow::get_h_offset);
+	ObjectTypeDB::bind_method(_MD("set_h_offset","h_offset"),&PathFollow3D::set_h_offset);
+	ObjectTypeDB::bind_method(_MD("get_h_offset"),&PathFollow3D::get_h_offset);
 
-	ObjectTypeDB::bind_method(_MD("set_v_offset","v_offset"),&PathFollow::set_v_offset);
-	ObjectTypeDB::bind_method(_MD("get_v_offset"),&PathFollow::get_v_offset);
+	ObjectTypeDB::bind_method(_MD("set_v_offset","v_offset"),&PathFollow3D::set_v_offset);
+	ObjectTypeDB::bind_method(_MD("get_v_offset"),&PathFollow3D::get_v_offset);
 
-	ObjectTypeDB::bind_method(_MD("set_unit_offset","unit_offset"),&PathFollow::set_unit_offset);
-	ObjectTypeDB::bind_method(_MD("get_unit_offset"),&PathFollow::get_unit_offset);
+	ObjectTypeDB::bind_method(_MD("set_unit_offset","unit_offset"),&PathFollow3D::set_unit_offset);
+	ObjectTypeDB::bind_method(_MD("get_unit_offset"),&PathFollow3D::get_unit_offset);
 
-	ObjectTypeDB::bind_method(_MD("set_rotation_mode","rotation_mode"),&PathFollow::set_rotation_mode);
-	ObjectTypeDB::bind_method(_MD("get_rotation_mode"),&PathFollow::get_rotation_mode);
+	ObjectTypeDB::bind_method(_MD("set_rotation_mode","rotation_mode"),&PathFollow3D::set_rotation_mode);
+	ObjectTypeDB::bind_method(_MD("get_rotation_mode"),&PathFollow3D::get_rotation_mode);
 
-	ObjectTypeDB::bind_method(_MD("set_cubic_interpolation","enable"),&PathFollow::set_cubic_interpolation);
-	ObjectTypeDB::bind_method(_MD("get_cubic_interpolation"),&PathFollow::get_cubic_interpolation);
+	ObjectTypeDB::bind_method(_MD("set_cubic_interpolation","enable"),&PathFollow3D::set_cubic_interpolation);
+	ObjectTypeDB::bind_method(_MD("get_cubic_interpolation"),&PathFollow3D::get_cubic_interpolation);
 
-	ObjectTypeDB::bind_method(_MD("set_loop","loop"),&PathFollow::set_loop);
-	ObjectTypeDB::bind_method(_MD("has_loop"),&PathFollow::has_loop);
+	ObjectTypeDB::bind_method(_MD("set_loop","loop"),&PathFollow3D::set_loop);
+	ObjectTypeDB::bind_method(_MD("has_loop"),&PathFollow3D::has_loop);
 
 	BIND_CONSTANT( ROTATION_NONE );
 	BIND_CONSTANT( ROTATION_Y );
@@ -285,7 +285,7 @@ void PathFollow::_bind_methods() {
 
 }
 
-void PathFollow::set_offset(float p_offset) {
+void PathFollow3D::set_offset(float p_offset) {
 
 	offset=p_offset;
 	if (path)
@@ -295,7 +295,7 @@ void PathFollow::set_offset(float p_offset) {
 
 }
 
-void PathFollow::set_h_offset(float p_h_offset) {
+void PathFollow3D::set_h_offset(float p_h_offset) {
 
 	h_offset=p_h_offset;
 	if (path)
@@ -303,12 +303,12 @@ void PathFollow::set_h_offset(float p_h_offset) {
 
 }
 
-float PathFollow::get_h_offset() const {
+float PathFollow3D::get_h_offset() const {
 
 	return h_offset;
 }
 
-void PathFollow::set_v_offset(float p_v_offset) {
+void PathFollow3D::set_v_offset(float p_v_offset) {
 
 	v_offset=p_v_offset;
 	if (path)
@@ -316,25 +316,25 @@ void PathFollow::set_v_offset(float p_v_offset) {
 
 }
 
-float PathFollow::get_v_offset() const {
+float PathFollow3D::get_v_offset() const {
 
 	return v_offset;
 }
 
 
-float PathFollow::get_offset() const{
+float PathFollow3D::get_offset() const{
 
 	return offset;
 }
 
-void PathFollow::set_unit_offset(float p_unit_offset) {
+void PathFollow3D::set_unit_offset(float p_unit_offset) {
 
 	if (path && path->get_curve().is_valid() && path->get_curve()->get_baked_length())
 		set_offset(p_unit_offset*path->get_curve()->get_baked_length());
 
 }
 
-float PathFollow::get_unit_offset() const{
+float PathFollow3D::get_unit_offset() const{
 
 	if (path && path->get_curve().is_valid() && path->get_curve()->get_baked_length())
 		return get_offset()/path->get_curve()->get_baked_length();
@@ -342,40 +342,40 @@ float PathFollow::get_unit_offset() const{
 		return 0;
 }
 
-void PathFollow::set_lookahead(float p_lookahead) {
+void PathFollow3D::set_lookahead(float p_lookahead) {
 
 	lookahead=p_lookahead;
 
 }
 
-float PathFollow::get_lookahead() const{
+float PathFollow3D::get_lookahead() const{
 
 	return lookahead;
 }
 
-void PathFollow::set_rotation_mode(RotationMode p_rotation_mode) {
+void PathFollow3D::set_rotation_mode(RotationMode p_rotation_mode) {
 
 	rotation_mode=p_rotation_mode;
 	_update_transform();
 }
 
-PathFollow::RotationMode PathFollow::get_rotation_mode() const {
+PathFollow3D::RotationMode PathFollow3D::get_rotation_mode() const {
 
 	return rotation_mode;
 }
 
-void PathFollow::set_loop(bool p_loop) {
+void PathFollow3D::set_loop(bool p_loop) {
 
 	loop=p_loop;
 }
 
-bool PathFollow::has_loop() const{
+bool PathFollow3D::has_loop() const{
 
 	return loop;
 }
 
 
-PathFollow::PathFollow() {
+PathFollow3D::PathFollow3D() {
 
 	offset=0;
 	h_offset=0;

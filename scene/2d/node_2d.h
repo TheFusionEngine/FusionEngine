@@ -39,7 +39,7 @@ class Node2D : public CanvasItem {
 	float angle;
 	Size2 scale;
 
-	Matrix32 _mat;
+	Transform2D _mat;
 
 	bool _xform_dirty;
 
@@ -81,12 +81,12 @@ public:
 	Point2 get_global_pos() const;
 	virtual Rect2 get_item_rect() const;
 
-	void set_transform(const Matrix32& p_transform);
-	void set_global_transform(const Matrix32& p_transform);
+	void set_transform(const Transform2D& p_transform);
+	void set_global_transform(const Transform2D& p_transform);
 	void set_global_pos(const Point2& p_pos);
 
 
-	Matrix32 get_transform() const;
+	Transform2D get_transform() const;
 
 	Node2D();
 };

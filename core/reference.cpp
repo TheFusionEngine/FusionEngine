@@ -30,7 +30,7 @@
 
 
 
-bool Reference::init_ref() {
+bool RefCounted::init_ref() {
 
 	if (refcount.ref()) {
 
@@ -52,31 +52,31 @@ bool Reference::init_ref() {
 }
 
 
-void Reference::_bind_methods() {
+void RefCounted::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("init_ref"),&Reference::init_ref);
-	ObjectTypeDB::bind_method(_MD("reference"),&Reference::reference);
-	ObjectTypeDB::bind_method(_MD("unreference"),&Reference::unreference);
+	ObjectTypeDB::bind_method(_MD("init_ref"),&RefCounted::init_ref);
+	ObjectTypeDB::bind_method(_MD("reference"),&RefCounted::reference);
+	ObjectTypeDB::bind_method(_MD("unreference"),&RefCounted::unreference);
 }
 
-void Reference::reference(){
+void RefCounted::reference(){
 
 	refcount.ref();
 
 }
-bool Reference::unreference(){
+bool RefCounted::unreference(){
 
 	return refcount.unref();
 }
 
-Reference::Reference() {
+RefCounted::RefCounted() {
 
 	refcount.init();
 	refcount_init.init();
 }
 
 
-Reference::~Reference() {
+RefCounted::~RefCounted() {
 
 }
 
@@ -88,7 +88,7 @@ Variant WeakRef::get_ref() const {
 	Object *obj = ObjectDB::get_instance(ref);
 	if (!obj)
 		return Variant();
-	Reference *r = obj->cast_to<Reference>();
+	RefCounted *r = obj->cast_to<RefCounted>();
 	if (r) {
 
 		return REF(r);
@@ -116,21 +116,21 @@ void WeakRef::_bind_methods() {
 }
 #if 0
 
-Reference * RefBase::get_reference_from_ref(const RefBase &p_base) {
+RefCounted * RefBase::get_reference_from_ref(const RefBase &p_base) {
 
 	return p_base.get_reference();
 }
-void RefBase::ref_inc(Reference *p_reference) {
+void RefBase::ref_inc(RefCounted *p_reference) {
 
 	p_reference->refcount.ref();
 }
-bool RefBase::ref_dec(Reference *p_reference) {
+bool RefBase::ref_dec(RefCounted *p_reference) {
 
 	bool ref = p_reference->refcount.unref();
 	return ref;
 }
 
-Reference *RefBase::first_ref(Reference *p_reference) {
+RefCounted *RefBase::first_ref(RefCounted *p_reference) {
 
 	if (p_reference->refcount.ref()) {
 

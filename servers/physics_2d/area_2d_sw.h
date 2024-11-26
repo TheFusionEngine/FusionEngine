@@ -101,7 +101,7 @@ class Area2DSW : public CollisionObject2DSW{
 
 public:
 
-	//_FORCE_INLINE_ const Matrix32& get_inverse_transform() const { return inverse_transform; }
+	//_FORCE_INLINE_ const Transform2D& get_inverse_transform() const { return inverse_transform; }
 	//_FORCE_INLINE_ SpaceSW* get_owner() { return owner; }
 
 	void set_monitor_callback(ObjectID p_id, const StringName& p_method);
@@ -138,7 +138,7 @@ public:
 	_FORCE_INLINE_ void remove_constraint( Constraint2DSW* p_constraint) { constraints.erase(p_constraint); }
 	_FORCE_INLINE_ const Set<Constraint2DSW*>& get_constraints() const { return constraints; }
 
-	void set_transform(const Matrix32& p_transform);
+	void set_transform(const Transform2D& p_transform);
 
 	void set_space(Space2DSW *p_space);
 

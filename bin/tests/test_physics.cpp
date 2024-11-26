@@ -70,7 +70,7 @@ class TestPhysicsMainLoop : public MainLoop {
 
 		PhysicsDirectBodyState *state = (PhysicsDirectBodyState*)p_state;
 		VisualServer *vs=VisualServer::get_singleton();
-		Transform t=state->get_transform();
+		Transform3D t=state->get_transform();
 		//t.basis.scale( Vector3(1.0,0.5,0.2) );
 		vs->instance_set_transform(p_visual_instance,t);
 	}
@@ -84,7 +84,7 @@ protected:
 		ObjectTypeDB::bind_method("body_changed_transform",&TestPhysicsMainLoop::body_changed_transform);
 	}
 
-	RID create_body(PhysicsServer::ShapeType p_shape, PhysicsServer::BodyMode p_body,const Transform p_location,bool p_active_default=true,const Transform&p_shape_xform=Transform()) {
+	RID create_body(PhysicsServer::ShapeType p_shape, PhysicsServer::BodyMode p_body,const Transform3D p_location,bool p_active_default=true,const Transform3D&p_shape_xform=Transform3D()) {
 
 		VisualServer *vs=VisualServer::get_singleton();
 		PhysicsServer * ps = PhysicsServer::get_singleton();
@@ -202,7 +202,7 @@ protected:
 
 	}
 
-	void make_trimesh(Vector<Vector3> p_faces,const Transform& p_xform=Transform()) {
+	void make_trimesh(Vector<Vector3> p_faces,const Transform3D& p_xform=Transform3D()) {
 
 		VisualServer *vs=VisualServer::get_singleton();
 		PhysicsServer * ps = PhysicsServer::get_singleton();
@@ -236,7 +236,7 @@ protected:
 		ps->body_set_space(tribody,space);
 		//todo set space
 		ps->body_add_shape(tribody, trimesh_shape);
-		Transform tritrans = p_xform;
+		Transform3D tritrans = p_xform;
 		ps->body_set_state( tribody, PhysicsServer::BODY_STATE_TRANSFORM, tritrans );
 		vs->instance_set_transform( triins, tritrans );
 		//RID trimesh_material = vs->fixed_material_create();
@@ -245,7 +245,7 @@ protected:
 
 	}
 
-	void make_grid(int p_width,int p_height,float p_cellsize,float p_cellheight,const Transform& p_xform=Transform()) {
+	void make_grid(int p_width,int p_height,float p_cellsize,float p_cellheight,const Transform3D& p_xform=Transform3D()) {
 
 		Vector< Vector< float > > grid;
 
@@ -306,7 +306,7 @@ public:
 
 
 				PhysicsServer * ps = PhysicsServer::get_singleton();
-				Transform t = ps->body_get_state(mover,PhysicsServer::BODY_STATE_TRANSFORM);
+				Transform3D t = ps->body_get_state(mover,PhysicsServer::BODY_STATE_TRANSFORM);
 				t.origin+=Vector3(x,y,0);
 
 				ps->body_set_state(mover,PhysicsServer::BODY_STATE_TRANSFORM,t);
@@ -349,7 +349,7 @@ public:
 		scenario = vs->scenario_create();
 		vs->light_set_shadow(lightaux,true);
 		light = vs->instance_create2( lightaux,scenario );
-		Transform t;
+		Transform3D t;
 		t.rotate(Vector3(1.0,0,0),0.6);
 		vs->instance_set_transform(light,t);
 
@@ -364,10 +364,10 @@ public:
 		vs->viewport_set_scenario( viewport, scenario );
 
 		vs->camera_set_perspective(camera,60,0.1,40.0);
-		vs->camera_set_transform(camera,Transform( Matrix3(), Vector3(0,9,12)));
+		vs->camera_set_transform(camera,Transform3D( Basis(), Vector3(0,9,12)));
 		//vs->scenario_set_debug(scenario,VS::SCENARIO_DEBUG_WIREFRAME);
 
-		Transform gxf;
+		Transform3D gxf;
 		gxf.basis.scale(Vector3(1.4,0.4,1.4));
 		gxf.origin=Vector3(-2,1,-2);
 		make_grid(5,5,2.5,1,gxf);
@@ -454,7 +454,7 @@ public:
 		
 		
 		RID tribody = ps->body_create( PhysicsServer::BODY_MODE_STATIC, trimesh_shape);
-		Transform tritrans = Transform( Matrix3(), Vector3(0,0,-2) );
+		Transform3D tritrans = Transform3D( Basis(), Vector3(0,0,-2) );
 		ps->body_set_state( tribody, PhysicsServer::BODY_STATE_TRANSFORM, tritrans );
 		vs->instance_set_transform( triins, tritrans );
 		RID trimesh_material = vs->fixed_material_create();
@@ -467,13 +467,13 @@ public:
 		if (mover) {
 			static float joy_speed = 10;
 			PhysicsServer * ps = PhysicsServer::get_singleton();
-			Transform t = ps->body_get_state(mover,PhysicsServer::BODY_STATE_TRANSFORM);
+			Transform3D t = ps->body_get_state(mover,PhysicsServer::BODY_STATE_TRANSFORM);
 			t.origin+=Vector3(joy_speed * joy_direction.x * p_time, -joy_speed * joy_direction.y * p_time,0);
 			ps->body_set_state(mover,PhysicsServer::BODY_STATE_TRANSFORM,t);
 		};
 
 
-		Transform cameratr;
+		Transform3D cameratr;
 		cameratr.rotate(Vector3(0,1,0),ofs_x);
 		cameratr.rotate(Vector3(1,0,0),-ofs_y);
 		cameratr.translate(Vector3(0,2,8));
@@ -490,8 +490,8 @@ public:
 #if 0
 		PhysicsServer * ps = PhysicsServer::get_singleton();
 
-		mover = create_body(PhysicsServer::SHAPE_BOX,PhysicsServer::BODY_MODE_STATIC,Transform(Matrix3(),Vector3(0,0,-24)));
-		RID b = create_body(PhysicsServer::SHAPE_CAPSULE,PhysicsServer::BODY_MODE_RIGID,Transform());
+		mover = create_body(PhysicsServer::SHAPE_BOX,PhysicsServer::BODY_MODE_STATIC,Transform3D(Basis(),Vector3(0,0,-24)));
+		RID b = create_body(PhysicsServer::SHAPE_CAPSULE,PhysicsServer::BODY_MODE_RIGID,Transform3D());
 
 		ps->joint_create_double_pin(b,Vector3(0,0,1.0),mover,Vector3(0,0,0));
 		ps->body_add_collision_exception(mover,b);
@@ -505,7 +505,7 @@ public:
 
 		for(int i=0;i<link_count;i++) {
 
-			RID c = create_body(PhysicsServer::SHAPE_CAPSULE,PhysicsServer::BODY_MODE_RIGID,Transform());
+			RID c = create_body(PhysicsServer::SHAPE_CAPSULE,PhysicsServer::BODY_MODE_RIGID,Transform3D());
 			ps->joint_create_double_pin(b,Vector3(0,0,-0.7),c,Vector3(0,0,0.7));
 			ps->body_add_collision_exception(c,b);
 			b=c;
@@ -521,17 +521,17 @@ public:
 		PhysicsServer * ps = PhysicsServer::get_singleton();
 
 
-		mover = create_body(PhysicsServer::SHAPE_BOX,PhysicsServer::BODY_MODE_STATIC,Transform(Matrix3(),Vector3(0,0,-24)));
-		RID b = create_body(PhysicsServer::SHAPE_BOX,PhysicsServer::BODY_MODE_RIGID,Transform());
+		mover = create_body(PhysicsServer::SHAPE_BOX,PhysicsServer::BODY_MODE_STATIC,Transform3D(Basis(),Vector3(0,0,-24)));
+		RID b = create_body(PhysicsServer::SHAPE_BOX,PhysicsServer::BODY_MODE_RIGID,Transform3D());
 
-		ps->joint_create_double_hinge(b,Transform(Matrix3(),Vector3(1,1,1.0)),mover,Transform(Matrix3(),Vector3(0,0,0)));
+		ps->joint_create_double_hinge(b,Transform3D(Basis(),Vector3(1,1,1.0)),mover,Transform3D(Basis(),Vector3(0,0,0)));
 		ps->body_add_collision_exception(mover,b);
 
 /*
 		for(int i=0;i<20;i++) {
 
-			RID c = create_body(PhysicsServer::SHAPE_CAPSULE,PhysicsServer::BODY_MODE_RIGID,Transform());
-			ps->joint_create_double_hinge(b,Transform(Matrix3(),Vector3(0,0,-0.7)),c,Transform(Matrix3(),Vector3(0,0,0.7)));
+			RID c = create_body(PhysicsServer::SHAPE_CAPSULE,PhysicsServer::BODY_MODE_RIGID,Transform3D());
+			ps->joint_create_double_hinge(b,Transform3D(Basis(),Vector3(0,0,-0.7)),c,Transform3D(Basis(),Vector3(0,0,0.7)));
 			ps->body_add_collision_exception(c,b);
 			b=c;
 		}
@@ -563,7 +563,7 @@ public:
 		Dictionary capsule_params;
 		capsule_params["radius"]=0.5;
 		capsule_params["height"]=1;
-		Transform shape_xform;
+		Transform3D shape_xform;
 		shape_xform.rotate(Vector3(1,0,0),Math_PI/2.0);
 		//shape_xform.origin=Vector3(1,1,1);
 		ps->shape_set_data( capsule_shape,  capsule_params);
@@ -578,7 +578,7 @@ public:
 		ps->body_set_force_integration_callback(character,this,"body_changed_transform",mesh_instance);
 
 
-		ps->body_set_state( character, PhysicsServer::BODY_STATE_TRANSFORM,Transform(Matrix3(),Vector3(-2,5,-2)));
+		ps->body_set_state( character, PhysicsServer::BODY_STATE_TRANSFORM,Transform3D(Basis(),Vector3(-2,5,-2)));
 		bodies.push_back(character);
 
 
@@ -599,7 +599,7 @@ public:
 			PhysicsServer::ShapeType type=shape_idx[i%4];
 			//type=PhysicsServer::SHAPE_CONVEX_POLYGON;
 
-			Transform t;			
+			Transform3D t;			
 
 			t.origin=Vector3(0.0*i,3.5+1.1*i,0.7+0.0*i);
 			//t.origin=Vector3(-0.7+0.0*i,0.5+4.1*i,0);
@@ -629,8 +629,8 @@ public:
 
 	void test_activate() {
 
-		create_body(PhysicsServer::SHAPE_BOX,PhysicsServer::BODY_MODE_RIGID,Transform(Matrix3(),Vector3(0,2,0)),true);
-		//create_body(PhysicsServer::SHAPE_SPHERE,PhysicsServer::BODY_MODE_RIGID,Transform(Matrix3(),Vector3(0,6,0)),true);
+		create_body(PhysicsServer::SHAPE_BOX,PhysicsServer::BODY_MODE_RIGID,Transform3D(Basis(),Vector3(0,2,0)),true);
+		//create_body(PhysicsServer::SHAPE_SPHERE,PhysicsServer::BODY_MODE_RIGID,Transform3D(Basis(),Vector3(0,6,0)),true);
 		create_static_plane( Plane( Vector3(0,1,0), -1) );
 
 	}

@@ -35,9 +35,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class MeshInstance : public GeometryInstance {
+class MeshInstance3D : public GeometryInstance3D {
 
-	OBJ_TYPE( MeshInstance, GeometryInstance );
+	OBJ_TYPE( MeshInstance3D, GeometryInstance3D );
 	
 	Ref<Mesh> mesh;
 	NodePath skeleton_path;
@@ -78,8 +78,8 @@ public:
 	virtual AABB get_aabb() const;
 	virtual DVector<Face3> get_faces(uint32_t p_usage_flags) const;
 
-	MeshInstance();	
-	~MeshInstance();
+	MeshInstance3D();	
+	~MeshInstance3D();
 };
 
 #endif

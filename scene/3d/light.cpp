@@ -45,7 +45,7 @@ static const char* _light_param_names[VS::LIGHT_PARAM_MAX]={
 	"shadow/blur_passes"
 };
 
-void Light::set_parameter(Parameter p_param, float p_value) {
+void Light3D::set_parameter(Parameter p_param, float p_value) {
 
 	ERR_FAIL_INDEX(p_param, PARAM_MAX);
 	vars[p_param]=p_value;
@@ -56,14 +56,14 @@ void Light::set_parameter(Parameter p_param, float p_value) {
 //	_change_notify(_param_names[p_param]);
 }
 
-float Light::get_parameter(Parameter p_param) const {
+float Light3D::get_parameter(Parameter p_param) const {
 
 	ERR_FAIL_INDEX_V(p_param, PARAM_MAX, 0);
 	return vars[p_param];
 
 }
 
-void Light::set_color(LightColor p_color, const Color& p_value) {
+void Light3D::set_color(LightColor p_color, const Color& p_value) {
 
 	ERR_FAIL_INDEX(p_color, 3);
 	colors[p_color]=p_value;
@@ -71,7 +71,7 @@ void Light::set_color(LightColor p_color, const Color& p_value) {
 	//_change_notify(_color_names[p_color]);
 
 }
-Color Light::get_color(LightColor p_color) const {
+Color Light3D::get_color(LightColor p_color) const {
 
 	ERR_FAIL_INDEX_V(p_color, 3, Color());
 	return colors[p_color];
@@ -79,30 +79,30 @@ Color Light::get_color(LightColor p_color) const {
 }
 
 
-void Light::set_project_shadows(bool p_enabled) {
+void Light3D::set_project_shadows(bool p_enabled) {
 
 	shadows=p_enabled;
 	VisualServer::get_singleton()->light_set_shadow(light, p_enabled);
 	_change_notify("shadow");
 }
-bool Light::has_project_shadows() const {
+bool Light3D::has_project_shadows() const {
 	
 	return shadows;
 }
 
-void Light::set_projector(const Ref<Texture>& p_projector) {
+void Light3D::set_projector(const Ref<Texture>& p_projector) {
 
 	projector=p_projector;
 	VisualServer::get_singleton()->light_set_projector(light, projector.is_null()?RID():projector->get_rid());
 }
 
-Ref<Texture> Light::get_projector() const {
+Ref<Texture> Light3D::get_projector() const {
 
 	return projector;
 }
 
 
-bool Light::_can_gizmo_scale() const {
+bool Light3D::_can_gizmo_scale() const {
 
 	return false;
 }
@@ -156,7 +156,7 @@ static void _make_sphere(int p_lats, int p_lons, float p_radius,  Ref<SurfaceToo
 
 }
 
-RES Light::_get_gizmo_geometry() const {
+RES Light3D::_get_gizmo_geometry() const {
 
 
 	Ref<FixedMaterial> mat_area( memnew( FixedMaterial ));
@@ -209,8 +209,8 @@ RES Light::_get_gizmo_geometry() const {
 			for(int i = 0; i < arrow_sides ; i++) {
 
 
-				Matrix3 ma(Vector3(0,0,1),Math_PI*2*float(i)/arrow_sides);
-				Matrix3 mb(Vector3(0,0,1),Math_PI*2*float(i+1)/arrow_sides);
+				Basis ma(Vector3(0,0,1),Math_PI*2*float(i)/arrow_sides);
+				Basis mb(Vector3(0,0,1),Math_PI*2*float(i+1)/arrow_sides);
 
 
 				for(int j=0;j<arrow_points-1;j++) {
@@ -320,7 +320,7 @@ RES Light::_get_gizmo_geometry() const {
 }
 
 
-AABB Light::get_aabb() const {
+AABB Light3D::get_aabb() const {
 
 	if (type==VisualServer::LIGHT_DIRECTIONAL) {
 	
@@ -340,36 +340,36 @@ AABB Light::get_aabb() const {
 	return AABB();
 }
 
-DVector<Face3> Light::get_faces(uint32_t p_usage_flags) const {
+DVector<Face3> Light3D::get_faces(uint32_t p_usage_flags) const {
 
 	return DVector<Face3>();
 }
 
 
-void Light::set_operator(Operator p_op) {
+void Light3D::set_operator(Operator p_op) {
 	ERR_FAIL_INDEX(p_op,2);
 	op=p_op;
 	VisualServer::get_singleton()->light_set_operator(light,VS::LightOp(op));
 
 }
 
-void Light::set_bake_mode(BakeMode p_bake_mode) {
+void Light3D::set_bake_mode(BakeMode p_bake_mode) {
 
 	bake_mode=p_bake_mode;
 }
 
-Light::BakeMode Light::get_bake_mode() const {
+Light3D::BakeMode Light3D::get_bake_mode() const {
 
 	return bake_mode;
 }
 
 
-Light::Operator Light::get_operator() const {
+Light3D::Operator Light3D::get_operator() const {
 
 	return op;
 }
 
-void Light::approximate_opengl_attenuation(float p_constant, float p_linear, float p_quadratic,float p_radius_treshold) {
+void Light3D::approximate_opengl_attenuation(float p_constant, float p_linear, float p_quadratic,float p_radius_treshold) {
 
 	//this is horrible and must never be used
 
@@ -430,7 +430,7 @@ void Light::approximate_opengl_attenuation(float p_constant, float p_linear, flo
 }
 
 
-void Light::_update_visibility() {
+void Light3D::_update_visibility() {
 
 	if (!is_inside_tree())
 		return;
@@ -454,54 +454,54 @@ bool editor_ok=true;
 }
 
 
-void Light::_notification(int p_what) {
+void Light3D::_notification(int p_what) {
 
 	if (p_what==NOTIFICATION_ENTER_TREE || p_what==NOTIFICATION_VISIBILITY_CHANGED) {
 		_update_visibility();
 	}
 }
 
-void Light::set_enabled(bool p_enabled) {
+void Light3D::set_enabled(bool p_enabled) {
 
 	enabled=p_enabled;
 	_update_visibility();
 }
 
-bool Light::is_enabled() const{
+bool Light3D::is_enabled() const{
 
 	return enabled;
 }
 
-void Light::set_editor_only(bool p_editor_only) {
+void Light3D::set_editor_only(bool p_editor_only) {
 
 	editor_only=p_editor_only;
 	_update_visibility();
 }
 
-bool Light::is_editor_only() const{
+bool Light3D::is_editor_only() const{
 
 	return editor_only;
 }
 
 
-void Light::_bind_methods() {
+void Light3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_parameter","variable","value"), &Light::set_parameter );
-	ObjectTypeDB::bind_method(_MD("get_parameter"), &Light::get_parameter );
-	ObjectTypeDB::bind_method(_MD("set_color","color","value"), &Light::set_color );
-	ObjectTypeDB::bind_method(_MD("get_color"), &Light::get_color );
-	ObjectTypeDB::bind_method(_MD("set_project_shadows","enable"), &Light::set_project_shadows );
-	ObjectTypeDB::bind_method(_MD("has_project_shadows"), &Light::has_project_shadows );
-	ObjectTypeDB::bind_method(_MD("set_projector","projector:Texture"), &Light::set_projector );
-	ObjectTypeDB::bind_method(_MD("get_projector:Texture"), &Light::get_projector );
-	ObjectTypeDB::bind_method(_MD("set_operator","operator"), &Light::set_operator );
-	ObjectTypeDB::bind_method(_MD("get_operator"), &Light::get_operator );
-	ObjectTypeDB::bind_method(_MD("set_bake_mode","bake_mode"), &Light::set_bake_mode );
-	ObjectTypeDB::bind_method(_MD("get_bake_mode"), &Light::get_bake_mode );
-	ObjectTypeDB::bind_method(_MD("set_enabled","enabled"), &Light::set_enabled );
-	ObjectTypeDB::bind_method(_MD("is_enabled"), &Light::is_enabled );
-	ObjectTypeDB::bind_method(_MD("set_editor_only","editor_only"), &Light::set_editor_only );
-	ObjectTypeDB::bind_method(_MD("is_editor_only"), &Light::is_editor_only );
+	ObjectTypeDB::bind_method(_MD("set_parameter","variable","value"), &Light3D::set_parameter );
+	ObjectTypeDB::bind_method(_MD("get_parameter"), &Light3D::get_parameter );
+	ObjectTypeDB::bind_method(_MD("set_color","color","value"), &Light3D::set_color );
+	ObjectTypeDB::bind_method(_MD("get_color"), &Light3D::get_color );
+	ObjectTypeDB::bind_method(_MD("set_project_shadows","enable"), &Light3D::set_project_shadows );
+	ObjectTypeDB::bind_method(_MD("has_project_shadows"), &Light3D::has_project_shadows );
+	ObjectTypeDB::bind_method(_MD("set_projector","projector:Texture"), &Light3D::set_projector );
+	ObjectTypeDB::bind_method(_MD("get_projector:Texture"), &Light3D::get_projector );
+	ObjectTypeDB::bind_method(_MD("set_operator","operator"), &Light3D::set_operator );
+	ObjectTypeDB::bind_method(_MD("get_operator"), &Light3D::get_operator );
+	ObjectTypeDB::bind_method(_MD("set_bake_mode","bake_mode"), &Light3D::set_bake_mode );
+	ObjectTypeDB::bind_method(_MD("get_bake_mode"), &Light3D::get_bake_mode );
+	ObjectTypeDB::bind_method(_MD("set_enabled","enabled"), &Light3D::set_enabled );
+	ObjectTypeDB::bind_method(_MD("is_enabled"), &Light3D::is_enabled );
+	ObjectTypeDB::bind_method(_MD("set_editor_only","editor_only"), &Light3D::set_editor_only );
+	ObjectTypeDB::bind_method(_MD("is_editor_only"), &Light3D::is_editor_only );
 
 
 	ADD_PROPERTY( PropertyInfo( Variant::BOOL, "params/enabled"), _SCS("set_enabled"), _SCS("is_enabled"));
@@ -553,7 +553,7 @@ void Light::_bind_methods() {
 }
 
 
-Light::Light(VisualServer::LightType p_type) {
+Light3D::Light3D(VisualServer::LightType p_type) {
 
 	type=p_type;
 	light=VisualServer::get_singleton()->light_create(p_type);
@@ -583,14 +583,14 @@ Light::Light(VisualServer::LightType p_type) {
 }
 
 
-Light::Light() {
+Light3D::Light3D() {
 
 	type=VisualServer::LIGHT_DIRECTIONAL;
-	ERR_PRINT("Light shouldn't be instanced dircetly, use the subtypes.");
+	ERR_PRINT("Light3D shouldn't be instanced dircetly, use the subtypes.");
 }
 
 
-Light::~Light() {
+Light3D::~Light3D() {
 
 	if (light.is_valid())
 		VisualServer::get_singleton()->free(light);
@@ -598,36 +598,36 @@ Light::~Light() {
 /////////////////////////////////////////
 
 
-void DirectionalLight::set_shadow_mode(ShadowMode p_mode) {
+void DirectionalLight3D::set_shadow_mode(ShadowMode p_mode) {
 
 	shadow_mode=p_mode;
 	VS::get_singleton()->light_directional_set_shadow_mode(light,(VS::LightDirectionalShadowMode)p_mode);
 
 }
 
-DirectionalLight::ShadowMode DirectionalLight::get_shadow_mode() const{
+DirectionalLight3D::ShadowMode DirectionalLight3D::get_shadow_mode() const{
 
 	return shadow_mode;
 }
 
-void DirectionalLight::set_shadow_param(ShadowParam p_param, float p_value) {
+void DirectionalLight3D::set_shadow_param(ShadowParam p_param, float p_value) {
 
 	ERR_FAIL_INDEX(p_param,3);
 	shadow_param[p_param]=p_value;
 	VS::get_singleton()->light_directional_set_shadow_param(light,VS::LightDirectionalShadowParam(p_param),p_value);
 }
 
-float DirectionalLight::get_shadow_param(ShadowParam p_param) const {
+float DirectionalLight3D::get_shadow_param(ShadowParam p_param) const {
 	ERR_FAIL_INDEX_V(p_param,3,0);
 	return shadow_param[p_param];
 }
 
-void DirectionalLight::_bind_methods() {
+void DirectionalLight3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_shadow_mode","mode"),&DirectionalLight::set_shadow_mode);
-	ObjectTypeDB::bind_method(_MD("get_shadow_mode"),&DirectionalLight::get_shadow_mode);
-	ObjectTypeDB::bind_method(_MD("set_shadow_param","param","value"),&DirectionalLight::set_shadow_param);
-	ObjectTypeDB::bind_method(_MD("get_shadow_param","param"),&DirectionalLight::get_shadow_param);
+	ObjectTypeDB::bind_method(_MD("set_shadow_mode","mode"),&DirectionalLight3D::set_shadow_mode);
+	ObjectTypeDB::bind_method(_MD("get_shadow_mode"),&DirectionalLight3D::get_shadow_mode);
+	ObjectTypeDB::bind_method(_MD("set_shadow_param","param","value"),&DirectionalLight3D::set_shadow_param);
+	ObjectTypeDB::bind_method(_MD("get_shadow_param","param"),&DirectionalLight3D::get_shadow_param);
 
 	ADD_PROPERTY( PropertyInfo(Variant::INT,"shadow/mode",PROPERTY_HINT_ENUM,"Orthogonal,Perspective,PSSM 2 Splits,PSSM 4 Splits"),_SCS("set_shadow_mode"),_SCS("get_shadow_mode"));
 	ADD_PROPERTYI( PropertyInfo(Variant::REAL,"shadow/max_distance",PROPERTY_HINT_EXP_RANGE,"0.00,99999,0.01"),_SCS("set_shadow_param"),_SCS("get_shadow_param"), SHADOW_PARAM_MAX_DISTANCE);
@@ -645,7 +645,7 @@ void DirectionalLight::_bind_methods() {
 }
 
 
-DirectionalLight::DirectionalLight() : Light( VisualServer::LIGHT_DIRECTIONAL ) {
+DirectionalLight3D::DirectionalLight3D() : Light3D( VisualServer::LIGHT_DIRECTIONAL ) {
 
 	shadow_mode=SHADOW_ORTHOGONAL;
 	shadow_param[SHADOW_PARAM_MAX_DISTANCE]=0;
@@ -656,14 +656,14 @@ DirectionalLight::DirectionalLight() : Light( VisualServer::LIGHT_DIRECTIONAL ) 
 }
 
 
-void OmniLight::_bind_methods() {
+void OmniLight3D::_bind_methods() {
 
 	ADD_PROPERTYI( PropertyInfo( Variant::REAL, "params/radius", PROPERTY_HINT_EXP_RANGE, "0.2,4096,0.01"), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_RADIUS );
 	ADD_PROPERTYI( PropertyInfo( Variant::REAL, "params/attenuation", PROPERTY_HINT_EXP_EASING, "attenuation"), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_ATTENUATION );
 
 }
 
-void SpotLight::_bind_methods() {
+void SpotLight3D::_bind_methods() {
 
 	ADD_PROPERTYI( PropertyInfo( Variant::REAL, "params/radius", PROPERTY_HINT_EXP_RANGE, "0.2,4096,0.01"), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_RADIUS );
 	ADD_PROPERTYI( PropertyInfo( Variant::REAL, "params/attenuation", PROPERTY_HINT_EXP_EASING, "attenuation"), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_ATTENUATION );

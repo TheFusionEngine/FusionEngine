@@ -5,7 +5,7 @@
 //  Additional IP Rights Grant:  http://www.webmproject.org/license/additional/
 // -----------------------------------------------------------------------------
 //
-// Spatial prediction using various filters
+// Node3D prediction using various filters
 //
 // Author: Urvang (urvang@google.com)
 

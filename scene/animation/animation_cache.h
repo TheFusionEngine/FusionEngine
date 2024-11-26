@@ -40,9 +40,9 @@ class AnimationCache : public Object {
 
 		RES resource;
 		Object *object;
-		Skeleton *skeleton; // haxor
+		Skeleton3D *skeleton; // haxor
 		Node *node;
-		Spatial *spatial;
+		Node3D *spatial;
 
 		int bone_idx;
 		StringName property;
@@ -70,7 +70,7 @@ protected:
 
 public:
 
-	void set_track_transform(int p_idx,const Transform& p_transform);
+	void set_track_transform(int p_idx,const Transform3D& p_transform);
 	void set_track_value(int p_idx,const Variant& p_value);
 	void call_track(int p_idx,const StringName& p_method,const Variant** p_args,int p_argcount,Variant::CallError &r_error);
 

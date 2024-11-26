@@ -79,7 +79,7 @@ void EditorPlugin::add_custom_control(CustomControlContainer p_location,Control 
 	}
 }
 
-bool EditorPlugin::create_spatial_gizmo(Spatial* p_spatial) {
+bool EditorPlugin::create_spatial_gizmo(Node3D* p_spatial) {
 	//??
 	return false;
 }
@@ -91,7 +91,7 @@ bool EditorPlugin::forward_input_event(const InputEvent& p_event) {
 	}
 	return false;
 }
-bool EditorPlugin::forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event) {
+bool EditorPlugin::forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event) {
 
 	if (get_script_instance() && get_script_instance()->has_method("forward_spatial_input_event")) {
 		return get_script_instance()->call("forward_spatial_input_event",p_camera,p_event);
@@ -177,7 +177,7 @@ void EditorPlugin::apply_changes() {
 void EditorPlugin::get_breakpoints(List<String> *p_breakpoints) {
 
 	if (get_script_instance() && get_script_instance()->has_method("get_breakpoints")) {
-		StringArray arr = get_script_instance()->call("get_breakpoints");
+		PackedStringArray arr = get_script_instance()->call("get_breakpoints");
 		for(int i=0;i<arr.size();i++)
 			p_breakpoints->push_back(arr[i]);
 	}
@@ -200,7 +200,7 @@ void EditorPlugin::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("remove_custom_type","type"),&EditorPlugin::remove_custom_type);
 
 	ObjectTypeDB::add_virtual_method(get_type_static(),MethodInfo(Variant::BOOL,"forward_input_event",PropertyInfo(Variant::INPUT_EVENT,"event")));
-	ObjectTypeDB::add_virtual_method(get_type_static(),MethodInfo(Variant::BOOL,"forward_spatial_input_event",PropertyInfo(Variant::OBJECT,"camera",PROPERTY_HINT_RESOURCE_TYPE,"Camera"),PropertyInfo(Variant::INPUT_EVENT,"event")));
+	ObjectTypeDB::add_virtual_method(get_type_static(),MethodInfo(Variant::BOOL,"forward_spatial_input_event",PropertyInfo(Variant::OBJECT,"camera",PROPERTY_HINT_RESOURCE_TYPE,"Camera3D"),PropertyInfo(Variant::INPUT_EVENT,"event")));
 	ObjectTypeDB::add_virtual_method(get_type_static(),MethodInfo(Variant::STRING,"get_name"));
 	ObjectTypeDB::add_virtual_method(get_type_static(),MethodInfo(Variant::BOOL,"has_main_screen"));
 	ObjectTypeDB::add_virtual_method(get_type_static(),MethodInfo("make_visible",PropertyInfo(Variant::BOOL,"visible")));

@@ -6,9 +6,9 @@
 
 
 
-class CollisionPolygon : public Spatial {
+class CollisionPolygon3D : public Node3D {
 
-	OBJ_TYPE(CollisionPolygon,Spatial);
+	OBJ_TYPE(CollisionPolygon3D,Node3D);
 public:
 
 	enum BuildMode {
@@ -43,8 +43,8 @@ public:
 	Vector<Point2> get_polygon() const;
 
 	virtual AABB get_item_rect() const;
-	CollisionPolygon();
+	CollisionPolygon3D();
 };
 
-VARIANT_ENUM_CAST( CollisionPolygon::BuildMode );
+VARIANT_ENUM_CAST( CollisionPolygon3D::BuildMode );
 #endif // COLLISION_POLYGON_H

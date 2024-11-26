@@ -253,9 +253,9 @@ def build_glsl_header( filename ):
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c) { _FU glUniform3f(get_uniform(p_uniform),p_a,p_b,p_c); }\n\n");
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c, float p_d) { _FU glUniform4f(get_uniform(p_uniform),p_a,p_b,p_c,p_d); }\n\n");
 	
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform3D& p_transform) {  _FU
 
-		const Transform &tr = p_transform;
+		const Transform3D &tr = p_transform;
 	
 		GLfloat matrix[16]={ /* build a 16x16 matrix */
 			tr.basis.elements[0][0],
@@ -284,9 +284,9 @@ def build_glsl_header( filename ):
 	
 	""");
 
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Matrix32& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform2D& p_transform) {  _FU
 
-		const Matrix32 &tr = p_transform;
+		const Transform2D &tr = p_transform;
 
 		GLfloat matrix[16]={ /* build a 16x16 matrix */
 			tr.elements[0][0],
@@ -553,9 +553,9 @@ def build_hlsl_dx9_header( filename ):
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c) { _FU float vec3[4]={p_a,p_b,p_c,0}; set_uniformfv(p_uniform,vec3); }\n\n");
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c, float p_d) { _FU float vec4[4]={p_a,p_b,p_c,p_d}; set_uniformfv(p_uniform,vec4); }\n\n");
 
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform3D& p_transform) {  _FU
 
-		const Transform &tr = p_transform;
+		const Transform3D &tr = p_transform;
 
 		float matrix[16]={ /* build a 16x16 matrix */
 			tr.basis.elements[0][0],
@@ -857,9 +857,9 @@ def build_legacygl_header( filename, include, class_suffix, output_attribs ):
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c) { _FU glUniform3f(get_uniform(p_uniform),p_a,p_b,p_c); }\n\n");
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c, float p_d) { _FU glUniform4f(get_uniform(p_uniform),p_a,p_b,p_c,p_d); }\n\n");
 
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform3D& p_transform) {  _FU
 
-		const Transform &tr = p_transform;
+		const Transform3D &tr = p_transform;
 
 		GLfloat matrix[16]={ /* build a 16x16 matrix */
 			tr.basis.elements[0][0],
@@ -888,9 +888,9 @@ def build_legacygl_header( filename, include, class_suffix, output_attribs ):
 
 	""");
 
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Matrix32& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform2D& p_transform) {  _FU
 
-		const Matrix32 &tr = p_transform;
+		const Transform2D &tr = p_transform;
 
 		GLfloat matrix[16]={ /* build a 16x16 matrix */
 			tr.elements[0][0],

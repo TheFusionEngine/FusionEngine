@@ -64,7 +64,7 @@ class ExportDAE(bpy.types.Operator, ExportHelper):
             name="Object Types",
             options={'ENUM_FLAG'},
             items=(('EMPTY', "Empty", ""),
-                   ('CAMERA', "Camera", ""),
+                   ('CAMERA', "Camera3D", ""),
                    ('LAMP', "Lamp", ""),
                    ('ARMATURE', "Armature", ""),
                    ('MESH', "Mesh", ""),

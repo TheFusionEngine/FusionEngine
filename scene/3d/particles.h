@@ -38,7 +38,7 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
-class Particles : public GeometryInstance {
+class Particles3D : public GeometryInstance3D {
 public:
 
 	enum Variable {
@@ -60,7 +60,7 @@ public:
 	};
 
 private:
-	OBJ_TYPE( Particles, GeometryInstance );
+	OBJ_TYPE( Particles3D, GeometryInstance3D );
 
 	RID particles;
 	
@@ -156,10 +156,10 @@ public:
 	void start_emitting(float p_time);
 
 
-	Particles();	
-	~Particles();
+	Particles3D();	
+	~Particles3D();
 
 };
 
-VARIANT_ENUM_CAST( Particles::Variable );
+VARIANT_ENUM_CAST( Particles3D::Variable );
 #endif

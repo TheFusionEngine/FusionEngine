@@ -31,12 +31,12 @@
 
 #include "scene/3d/spatial.h"
 
-class Camera;
-class VisibilityNotifier : public Spatial {
+class Camera3D;
+class VisibilityNotifier3D : public Node3D {
 
-	OBJ_TYPE(VisibilityNotifier,Spatial);
+	OBJ_TYPE(VisibilityNotifier3D,Node3D);
 
-	Set<Camera*> cameras;
+	Set<Camera3D*> cameras;
 
 	AABB aabb;
 
@@ -49,8 +49,8 @@ protected:
 	static void _bind_methods();
 friend class SpatialIndexer;
 
-	void _enter_camera(Camera* p_camera);
-	void _exit_camera(Camera* p_camera);
+	void _enter_camera(Camera3D* p_camera);
+	void _exit_camera(Camera3D* p_camera);
 
 public:
 
@@ -58,13 +58,13 @@ public:
 	AABB get_aabb() const;
 	bool is_on_screen() const;
 
-	VisibilityNotifier();
+	VisibilityNotifier3D();
 };
 
 
-class VisibilityEnabler : public VisibilityNotifier {
+class VisibilityEnabler3D : public VisibilityNotifier3D {
 
-	OBJ_TYPE(VisibilityEnabler,VisibilityNotifier);
+	OBJ_TYPE(VisibilityEnabler3D,VisibilityNotifier3D);
 public:
 
 	enum Enabler {
@@ -96,11 +96,11 @@ public:
 	void set_enabler(Enabler p_enabler,bool p_enable);
 	bool is_enabler_enabled(Enabler p_enabler) const;
 
-	VisibilityEnabler();
+	VisibilityEnabler3D();
 
 };
 
-VARIANT_ENUM_CAST(VisibilityEnabler::Enabler);
+VARIANT_ENUM_CAST(VisibilityEnabler3D::Enabler);
 
 
 #endif // VISIBILITY_NOTIFIER_H

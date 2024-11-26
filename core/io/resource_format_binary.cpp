@@ -202,7 +202,7 @@ Error ResourceInteractiveLoaderBinary::parse_variant(Variant& r_v)  {
 		} break;
 		case VARIANT_MATRIX32: {
 
-			Matrix32 v;
+			Transform2D v;
 			v.elements[0].x=f->get_real();
 			v.elements[0].y=f->get_real();
 			v.elements[1].x=f->get_real();
@@ -214,7 +214,7 @@ Error ResourceInteractiveLoaderBinary::parse_variant(Variant& r_v)  {
 		} break;
 		case VARIANT_MATRIX3: {
 
-			Matrix3 v;
+			Basis v;
 			v.elements[0].x=f->get_real();
 			v.elements[0].y=f->get_real();
 			v.elements[0].z=f->get_real();
@@ -229,7 +229,7 @@ Error ResourceInteractiveLoaderBinary::parse_variant(Variant& r_v)  {
 		} break;
 		case VARIANT_TRANSFORM: {
 
-			Transform v;
+			Transform3D v;
 			v.basis.elements[0].x=f->get_real();
 			v.basis.elements[0].y=f->get_real();
 			v.basis.elements[0].z=f->get_real();
@@ -1254,7 +1254,7 @@ void ResourceFormatSaverBinaryInstance::write_variant(const Variant& p_property,
 		case Variant::MATRIX32: {
 
 			f->store_32(VARIANT_MATRIX32);
-			Matrix32 val=p_property;
+			Transform2D val=p_property;
 			f->store_real(val.elements[0].x);
 			f->store_real(val.elements[0].y);
 			f->store_real(val.elements[1].x);
@@ -1266,7 +1266,7 @@ void ResourceFormatSaverBinaryInstance::write_variant(const Variant& p_property,
 		case Variant::MATRIX3: {
 
 			f->store_32(VARIANT_MATRIX3);
-			Matrix3 val=p_property;
+			Basis val=p_property;
 			f->store_real(val.elements[0].x);
 			f->store_real(val.elements[0].y);
 			f->store_real(val.elements[0].z);
@@ -1281,7 +1281,7 @@ void ResourceFormatSaverBinaryInstance::write_variant(const Variant& p_property,
 		case Variant::TRANSFORM: {
 
 			f->store_32(VARIANT_TRANSFORM);
-			Transform val=p_property;
+			Transform3D val=p_property;
 			f->store_real(val.basis.elements[0].x);
 			f->store_real(val.basis.elements[0].y);
 			f->store_real(val.basis.elements[0].z);

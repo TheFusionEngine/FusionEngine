@@ -92,7 +92,7 @@ void Node2D::edit_set_rect(const Rect2& p_edit_rect) {
 
 	Point2 new_pos = p_edit_rect.pos + p_edit_rect.size*zero_offset;//p_edit_rect.pos - r.pos;
 
-	Matrix32 postxf;
+	Transform2D postxf;
 	postxf.set_rotation_and_scale(angle,scale);
 	new_pos = postxf.xform(new_pos);
 
@@ -124,7 +124,7 @@ void Node2D::_update_xform_values() {
 
 void Node2D::_update_transform() {
 
-	Matrix32 mat(angle,pos);
+	Transform2D mat(angle,pos);
 	_mat.set_rotation_and_scale(angle,scale);
 	_mat.elements[2]=pos;
 
@@ -208,7 +208,7 @@ void Node2D::_notification(int p_what) {
 	}
 }
 
-Matrix32 Node2D::get_transform() const {
+Transform2D Node2D::get_transform() const {
 
 	return _mat;
 }
@@ -231,7 +231,7 @@ void Node2D::rotate(float p_degrees) {
 
 void Node2D::move_x(float p_delta,bool p_scaled){
 
-	Matrix32 t = get_transform();
+	Transform2D t = get_transform();
 	Vector2 m = t[0];
 	if (!p_scaled)
 		m.normalize();
@@ -240,7 +240,7 @@ void Node2D::move_x(float p_delta,bool p_scaled){
 
 void Node2D::move_y(float p_delta,bool p_scaled){
 
-	Matrix32 t = get_transform();
+	Transform2D t = get_transform();
 	Vector2 m = t[1];
 	if (!p_scaled)
 		m.normalize();
@@ -255,7 +255,7 @@ Point2 Node2D::get_global_pos() const {
 
 void Node2D::set_global_pos(const Point2& p_pos) {
 
-	Matrix32 inv;
+	Transform2D inv;
 	CanvasItem *pi = get_parent_item();
 	if (pi) {
 		inv = pi->get_global_transform().affine_inverse();
@@ -265,7 +265,7 @@ void Node2D::set_global_pos(const Point2& p_pos) {
 	}
 }
 
-void Node2D::set_transform(const Matrix32& p_transform) {
+void Node2D::set_transform(const Transform2D& p_transform) {
 
 	_mat=p_transform;
 	_xform_dirty=true;
@@ -278,7 +278,7 @@ void Node2D::set_transform(const Matrix32& p_transform) {
 	_notify_transform();
 }
 
-void Node2D::set_global_transform(const Matrix32& p_transform) {
+void Node2D::set_global_transform(const Transform2D& p_transform) {
 
 	CanvasItem *pi = get_parent_item();
 	if (pi)

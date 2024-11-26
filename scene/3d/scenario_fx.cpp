@@ -37,7 +37,7 @@ void WorldEnvironment::_notification(int p_what) {
 
 		if (environment.is_valid()) {
 			if (get_world()->get_environment().is_valid()) {
-				WARN_PRINT("World already has an environment (Another WorldEnvironment?), overriding.");
+				WARN_PRINT("World3D already has an environment (Another WorldEnvironment?), overriding.");
 			}
 			get_world()->set_environment(environment);
 		}
@@ -60,7 +60,7 @@ void WorldEnvironment::set_environment(const Ref<Environment>& p_environment) {
 	environment=p_environment;
 	if (is_inside_world() && environment.is_valid()) {
 		if (get_world()->get_environment().is_valid()) {
-			WARN_PRINT("World already has an environment (Another WorldEnvironment?), overriding.");
+			WARN_PRINT("World3D already has an environment (Another WorldEnvironment?), overriding.");
 		}
 		get_world()->set_environment(environment);
 	}

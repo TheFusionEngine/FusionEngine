@@ -37,9 +37,9 @@
 */
 
 
-class WorldEnvironment : public Spatial {
+class WorldEnvironment : public Node3D {
 
-	OBJ_TYPE(WorldEnvironment,Spatial );
+	OBJ_TYPE(WorldEnvironment,Node3D );
 
 	Ref<Environment> environment;
 

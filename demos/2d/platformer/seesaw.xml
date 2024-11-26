@@ -40,7 +40,7 @@
 				<string> "velocity/linear" </string>
 				<string> "velocity/angular" </string>
 				<string> "sprite" </string>
-				<string> "Sprite" </string>
+				<string> "Sprite2D" </string>
 				<string> "texture" </string>
 				<string> "centered" </string>
 				<string> "offset" </string>

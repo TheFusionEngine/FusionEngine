@@ -38,7 +38,7 @@ void AreaSW::_shapes_changed() {
 
 }
 
-void AreaSW::set_transform(const Transform& p_transform) {
+void AreaSW::set_transform(const Transform3D& p_transform) {
 
 	if (!moved_list.in_list() && get_space())
 		get_space()->area_add_to_moved_list(&moved_list);

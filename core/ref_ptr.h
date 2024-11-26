@@ -31,7 +31,7 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
  * This class exists to workaround a limitation in C++ but keep the design OK.
- * It's basically an opaque container of a Reference reference, so Variant can use it.
+ * It's basically an opaque container of a RefCounted reference, so Variant can use it.
 */
 
 #include "rid.h"

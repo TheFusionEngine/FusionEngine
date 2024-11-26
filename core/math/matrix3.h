@@ -35,7 +35,7 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class Matrix3 {
+class Basis {
 public:
 
 	Vector3 elements[3];
@@ -52,8 +52,8 @@ public:
 	void invert(); 
 	void transpose();
 	
-	Matrix3 inverse() const; 
-	Matrix3 transposed() const;
+	Basis inverse() const; 
+	Basis transposed() const;
 
 	_FORCE_INLINE_ float determinant() const;
 
@@ -71,10 +71,10 @@ public:
 	}
 
 	void rotate(const Vector3& p_axis, real_t p_phi);
-	Matrix3 rotated(const Vector3& p_axis, real_t p_phi) const;
+	Basis rotated(const Vector3& p_axis, real_t p_phi) const;
 
 	void scale( const Vector3& p_scale );
-	Matrix3 scaled( const Vector3& p_scale ) const;
+	Basis scaled( const Vector3& p_scale ) const;
 	Vector3 get_scale() const;
 
 	Vector3 get_euler() const;
@@ -91,13 +91,13 @@ public:
 		return elements[0][2] * v[0] + elements[1][2] * v[1] + elements[2][2] * v[2];
 	}
 	
-	bool operator==(const Matrix3& p_matrix) const;
-	bool operator!=(const Matrix3& p_matrix) const;
+	bool operator==(const Basis& p_matrix) const;
+	bool operator!=(const Basis& p_matrix) const;
 
 	_FORCE_INLINE_ Vector3 xform(const Vector3& p_vector) const;
 	_FORCE_INLINE_ Vector3 xform_inv(const Vector3& p_vector) const;
-	_FORCE_INLINE_ void operator*=(const Matrix3& p_matrix);
-	_FORCE_INLINE_ Matrix3 operator*(const Matrix3& p_matrix) const;
+	_FORCE_INLINE_ void operator*=(const Basis& p_matrix);
+	_FORCE_INLINE_ Basis operator*(const Basis& p_matrix) const;
 
 	int get_orthogonal_index() const;
 	void set_orthogonal_index(int p_index);
@@ -142,9 +142,9 @@ public:
 		elements[2].zero();
 	}
 
-	_FORCE_INLINE_ Matrix3 transpose_xform(const Matrix3& m) const
+	_FORCE_INLINE_ Basis transpose_xform(const Basis& m) const
 	{
-		return Matrix3(
+		return Basis(
 			elements[0].x * m[0].x + elements[1].x * m[1].x + elements[2].x * m[2].x,
 			elements[0].x * m[0].y + elements[1].x * m[1].y + elements[2].x * m[2].y,
 			elements[0].x * m[0].z + elements[1].x * m[1].z + elements[2].x * m[2].z,
@@ -155,21 +155,21 @@ public:
 			elements[0].z * m[0].y + elements[1].z * m[1].y + elements[2].z * m[2].y,
 			elements[0].z * m[0].z + elements[1].z * m[1].z + elements[2].z * m[2].z);
 	}
-	Matrix3(real_t xx, real_t xy, real_t xz, real_t yx, real_t yy, real_t yz, real_t zx, real_t zy, real_t zz) { 
+	Basis(real_t xx, real_t xy, real_t xz, real_t yx, real_t yy, real_t yz, real_t zx, real_t zy, real_t zz) { 
 			
 		set(xx, xy, xz, yx, yy, yz, zx, zy, zz);
 	}
 
 	void orthonormalize();
-	Matrix3 orthonormalized() const;
+	Basis orthonormalized() const;
 
 	operator Quat() const;
 
-	Matrix3(const Quat& p_quat); // euler
-	Matrix3(const Vector3& p_euler); // euler
-	Matrix3(const Vector3& p_axis, real_t p_phi);
+	Basis(const Quat& p_quat); // euler
+	Basis(const Vector3& p_euler); // euler
+	Basis(const Vector3& p_axis, real_t p_phi);
 
-	_FORCE_INLINE_ Matrix3() {
+	_FORCE_INLINE_ Basis() {
 	
 		elements[0][0]=1;
 		elements[0][1]=0;
@@ -185,7 +185,7 @@ public:
 
 };
 
-_FORCE_INLINE_ void Matrix3::operator*=(const Matrix3& p_matrix) {
+_FORCE_INLINE_ void Basis::operator*=(const Basis& p_matrix) {
 
 	set(
 		p_matrix.tdotx(elements[0]), p_matrix.tdoty(elements[0]), p_matrix.tdotz(elements[0]),
@@ -194,16 +194,16 @@ _FORCE_INLINE_ void Matrix3::operator*=(const Matrix3& p_matrix) {
 	
 }
 
-_FORCE_INLINE_ Matrix3 Matrix3::operator*(const Matrix3& p_matrix) const {
+_FORCE_INLINE_ Basis Basis::operator*(const Basis& p_matrix) const {
 
-	return Matrix3(
+	return Basis(
 		p_matrix.tdotx(elements[0]), p_matrix.tdoty(elements[0]), p_matrix.tdotz(elements[0]),
 		p_matrix.tdotx(elements[1]), p_matrix.tdoty(elements[1]), p_matrix.tdotz(elements[1]),
 		p_matrix.tdotx(elements[2]), p_matrix.tdoty(elements[2]), p_matrix.tdotz(elements[2]) );
 
 }
 
-Vector3 Matrix3::xform(const Vector3& p_vector) const {
+Vector3 Basis::xform(const Vector3& p_vector) const {
 
 	return Vector3(
 		elements[0].dot(p_vector),
@@ -212,7 +212,7 @@ Vector3 Matrix3::xform(const Vector3& p_vector) const {
 	);
 }
 
-Vector3 Matrix3::xform_inv(const Vector3& p_vector) const {
+Vector3 Basis::xform_inv(const Vector3& p_vector) const {
 
 	return Vector3(
 		(elements[0][0]*p_vector.x ) + ( elements[1][0]*p_vector.y ) + ( elements[2][0]*p_vector.z ),
@@ -221,7 +221,7 @@ Vector3 Matrix3::xform_inv(const Vector3& p_vector) const {
 	);
 }
 
-float Matrix3::determinant() const {
+float Basis::determinant() const {
 
 	return elements[0][0]*(elements[1][1]*elements[2][2] - elements[2][1]*elements[1][2]) -
 	       elements[1][0]*(elements[0][1]*elements[2][2] - elements[2][1]*elements[0][2]) +

@@ -257,7 +257,7 @@ bool Face3::intersects_aabb(const AABB& p_aabb) const {
 
 			float minA,maxA,minB,maxB;
 			p_aabb.project_range_in_plane(Plane(axis,0),minA,maxA);
-			project_range(axis,Transform(),minB,maxB);
+			project_range(axis,Transform3D(),minB,maxB);
 
 			if (maxA<minB || maxB<minA)
 				return false;
@@ -272,7 +272,7 @@ Face3::operator String() const {
 	return String()+vertex[0]+", "+vertex[1]+", "+vertex[2];
 }
 
-void Face3::project_range(const Vector3& p_normal,const Transform& p_transform,float& r_min, float& r_max) const {
+void Face3::project_range(const Vector3& p_normal,const Transform3D& p_transform,float& r_min, float& r_max) const {
 
 	for (int i=0;i<3;i++) {
 
@@ -289,7 +289,7 @@ void Face3::project_range(const Vector3& p_normal,const Transform& p_transform,f
 
 
 
-void Face3::get_support(const Vector3& p_normal,const Transform& p_transform,Vector3 *p_vertices,int* p_count,int p_max) const {
+void Face3::get_support(const Vector3& p_normal,const Transform3D& p_transform,Vector3 *p_vertices,int* p_count,int p_max) const {
 
 #define _FACE_IS_VALID_SUPPORT_TRESHOLD 0.98
 #define _EDGE_IS_VALID_SUPPORT_TRESHOLD 0.05

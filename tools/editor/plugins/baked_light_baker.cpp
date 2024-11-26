@@ -98,7 +98,7 @@ BakedLightBaker::MeshTexture* BakedLightBaker::_get_mat_tex(const Ref<Texture>& 
 }
 
 
-void BakedLightBaker::_add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_mat_override,const Transform& p_xform,int p_baked_texture) {
+void BakedLightBaker::_add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_mat_override,const Transform3D& p_xform,int p_baked_texture) {
 
 
 	for(int i=0;i<p_mesh->get_surface_count();i++) {
@@ -204,7 +204,7 @@ void BakedLightBaker::_add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_m
 			read_normal=true;
 		}
 
-		Matrix3 normal_xform = p_xform.basis.inverse().transposed();
+		Basis normal_xform = p_xform.basis.inverse().transposed();
 
 
 		if (p_mesh->surface_get_format(i)&Mesh::ARRAY_FORMAT_INDEX) {
@@ -272,53 +272,53 @@ void BakedLightBaker::_add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_m
 
 void BakedLightBaker::_parse_geometry(Node* p_node) {
 
-	if (p_node->cast_to<MeshInstance>()) {
+	if (p_node->cast_to<MeshInstance3D>()) {
 
-		MeshInstance *meshi=p_node->cast_to<MeshInstance>();
+		MeshInstance3D *meshi=p_node->cast_to<MeshInstance3D>();
 		Ref<Mesh> mesh=meshi->get_mesh();
 		if (mesh.is_valid()) {
 			_add_mesh(mesh,meshi->get_material_override(),base_inv * meshi->get_global_transform(),meshi->get_baked_light_texture_id());
 		}
-	} else if (p_node->cast_to<Light>()) {
+	} else if (p_node->cast_to<Light3D>()) {
 
-		Light *dl=p_node->cast_to<Light>();
+		Light3D *dl=p_node->cast_to<Light3D>();
 
-		if (dl->get_bake_mode()!=Light::BAKE_MODE_DISABLED) {
+		if (dl->get_bake_mode()!=Light3D::BAKE_MODE_DISABLED) {
 
 
 			LightData dirl;
 			dirl.type=VS::LightType(dl->get_light_type());
-			dirl.diffuse=dl->get_color(DirectionalLight::COLOR_DIFFUSE);
-			dirl.specular=dl->get_color(DirectionalLight::COLOR_SPECULAR);
+			dirl.diffuse=dl->get_color(DirectionalLight3D::COLOR_DIFFUSE);
+			dirl.specular=dl->get_color(DirectionalLight3D::COLOR_SPECULAR);
 			if (linear_color)
 				dirl.diffuse=dirl.diffuse.to_linear();
 			if (linear_color)
 				dirl.specular=dirl.specular.to_linear();
 
-			dirl.energy=dl->get_parameter(DirectionalLight::PARAM_ENERGY);
+			dirl.energy=dl->get_parameter(DirectionalLight3D::PARAM_ENERGY);
 			dirl.pos=dl->get_global_transform().origin;
 			dirl.up=dl->get_global_transform().basis.get_axis(1).normalized();
 			dirl.left=dl->get_global_transform().basis.get_axis(0).normalized();
 			dirl.dir=-dl->get_global_transform().basis.get_axis(2).normalized();
-			dirl.spot_angle=dl->get_parameter(DirectionalLight::PARAM_SPOT_ANGLE);
-			dirl.spot_attenuation=dl->get_parameter(DirectionalLight::PARAM_SPOT_ATTENUATION);
-			dirl.attenuation=dl->get_parameter(DirectionalLight::PARAM_ATTENUATION);
-			dirl.darkening=dl->get_parameter(DirectionalLight::PARAM_SHADOW_DARKENING);
-			dirl.radius=dl->get_parameter(DirectionalLight::PARAM_RADIUS);
-			dirl.bake_direct=dl->get_bake_mode()==Light::BAKE_MODE_FULL;
+			dirl.spot_angle=dl->get_parameter(DirectionalLight3D::PARAM_SPOT_ANGLE);
+			dirl.spot_attenuation=dl->get_parameter(DirectionalLight3D::PARAM_SPOT_ATTENUATION);
+			dirl.attenuation=dl->get_parameter(DirectionalLight3D::PARAM_ATTENUATION);
+			dirl.darkening=dl->get_parameter(DirectionalLight3D::PARAM_SHADOW_DARKENING);
+			dirl.radius=dl->get_parameter(DirectionalLight3D::PARAM_RADIUS);
+			dirl.bake_direct=dl->get_bake_mode()==Light3D::BAKE_MODE_FULL;
 			dirl.rays_thrown=0;
-			dirl.bake_shadow=dl->get_bake_mode()==Light::BAKE_MODE_INDIRECT_AND_SHADOWS;
+			dirl.bake_shadow=dl->get_bake_mode()==Light3D::BAKE_MODE_INDIRECT_AND_SHADOWS;
 			lights.push_back(dirl);
 		}
 
-	} else if (p_node->cast_to<Spatial>()){
+	} else if (p_node->cast_to<Node3D>()){
 
-		Spatial *sp = p_node->cast_to<Spatial>();
+		Node3D *sp = p_node->cast_to<Node3D>();
 
 		Array arr = p_node->call("_get_baked_light_meshes");
 		for(int i=0;i<arr.size();i+=2) {
 
-			Transform xform=arr[i];
+			Transform3D xform=arr[i];
 			Ref<Mesh> mesh=arr[i+1];
 			_add_mesh(mesh,Ref<Material>(),base_inv * (sp->get_global_transform() * xform));
 		}
@@ -1715,8 +1715,8 @@ void BakedLightBaker::bake(const Ref<BakedLight> &p_light, Node* p_node) {
 		return;
 	cell_count=0;
 
-	base_inv=p_node->cast_to<Spatial>()->get_global_transform().affine_inverse();
-	EditorProgress ep("bake","Light Baker Setup:",5);
+	base_inv=p_node->cast_to<Node3D>()->get_global_transform().affine_inverse();
+	EditorProgress ep("bake","Light3D Baker Setup:",5);
 	baked_light=p_light;
 	lattice_size=baked_light->get_initial_lattice_subdiv();
 	octree_depth=baked_light->get_cell_subdivision();
@@ -1752,7 +1752,7 @@ void BakedLightBaker::bake(const Ref<BakedLight> &p_light, Node* p_node) {
 	_fix_lights();
 	ep.step("Making BVH",2);
 	_make_bvh();
-	ep.step("Creating Light Octree",3);
+	ep.step("Creating Light3D Octree",3);
 	_make_octree();
 	ep.step("Creating Octree Texture",4);
 	_make_octree_texture();

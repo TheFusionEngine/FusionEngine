@@ -11,7 +11,7 @@ func _init():
 	
  
 func _enter_scene():
-	add_custom_type("Terrain","Spatial",preload("terrain_node.gd"),preload("terrain.png"))
+	add_custom_type("Terrain","Node3D",preload("terrain_node.gd"),preload("terrain.png"))
 
 func _exit_scene():
 	remove_custom_type("Terrain")

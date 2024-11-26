@@ -86,8 +86,8 @@ public:
 	PackedDataContainer();
 };
 
-class PackedDataContainerRef : public Reference {
-	OBJ_TYPE(PackedDataContainerRef,Reference);
+class PackedDataContainerRef : public RefCounted {
+	OBJ_TYPE(PackedDataContainerRef,RefCounted);
 
 friend class PackedDataContainer;
 	uint32_t offset;

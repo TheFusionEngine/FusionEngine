@@ -45,12 +45,12 @@ class MultiMeshEditor : public Control {
 
 	AcceptDialog *err_dialog;
 
-	MultiMeshInstance *_last_pp_node;
+	MultiMeshInstance3D *_last_pp_node;
 	bool browsing_source;
 
 	Panel *panel;
 	MenuButton * options;
-	MultiMeshInstance *node;
+	MultiMeshInstance3D *node;
 
 	LineEdit *surface_source;
 	LineEdit *mesh_source;
@@ -80,7 +80,7 @@ protected:
 	static void _bind_methods();
 public:
 
-	void edit(MultiMeshInstance *p_multimesh);
+	void edit(MultiMeshInstance3D *p_multimesh);
 	MultiMeshEditor();
 };
 

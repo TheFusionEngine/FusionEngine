@@ -30,12 +30,12 @@
 #include "servers/physics_server.h"
 
 
-void SphereShape::_update_shape() {
+void SphereShape3D::_update_shape() {
 
 	PhysicsServer::get_singleton()->shape_set_data(get_shape(),radius);
 }
 
-void SphereShape::set_radius(float p_radius) {
+void SphereShape3D::set_radius(float p_radius) {
 
 	radius=p_radius;
 	_update_shape();
@@ -43,22 +43,22 @@ void SphereShape::set_radius(float p_radius) {
 	_change_notify("radius");
 }
 
-float SphereShape::get_radius() const {
+float SphereShape3D::get_radius() const {
 
 	return radius;
 }
 
 
-void SphereShape::_bind_methods() {
+void SphereShape3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_radius","radius"),&SphereShape::set_radius);
-	ObjectTypeDB::bind_method(_MD("get_radius"),&SphereShape::get_radius);
+	ObjectTypeDB::bind_method(_MD("set_radius","radius"),&SphereShape3D::set_radius);
+	ObjectTypeDB::bind_method(_MD("get_radius"),&SphereShape3D::get_radius);
 
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"radius",PROPERTY_HINT_RANGE,"0,4096,0.01"), _SCS("set_radius"), _SCS("get_radius"));
 
 }
 
-SphereShape::SphereShape() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_SPHERE)) {
+SphereShape3D::SphereShape3D() : Shape3D( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_SPHERE)) {
 
 	set_radius(1.0);
 }

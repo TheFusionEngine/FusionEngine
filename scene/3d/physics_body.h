@@ -34,16 +34,16 @@
 #include "vset.h"
 
 
-class PhysicsBody : public CollisionObject {
+class PhysicsBody3D : public CollisionObject3D {
 
-	OBJ_TYPE(PhysicsBody,CollisionObject);
+	OBJ_TYPE(PhysicsBody3D,CollisionObject3D);
 
 	uint32_t layer_mask;
 protected:
 
 	static void _bind_methods();
 	void _notification(int p_what);
-	PhysicsBody(PhysicsServer::BodyMode p_mode);
+	PhysicsBody3D(PhysicsServer::BodyMode p_mode);
 public:
 
 	virtual Vector3 get_linear_velocity() const;
@@ -56,13 +56,13 @@ public:
 	void add_collision_exception_with(Node* p_node); //must be physicsbody
 	void remove_collision_exception_with(Node* p_node);
 
-	PhysicsBody();
+	PhysicsBody3D();
 
 };
 
-class StaticBody : public PhysicsBody {
+class StaticBody3D : public PhysicsBody3D {
 
-	OBJ_TYPE(StaticBody,PhysicsBody);
+	OBJ_TYPE(StaticBody3D,PhysicsBody3D);
 
 	Vector3 constant_linear_velocity;
 	Vector3 constant_angular_velocity;
@@ -91,14 +91,14 @@ public:
 	Vector3 get_constant_linear_velocity() const;
 	Vector3 get_constant_angular_velocity() const;
 
-	StaticBody();
-	~StaticBody();
+	StaticBody3D();
+	~StaticBody3D();
 
 };
 
-class RigidBody : public PhysicsBody {
+class RigidBody3D : public PhysicsBody3D {
 
-	OBJ_TYPE(RigidBody,PhysicsBody);
+	OBJ_TYPE(RigidBody3D,PhysicsBody3D);
 public:
 
 	enum Mode {
@@ -240,21 +240,21 @@ public:
 
 	void apply_impulse(const Vector3& p_pos, const Vector3& p_impulse);
 
-	RigidBody();
-	~RigidBody();
+	RigidBody3D();
+	~RigidBody3D();
 
 };
 
-VARIANT_ENUM_CAST(RigidBody::Mode);
-VARIANT_ENUM_CAST(RigidBody::AxisLock);
+VARIANT_ENUM_CAST(RigidBody3D::Mode);
+VARIANT_ENUM_CAST(RigidBody3D::AxisLock);
 
 
 
 
 
-class KinematicBody : public PhysicsBody {
+class CharacterBody3D : public PhysicsBody3D {
 
-	OBJ_TYPE(KinematicBody,PhysicsBody);
+	OBJ_TYPE(CharacterBody3D,PhysicsBody3D);
 
 	float margin;
 	bool collide_static;
@@ -311,8 +311,8 @@ public:
 	void set_collision_margin(float p_margin);
 	float get_collision_margin() const;
 
-	KinematicBody();
-	~KinematicBody();
+	CharacterBody3D();
+	~CharacterBody3D();
 
 };
 

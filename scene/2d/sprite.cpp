@@ -31,22 +31,22 @@
 #include "scene/scene_string_names.h"
 #include "scene/main/viewport.h"
 
-void Sprite::edit_set_pivot(const Point2& p_pivot) {
+void Sprite2D::edit_set_pivot(const Point2& p_pivot) {
 
 	set_offset(p_pivot);
 
 }
 
-Point2 Sprite::edit_get_pivot() const {
+Point2 Sprite2D::edit_get_pivot() const {
 
 	return get_offset();
 }
-bool Sprite::edit_has_pivot() const {
+bool Sprite2D::edit_has_pivot() const {
 
 	return true;
 }
 
-void Sprite::_notification(int p_what) {
+void Sprite2D::_notification(int p_what) {
 
 	switch(p_what) {
 
@@ -99,7 +99,7 @@ void Sprite::_notification(int p_what) {
 	}
 }
 
-void Sprite::set_texture(const Ref<Texture>& p_texture) {
+void Sprite2D::set_texture(const Ref<Texture>& p_texture) {
 
 	if (p_texture==texture)
 		return;
@@ -115,56 +115,56 @@ void Sprite::set_texture(const Ref<Texture>& p_texture) {
 	item_rect_changed();
 }
 
-Ref<Texture> Sprite::get_texture() const {
+Ref<Texture> Sprite2D::get_texture() const {
 
 	return texture;
 }
 
-void Sprite::set_centered(bool p_center) {
+void Sprite2D::set_centered(bool p_center) {
 
 	centered=p_center;
 	update();
 	item_rect_changed();
 }
 
-bool Sprite::is_centered() const {
+bool Sprite2D::is_centered() const {
 
 	return centered;
 }
 
-void Sprite::set_offset(const Point2& p_offset) {
+void Sprite2D::set_offset(const Point2& p_offset) {
 
 	offset=p_offset;
 	update();
 	item_rect_changed();
 	_change_notify("offset");
 }
-Point2 Sprite::get_offset() const {
+Point2 Sprite2D::get_offset() const {
 
 	return offset;
 }
 
-void Sprite::set_flip_h(bool p_flip) {
+void Sprite2D::set_flip_h(bool p_flip) {
 
 	hflip=p_flip;
 	update();
 }
-bool Sprite::is_flipped_h() const {
+bool Sprite2D::is_flipped_h() const {
 
 	return hflip;
 }
 
-void Sprite::set_flip_v(bool p_flip) {
+void Sprite2D::set_flip_v(bool p_flip) {
 
 	vflip=p_flip;
 	update();
 }
-bool Sprite::is_flipped_v() const {
+bool Sprite2D::is_flipped_v() const {
 
 	return vflip;
 }
 
-void Sprite::set_region(bool p_region) {
+void Sprite2D::set_region(bool p_region) {
 
 	if (p_region==region)
 		return;
@@ -173,12 +173,12 @@ void Sprite::set_region(bool p_region) {
 	update();
 }
 
-bool Sprite::is_region() const{
+bool Sprite2D::is_region() const{
 
 	return region;
 }
 
-void Sprite::set_region_rect(const Rect2& p_region_rect) {
+void Sprite2D::set_region_rect(const Rect2& p_region_rect) {
 
 	bool changed=region_rect!=p_region_rect;
 	region_rect=p_region_rect;
@@ -188,12 +188,12 @@ void Sprite::set_region_rect(const Rect2& p_region_rect) {
 	}
 }
 
-Rect2 Sprite::get_region_rect() const {
+Rect2 Sprite2D::get_region_rect() const {
 
 	return region_rect;
 }
 
-void Sprite::set_frame(int p_frame) {
+void Sprite2D::set_frame(int p_frame) {
 
 	ERR_FAIL_INDEX(p_frame,vframes*hframes);
 
@@ -205,12 +205,12 @@ void Sprite::set_frame(int p_frame) {
 	emit_signal(SceneStringNames::get_singleton()->frame_changed);
 }
 
-int Sprite::get_frame() const {
+int Sprite2D::get_frame() const {
 
 	return frame;
 }
 
-void Sprite::set_vframes(int p_amount) {
+void Sprite2D::set_vframes(int p_amount) {
 
 	ERR_FAIL_COND(p_amount<1);
 	vframes=p_amount;
@@ -218,12 +218,12 @@ void Sprite::set_vframes(int p_amount) {
 	item_rect_changed();
 	_change_notify("frame");
 }
-int Sprite::get_vframes() const {
+int Sprite2D::get_vframes() const {
 
 	return vframes;
 }
 
-void Sprite::set_hframes(int p_amount) {
+void Sprite2D::set_hframes(int p_amount) {
 
 	ERR_FAIL_COND(p_amount<1);
 	hframes=p_amount;
@@ -231,24 +231,24 @@ void Sprite::set_hframes(int p_amount) {
 	item_rect_changed();
 	_change_notify("frame");
 }
-int Sprite::get_hframes() const {
+int Sprite2D::get_hframes() const {
 
 	return hframes;
 }
 
-void Sprite::set_modulate(const Color& p_color) {
+void Sprite2D::set_modulate(const Color& p_color) {
 
 	modulate=p_color;
 	update();
 }
 
-Color Sprite::get_modulate() const{
+Color Sprite2D::get_modulate() const{
 
 	return modulate;
 }
 
 
-Rect2 Sprite::get_item_rect() const {
+Rect2 Sprite2D::get_item_rect() const {
 
 	if (texture.is_null())
 		return Rect2(0,0,1,1);
@@ -276,40 +276,40 @@ Rect2 Sprite::get_item_rect() const {
 }
 
 
-void Sprite::_bind_methods() {
+void Sprite2D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_texture","texture:Texture"),&Sprite::set_texture);
-	ObjectTypeDB::bind_method(_MD("get_texture:Texture"),&Sprite::get_texture);
+	ObjectTypeDB::bind_method(_MD("set_texture","texture:Texture"),&Sprite2D::set_texture);
+	ObjectTypeDB::bind_method(_MD("get_texture:Texture"),&Sprite2D::get_texture);
 
-	ObjectTypeDB::bind_method(_MD("set_centered","centered"),&Sprite::set_centered);
-	ObjectTypeDB::bind_method(_MD("is_centered"),&Sprite::is_centered);
+	ObjectTypeDB::bind_method(_MD("set_centered","centered"),&Sprite2D::set_centered);
+	ObjectTypeDB::bind_method(_MD("is_centered"),&Sprite2D::is_centered);
 
-	ObjectTypeDB::bind_method(_MD("set_offset","offset"),&Sprite::set_offset);
-	ObjectTypeDB::bind_method(_MD("get_offset"),&Sprite::get_offset);
+	ObjectTypeDB::bind_method(_MD("set_offset","offset"),&Sprite2D::set_offset);
+	ObjectTypeDB::bind_method(_MD("get_offset"),&Sprite2D::get_offset);
 
-	ObjectTypeDB::bind_method(_MD("set_flip_h","flip_h"),&Sprite::set_flip_h);
-	ObjectTypeDB::bind_method(_MD("is_flipped_h"),&Sprite::is_flipped_h);
+	ObjectTypeDB::bind_method(_MD("set_flip_h","flip_h"),&Sprite2D::set_flip_h);
+	ObjectTypeDB::bind_method(_MD("is_flipped_h"),&Sprite2D::is_flipped_h);
 
-	ObjectTypeDB::bind_method(_MD("set_flip_v","flip_v"),&Sprite::set_flip_v);
-	ObjectTypeDB::bind_method(_MD("is_flipped_v"),&Sprite::is_flipped_v);
+	ObjectTypeDB::bind_method(_MD("set_flip_v","flip_v"),&Sprite2D::set_flip_v);
+	ObjectTypeDB::bind_method(_MD("is_flipped_v"),&Sprite2D::is_flipped_v);
 
-	ObjectTypeDB::bind_method(_MD("set_region","enabled"),&Sprite::set_region);
-	ObjectTypeDB::bind_method(_MD("is_region"),&Sprite::is_region);
+	ObjectTypeDB::bind_method(_MD("set_region","enabled"),&Sprite2D::set_region);
+	ObjectTypeDB::bind_method(_MD("is_region"),&Sprite2D::is_region);
 
-	ObjectTypeDB::bind_method(_MD("set_region_rect","rect"),&Sprite::set_region_rect);
-	ObjectTypeDB::bind_method(_MD("get_region_rect"),&Sprite::get_region_rect);
+	ObjectTypeDB::bind_method(_MD("set_region_rect","rect"),&Sprite2D::set_region_rect);
+	ObjectTypeDB::bind_method(_MD("get_region_rect"),&Sprite2D::get_region_rect);
 
-	ObjectTypeDB::bind_method(_MD("set_frame","frame"),&Sprite::set_frame);
-	ObjectTypeDB::bind_method(_MD("get_frame"),&Sprite::get_frame);
+	ObjectTypeDB::bind_method(_MD("set_frame","frame"),&Sprite2D::set_frame);
+	ObjectTypeDB::bind_method(_MD("get_frame"),&Sprite2D::get_frame);
 
-	ObjectTypeDB::bind_method(_MD("set_vframes","vframes"),&Sprite::set_vframes);
-	ObjectTypeDB::bind_method(_MD("get_vframes"),&Sprite::get_vframes);
+	ObjectTypeDB::bind_method(_MD("set_vframes","vframes"),&Sprite2D::set_vframes);
+	ObjectTypeDB::bind_method(_MD("get_vframes"),&Sprite2D::get_vframes);
 
-	ObjectTypeDB::bind_method(_MD("set_hframes","hframes"),&Sprite::set_hframes);
-	ObjectTypeDB::bind_method(_MD("get_hframes"),&Sprite::get_hframes);
+	ObjectTypeDB::bind_method(_MD("set_hframes","hframes"),&Sprite2D::set_hframes);
+	ObjectTypeDB::bind_method(_MD("get_hframes"),&Sprite2D::get_hframes);
 
-	ObjectTypeDB::bind_method(_MD("set_modulate","modulate"),&Sprite::set_modulate);
-	ObjectTypeDB::bind_method(_MD("get_modulate"),&Sprite::get_modulate);
+	ObjectTypeDB::bind_method(_MD("set_modulate","modulate"),&Sprite2D::set_modulate);
+	ObjectTypeDB::bind_method(_MD("get_modulate"),&Sprite2D::get_modulate);
 
 	ADD_SIGNAL(MethodInfo("frame_changed"));
 
@@ -327,7 +327,7 @@ void Sprite::_bind_methods() {
 
 }
 
-Sprite::Sprite() {
+Sprite2D::Sprite2D() {
 
 	centered=true;
 	hflip=false;

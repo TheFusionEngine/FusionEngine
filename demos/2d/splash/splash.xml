@@ -232,7 +232,7 @@
 				<string> "margin/top" </string>
 				<string> "layer1" </string>
 				<string> "logo" </string>
-				<string> "AnimatedSprite" </string>
+				<string> "AnimatedSprite2D" </string>
 				<string> "transform/pos" </string>
 				<string> "transform/rot" </string>
 				<string> "transform/scale" </string>

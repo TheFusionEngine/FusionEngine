@@ -455,7 +455,7 @@ x.attribute
 \begin_inset Text
 
 \begin_layout Plain Layout
-Attribute Reference
+Attribute RefCounted
 \end_layout
 
 \end_inset
@@ -1057,7 +1057,7 @@ Vector3
 \end_layout
 
 \begin_layout Subsubsection
-Matrix32
+Transform2D
 \end_layout
 
 \begin_layout Standard
@@ -1137,7 +1137,7 @@ pos+size
 \end_layout
 
 \begin_layout Subsubsection
-Matrix3
+Basis
 \end_layout
 
 \begin_layout Standard
@@ -1147,11 +1147,11 @@ Matrix3
 \end_layout
 
 \begin_layout Subsubsection
-Transform
+Transform3D
 \end_layout
 
 \begin_layout Standard
-3D Transform, contains a Matrix3 field 
+3D Transform3D, contains a Basis field 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1315,7 +1315,7 @@ Array of bytes.
 \end_layout
 
 \begin_layout Subsubsection
-IntArray
+PackedIntArray
 \end_layout
 
 \begin_layout Standard
@@ -1334,7 +1334,7 @@ Array of floats, can only contain floats.
 \end_layout
 
 \begin_layout Subsubsection
-StringArray
+PackedStringArray
 \end_layout
 
 \begin_layout Standard
@@ -1343,7 +1343,7 @@ Array of strings, can only contain strings.
 \end_layout
 
 \begin_layout Subsubsection
-Vector2Array
+PackedVector2Array
 \end_layout
 
 \begin_layout Standard
@@ -1352,7 +1352,7 @@ Array of Vector2, can only contain 2D Vectors.
 \end_layout
 
 \begin_layout Subsubsection
-Vector3Array
+PackedVector3Array
 \end_layout
 
 \begin_layout Standard
@@ -1361,7 +1361,7 @@ Array of Vector3, can only contain 3D Vectors.
 \end_layout
 
 \begin_layout Subsubsection
-ColorArray
+PackedColorArray
 \end_layout
 
 \begin_layout Standard
@@ -2461,13 +2461,13 @@ Memory Management
 \begin_layout Standard
 If a class inherits from 
 \emph on
-Reference
+RefCounted
 \emph default
 , then instances will be freed when no longer in use.
  No garbage collector exists, just simple reference counting.
  By default, all classes that don't define inheritance extend 
 \emph on
-Reference
+RefCounted
 \emph default
 .
  If this is not desired, then a class must inherit 

@@ -1,5 +1,5 @@
 
-extends KinematicBody2D
+extends CharacterBody2D
 
 #This is a simple collision demo showing how
 #the kinematic cotroller works.

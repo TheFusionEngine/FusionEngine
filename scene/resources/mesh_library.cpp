@@ -85,7 +85,7 @@ void MeshLibrary::_get_property_list( List<PropertyInfo> *p_list) const {
 		String name="item/"+itos(E->key())+"/";
 		p_list->push_back( PropertyInfo(Variant::STRING,name+"name"));
 		p_list->push_back( PropertyInfo(Variant::OBJECT,name+"mesh",PROPERTY_HINT_RESOURCE_TYPE,"Mesh"));
-		p_list->push_back( PropertyInfo(Variant::OBJECT,name+"shape",PROPERTY_HINT_RESOURCE_TYPE,"Shape"));
+		p_list->push_back( PropertyInfo(Variant::OBJECT,name+"shape",PROPERTY_HINT_RESOURCE_TYPE,"Shape3D"));
 		p_list->push_back( PropertyInfo(Variant::OBJECT,name+"preview",PROPERTY_HINT_RESOURCE_TYPE,"Texture",PROPERTY_USAGE_DEFAULT|PROPERTY_USAGE_EDITOR_HELPER));
 	}
 }
@@ -119,7 +119,7 @@ void MeshLibrary::set_item_mesh(int p_item,const Ref<Mesh>& p_mesh) {
 
 }
 
-void MeshLibrary::set_item_shape(int p_item,const Ref<Shape>& p_shape) {
+void MeshLibrary::set_item_shape(int p_item,const Ref<Shape3D>& p_shape) {
 
 	ERR_FAIL_COND(!item_map.has(p_item));
 	item_map[p_item].shape=p_shape;
@@ -151,9 +151,9 @@ Ref<Mesh> MeshLibrary::get_item_mesh(int p_item) const {
 
 }
 
-Ref<Shape> MeshLibrary::get_item_shape(int p_item) const {
+Ref<Shape3D> MeshLibrary::get_item_shape(int p_item) const {
 
-	ERR_FAIL_COND_V(!item_map.has(p_item),Ref<Shape>());
+	ERR_FAIL_COND_V(!item_map.has(p_item),Ref<Shape3D>());
 	return item_map[p_item].shape;
 }
 
@@ -223,10 +223,10 @@ void MeshLibrary::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("create_item","id"),&MeshLibrary::create_item);
 	ObjectTypeDB::bind_method(_MD("set_item_name","id","name"),&MeshLibrary::set_item_name);
 	ObjectTypeDB::bind_method(_MD("set_item_mesh","id","mesh:Mesh"),&MeshLibrary::set_item_mesh);
-	ObjectTypeDB::bind_method(_MD("set_item_shape","id","shape:Shape"),&MeshLibrary::set_item_shape);
+	ObjectTypeDB::bind_method(_MD("set_item_shape","id","shape:Shape3D"),&MeshLibrary::set_item_shape);
 	ObjectTypeDB::bind_method(_MD("get_item_name","id"),&MeshLibrary::get_item_name);
 	ObjectTypeDB::bind_method(_MD("get_item_mesh:Mesh","id"),&MeshLibrary::get_item_mesh);
-	ObjectTypeDB::bind_method(_MD("get_item_shape:Shape","id"),&MeshLibrary::get_item_shape);
+	ObjectTypeDB::bind_method(_MD("get_item_shape:Shape3D","id"),&MeshLibrary::get_item_shape);
 	ObjectTypeDB::bind_method(_MD("remove_item","id"),&MeshLibrary::remove_item);
 	ObjectTypeDB::bind_method(_MD("clear"),&MeshLibrary::clear);
 	ObjectTypeDB::bind_method(_MD("get_item_list"),&MeshLibrary::get_item_list);

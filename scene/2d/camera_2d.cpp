@@ -42,7 +42,7 @@ void Camera2D::_update_scroll() {
 	}
 
 	if (current) {
-		Matrix32 xform = get_camera_transform();
+		Transform2D xform = get_camera_transform();
 
 		RID vp =  viewport->get_viewport();
 		if (viewport) {
@@ -65,10 +65,10 @@ Vector2 Camera2D::get_zoom() const {
 };
 
 
-Matrix32 Camera2D::get_camera_transform()  {
+Transform2D Camera2D::get_camera_transform()  {
 
 	if (!get_tree())
-		return Matrix32();
+		return Transform2D();
 
 	Size2 screen_size = get_viewport_rect().size;
 	screen_size=get_viewport_rect().size;
@@ -173,7 +173,7 @@ Matrix32 Camera2D::get_camera_transform()  {
 
 	camera_screen_center=screen_rect.pos+screen_rect.size*0.5;
 
-	Matrix32 xform;
+	Transform2D xform;
 	if(rotating){
 		xform.set_rotation(angle);
 	}
@@ -243,7 +243,7 @@ void Camera2D::_notification(int p_what) {
 
 			if (is_current()) {
 				if (viewport) {
-					viewport->set_canvas_transform( Matrix32() );
+					viewport->set_canvas_transform( Transform2D() );
 				}
 			}
 			remove_from_group(group_name);

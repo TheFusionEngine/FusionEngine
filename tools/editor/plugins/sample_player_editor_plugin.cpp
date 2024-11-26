@@ -152,7 +152,7 @@ void SamplePlayerEditorPlugin::edit(Object *p_object) {
 
 bool SamplePlayerEditorPlugin::handles(Object *p_object) const {
 
-	return p_object->is_type("SamplePlayer2D") || p_object->is_type("SamplePlayer") || p_object->is_type("SpatialSamplePlayer");
+	return p_object->is_type("SamplePlayer2D") || p_object->is_type("SamplePlayer") || p_object->is_type("SamplePlayer3D");
 }
 
 void SamplePlayerEditorPlugin::make_visible(bool p_visible) {

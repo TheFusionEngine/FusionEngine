@@ -5,7 +5,7 @@
  ** md5.c                                                            **
  ** RSA Data Security, Inc. MD5 Message Digest Algorithm             **
  ** Created: 2/17/90 RLR                                             **
- ** Revised: 1/91 SRD,AJ,BSK,JT Reference C Version                  **
+ ** Revised: 1/91 SRD,AJ,BSK,JT RefCounted C Version                  **
  **********************************************************************
  */
 
@@ -37,7 +37,7 @@
 /* #include "md5.h" */
 
 /* forward declaration */
-static void Transform (uint32_t *buf, uint32_t *in);
+static void Transform3D (uint32_t *buf, uint32_t *in);
 
 
 static unsigned char PADDING[64] = {
@@ -120,7 +120,7 @@ void MD5Update (MD5_CTX *mdContext,unsigned char *inBuf,unsigned int inLen) {
 		(((uint32_t)mdContext->in[ii+2]) << 16) |
 		(((uint32_t)mdContext->in[ii+1]) << 8) |
 		((uint32_t)mdContext->in[ii]);
-      Transform (mdContext->buf, in);
+      Transform3D (mdContext->buf, in);
       mdi = 0;
     }
   }
@@ -149,7 +149,7 @@ void MD5Final (MD5_CTX *mdContext) {
 	    (((uint32_t)mdContext->in[ii+2]) << 16) |
 	    (((uint32_t)mdContext->in[ii+1]) << 8) |
 	    ((uint32_t)mdContext->in[ii]);
-  Transform (mdContext->buf, in);
+  Transform3D (mdContext->buf, in);
 
   /* store buffer in digest */
   for (i = 0, ii = 0; i < 4; i++, ii += 4) {
@@ -163,9 +163,9 @@ void MD5Final (MD5_CTX *mdContext) {
   }
 }
 
-/* Basic MD5 step. Transform buf based on in.
+/* Basic MD5 step. Transform3D buf based on in.
  */
-static void Transform (uint32_t *buf, uint32_t *in) {
+static void Transform3D (uint32_t *buf, uint32_t *in) {
   uint32_t a = buf[0], b = buf[1], c = buf[2], d = buf[3];
 
   /* Round 1 */

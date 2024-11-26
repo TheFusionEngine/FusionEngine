@@ -32,9 +32,9 @@
 
 #include "scene/3d/camera.h"
 #if 0
-class CharacterCamera : public Camera {
+class CharacterCamera : public Camera3D {
 
-	OBJ_TYPE( CharacterCamera, Camera );
+	OBJ_TYPE( CharacterCamera, Camera3D );
 public:
 
 	enum CameraType {
@@ -81,7 +81,7 @@ private:
 	float clip_len;
 
 
-	Transform accepted;
+	Transform3D accepted;
 	Vector3 proposed_pos;
 
 	bool use_lookat_target;
@@ -155,7 +155,7 @@ public:
 
 	void set_use_lookat_target(bool p_use, const Vector3 &p_lookat = Vector3());
 
-	virtual Transform get_camera_transform() const;
+	virtual Transform3D get_camera_transform() const;
 
 	CharacterCamera();
 	~CharacterCamera();

@@ -31,9 +31,9 @@
 
 #include "scene/3d/skeleton.h"
 
-class BoneAttachment : public Spatial {
+class BoneAttachment3D : public Node3D {
 
-	OBJ_TYPE(BoneAttachment,Spatial);
+	OBJ_TYPE(BoneAttachment3D,Node3D);
 
 	bool bound;
 	String bone_name;
@@ -52,7 +52,7 @@ public:
 	void set_bone_name(const String& p_name);
 	String get_bone_name() const;
 
-	BoneAttachment();
+	BoneAttachment3D();
 };
 
 #endif // BONE_ATTACHMENT_H

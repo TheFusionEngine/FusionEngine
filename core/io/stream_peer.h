@@ -31,8 +31,8 @@
 
 #include "reference.h"
 
-class StreamPeer : public Reference {
-	OBJ_TYPE( StreamPeer, Reference );
+class StreamPeer : public RefCounted {
+	OBJ_TYPE( StreamPeer, RefCounted );
 	OBJ_CATEGORY("Networking");
 protected:
 	static void _bind_methods();

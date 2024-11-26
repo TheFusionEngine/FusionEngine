@@ -231,8 +231,8 @@ void ConnectDialog::_add_bind() {
 		case Variant::PLANE: value = Plane(); break;
 		case Variant::QUAT: value = Quat(); break;
 		case Variant::_AABB: value = AABB(); break;
-		case Variant::MATRIX3: value = Matrix3(); break;
-		case Variant::TRANSFORM: value = Transform(); break;
+		case Variant::MATRIX3: value = Basis(); break;
+		case Variant::TRANSFORM: value = Transform3D(); break;
 		case Variant::COLOR: value = Color(); break;
 		case Variant::IMAGE: value = Image(); break;
 
@@ -338,8 +338,8 @@ ConnectDialog::ConnectDialog() {
 	type_list->add_item("Plane",Variant::PLANE);
 	type_list->add_item("Quat",Variant::QUAT);
 	type_list->add_item("AABB",Variant::_AABB);
-	type_list->add_item("Matrix3",Variant::MATRIX3);
-	type_list->add_item("Transform",Variant::TRANSFORM);
+	type_list->add_item("Basis",Variant::MATRIX3);
+	type_list->add_item("Transform3D",Variant::TRANSFORM);
 	//type_list->add_separator();
 	type_list->add_item("Color",Variant::COLOR);
 	type_list->add_item("Image",Variant::IMAGE);
@@ -497,7 +497,7 @@ void ConnectionsDialog::_connect() {
 	StringName dst_method=connect_dialog->get_dst_method();
 	bool defer=connect_dialog->get_deferred();
 	Vector<Variant> binds = connect_dialog->get_binds();
-	StringArray args =  it->get_metadata(0).operator Dictionary()["args"];
+	PackedStringArray args =  it->get_metadata(0).operator Dictionary()["args"];
 
 	undo_redo->create_action("Connect '"+signal+"' to '"+String(dst_method)+"'");
 	undo_redo->add_do_method(node,"connect",signal,target,dst_method,binds,CONNECT_PERSIST | (defer?CONNECT_DEFERRED:0));
@@ -631,7 +631,7 @@ void ConnectionsDialog::update_tree() {
 
 		String signaldesc;
 		signaldesc=mi.name+"(";
-		StringArray argnames;
+		PackedStringArray argnames;
 		if (mi.arguments.size()) {
 			signaldesc+=" ";
 			for(int i=0;i<mi.arguments.size();i++) {

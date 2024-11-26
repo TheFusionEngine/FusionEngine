@@ -5,7 +5,7 @@ class PhysicsTestBase extends MainLoopScripted {
 	bodies=[]
 	type_mesh_map={}
 	type_shape_map={}
-	cameratr=Transform()
+	cameratr=Transform3D()
 
 
 	function body_changed_transform(p_transform, p_velocity, p_angular_velocity,p_sleeping, p_visual_instance) {
@@ -133,7 +133,7 @@ class PhysicsTestBase extends MainLoopScripted {
 
 	}
 
-	function make_trimesh(p_faces,p_xform=Transform()) {
+	function make_trimesh(p_faces,p_xform=Transform3D()) {
 
 		local trimesh_shape = PhysicsServer.shape_create(PhysicsServer.SHAPE_CONCAVE_POLYGON);
 		PhysicsServer.shape_set_data(trimesh_shape, p_faces);
@@ -171,7 +171,7 @@ class PhysicsTestBase extends MainLoopScripted {
 
 	}
 
-	function make_grid(p_width,p_height,p_cellsize,p_cellheight,p_xform=Transform()) {
+	function make_grid(p_width,p_height,p_cellsize,p_cellheight,p_xform=Transform3D()) {
 
 		local grid = []
 
@@ -215,7 +215,7 @@ class PhysicsTestBase extends MainLoopScripted {
 
 	quit=false
 
-	transform = Transform()
+	transform = Transform3D()
 	camera=RID()
 
 	function init_internal() {}
@@ -243,7 +243,7 @@ class PhysicsTestBase extends MainLoopScripted {
 		//VisualServer.light_set_color( lightaux, VisualServer.LIGHT_COLOR_AMBIENT, Color(0.0,0.0,0.0) );
 		VisualServer.light_set_shadow(lightaux,true);
 		local light = VisualServer.instance_create( lightaux );
-		local t=Transform()
+		local t=Transform3D()
 		t.rotate(Vector3(1.0,0,0),0.6);
 		VisualServer.instance_set_transform(light,t);
 
@@ -256,7 +256,7 @@ class PhysicsTestBase extends MainLoopScripted {
 		VisualServer.viewport_set_parent(viewport, RID() );
 
 		VisualServer.camera_set_perspective(camera,60,0.1,20.0);
-		cameratr=Transform( Matrix3(), Vector3(0,2,8))
+		cameratr=Transform3D( Basis(), Vector3(0,2,8))
 		VisualServer.camera_set_transform(camera,cameratr);
 
 		quit=false;

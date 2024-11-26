@@ -175,7 +175,7 @@ private:
 	float point_size;
 
 
-	Transform uv_transform;
+	Transform3D uv_transform;
 
 protected:
 
@@ -200,8 +200,8 @@ public:
 	void set_light_shader(LightShader p_shader);
 	LightShader get_light_shader() const;
 
-	void set_uv_transform(const Transform& p_transform);
-	Transform get_uv_transform() const;
+	void set_uv_transform(const Transform3D& p_transform);
+	Transform3D get_uv_transform() const;
 
 	void set_point_size(float p_transform);
 	float get_point_size() const;

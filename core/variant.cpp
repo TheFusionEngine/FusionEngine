@@ -76,7 +76,7 @@ String Variant::get_type_name(Variant::Type p_type) {
 		} break;
 		case MATRIX32: {
 
-			return "Matrix32";
+			return "Transform2D";
 		} break;
 		case VECTOR3: {
 
@@ -103,12 +103,12 @@ String Variant::get_type_name(Variant::Type p_type) {
 		} break;
 		case MATRIX3: {
 
-			return "Matrix3";
+			return "Basis";
 
 		} break;
 		case TRANSFORM: {
 
-			return "Transform";
+			return "Transform3D";
 
 		} break;
 
@@ -155,36 +155,36 @@ String Variant::get_type_name(Variant::Type p_type) {
 			// arrays
 		case RAW_ARRAY: {
 
-			return "RawArray";
+			return "PackedByteArray";
 
 		} break;
 		case INT_ARRAY: {
 
-			return "IntArray";
+			return "PackedIntArray";
 
 		} break;
 		case REAL_ARRAY: {
 
-			return "RealArray";
+			return "PackedFloatArray";
 
 		} break;
 		case STRING_ARRAY: {
 
-			return "StringArray";
+			return "PackedStringArray";
 		} break;
 		case VECTOR2_ARRAY: {
 
-			return "Vector2Array";
+			return "PackedVector2Array";
 
 		} break;
 		case VECTOR3_ARRAY: {
 
-			return "Vector3Array";
+			return "PackedVector3Array";
 
 		} break;
 		case COLOR_ARRAY: {
 
-			return "ColorArray";
+			return "PackedColorArray";
 
 		} break;
 		default: {}
@@ -499,7 +499,7 @@ bool Variant::is_zero() const {
 		} break;
 		case MATRIX32: {
 
-			return *_data._matrix32==Matrix32();
+			return *_data._matrix32==Transform2D();
 
 		} break;
 		case VECTOR3: {
@@ -528,12 +528,12 @@ bool Variant::is_zero() const {
 		} break;
 		case MATRIX3: {
 
-			return *_data._matrix3==Matrix3();
+			return *_data._matrix3==Basis();
 
 		} break;
 		case TRANSFORM: {
 
-			return *_data._transform == Transform();
+			return *_data._transform == Transform3D();
 
 		} break;
 
@@ -670,7 +670,7 @@ void Variant::reference(const Variant& p_variant) {
 		} break;
 		case MATRIX32: {
 
-			_data._matrix32 = memnew( Matrix32( *p_variant._data._matrix32 ) );
+			_data._matrix32 = memnew( Transform2D( *p_variant._data._matrix32 ) );
 
 		} break;
 		case VECTOR3: {
@@ -699,12 +699,12 @@ void Variant::reference(const Variant& p_variant) {
 		} break;
 		case MATRIX3: {
 		
-			_data._matrix3 = memnew( Matrix3( *p_variant._data._matrix3 ) );
+			_data._matrix3 = memnew( Basis( *p_variant._data._matrix3 ) );
 		
 		} break;
 		case TRANSFORM: {
 		
-			_data._transform = memnew( Transform( *p_variant._data._transform ) );
+			_data._transform = memnew( Transform3D( *p_variant._data._transform ) );
 		
 		} break;
 		
@@ -1175,14 +1175,14 @@ Variant::operator String() const {
 		case STRING: return *reinterpret_cast<const String*>(_data._mem);
 		case VECTOR2: return operator Vector2();
 		case RECT2: return operator Rect2();
-		case MATRIX32: return operator Matrix32();
+		case MATRIX32: return operator Transform2D();
 		case VECTOR3: return operator Vector3();
 		case PLANE: return operator Plane();
 		//case QUAT: 
 		case _AABB: return operator AABB();
 		case QUAT: return operator Quat();
-		case MATRIX3: return operator Matrix3();
-		case TRANSFORM: return operator Transform();
+		case MATRIX3: return operator Basis();
+		case TRANSFORM: return operator Transform3D();
 		case NODE_PATH: return operator NodePath();
 		case INPUT_EVENT: return operator InputEvent();
 		case COLOR: return String::num( operator Color().r)+","+String::num( operator Color().g)+","+String::num( operator Color().b)+","+String::num( operator Color().a) ;
@@ -1333,7 +1333,7 @@ Variant::operator AABB() const {
 		return AABB();
 }
 
-Variant::operator Matrix3() const {
+Variant::operator Basis() const {
 
 	if (type==MATRIX3)
 		return *_data._matrix3;
@@ -1342,7 +1342,7 @@ Variant::operator Matrix3() const {
 	else if (type==TRANSFORM)
 		return _data._transform->basis;
 	else
-		return Matrix3();
+		return Basis();
 }
 
 Variant::operator Quat() const {
@@ -1359,25 +1359,25 @@ Variant::operator Quat() const {
 
 
 
-Variant::operator Transform() const {
+Variant::operator Transform3D() const {
 
 	if (type==TRANSFORM)
 		return *_data._transform;
 	else if (type==MATRIX3)
-		return Transform(*_data._matrix3,Vector3());
+		return Transform3D(*_data._matrix3,Vector3());
 	else if (type==QUAT)
-		return Transform(Matrix3(*reinterpret_cast<const Quat*>(_data._mem)),Vector3());
+		return Transform3D(Basis(*reinterpret_cast<const Quat*>(_data._mem)),Vector3());
 	else
-		return Transform();
+		return Transform3D();
 }
 
- Variant::operator Matrix32() const {
+ Variant::operator Transform2D() const {
 
 	 if (type==MATRIX32) {
 		 return *_data._matrix32;
 	 } else if (type==TRANSFORM) {
-		 const Transform& t = *_data._transform;;
-		 Matrix32 m;
+		 const Transform3D& t = *_data._transform;;
+		 Transform2D m;
 		 m.elements[0][0]=t.basis.elements[0][0];
 		 m.elements[0][1]=t.basis.elements[1][0];
 		 m.elements[1][0]=t.basis.elements[0][1];
@@ -1386,7 +1386,7 @@ Variant::operator Transform() const {
 		 m.elements[2][1]=t.origin[1];
 		 return m;
 	 } else
-		 return Matrix32();
+		 return Transform2D();
 }
 
 
@@ -1926,10 +1926,10 @@ Variant::Variant(const AABB& p_aabb) {
 	_data._aabb = memnew( AABB( p_aabb ) );
 }
 
-Variant::Variant(const Matrix3& p_matrix) {
+Variant::Variant(const Basis& p_matrix) {
 
 	type=MATRIX3;
-	_data._matrix3= memnew( Matrix3( p_matrix ) );
+	_data._matrix3= memnew( Basis( p_matrix ) );
 
 }
 
@@ -1939,17 +1939,17 @@ Variant::Variant(const Quat& p_quat) {
 	memnew_placement( _data._mem, Quat( p_quat ) );
 
 }
-Variant::Variant(const Transform& p_transform) {
+Variant::Variant(const Transform3D& p_transform) {
 
 	type=TRANSFORM;
-	_data._transform = memnew( Transform( p_transform ) );
+	_data._transform = memnew( Transform3D( p_transform ) );
 
 }
 
-Variant::Variant(const Matrix32& p_transform) {
+Variant::Variant(const Transform2D& p_transform) {
 
 	type=MATRIX32;
-	_data._matrix32 = memnew( Matrix32( p_transform ) );
+	_data._matrix32 = memnew( Transform2D( p_transform ) );
 
 }
 Variant::Variant(const Color& p_color) {

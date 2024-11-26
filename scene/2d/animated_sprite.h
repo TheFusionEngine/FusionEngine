@@ -61,9 +61,9 @@ public:
 
 
 
-class AnimatedSprite : public Node2D {
+class AnimatedSprite2D : public Node2D {
 
-	OBJ_TYPE(AnimatedSprite,Node2D);
+	OBJ_TYPE(AnimatedSprite2D,Node2D);
 
 	Ref<SpriteFrames> frames;
 	int frame;
@@ -113,7 +113,7 @@ public:
 	virtual Rect2 get_item_rect() const;
 
 
-	AnimatedSprite();
+	AnimatedSprite2D();
 };
 
 #endif // ANIMATED_SPRITE_H

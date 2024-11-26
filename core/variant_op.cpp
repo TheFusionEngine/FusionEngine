@@ -1006,7 +1006,7 @@ void Variant::set(const Variant& p_index, const Variant& p_value, bool *r_valid)
 				int index = p_index;
 
 				if (index>=0 && index<3) {
-					Matrix32 *v=_data._matrix32;
+					Transform2D *v=_data._matrix32;
 
 					valid=true;
 					v->elements[index]=p_value;
@@ -1016,7 +1016,7 @@ void Variant::set(const Variant& p_index, const Variant& p_value, bool *r_valid)
 
 				//scalar name
 				const String *str=reinterpret_cast<const String*>(p_index._data._mem);
-				Matrix32 *v=_data._matrix32;
+				Transform2D *v=_data._matrix32;
 				if (*str=="x") {
 					valid=true;
 					v->elements[0]=p_value;
@@ -1176,7 +1176,7 @@ void Variant::set(const Variant& p_index, const Variant& p_value, bool *r_valid)
 				int index = p_index;
 
 				if (index>=0 && index<3) {
-					Matrix3 *v=_data._matrix3;
+					Basis *v=_data._matrix3;
 
 					valid=true;
 					v->set_axis(index,p_value);
@@ -1185,7 +1185,7 @@ void Variant::set(const Variant& p_index, const Variant& p_value, bool *r_valid)
 			} else if (p_index.get_type()==Variant::STRING) {
 
 				const String *str=reinterpret_cast<const String*>(p_index._data._mem);
-				Matrix3 *v=_data._matrix3;
+				Basis *v=_data._matrix3;
 
 				if (*str=="x") {
 					valid=true;
@@ -1214,7 +1214,7 @@ void Variant::set(const Variant& p_index, const Variant& p_value, bool *r_valid)
 				int index = p_index;
 
 				if (index>=0 && index<4) {
-					Transform *v=_data._transform;
+					Transform3D *v=_data._transform;
 					valid=true;
 					if (index==3)
 						v->origin=p_value;
@@ -1224,7 +1224,7 @@ void Variant::set(const Variant& p_index, const Variant& p_value, bool *r_valid)
 				}
 			} if (p_index.get_type()==Variant::STRING) {
 
-				Transform *v=_data._transform;
+				Transform3D *v=_data._transform;
 				const String *str=reinterpret_cast<const String*>(p_index._data._mem);
 
 				if (*str=="basis") {
@@ -1939,7 +1939,7 @@ Variant Variant::get(const Variant& p_index, bool *r_valid) const {
 				int index = p_index;
 
 				if (index>=0 && index<3) {
-					const Matrix32 *v=_data._matrix32;
+					const Transform2D *v=_data._matrix32;
 
 					valid=true;
 					return v->elements[index];
@@ -1948,7 +1948,7 @@ Variant Variant::get(const Variant& p_index, bool *r_valid) const {
 
 				//scalar name
 				const String *str=reinterpret_cast<const String*>(p_index._data._mem);
-				const Matrix32 *v=_data._matrix32;
+				const Transform2D *v=_data._matrix32;
 				if (*str=="x") {
 					valid=true;
 					return v->elements[0];
@@ -2035,7 +2035,7 @@ Variant Variant::get(const Variant& p_index, bool *r_valid) const {
 				int index = p_index;
 
 				if (index>=0 && index<3) {
-					const Matrix3 *v=_data._matrix3;
+					const Basis *v=_data._matrix3;
 
 					valid=true;
 					return v->get_axis(index);
@@ -2043,7 +2043,7 @@ Variant Variant::get(const Variant& p_index, bool *r_valid) const {
 			} else if (p_index.get_type()==Variant::STRING) {
 
 				const String *str=reinterpret_cast<const String*>(p_index._data._mem);
-				const Matrix3 *v=_data._matrix3;
+				const Basis *v=_data._matrix3;
 
 				if (*str=="x") {
 					valid=true;
@@ -2065,13 +2065,13 @@ Variant Variant::get(const Variant& p_index, bool *r_valid) const {
 				int index = p_index;
 
 				if (index>=0 && index<4) {
-					const Transform *v=_data._transform;
+					const Transform3D *v=_data._transform;
 					valid=true;
 					return index==3?v->origin:v->basis.get_axis(index);
 				}
 			} if (p_index.get_type()==Variant::STRING) {
 
-				const Transform *v=_data._transform;
+				const Transform3D *v=_data._transform;
 				const String *str=reinterpret_cast<const String*>(p_index._data._mem);
 
 				if (*str=="basis") {
@@ -3374,7 +3374,7 @@ void Variant::interpolate(const Variant& a, const Variant& b, float c,Variant &r
 		case PLANE:{    r_dst=a;   } return;
 		case QUAT:{  r_dst=reinterpret_cast<const Quat*>(a._data._mem)->slerp(*reinterpret_cast<const Quat*>(b._data._mem),c);   } return;
 		case _AABB:{  r_dst=AABB( a._data._aabb->pos.linear_interpolate(b._data._aabb->pos,c), a._data._aabb->size.linear_interpolate(b._data._aabb->size,c) );    } return;
-		case MATRIX3:{  r_dst=Transform(*a._data._matrix3).interpolate_with(Transform(*b._data._matrix3),c).basis;     } return;
+		case MATRIX3:{  r_dst=Transform3D(*a._data._matrix3).interpolate_with(Transform3D(*b._data._matrix3),c).basis;     } return;
 		case TRANSFORM:{  r_dst=a._data._transform->interpolate_with(*b._data._transform,c);     } return;
 		case COLOR:{  r_dst=reinterpret_cast<const Color*>(a._data._mem)->linear_interpolate(*reinterpret_cast<const Color*>(b._data._mem),c);      } return;
 		case IMAGE:{  r_dst=a;     } return;

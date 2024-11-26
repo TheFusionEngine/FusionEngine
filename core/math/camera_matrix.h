@@ -68,9 +68,9 @@ struct CameraMatrix {
 	float get_aspect() const;
 	float get_fov() const;
 	
-	Vector<Plane> get_projection_planes(const Transform& p_transform) const;
+	Vector<Plane> get_projection_planes(const Transform3D& p_transform) const;
 	
-	bool get_endpoints(const Transform& p_transform,Vector3 *p_8points) const;
+	bool get_endpoints(const Transform3D& p_transform,Vector3 *p_8points) const;
 	void get_viewport_size(float& r_width, float& r_height) const;
 	
 	void invert();
@@ -85,10 +85,10 @@ struct CameraMatrix {
 
 	void scale_translate_to_fit(const AABB& p_aabb);
 	void make_scale(const Vector3 &p_scale);
-	operator Transform() const;
+	operator Transform3D() const;
 
 	CameraMatrix();	
-	CameraMatrix(const Transform& p_transform);	
+	CameraMatrix(const Transform3D& p_transform);	
 	~CameraMatrix();
 
 };

@@ -38,9 +38,9 @@
   Based on irrXML (see their zlib license). Added mainly for compatibility with their Collada loader.
 */
 
-class XMLParser : public Reference {
+class XMLParser : public RefCounted {
 
-	OBJ_TYPE( XMLParser, Reference );
+	OBJ_TYPE( XMLParser, RefCounted );
 public:
 	//! Enumeration of all supported source text file formats
 	enum SourceFormat {

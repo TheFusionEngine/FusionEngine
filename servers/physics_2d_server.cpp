@@ -127,11 +127,11 @@ RID Physics2DShapeQueryParameters::get_shape_rid() const {
 	return shape;
 }
 
-void Physics2DShapeQueryParameters::set_transform(const Matrix32& p_transform){
+void Physics2DShapeQueryParameters::set_transform(const Transform2D& p_transform){
 
 	transform=p_transform;
 }
-Matrix32 Physics2DShapeQueryParameters::get_transform() const{
+Transform2D Physics2DShapeQueryParameters::get_transform() const{
 
 	return transform;
 }
@@ -416,7 +416,7 @@ void Physics2DServer::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("area_set_space_override_mode","area","mode"),&Physics2DServer::area_set_space_override_mode);
 	ObjectTypeDB::bind_method(_MD("area_get_space_override_mode","area"),&Physics2DServer::area_get_space_override_mode);
 
-	ObjectTypeDB::bind_method(_MD("area_add_shape","area","shape","transform"),&Physics2DServer::area_add_shape,DEFVAL(Matrix32()));
+	ObjectTypeDB::bind_method(_MD("area_add_shape","area","shape","transform"),&Physics2DServer::area_add_shape,DEFVAL(Transform2D()));
 	ObjectTypeDB::bind_method(_MD("area_set_shape","area","shape_idx","shape"),&Physics2DServer::area_set_shape);
 	ObjectTypeDB::bind_method(_MD("area_set_shape_transform","area","shape_idx","transform"),&Physics2DServer::area_set_shape_transform);
 
@@ -447,7 +447,7 @@ void Physics2DServer::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("body_set_mode","body","mode"),&Physics2DServer::body_set_mode);
 	ObjectTypeDB::bind_method(_MD("body_get_mode","body"),&Physics2DServer::body_get_mode);
 
-	ObjectTypeDB::bind_method(_MD("body_add_shape","body","shape","transform"),&Physics2DServer::body_add_shape,DEFVAL(Matrix32()));
+	ObjectTypeDB::bind_method(_MD("body_add_shape","body","shape","transform"),&Physics2DServer::body_add_shape,DEFVAL(Transform2D()));
 	ObjectTypeDB::bind_method(_MD("body_set_shape","body","shape_idx","shape"),&Physics2DServer::body_set_shape);
 	ObjectTypeDB::bind_method(_MD("body_set_shape_transform","body","shape_idx","transform"),&Physics2DServer::body_set_shape_transform);
 	ObjectTypeDB::bind_method(_MD("body_set_shape_metadata","body","shape_idx","metadata"),&Physics2DServer::body_set_shape_metadata);

@@ -24,7 +24,7 @@ public:
 	RES load(const String &p_path,const String& p_type_hint="");
 	DVector<String> get_recognized_extensions_for_type(const String& p_type);
 	void set_abort_on_missing_resources(bool p_abort);
-	StringArray get_dependencies(const String& p_path);
+	PackedStringArray get_dependencies(const String& p_path);
 	bool has(const String& p_path);
 
 	_ResourceLoader();
@@ -268,9 +268,9 @@ public:
 
 
 
-class _File : public Reference {
+class _File : public RefCounted {
 
-	OBJ_TYPE(_File,Reference);
+	OBJ_TYPE(_File,RefCounted);
 	FileAccess *f;
 	bool eswap;
 protected:
@@ -354,9 +354,9 @@ public:
 
 };
 
-class _Directory : public Reference {
+class _Directory : public RefCounted {
 
-	OBJ_TYPE(_Directory,Reference);
+	OBJ_TYPE(_Directory,RefCounted);
 	DirAccess *d;
 protected:
 
@@ -395,9 +395,9 @@ public:
 
 };
 
-class _Marshalls : public Reference {
+class _Marshalls : public RefCounted {
 
-	OBJ_TYPE(_Marshalls,Reference);
+	OBJ_TYPE(_Marshalls,RefCounted);
 
 protected:
 
@@ -413,9 +413,9 @@ public:
 };
 
 
-class _Mutex : public Reference {
+class _Mutex : public RefCounted {
 
-	OBJ_TYPE(_Mutex,Reference);
+	OBJ_TYPE(_Mutex,RefCounted);
 	Mutex *mutex;
 
 	static void _bind_methods();
@@ -429,9 +429,9 @@ public:
 	~_Mutex();
 };
 
-class _Semaphore : public Reference {
+class _Semaphore : public RefCounted {
 
-	OBJ_TYPE(_Semaphore,Reference);
+	OBJ_TYPE(_Semaphore,RefCounted);
 	Semaphore *semaphore;
 
 	static void _bind_methods();
@@ -444,9 +444,9 @@ public:
 	~_Semaphore();
 };
 
-class _Thread : public Reference {
+class _Thread : public RefCounted {
 
-	OBJ_TYPE(_Thread,Reference);
+	OBJ_TYPE(_Thread,RefCounted);
 
 protected:
 

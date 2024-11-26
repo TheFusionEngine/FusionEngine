@@ -22,7 +22,7 @@ void MeshInstanceEditor::_node_removed(Node *p_node) {
 
 
 
-void MeshInstanceEditor::edit(MeshInstance *p_mesh) {
+void MeshInstanceEditor::edit(MeshInstance3D *p_mesh) {
 
 	node=p_mesh;
 
@@ -40,11 +40,11 @@ void MeshInstanceEditor::_menu_option(int p_option) {
 	switch(p_option) {
 		case MENU_OPTION_CREATE_STATIC_TRIMESH_BODY: {
 
-			Ref<Shape> shape = mesh->create_trimesh_shape();
+			Ref<Shape3D> shape = mesh->create_trimesh_shape();
 			if (shape.is_null())
 				return;
-			StaticBody *body = memnew( StaticBody );
-			CollisionShape *cshape = memnew( CollisionShape );
+			StaticBody3D *body = memnew( StaticBody3D );
+			CollisionShape3D *cshape = memnew( CollisionShape3D );
 			cshape->set_shape(shape);
 			body->add_child(cshape);
 			Node *owner = node==get_tree()->get_edited_scene_root() ? node : node->get_owner();
@@ -61,11 +61,11 @@ void MeshInstanceEditor::_menu_option(int p_option) {
 		} break;
 		case MENU_OPTION_CREATE_STATIC_CONVEX_BODY: {
 
-			Ref<Shape> shape = mesh->create_convex_shape();
+			Ref<Shape3D> shape = mesh->create_convex_shape();
 			if (shape.is_null())
 				return;
-			StaticBody *body = memnew( StaticBody );
-			CollisionShape *cshape = memnew( CollisionShape );
+			StaticBody3D *body = memnew( StaticBody3D );
+			CollisionShape3D *cshape = memnew( CollisionShape3D );
 			cshape->set_shape(shape);
 			body->add_child(cshape);
 			Node *owner = node==get_tree()->get_edited_scene_root() ? node : node->get_owner();
@@ -88,10 +88,10 @@ void MeshInstanceEditor::_menu_option(int p_option) {
 				err_dialog->popup_centered(Size2(100,50));
 				return;
 			}
-			Ref<Shape> shape = mesh->create_trimesh_shape();
+			Ref<Shape3D> shape = mesh->create_trimesh_shape();
 			if (shape.is_null())
 				return;
-			CollisionShape *cshape = memnew( CollisionShape );
+			CollisionShape3D *cshape = memnew( CollisionShape3D );
 			cshape->set_shape(shape);
 
 			Node *owner =  node->get_owner();
@@ -114,10 +114,10 @@ void MeshInstanceEditor::_menu_option(int p_option) {
 				err_dialog->popup_centered(Size2(100,50));
 				return;
 			}
-			Ref<Shape> shape = mesh->create_convex_shape();
+			Ref<Shape3D> shape = mesh->create_convex_shape();
 			if (shape.is_null())
 				return;
-			CollisionShape *cshape = memnew( CollisionShape );
+			CollisionShape3D *cshape = memnew( CollisionShape3D );
 			cshape->set_shape(shape);
 
 			Node *owner =  node->get_owner();
@@ -170,7 +170,7 @@ void MeshInstanceEditor::_create_outline_mesh() {
 
 	Ref<Mesh> mesh = node->get_mesh();
 	if (mesh.is_null()) {
-		err_dialog->set_text("MeshInstance lacks a Mesh!");
+		err_dialog->set_text("MeshInstance3D lacks a Mesh!");
 		err_dialog->popup_centered(Size2(100,50));
 		return;
 	}
@@ -183,7 +183,7 @@ void MeshInstanceEditor::_create_outline_mesh() {
 		return;
 	}
 
-	MeshInstance *mi = memnew( MeshInstance );
+	MeshInstance3D *mi = memnew( MeshInstance3D );
 	mi->set_mesh(mesho);
 	Node *owner=node->get_owner();
 	if (get_tree()->get_edited_scene_root()==node) {
@@ -245,12 +245,12 @@ MeshInstanceEditor::MeshInstanceEditor() {
 
 void MeshInstanceEditorPlugin::edit(Object *p_object) {
 
-	mesh_editor->edit(p_object->cast_to<MeshInstance>());
+	mesh_editor->edit(p_object->cast_to<MeshInstance3D>());
 }
 
 bool MeshInstanceEditorPlugin::handles(Object *p_object) const {
 
-	return p_object->is_type("MeshInstance");
+	return p_object->is_type("MeshInstance3D");
 }
 
 void MeshInstanceEditorPlugin::make_visible(bool p_visible) {

@@ -34,7 +34,7 @@
 #include "scene/resources/surface_tool.h"
 
 
-void SpatialPlayer::_notification(int p_what) {
+void SoundPlayer3D::_notification(int p_what) {
 
 
 	switch(p_what) {
@@ -64,7 +64,7 @@ void SpatialPlayer::_notification(int p_what) {
 }
 
 
-void SpatialPlayer::set_param( Param p_param, float p_value) {
+void SoundPlayer3D::set_param( Param p_param, float p_value) {
 
 	ERR_FAIL_INDEX(p_param,PARAM_MAX);
 	params[p_param]=p_value;
@@ -76,19 +76,19 @@ void SpatialPlayer::set_param( Param p_param, float p_value) {
 
 }
 
-float SpatialPlayer::get_param( Param p_param) const {
+float SoundPlayer3D::get_param( Param p_param) const {
 
 	ERR_FAIL_INDEX_V(p_param,PARAM_MAX,0);
 	return params[p_param];
 
 }
 
-bool SpatialPlayer::_can_gizmo_scale() const {
+bool SoundPlayer3D::_can_gizmo_scale() const {
 
 	return false;
 }
 
-RES SpatialPlayer::_get_gizmo_geometry() const {
+RES SoundPlayer3D::_get_gizmo_geometry() const {
 
 	Ref<SurfaceTool> surface_tool( memnew( SurfaceTool ));
 
@@ -116,15 +116,15 @@ RES SpatialPlayer::_get_gizmo_geometry() const {
 
 	for(int j=0;j<sections;j++) {
 
-		Vector3 p1=Matrix3(Vector3(1,0,0),deg*j/sections).xform(to);
-		Vector3 p2=Matrix3(Vector3(1,0,0),deg*(j+1)/sections).xform(to);
+		Vector3 p1=Basis(Vector3(1,0,0),deg*j/sections).xform(to);
+		Vector3 p2=Basis(Vector3(1,0,0),deg*(j+1)/sections).xform(to);
 
 		for(int i=0;i<sides;i++) {
 
-			Vector3 p1r = Matrix3(Vector3(0,0,1),Math_PI*2*float(i)/sides).xform(p1);
-			Vector3 p1s = Matrix3(Vector3(0,0,1),Math_PI*2*float(i+1)/sides).xform(p1);
-			Vector3 p2s = Matrix3(Vector3(0,0,1),Math_PI*2*float(i+1)/sides).xform(p2);
-			Vector3 p2r = Matrix3(Vector3(0,0,1),Math_PI*2*float(i)/sides).xform(p2);
+			Vector3 p1r = Basis(Vector3(0,0,1),Math_PI*2*float(i)/sides).xform(p1);
+			Vector3 p1s = Basis(Vector3(0,0,1),Math_PI*2*float(i+1)/sides).xform(p1);
+			Vector3 p2s = Basis(Vector3(0,0,1),Math_PI*2*float(i+1)/sides).xform(p2);
+			Vector3 p2r = Basis(Vector3(0,0,1),Math_PI*2*float(i)/sides).xform(p2);
 
 			surface_tool->add_normal(p1r.normalized());
 			surface_tool->add_vertex(p1r);
@@ -187,8 +187,8 @@ RES SpatialPlayer::_get_gizmo_geometry() const {
 	for(int i = 0; i < speaker_sides ; i++) {
 
 
-		Matrix3 ma(Vector3(0,0,1),Math_PI*2*float(i)/speaker_sides);
-		Matrix3 mb(Vector3(0,0,1),Math_PI*2*float(i+1)/speaker_sides);
+		Basis ma(Vector3(0,0,1),Math_PI*2*float(i)/speaker_sides);
+		Basis mb(Vector3(0,0,1),Math_PI*2*float(i+1)/speaker_sides);
 
 
 		for(int j=0;j<speaker_points-1;j++) {
@@ -228,11 +228,11 @@ RES SpatialPlayer::_get_gizmo_geometry() const {
 }
 
 
-void SpatialPlayer::_bind_methods() {
+void SoundPlayer3D::_bind_methods() {
 
 
-	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&SpatialPlayer::set_param);
-	ObjectTypeDB::bind_method(_MD("get_param","param"),&SpatialPlayer::get_param);
+	ObjectTypeDB::bind_method(_MD("set_param","param","value"),&SoundPlayer3D::set_param);
+	ObjectTypeDB::bind_method(_MD("get_param","param"),&SoundPlayer3D::get_param);
 
 	BIND_CONSTANT( PARAM_VOLUME_DB );
 	BIND_CONSTANT( PARAM_PITCH_SCALE );
@@ -254,7 +254,7 @@ void SpatialPlayer::_bind_methods() {
 }
 
 
-SpatialPlayer::SpatialPlayer() {
+SoundPlayer3D::SoundPlayer3D() {
 
 	params[PARAM_VOLUME_DB]=0.0;
 	params[PARAM_PITCH_SCALE]=1.0;
@@ -266,7 +266,7 @@ SpatialPlayer::SpatialPlayer() {
 
 }
 
-SpatialPlayer::~SpatialPlayer() {
+SoundPlayer3D::~SoundPlayer3D() {
 
 
 }

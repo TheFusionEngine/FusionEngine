@@ -31,7 +31,7 @@
 
 
 
-void CapsuleShape::_update_shape() {
+void CapsuleShape3D::_update_shape() {
 
 	Dictionary d;
 	d["radius"]=radius;
@@ -39,7 +39,7 @@ void CapsuleShape::_update_shape() {
 	PhysicsServer::get_singleton()->shape_set_data(get_shape(),d);
 }
 
-void CapsuleShape::set_radius(float p_radius) {
+void CapsuleShape3D::set_radius(float p_radius) {
 
 	radius=p_radius;
 	_update_shape();
@@ -47,12 +47,12 @@ void CapsuleShape::set_radius(float p_radius) {
 	_change_notify("radius");
 }
 
-float CapsuleShape::get_radius() const {
+float CapsuleShape3D::get_radius() const {
 
 	return radius;
 }
 
-void CapsuleShape::set_height(float p_height) {
+void CapsuleShape3D::set_height(float p_height) {
 
 	height=p_height;
 	_update_shape();
@@ -60,25 +60,25 @@ void CapsuleShape::set_height(float p_height) {
 	_change_notify("height");
 }
 
-float CapsuleShape::get_height() const {
+float CapsuleShape3D::get_height() const {
 
 	return height;
 }
 
 
-void CapsuleShape::_bind_methods() {
+void CapsuleShape3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_radius","radius"),&CapsuleShape::set_radius);
-	ObjectTypeDB::bind_method(_MD("get_radius"),&CapsuleShape::get_radius);
-	ObjectTypeDB::bind_method(_MD("set_height","height"),&CapsuleShape::set_height);
-	ObjectTypeDB::bind_method(_MD("get_height"),&CapsuleShape::get_height);
+	ObjectTypeDB::bind_method(_MD("set_radius","radius"),&CapsuleShape3D::set_radius);
+	ObjectTypeDB::bind_method(_MD("get_radius"),&CapsuleShape3D::get_radius);
+	ObjectTypeDB::bind_method(_MD("set_height","height"),&CapsuleShape3D::set_height);
+	ObjectTypeDB::bind_method(_MD("get_height"),&CapsuleShape3D::get_height);
 
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"radius",PROPERTY_HINT_RANGE,"0.01,4096,0.01"), _SCS("set_radius"),_SCS("get_radius") );
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"height",PROPERTY_HINT_RANGE,"0.01,4096,0.01"), _SCS("set_height"),_SCS("get_height") );
 
 }
 
-CapsuleShape::CapsuleShape() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_CAPSULE)) {
+CapsuleShape3D::CapsuleShape3D() : Shape3D( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_CAPSULE)) {
 
 	radius=1.0;
 	height=1.0;

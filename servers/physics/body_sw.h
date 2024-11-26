@@ -54,7 +54,7 @@ class BodySW : public CollisionObjectSW {
 
 	real_t _inv_mass;
 	Vector3 _inv_inertia;
-	Matrix3 _inv_inertia_tensor;
+	Basis _inv_inertia_tensor;
 
 	Vector3 gravity;
 	real_t density;
@@ -77,7 +77,7 @@ class BodySW : public CollisionObjectSW {
 	bool first_time_kinematic;
 	void _update_inertia();
 	virtual void _shapes_changed();
-	Transform new_transform;
+	Transform3D new_transform;
 
 	Map<ConstraintSW*,int> constraint_map;
 
@@ -225,7 +225,7 @@ public:
 
 	_FORCE_INLINE_ real_t get_inv_mass() const { return _inv_mass; }
 	_FORCE_INLINE_ Vector3 get_inv_inertia() const { return _inv_inertia; }
-	_FORCE_INLINE_ Matrix3 get_inv_inertia_tensor() const { return _inv_inertia_tensor; }
+	_FORCE_INLINE_ Basis get_inv_inertia_tensor() const { return _inv_inertia_tensor; }
 	_FORCE_INLINE_ real_t get_friction() const { return friction; }
 	_FORCE_INLINE_ Vector3 get_gravity() const { return gravity; }
 	_FORCE_INLINE_ real_t get_density() const { return density; }
@@ -259,7 +259,7 @@ public:
 		return p_axis.dot( _inv_inertia_tensor.xform_inv(p_axis) );
 	 }
 
-	//void simulate_motion(const Transform& p_xform,real_t p_step);
+	//void simulate_motion(const Transform3D& p_xform,real_t p_step);
 	void call_queries();
 	void wakeup_neighbours();
 
@@ -335,7 +335,7 @@ public:
 
 	virtual float get_inverse_mass() const {  return body->get_inv_mass();  } // get the mass
 	virtual Vector3 get_inverse_inertia() const { return body->get_inv_inertia();   } // get density of this body space
-	virtual Matrix3 get_inverse_inertia_tensor() const { return body->get_inv_inertia_tensor();   } // get density of this body space
+	virtual Basis get_inverse_inertia_tensor() const { return body->get_inv_inertia_tensor();   } // get density of this body space
 
 	virtual void set_linear_velocity(const Vector3& p_velocity) {  body->set_linear_velocity(p_velocity);  }
 	virtual Vector3 get_linear_velocity() const {  return body->get_linear_velocity();  }
@@ -343,8 +343,8 @@ public:
 	virtual void set_angular_velocity(const Vector3& p_velocity) {  body->set_angular_velocity(p_velocity);  }
 	virtual Vector3 get_angular_velocity() const {  return body->get_angular_velocity();  }
 
-	virtual void set_transform(const Transform& p_transform) {  body->set_state(PhysicsServer::BODY_STATE_TRANSFORM,p_transform);  }
-	virtual Transform get_transform() const {  return body->get_transform();  }
+	virtual void set_transform(const Transform3D& p_transform) {  body->set_state(PhysicsServer::BODY_STATE_TRANSFORM,p_transform);  }
+	virtual Transform3D get_transform() const {  return body->get_transform();  }
 
 	virtual void add_force(const Vector3& p_force, const Vector3& p_pos) {  body->add_force(p_force,p_pos); }
 	virtual void apply_impulse(const Vector3& p_pos, const Vector3& p_j) { body->apply_impulse(p_pos,p_j); }

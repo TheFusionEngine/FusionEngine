@@ -1,5 +1,5 @@
 
-extends Area
+extends Area3D
 
 # member variables here, example:
 # var a=2

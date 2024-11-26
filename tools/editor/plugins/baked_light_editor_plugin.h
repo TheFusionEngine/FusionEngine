@@ -14,7 +14,7 @@
 
 
 
-class MeshInstance;
+class MeshInstance3D;
 
 class BakedLightEditor : public Control {
 

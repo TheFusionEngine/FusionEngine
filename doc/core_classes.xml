@@ -482,7 +482,7 @@
 	Quaternion.
 	</brief_description>
 	<description>
-	Quaternion is a 4 dimensional vector that is used to represet a rotation. It mainly exists to perform SLERP (spherical-linear interpolation) between to rotations obtained by a Matrix3 cheaply. Adding quaternions also cheaply adds the rotations, however quaternions need to be often normalized, or else they suffer from precision issues.
+	Quaternion is a 4 dimensional vector that is used to represet a rotation. It mainly exists to perform SLERP (spherical-linear interpolation) between to rotations obtained by a Basis cheaply. Adding quaternions also cheaply adds the rotations, however quaternions need to be often normalized, or else they suffer from precision issues.
 	</description>
 	<methods>
 	<method name="length">
@@ -570,7 +570,7 @@
 		</member>
 	</members>
 </class>
-<class category="Core" name="Matrix3">
+<class category="Core" name="Basis">
 	<brief_description>
 	3x3 Matrix.
 	</brief_description>
@@ -589,14 +589,14 @@
 		</description>
 	</method>
 	<method name="inverse">
-		<return type="Matrix3">
+		<return type="Basis">
 		</return>
 		<description>
 		Returns the inverse of the matrix.
 		</description>
 	</method>
 	<method name="transposed">
-		<return type="Matrix3">
+		<return type="Basis">
 		</return>
 		<description>
 		Returns the transposition of the matrix.
@@ -739,18 +739,18 @@
 		</description>
 	</method>
 	<method name="operator*">
-		<argument index="0" name="N" type="Matrix3">
+		<argument index="0" name="N" type="Basis">
 		</argument>
-		<return type="Matrix3">
+		<return type="Basis">
 		</return>
 		<description>
 		Perform a matrix multiplication (M x N) and return the result.
 		</description>
 	</method>
 	<method name="transpose_xform">
-		<argument index="0" name="arg1" type="Matrix3">
+		<argument index="0" name="arg1" type="Basis">
 		</argument>
-		<return type="Matrix3">
+		<return type="Basis">
 		</return>
 		<description>
 		Perform a transposed-matrix multiplication (Mt x N) and return the result.
@@ -778,12 +778,12 @@
 		</member>
 	</members>
 </class>
-<class category="Core" name="Transform">
+<class category="Core" name="Transform3D">
 	<brief_description>
 	Transformation. 
 	</brief_description>
 	<description>
-	Transform is used to store transformations, including translations. It consists of a Matrix3 "basis" and Vector3 "origin". Transform is used to represent transformations of any object in space. It is similar to a 4x3 matrix.
+	Transform3D is used to store transformations, including translations. It consists of a Basis "basis" and Vector3 "origin". Transform3D is used to represent transformations of any object in space. It is similar to a 4x3 matrix.
 	</description>
 	<methods>
 	<method name="invert">
@@ -793,7 +793,7 @@
 	</method>
 
 	<method name="inverse">
-		<return type="Transform">
+		<return type="Transform3D">
 		</return>
 		<description>
 		Returns the inverse of the transform.
@@ -816,7 +816,7 @@
 		</description>
 	</method>
 	<method name="get_basis">
-		<return type="Matrix3">
+		<return type="Basis">
 		</return>
 		<description>
 		Get the basis.
@@ -885,7 +885,7 @@
 		<return type="Plane">
 		</return>
 		<description>
-		Transform plane "p" by this transform. 
+		Transform3D plane "p" by this transform. 
 		</description>
 	</method>
 	<method name="xform_plane_inv">
@@ -899,11 +899,11 @@
 	</method>
 	</methods>
 	<members>
-		<member name="basis" type="Matrix3">
-			Transform "basis" or OCS.
+		<member name="basis" type="Basis">
+			Transform3D "basis" or OCS.
 		</member>
 		<member name="origin" type="Vector3">
-			Transform origin.
+			Transform3D origin.
 		</member>
 		<member name="xx" type="real">
 		</member>
@@ -1327,7 +1327,7 @@
 		</argument>
 		<argument index="2" name="format" type="int">
 		</argument>
-		<argument index="3" name="data" type="RawArray">
+		<argument index="3" name="data" type="PackedByteArray">
 		</argument>
 		<description>
 		Import an image from raw data, given a specific format.
@@ -2235,7 +2235,7 @@
 		</description>
 	</method>
 	<method name="get_meta_list"  qualifiers="const" >
-		<return type="StringArray" >
+		<return type="PackedStringArray" >
 		</return>
 		<description>
 		Return the list of meta properties in the object. Meta properties are just containers for setting and retrieving any custom data to an object. Metaproperties are also saved with the object.

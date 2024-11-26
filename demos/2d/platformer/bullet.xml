@@ -148,7 +148,7 @@
 				<string> "phase_3/color" </string>
 				<string> "emission_points" </string>
 				<string> "sprite" </string>
-				<string> "Sprite" </string>
+				<string> "Sprite2D" </string>
 				<string> "texture" </string>
 				<string> "centered" </string>
 				<string> "offset" </string>

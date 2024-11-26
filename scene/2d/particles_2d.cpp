@@ -261,7 +261,7 @@ void Particles2D::_process_particles(float p_delta) {
 
 	Particle *pdata=&particles[0];
 	int particle_count=particles.size();
-	Matrix32 xform;
+	Transform2D xform;
 	if (!local_space)
 		xform=get_global_transform();
 
@@ -284,7 +284,7 @@ void Particles2D::_process_particles(float p_delta) {
 		}
 
 		int idx=0;
-		Matrix32 m;
+		Transform2D m;
 		if (local_space) {
 			m= get_global_transform().affine_inverse();
 		}
@@ -382,7 +382,7 @@ void Particles2D::_process_particles(float p_delta) {
 			float orbitvel = (param[PARAM_ORBIT_VELOCITY]+param[PARAM_ORBIT_VELOCITY]*randomness[PARAM_ORBIT_VELOCITY]*_rand_from_seed(&rand_seed));
 			if (orbitvel!=0) {
 				Vector2 rel = p.pos - xform.elements[2];
-				Matrix32 rot(orbitvel*frame_time,Vector2());
+				Transform2D rot(orbitvel*frame_time,Vector2());
 				p.pos = rot.xform(rel) + xform.elements[2];
 
 			}
@@ -498,7 +498,7 @@ void Particles2D::_notification(int p_what) {
 			if (texture.is_valid())
 				texrid = texture->get_rid();
 
-			Matrix32 invxform;
+			Transform2D invxform;
 			if (!local_space)
 				invxform=get_global_transform().affine_inverse();
 
@@ -595,7 +595,7 @@ void Particles2D::_notification(int p_what) {
 
 				//Rect2 r = Rect2(Vecto,rectsize);
 
-				Matrix32 xform;
+				Transform2D xform;
 
 				if (p.rot) {
 

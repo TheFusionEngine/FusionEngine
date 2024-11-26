@@ -1270,7 +1270,7 @@ void AnimationTreeEditor::_edit_filters() {
 
 			if (np.get_property()!=StringName()) {
 				Node *n = base->get_node(np);
-				Skeleton *s = n->cast_to<Skeleton>();
+				Skeleton3D *s = n->cast_to<Skeleton3D>();
 				if (s) {
 
 					String skelbase = E->get().substr(0,E->get().find(":"));

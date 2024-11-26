@@ -33,9 +33,9 @@
 #include "scene/3d/spatial_player.h"
 
 
-class SpatialStreamPlayer : public SpatialPlayer {
+class StreamPlayer3D : public SoundPlayer3D {
 
-	OBJ_TYPE(SpatialStreamPlayer,SpatialPlayer);
+	OBJ_TYPE(StreamPlayer3D,SoundPlayer3D);
 
 	Ref<AudioStream> stream;
 	bool loops;
@@ -65,8 +65,8 @@ public:
 	void seek_pos(float p_time);
 
 
-	SpatialStreamPlayer();
-	~SpatialStreamPlayer();
+	StreamPlayer3D();
+	~StreamPlayer3D();
 };
 
 #endif // SPATIAL_STREAM_PLAYER_H

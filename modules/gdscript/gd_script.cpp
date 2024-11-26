@@ -276,9 +276,9 @@ Variant GDFunction::call(GDInstance *p_instance, const Variant **p_args, int p_a
 		}
 
 		if (p_instance) {
-			if (p_instance->base_ref && static_cast<Reference*>(p_instance->owner)->is_referenced()) {
+			if (p_instance->base_ref && static_cast<RefCounted*>(p_instance->owner)->is_referenced()) {
 
-				self=REF(static_cast<Reference*>(p_instance->owner));
+				self=REF(static_cast<RefCounted*>(p_instance->owner));
 			} else {
 				self=p_instance->owner;
 			}
@@ -1403,7 +1403,7 @@ Variant GDNativeClass::_new() {
 		ERR_FAIL_COND_V(!o,Variant());
 	}
 
-	Reference *ref = o->cast_to<Reference>();
+	RefCounted *ref = o->cast_to<RefCounted>();
 	if (ref) {
 		return REF(ref);
 	} else {
@@ -1466,10 +1466,10 @@ Variant GDScript::_new(const Variant** p_args,int p_argcount,Variant::CallError&
 	if (_baseptr->native.ptr()) {
 		owner=_baseptr->native->instance();
 	} else {
-		owner=memnew( Reference ); //by default, no base means use reference
+		owner=memnew( RefCounted ); //by default, no base means use reference
 	}
 
-	Reference *r=owner->cast_to<Reference>();
+	RefCounted *r=owner->cast_to<RefCounted>();
 	if (r) {
 		ref=REF(r);
 	}
@@ -1607,7 +1607,7 @@ ScriptInstance* GDScript::instance_create(Object *p_this) {
 		}
 	}
 
-	return _create_instance(NULL,0,p_this,p_this->cast_to<Reference>());
+	return _create_instance(NULL,0,p_this,p_this->cast_to<RefCounted>());
 
 }
 bool GDScript::instance_has(const Object *p_this) const {

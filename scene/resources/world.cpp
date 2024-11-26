@@ -37,7 +37,7 @@
 struct SpatialIndexer {
 
 
-	Octree<VisibilityNotifier> octree;
+	Octree<VisibilityNotifier3D> octree;
 
 	struct NotifierData {
 
@@ -46,25 +46,25 @@ struct SpatialIndexer {
 
 	};
 
-	Map<VisibilityNotifier*,NotifierData> notifiers;
+	Map<VisibilityNotifier3D*,NotifierData> notifiers;
 	struct CameraData {
 
-		Map<VisibilityNotifier*,uint64_t> notifiers;
+		Map<VisibilityNotifier3D*,uint64_t> notifiers;
 	};
 
-	Map<Camera*,CameraData> cameras;
+	Map<Camera3D*,CameraData> cameras;
 
 	enum {
 		VISIBILITY_CULL_MAX=32768
 	};
 
-	Vector<VisibilityNotifier*> cull;
+	Vector<VisibilityNotifier3D*> cull;
 
 	bool changed;
 	uint64_t pass;
 	uint64_t last_frame;
 
-	void _notifier_add(VisibilityNotifier* p_notifier,const AABB& p_rect) {
+	void _notifier_add(VisibilityNotifier3D* p_notifier,const AABB& p_rect) {
 
 		ERR_FAIL_COND(notifiers.has(p_notifier));
 		notifiers[p_notifier].aabb=p_rect;
@@ -73,9 +73,9 @@ struct SpatialIndexer {
 
 	}
 
-	void _notifier_update(VisibilityNotifier* p_notifier,const AABB& p_rect) {
+	void _notifier_update(VisibilityNotifier3D* p_notifier,const AABB& p_rect) {
 
-		Map<VisibilityNotifier*,NotifierData>::Element *E=notifiers.find(p_notifier);
+		Map<VisibilityNotifier3D*,NotifierData>::Element *E=notifiers.find(p_notifier);
 		ERR_FAIL_COND(!E);
 		if (E->get().aabb==p_rect)
 			return;
@@ -85,18 +85,18 @@ struct SpatialIndexer {
 		changed=true;
 	}
 
-	void _notifier_remove(VisibilityNotifier* p_notifier) {
+	void _notifier_remove(VisibilityNotifier3D* p_notifier) {
 
-		Map<VisibilityNotifier*,NotifierData>::Element *E=notifiers.find(p_notifier);
+		Map<VisibilityNotifier3D*,NotifierData>::Element *E=notifiers.find(p_notifier);
 		ERR_FAIL_COND(!E);
 
 		octree.erase(E->get().id);
 		notifiers.erase(p_notifier);
 
-		List<Camera*> removed;
-		for (Map<Camera*,CameraData>::Element*F=cameras.front();F;F=F->next()) {
+		List<Camera3D*> removed;
+		for (Map<Camera3D*,CameraData>::Element*F=cameras.front();F;F=F->next()) {
 
-			Map<VisibilityNotifier*,uint64_t>::Element*G=F->get().notifiers.find(p_notifier);
+			Map<VisibilityNotifier3D*,uint64_t>::Element*G=F->get().notifiers.find(p_notifier);
 
 			if (G) {
 				F->get().notifiers.erase(G);
@@ -114,7 +114,7 @@ struct SpatialIndexer {
 		changed=true;
 	}
 
-	void _add_camera(Camera* p_camera) {
+	void _add_camera(Camera3D* p_camera) {
 
 		ERR_FAIL_COND(cameras.has(p_camera));
 		CameraData vd;
@@ -123,17 +123,17 @@ struct SpatialIndexer {
 
 	}
 
-	void _update_camera(Camera* p_camera) {
+	void _update_camera(Camera3D* p_camera) {
 
-		Map<Camera*,CameraData>::Element *E= cameras.find(p_camera);
+		Map<Camera3D*,CameraData>::Element *E= cameras.find(p_camera);
 		ERR_FAIL_COND(!E);
 		changed=true;
 	}
 
-	void _remove_camera(Camera* p_camera) {
+	void _remove_camera(Camera3D* p_camera) {
 		ERR_FAIL_COND(!cameras.has(p_camera));
-		List<VisibilityNotifier*> removed;
-		for(Map<VisibilityNotifier*,uint64_t>::Element *E=cameras[p_camera].notifiers.front();E;E=E->next()) {
+		List<VisibilityNotifier3D*> removed;
+		for(Map<VisibilityNotifier3D*,uint64_t>::Element *E=cameras[p_camera].notifiers.front();E;E=E->next()) {
 
 			removed.push_back(E->key());
 		}
@@ -158,27 +158,27 @@ struct SpatialIndexer {
 
 
 
-		for (Map<Camera*,CameraData>::Element *E=cameras.front();E;E=E->next()) {
+		for (Map<Camera3D*,CameraData>::Element *E=cameras.front();E;E=E->next()) {
 
 			pass++;
 
-			Camera *c=E->key();
+			Camera3D *c=E->key();
 
 			Vector<Plane> planes = c->get_frustum();
 
 			int culled = octree.cull_convex(planes,cull.ptr(),cull.size());
 
 
-			VisibilityNotifier**ptr=cull.ptr();
+			VisibilityNotifier3D**ptr=cull.ptr();
 
-			List<VisibilityNotifier*> added;
-			List<VisibilityNotifier*> removed;
+			List<VisibilityNotifier3D*> added;
+			List<VisibilityNotifier3D*> removed;
 
 			for(int i=0;i<culled;i++) {
 
 				//notifiers in frustum
 
-				Map<VisibilityNotifier*,uint64_t>::Element *H=E->get().notifiers.find(ptr[i]);
+				Map<VisibilityNotifier3D*,uint64_t>::Element *H=E->get().notifiers.find(ptr[i]);
 				if (!H) {
 
 					E->get().notifiers.insert(ptr[i],pass);
@@ -190,7 +190,7 @@ struct SpatialIndexer {
 
 			}
 
-			for (Map<VisibilityNotifier*,uint64_t>::Element *F=E->get().notifiers.front();F;F=F->next()) {
+			for (Map<VisibilityNotifier3D*,uint64_t>::Element *F=E->get().notifiers.front();F;F=F->next()) {
 
 				if (F->get()!=pass)
 					removed.push_back(F->key());
@@ -223,20 +223,20 @@ struct SpatialIndexer {
 
 
 
-void World::_register_camera(Camera* p_camera) {
+void World3D::_register_camera(Camera3D* p_camera) {
 
 #ifndef _3D_DISABLED
 	indexer->_add_camera(p_camera);
 #endif
 }
 
-void World::_update_camera(Camera* p_camera){
+void World3D::_update_camera(Camera3D* p_camera){
 
 #ifndef _3D_DISABLED
 	indexer->_update_camera(p_camera);
 #endif
 }
-void World::_remove_camera(Camera* p_camera){
+void World3D::_remove_camera(Camera3D* p_camera){
 
 #ifndef _3D_DISABLED
 	indexer->_remove_camera(p_camera);
@@ -246,21 +246,21 @@ void World::_remove_camera(Camera* p_camera){
 
 
 
-void World::_register_notifier(VisibilityNotifier* p_notifier,const AABB& p_rect){
+void World3D::_register_notifier(VisibilityNotifier3D* p_notifier,const AABB& p_rect){
 
 #ifndef _3D_DISABLED
 	indexer->_notifier_add(p_notifier,p_rect);
 #endif
 }
 
-void World::_update_notifier(VisibilityNotifier* p_notifier,const AABB& p_rect){
+void World3D::_update_notifier(VisibilityNotifier3D* p_notifier,const AABB& p_rect){
 
 #ifndef _3D_DISABLED
 	indexer->_notifier_update(p_notifier,p_rect);
 #endif
 }
 
-void World::_remove_notifier(VisibilityNotifier* p_notifier){
+void World3D::_remove_notifier(VisibilityNotifier3D* p_notifier){
 
 #ifndef _3D_DISABLED
 	indexer->_notifier_remove(p_notifier);
@@ -268,7 +268,7 @@ void World::_remove_notifier(VisibilityNotifier* p_notifier){
 }
 
 
-void World::_update(uint64_t p_frame) {
+void World3D::_update(uint64_t p_frame) {
 
 #ifndef _3D_DISABLED
 	indexer->_update(p_frame);
@@ -279,20 +279,20 @@ void World::_update(uint64_t p_frame) {
 
 
 
-RID World::get_space() const {
+RID World3D::get_space() const {
 
 	return space;
 }
-RID World::get_scenario() const{
+RID World3D::get_scenario() const{
 
 	return scenario;
 }
-RID World::get_sound_space() const{
+RID World3D::get_sound_space() const{
 
 	return sound_space;
 }
 
-void World::set_environment(const Ref<Environment>& p_environment) {
+void World3D::set_environment(const Ref<Environment>& p_environment) {
 
 	environment=p_environment;
 	if (environment.is_valid())
@@ -301,25 +301,25 @@ void World::set_environment(const Ref<Environment>& p_environment) {
 		VS::get_singleton()->scenario_set_environment(scenario,RID());
 }
 
-Ref<Environment> World::get_environment() const {
+Ref<Environment> World3D::get_environment() const {
 
 	return environment;
 }
 
 
-void World::_bind_methods() {
+void World3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("get_space"),&World::get_space);
-	ObjectTypeDB::bind_method(_MD("get_scenario"),&World::get_scenario);
-	ObjectTypeDB::bind_method(_MD("get_sound_space"),&World::get_sound_space);
-	ObjectTypeDB::bind_method(_MD("set_environment","env:Environment"),&World::set_environment);
-	ObjectTypeDB::bind_method(_MD("get_environment:Environment"),&World::get_environment);
+	ObjectTypeDB::bind_method(_MD("get_space"),&World3D::get_space);
+	ObjectTypeDB::bind_method(_MD("get_scenario"),&World3D::get_scenario);
+	ObjectTypeDB::bind_method(_MD("get_sound_space"),&World3D::get_sound_space);
+	ObjectTypeDB::bind_method(_MD("set_environment","env:Environment"),&World3D::set_environment);
+	ObjectTypeDB::bind_method(_MD("get_environment:Environment"),&World3D::get_environment);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT,"environment",PROPERTY_HINT_RESOURCE_TYPE,"Environment"),_SCS("set_environment"),_SCS("get_environment"));
 
 }
 
 
-World::World() {
+World3D::World3D() {
 
 	space = PhysicsServer::get_singleton()->space_create();
 	scenario = VisualServer::get_singleton()->scenario_create();
@@ -334,7 +334,7 @@ World::World() {
 #endif
 }
 
-World::~World() {
+World3D::~World3D() {
 
 	PhysicsServer::get_singleton()->free(space);
 	VisualServer::get_singleton()->free(scenario);

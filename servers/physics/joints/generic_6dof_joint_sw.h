@@ -199,8 +199,8 @@ protected:
 
 	//! relative_frames
     //!@{
-	Transform	m_frameInA;//!< the constraint space w.r.t body A
-    Transform	m_frameInB;//!< the constraint space w.r.t body B
+	Transform3D	m_frameInA;//!< the constraint space w.r.t body A
+    Transform3D	m_frameInB;//!< the constraint space w.r.t body B
     //!@}
 
     //! Jacobians
@@ -225,8 +225,8 @@ protected:
     //! temporal variables
     //!@{
     real_t m_timeStep;
-    Transform m_calculatedTransformA;
-    Transform m_calculatedTransformB;
+    Transform3D m_calculatedTransformA;
+    Transform3D m_calculatedTransformB;
     Vector3 m_calculatedAxisAngleDiff;
     Vector3 m_calculatedAxis[3];
 
@@ -258,7 +258,7 @@ protected:
 
 
 public:
-    Generic6DOFJointSW(BodySW* rbA, BodySW* rbB, const Transform& frameInA, const Transform& frameInB ,bool useLinearReferenceFrameA);
+    Generic6DOFJointSW(BodySW* rbA, BodySW* rbB, const Transform3D& frameInA, const Transform3D& frameInB ,bool useLinearReferenceFrameA);
 
     virtual PhysicsServer::JointType get_type() const { return PhysicsServer::JOINT_6DOF; }
 
@@ -277,7 +277,7 @@ public:
     /*!
     \sa Generic6DOFJointSW.getFrameOffsetA, Generic6DOFJointSW.getFrameOffsetB, Generic6DOFJointSW.calculateAngleInfo.
     */
-    const Transform & getCalculatedTransformA() const
+    const Transform3D & getCalculatedTransformA() const
     {
 	return m_calculatedTransformA;
     }
@@ -286,28 +286,28 @@ public:
     /*!
     \sa Generic6DOFJointSW.getFrameOffsetA, Generic6DOFJointSW.getFrameOffsetB, Generic6DOFJointSW.calculateAngleInfo.
     */
-    const Transform & getCalculatedTransformB() const
+    const Transform3D & getCalculatedTransformB() const
     {
 	return m_calculatedTransformB;
     }
 
-    const Transform & getFrameOffsetA() const
+    const Transform3D & getFrameOffsetA() const
     {
 	return m_frameInA;
     }
 
-    const Transform & getFrameOffsetB() const
+    const Transform3D & getFrameOffsetB() const
     {
 	return m_frameInB;
     }
 
 
-    Transform & getFrameOffsetA()
+    Transform3D & getFrameOffsetA()
     {
 	return m_frameInA;
     }
 
-    Transform & getFrameOffsetB()
+    Transform3D & getFrameOffsetB()
     {
 	return m_frameInB;
     }

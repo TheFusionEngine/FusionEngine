@@ -308,14 +308,14 @@ FixedMaterial::LightShader FixedMaterial::get_light_shader() const {
 }
 
 
-void FixedMaterial::set_uv_transform(const Transform& p_transform) {
+void FixedMaterial::set_uv_transform(const Transform3D& p_transform) {
 
 	uv_transform=p_transform;
 	VisualServer::get_singleton()->fixed_material_set_uv_transform(material, p_transform );
 	_change_notify();
 }
 
-Transform FixedMaterial::get_uv_transform() const {
+Transform3D FixedMaterial::get_uv_transform() const {
 
 	return uv_transform;
 }

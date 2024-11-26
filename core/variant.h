@@ -64,12 +64,12 @@ struct MethodInfo;
 
 
 typedef DVector<uint8_t> ByteArray;
-typedef DVector<int> IntArray;
-typedef DVector<real_t> RealArray;
-typedef DVector<String> StringArray;
-typedef DVector<Vector2> Vector2Array;
-typedef DVector<Vector3> Vector3Array;
-typedef DVector<Color> ColorArray;
+typedef DVector<int> PackedIntArray;
+typedef DVector<real_t> PackedFloatArray;
+typedef DVector<String> PackedStringArray;
+typedef DVector<Vector2> PackedVector2Array;
+typedef DVector<Vector3> PackedVector3Array;
+typedef DVector<Color> PackedColorArray;
 
 class Variant {
 public:
@@ -142,10 +142,10 @@ private:
 		bool _bool;
 		int _int;
 		double _real;
-		Matrix32 *_matrix32;
+		Transform2D *_matrix32;
 		AABB* _aabb;
-		Matrix3 *_matrix3;
-		Transform *_transform;	
+		Basis *_matrix3;
+		Transform3D *_transform;	
 		RefPtr *_resource;
 		InputEvent *_input_event;
 		Image *_image;
@@ -214,9 +214,9 @@ public:
 	operator Plane() const;
 	operator AABB() const;
 	operator Quat() const;
-	operator Matrix3() const;
-	operator Transform() const;
-	operator Matrix32() const;
+	operator Basis() const;
+	operator Transform3D() const;
+	operator Transform2D() const;
 
 	operator Color() const;
 	operator Image() const;
@@ -286,9 +286,9 @@ public:
 	Variant(const Plane& p_plane);
 	Variant(const AABB& p_aabb);
 	Variant(const Quat& p_quat);	
-	Variant(const Matrix3& p_transform);	
-	Variant(const Matrix32& p_transform);
-	Variant(const Transform& p_transform);
+	Variant(const Basis& p_transform);	
+	Variant(const Transform2D& p_transform);
+	Variant(const Transform3D& p_transform);
 	Variant(const Color& p_color);
 	Variant(const Image& p_image);
 	Variant(const NodePath& p_path);

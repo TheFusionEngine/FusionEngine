@@ -31,9 +31,9 @@
 
 #include "spatial.h"
 
-class ProximityGroup : public Spatial {
+class ProximityGroup : public Node3D {
 
-	OBJ_TYPE( ProximityGroup, Spatial );
+	OBJ_TYPE( ProximityGroup, Node3D );
 	OBJ_CATEGORY("3D");
 
 public:

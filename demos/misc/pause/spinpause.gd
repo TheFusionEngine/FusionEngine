@@ -1,5 +1,5 @@
 
-extends Spatial
+extends Node3D
 
 
 func _on_pause_pressed():

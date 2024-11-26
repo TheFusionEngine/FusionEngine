@@ -5,9 +5,9 @@
 
 
 class EditorNode;
-class EditorScript : public Reference {
+class EditorScript : public RefCounted {
 
-	OBJ_TYPE( EditorScript, Reference );
+	OBJ_TYPE( EditorScript, RefCounted );
 
 	EditorNode *editor;
 protected:

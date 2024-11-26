@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resource_file type="PackedScene" subresource_count="2" version="1.0" version_name="Fusion Engine v1.0.stable.custom_build">
+	<ext_resource path="res://chat.gd" type="Script"></ext_resource>
+	<main_resource>
+		<dictionary name="_bundled" shared="false">
+			<string> "names" </string>
+			<string_array  len="75">
+				<string> "udp" </string>
+				<string> "Panel" </string>
+				<string> "_import_path" </string>
+				<string> "visibility/visible" </string>
+				<string> "visibility/opacity" </string>
+				<string> "visibility/self_opacity" </string>
+				<string> "visibility/behind_parent" </string>
+				<string> "anchor/right" </string>
+				<string> "anchor/bottom" </string>
+				<string> "focus_neighbour/left" </string>
+				<string> "focus_neighbour/top" </string>
+				<string> "focus_neighbour/right" </string>
+				<string> "focus_neighbour/bottom" </string>
+				<string> "focus/ignore_mouse" </string>
+				<string> "focus/stop_mouse" </string>
+				<string> "size_flags/horizontal" </string>
+				<string> "size_flags/vertical" </string>
+				<string> "size_flags/stretch_ratio" </string>
+				<string> "script/script" </string>
+				<string> "__meta__" </string>
+				<string> "listen_label" </string>
+				<string> "Label" </string>
+				<string> "margin/left" </string>
+				<string> "margin/top" </string>
+				<string> "margin/right" </string>
+				<string> "margin/bottom" </string>
+				<string> "range/min" </string>
+				<string> "range/max" </string>
+				<string> "range/step" </string>
+				<string> "range/page" </string>
+				<string> "range/value" </string>
+				<string> "range/exp_edit" </string>
+				<string> "rounded_values" </string>
+				<string> "text" </string>
+				<string> "align" </string>
+				<string> "valign" </string>
+				<string> "autowrap" </string>
+				<string> "uppercase" </string>
+				<string> "percent_visible" </string>
+				<string> "listen_port" </string>
+				<string> "SpinBox" </string>
+				<string> "editable" </string>
+				<string> "prefix" </string>
+				<string> "suffix" </string>
+				<string> "remote_label" </string>
+				<string> "remote_host" </string>
+				<string> "LineEdit" </string>
+				<string> "max_length" </string>
+				<string> "secret" </string>
+				<string> "remote_port_label" </string>
+				<string> "remote_port" </string>
+				<string> "user_label" </string>
+				<string> "user_name" </string>
+				<string> "connect" </string>
+				<string> "Button" </string>
+				<string> "disabled" </string>
+				<string> "toggle_mode" </string>
+				<string> "click_on_press" </string>
+				<string> "icon" </string>
+				<string> "flat" </string>
+				<string> "clip_text" </string>
+				<string> "entry_label" </string>
+				<string> "entry_line" </string>
+				<string> "entry_button" </string>
+				<string> "chat_label" </string>
+				<string> "chat" </string>
+				<string> "RichTextLabel" </string>
+				<string> "status" </string>
+				<string> "custom_colors/font_color" </string>
+				<string> "_on_connect_toggled" </string>
+				<string> "toggled" </string>
+				<string> "_on_entry_line_text_entered" </string>
+				<string> "text_entered" </string>
+				<string> "_on_entry_button_pressed" </string>
+				<string> "pressed" </string>
+			</string_array>
+			<string> "version" </string>
+			<int> 1 </int>
+			<string> "conn_count" </string>
+			<int> 3 </int>
+			<string> "node_count" </string>
+			<int> 17 </int>
+			<string> "variants" </string>
+			<array  len="61" shared="false">
+				<node_path> "" </node_path>
+				<bool> True </bool>
+				<real> 1 </real>
+				<bool> False </bool>
+				<int> 1 </int>
+				<int> 2 </int>
+				<resource  resource_type="Script" path="res://chat.gd">  </resource>
+				<dictionary  shared="false">
+					<string> "__editor_plugin_states__" </string>
+					<dictionary  shared="false">
+						<string> "Script" </string>
+						<dictionary  shared="false">
+							<string> "current" </string>
+							<int> 0 </int>
+							<string> "sources" </string>
+							<array  len="1" shared="false">
+								<string> "res://chat.gd" </string>
+							</array>
+						</dictionary>
+						<string> "2D" </string>
+						<dictionary  shared="false">
+							<string> "pixel_snap" </string>
+							<bool> False </bool>
+							<string> "zoom" </string>
+							<real> 0.814506 </real>
+							<string> "use_snap" </string>
+							<bool> True </bool>
+							<string> "ofs" </string>
+							<vector2> -286.632, -206.69 </vector2>
+							<string> "snap" </string>
+							<int> 10 </int>
+						</dictionary>
+						<string> "3D" </string>
+						<dictionary  shared="false">
+							<string> "deflight_rot_y" </string>
+							<real> 0.628319 </real>
+							<string> "zfar" </string>
+							<real> 500 </real>
+							<string> "fov" </string>
+							<real> 45 </real>
+							<string> "viewports" </string>
+							<array  len="4" shared="false">
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> True </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+							</array>
+							<string> "viewport_mode" </string>
+							<int> 1 </int>
+							<string> "default_light" </string>
+							<bool> True </bool>
+							<string> "ambient_light_color" </string>
+							<color> 0.15, 0.15, 0.15, 1 </color>
+							<string> "show_grid" </string>
+							<bool> True </bool>
+							<string> "show_origin" </string>
+							<bool> True </bool>
+							<string> "znear" </string>
+							<real> 0.1 </real>
+							<string> "default_srgb" </string>
+							<bool> False </bool>
+							<string> "deflight_rot_x" </string>
+							<real> 0.942478 </real>
+						</dictionary>
+					</dictionary>
+					<string> "__editor_run_settings__" </string>
+					<dictionary  shared="false">
+						<string> "custom_args" </string>
+						<string> "-l $scene" </string>
+						<string> "run_mode" </string>
+						<int> 0 </int>
+					</dictionary>
+					<string> "__editor_plugin_screen__" </string>
+					<string> "2D" </string>
+				</dictionary>
+				<real> 40 </real>
+				<real> 30 </real>
+				<real> 109 </real>
+				<real> 43 </real>
+				<real> 0 </real>
+				<string> "Listen Port" </string>
+				<int> 0 </int>
+				<real> -1 </real>
+				<real> 50 </real>
+				<real> 170 </real>
+				<real> 71 </real>
+				<real> 65535 </real>
+				<real> 2345 </real>
+				<string> "" </string>
+				<real> 80 </real>
+				<real> 93 </real>
+				<string> "Remote Host:" </string>
+				<real> 100 </real>
+				<real> 121 </real>
+				<string> "localhost" </string>
+				<real> 130 </real>
+				<real> 143 </real>
+				<string> "Remote Port:" </string>
+				<real> 150 </real>
+				<real> 171 </real>
+				<real> 180 </real>
+				<real> 193 </real>
+				<string> "User Name:" </string>
+				<real> 200 </real>
+				<real> 221 </real>
+				<string> "Godofredo" </string>
+				<real> 60 </real>
+				<real> 240 </real>
+				<real> 260 </real>
+				<string> "Connect" </string>
+				<resource name=""></resource>				<real> 269 </real>
+				<string> "Enter Message:" </string>
+				<real> 210 </real>
+				<real> 690 </real>
+				<real> 700 </real>
+				<real> 770 </real>
+				<real> 70 </real>
+				<string> "Send" </string>
+				<real> 250 </real>
+				<string> "Chat:" </string>
+				<real> 560 </real>
+				<real> 10 </real>
+				<real> 270 </real>
+				<real> 160 </real>
+				<real> 330 </real>
+				<color> 0, 0.915332, 1, 1 </color>
+				<string> "Disconnected" </string>
+			</array>
+			<string> "nodes" </string>
+			<int_array  len="1001"> 				-1, -1, 1, 0, -1, 18, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 7, 4, 8, 4, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 18, 6, 19, 7, 0, 0, 0, 21, 20, -1, 30, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 8, 23, 9, 24, 10, 25, 11, 9, 0, 10, 0, 11, 0, 12, 0, 13, 1, 14, 1, 15, 5, 17, 2, 26, 12, 27, 2, 28, 2, 29, 2, 30, 12, 31, 3, 32, 3, 33, 13, 34, 14, 35, 14, 36, 3, 37, 3, 38, 15, 0, 0, 0, 40, 39, -1, 28, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 16, 23, 16, 24, 17, 25, 18, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 26, 12, 27, 19, 28, 2, 29, 12, 30, 20, 31, 3, 32, 3, 41, 1, 42, 21, 43, 21, 0, 0, 0, 21, 44, -1, 30, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 8, 23, 22, 24, 10, 25, 23, 9, 0, 10, 0, 11, 0, 12, 0, 13, 1, 14, 1, 15, 5, 17, 2, 26, 12, 27, 2, 28, 2, 29, 2, 30, 12, 31, 3, 32, 3, 33, 24, 34, 14, 35, 14, 36, 3, 37, 3, 38, 15, 0, 0, 0, 46, 45, -1, 22, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 16, 23, 25, 24, 17, 25, 26, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 33, 27, 47, 14, 41, 1, 48, 3, 0, 0, 0, 21, 49, -1, 30, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 8, 23, 28, 24, 10, 25, 29, 9, 0, 10, 0, 11, 0, 12, 0, 13, 1, 14, 1, 15, 5, 17, 2, 26, 12, 27, 2, 28, 2, 29, 2, 30, 12, 31, 3, 32, 3, 33, 30, 34, 14, 35, 14, 36, 3, 37, 3, 38, 15, 0, 0, 0, 40, 50, -1, 28, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 16, 23, 31, 24, 17, 25, 32, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 26, 12, 27, 19, 28, 2, 29, 12, 30, 20, 31, 3, 32, 3, 41, 1, 42, 21, 43, 21, 0, 0, 0, 21, 51, -1, 30, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 8, 23, 33, 24, 10, 25, 34, 9, 0, 10, 0, 11, 0, 12, 0, 13, 1, 14, 1, 15, 5, 17, 2, 26, 12, 27, 2, 28, 2, 29, 2, 30, 12, 31, 3, 32, 3, 33, 35, 34, 14, 35, 14, 36, 3, 37, 3, 38, 15, 0, 0, 0, 46, 52, -1, 22, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 16, 23, 36, 24, 17, 25, 37, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 33, 38, 47, 14, 41, 1, 48, 3, 0, 0, 0, 54, 53, -1, 26, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 39, 23, 40, 24, 31, 25, 41, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 55, 3, 56, 1, 57, 3, 33, 42, 58, 43, 59, 3, 60, 3, 34, 4, 0, 0, 0, 21, 61, -1, 30, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 36, 23, 9, 24, 44, 25, 11, 9, 0, 10, 0, 11, 0, 12, 0, 13, 1, 14, 1, 15, 5, 17, 2, 26, 12, 27, 2, 28, 2, 29, 2, 30, 12, 31, 3, 32, 3, 33, 45, 34, 14, 35, 14, 36, 3, 37, 3, 38, 15, 0, 0, 0, 46, 62, -1, 22, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 46, 23, 16, 24, 47, 25, 18, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 33, 21, 47, 14, 41, 1, 48, 3, 0, 0, 0, 54, 63, -1, 26, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 48, 23, 16, 24, 49, 25, 50, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 55, 3, 56, 3, 57, 3, 33, 51, 58, 43, 59, 3, 60, 3, 34, 4, 0, 0, 0, 21, 64, -1, 30, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 36, 23, 22, 24, 52, 25, 23, 9, 0, 10, 0, 11, 0, 12, 0, 13, 1, 14, 1, 15, 5, 17, 2, 26, 12, 27, 2, 28, 2, 29, 2, 30, 12, 31, 3, 32, 3, 33, 53, 34, 14, 35, 14, 36, 3, 37, 3, 38, 15, 0, 0, 0, 1, 65, -1, 18, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 46, 23, 25, 24, 49, 25, 54, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 0, 14, 0, 66, 33, -1, 20, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 7, 4, 8, 4, 22, 55, 23, 55, 24, 55, 25, 55, 9, 0, 10, 0, 11, 0, 12, 0, 13, 3, 14, 1, 15, 5, 16, 5, 17, 2, 0, 0, 0, 21, 67, -1, 31, 2, 0, 3, 1, 4, 2, 5, 2, 6, 3, 22, 16, 23, 56, 24, 57, 25, 58, 9, 0, 10, 0, 11, 0, 12, 0, 13, 1, 14, 1, 15, 5, 17, 2, 68, 59, 26, 12, 27, 2, 28, 2, 29, 2, 30, 12, 31, 3, 32, 3, 33, 60, 34, 4, 35, 14, 36, 3, 37, 3, 38, 15, 0 </int_array>
+			<string> "conns" </string>
+			<int_array  len="18"> 				9, 0, 70, 69, 2, 0, 11, 0, 72, 71, 2, 0, 12, 0, 74, 73, 2, 0 </int_array>
+		</dictionary>
+
+	</main_resource>
+</resource_file>

@@ -33,17 +33,17 @@
 #include "scene/resources/surface_tool.h"
 
 
-void Camera::_update_audio_listener_state() {
+void Camera3D::_update_audio_listener_state() {
 
 
 }
 
-void Camera::_request_camera_update() {
+void Camera3D::_request_camera_update() {
 
 	_update_camera();
 }
 
-void Camera::_update_camera_mode() {
+void Camera3D::_update_camera_mode() {
 
 
 	force_change=true;
@@ -62,7 +62,7 @@ void Camera::_update_camera_mode() {
 
 }
 
-bool Camera::_set(const StringName& p_name, const Variant& p_value) {
+bool Camera3D::_set(const StringName& p_name, const Variant& p_value) {
 
 	bool changed_all=false;
 	if (p_name=="projection") {
@@ -105,7 +105,7 @@ bool Camera::_set(const StringName& p_name, const Variant& p_value) {
 	return true;
 
 }
-bool Camera::_get(const StringName& p_name,Variant &r_ret) const {
+bool Camera3D::_get(const StringName& p_name,Variant &r_ret) const {
 
 	if (p_name=="projection") {
 		r_ret= mode;
@@ -136,7 +136,7 @@ bool Camera::_get(const StringName& p_name,Variant &r_ret) const {
 	return true;
 }
 
-void Camera::_get_property_list( List<PropertyInfo> *p_list) const {
+void Camera3D::_get_property_list( List<PropertyInfo> *p_list) const {
 
 	p_list->push_back( PropertyInfo( Variant::INT, "projection", PROPERTY_HINT_ENUM, "Perspective,Orthogonal") );
 	
@@ -173,9 +173,9 @@ void Camera::_get_property_list( List<PropertyInfo> *p_list) const {
 
 }
 
-void Camera::_update_camera() {
+void Camera3D::_update_camera() {
 
-	Transform tr = get_camera_transform();
+	Transform3D tr = get_camera_transform();
 	VisualServer::get_singleton()->camera_set_transform( camera, tr );
 
 // here goes listener stuff
@@ -195,7 +195,7 @@ void Camera::_update_camera() {
 
 }
 
-void Camera::_notification(int p_what) {
+void Camera3D::_notification(int p_what) {
 
 	switch(p_what) {
 	
@@ -265,12 +265,12 @@ void Camera::_notification(int p_what) {
 }
 
 
-Transform Camera::get_camera_transform() const {
+Transform3D Camera3D::get_camera_transform() const {
 
 	return get_global_transform().orthonormalized();
 }
 
-void Camera::set_perspective(float p_fovy_degrees, float p_z_near, float p_z_far) {
+void Camera3D::set_perspective(float p_fovy_degrees, float p_z_near, float p_z_far) {
 
 	if (!force_change && fov==p_fovy_degrees && p_z_near==near && p_z_far==far && mode==PROJECTION_PERSPECTIVE)
 		return;
@@ -284,7 +284,7 @@ void Camera::set_perspective(float p_fovy_degrees, float p_z_near, float p_z_far
 	update_gizmo();
 	force_change=false;
 }
-void Camera::set_orthogonal(float p_size, float p_z_near, float p_z_far) {
+void Camera3D::set_orthogonal(float p_size, float p_z_near, float p_z_far) {
 
 	if (!force_change && size==p_size && p_z_near==near && p_z_far==far && mode==PROJECTION_ORTHOGONAL)
 		return;
@@ -300,12 +300,12 @@ void Camera::set_orthogonal(float p_size, float p_z_near, float p_z_far) {
 	update_gizmo();
 }
 
-RID Camera::get_camera() const {
+RID Camera3D::get_camera() const {
 
 	return camera;
 };
 
-void Camera::make_current() {
+void Camera3D::make_current() {
 
 	current=true;
 
@@ -320,7 +320,7 @@ void Camera::make_current() {
 }
 
 
-void Camera::_camera_make_next_current(Node *p_exclude) {
+void Camera3D::_camera_make_next_current(Node *p_exclude) {
 
 	if (this==p_exclude)
 		return;
@@ -333,7 +333,7 @@ void Camera::_camera_make_next_current(Node *p_exclude) {
 }
 
 
-void Camera::clear_current() {
+void Camera3D::clear_current() {
 
 	current=false;
 	if (!is_inside_tree())
@@ -350,7 +350,7 @@ void Camera::clear_current() {
 
 }
 
-bool Camera::is_current() const {
+bool Camera3D::is_current() const {
 
 	if (is_inside_tree()) {
 		if (viewport_ptr)
@@ -362,13 +362,13 @@ bool Camera::is_current() const {
 }
 
 
-bool Camera::_can_gizmo_scale() const {
+bool Camera3D::_can_gizmo_scale() const {
 
 	return false;
 }
 
 
-RES Camera::_get_gizmo_geometry() const {
+RES Camera3D::_get_gizmo_geometry() const {
 
 
 	Ref<SurfaceTool> surface_tool( memnew( SurfaceTool ));
@@ -454,16 +454,16 @@ RES Camera::_get_gizmo_geometry() const {
 
 }
 
-Vector3 Camera::project_ray_normal(const Point2& p_pos) const {
+Vector3 Camera3D::project_ray_normal(const Point2& p_pos) const {
 
 	Vector3 ray = project_local_ray_normal(p_pos);
 	return get_camera_transform().basis.xform(ray).normalized();
 };
 
-Vector3 Camera::project_local_ray_normal(const Point2& p_pos) const {
+Vector3 Camera3D::project_local_ray_normal(const Point2& p_pos) const {
 
 	if (!is_inside_tree()) {
-		ERR_EXPLAIN("Camera is not inside scene.");
+		ERR_EXPLAIN("Camera3D is not inside scene.");
 		ERR_FAIL_COND_V(!is_inside_tree(),Vector3());
 	}
 
@@ -494,10 +494,10 @@ Vector3 Camera::project_local_ray_normal(const Point2& p_pos) const {
 };
 
 
-Vector3 Camera::project_ray_origin(const Point2& p_pos) const {
+Vector3 Camera3D::project_ray_origin(const Point2& p_pos) const {
 
 	if (!is_inside_tree()) {
-		ERR_EXPLAIN("Camera is not inside scene.");
+		ERR_EXPLAIN("Camera3D is not inside scene.");
 		ERR_FAIL_COND_V(!is_inside_tree(),Vector3());
 	}
 
@@ -540,10 +540,10 @@ Vector3 Camera::project_ray_origin(const Point2& p_pos) const {
 	};
 };
 
-Point2 Camera::unproject_position(const Vector3& p_pos) const {
+Point2 Camera3D::unproject_position(const Vector3& p_pos) const {
 
 	if (!is_inside_tree()) {
-		ERR_EXPLAIN("Camera is not inside scene.");
+		ERR_EXPLAIN("Camera3D is not inside scene.");
 		ERR_FAIL_COND_V(!is_inside_tree(),Vector2());
 	}
 
@@ -571,10 +571,10 @@ Point2 Camera::unproject_position(const Vector3& p_pos) const {
 
 }
 
-Vector3 Camera::project_position(const Point2& p_point) const {
+Vector3 Camera3D::project_position(const Point2& p_point) const {
 
 	if (!is_inside_tree()) {
-		ERR_EXPLAIN("Camera is not inside scene.");
+		ERR_EXPLAIN("Camera3D is not inside scene.");
 		ERR_FAIL_COND_V(!is_inside_tree(),Vector3());
 	}
 
@@ -602,7 +602,7 @@ Vector3 Camera::project_position(const Point2& p_point) const {
 }
 
 /*
-void Camera::_camera_make_current(Node *p_camera) {
+void Camera3D::_camera_make_current(Node *p_camera) {
 
 
 	if (p_camera==this) {
@@ -618,7 +618,7 @@ void Camera::_camera_make_current(Node *p_camera) {
 }
 */
 
-void Camera::set_environment(const Ref<Environment>& p_environment) {
+void Camera3D::set_environment(const Ref<Environment>& p_environment) {
 
 	environment=p_environment;
 	if (environment.is_valid())
@@ -627,13 +627,13 @@ void Camera::set_environment(const Ref<Environment>& p_environment) {
 		VS::get_singleton()->camera_set_environment(camera,RID());
 }
 
-Ref<Environment> Camera::get_environment() const {
+Ref<Environment> Camera3D::get_environment() const {
 
 	return environment;
 }
 
 
-void Camera::set_keep_aspect_mode(KeepAspect p_aspect) {
+void Camera3D::set_keep_aspect_mode(KeepAspect p_aspect) {
 
 	keep_aspect=p_aspect;
 	VisualServer::get_singleton()->camera_set_use_vertical_aspect(camera,p_aspect==KEEP_WIDTH);
@@ -641,41 +641,41 @@ void Camera::set_keep_aspect_mode(KeepAspect p_aspect) {
 	_change_notify();
 }
 
-Camera::KeepAspect Camera::get_keep_aspect_mode() const{
+Camera3D::KeepAspect Camera3D::get_keep_aspect_mode() const{
 
 	return keep_aspect;
 }
 
 
 
-void Camera::_bind_methods() {
+void Camera3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method( _MD("project_ray_normal","screen_point"), &Camera::project_ray_normal);
-	ObjectTypeDB::bind_method( _MD("project_local_ray_normal","screen_point"), &Camera::project_local_ray_normal);
-	ObjectTypeDB::bind_method( _MD("project_ray_origin","screen_point"), &Camera::project_ray_origin);
-	ObjectTypeDB::bind_method( _MD("unproject_position","world_point"), &Camera::unproject_position);
-	ObjectTypeDB::bind_method( _MD("project_position","screen_point"), &Camera::project_position);
-	ObjectTypeDB::bind_method( _MD("set_perspective","fov","z_near","z_far"),&Camera::set_perspective );
-	ObjectTypeDB::bind_method( _MD("set_orthogonal","size","z_near","z_far"),&Camera::set_orthogonal );
-	ObjectTypeDB::bind_method( _MD("make_current"),&Camera::make_current );
-	ObjectTypeDB::bind_method( _MD("clear_current"),&Camera::clear_current );
-	ObjectTypeDB::bind_method( _MD("is_current"),&Camera::is_current );
-	ObjectTypeDB::bind_method( _MD("get_camera_transform"),&Camera::get_camera_transform );
-	ObjectTypeDB::bind_method( _MD("get_fov"),&Camera::get_fov );
-	ObjectTypeDB::bind_method( _MD("get_size"),&Camera::get_size );
-	ObjectTypeDB::bind_method( _MD("get_zfar"),&Camera::get_zfar );
-	ObjectTypeDB::bind_method( _MD("get_znear"),&Camera::get_znear );
-	ObjectTypeDB::bind_method( _MD("get_projection"),&Camera::get_projection );
-	ObjectTypeDB::bind_method( _MD("set_visible_layers","mask"),&Camera::set_visible_layers );
-	ObjectTypeDB::bind_method( _MD("get_visible_layers"),&Camera::get_visible_layers );
-	ObjectTypeDB::bind_method( _MD("look_at","target","up"),&Camera::look_at );
-	ObjectTypeDB::bind_method( _MD("look_at_from_pos","pos","target","up"),&Camera::look_at_from_pos );
-	ObjectTypeDB::bind_method(_MD("set_environment","env:Environment"),&Camera::set_environment);
-	ObjectTypeDB::bind_method(_MD("get_environment:Environment"),&Camera::get_environment);
-	ObjectTypeDB::bind_method(_MD("set_keep_aspect_mode","mode"),&Camera::set_keep_aspect_mode);
-	ObjectTypeDB::bind_method(_MD("get_keep_aspect_mode"),&Camera::get_keep_aspect_mode);
-	ObjectTypeDB::bind_method(_MD("_camera_make_next_current"),&Camera::_camera_make_next_current);
-	//ObjectTypeDB::bind_method( _MD("_camera_make_current"),&Camera::_camera_make_current );
+	ObjectTypeDB::bind_method( _MD("project_ray_normal","screen_point"), &Camera3D::project_ray_normal);
+	ObjectTypeDB::bind_method( _MD("project_local_ray_normal","screen_point"), &Camera3D::project_local_ray_normal);
+	ObjectTypeDB::bind_method( _MD("project_ray_origin","screen_point"), &Camera3D::project_ray_origin);
+	ObjectTypeDB::bind_method( _MD("unproject_position","world_point"), &Camera3D::unproject_position);
+	ObjectTypeDB::bind_method( _MD("project_position","screen_point"), &Camera3D::project_position);
+	ObjectTypeDB::bind_method( _MD("set_perspective","fov","z_near","z_far"),&Camera3D::set_perspective );
+	ObjectTypeDB::bind_method( _MD("set_orthogonal","size","z_near","z_far"),&Camera3D::set_orthogonal );
+	ObjectTypeDB::bind_method( _MD("make_current"),&Camera3D::make_current );
+	ObjectTypeDB::bind_method( _MD("clear_current"),&Camera3D::clear_current );
+	ObjectTypeDB::bind_method( _MD("is_current"),&Camera3D::is_current );
+	ObjectTypeDB::bind_method( _MD("get_camera_transform"),&Camera3D::get_camera_transform );
+	ObjectTypeDB::bind_method( _MD("get_fov"),&Camera3D::get_fov );
+	ObjectTypeDB::bind_method( _MD("get_size"),&Camera3D::get_size );
+	ObjectTypeDB::bind_method( _MD("get_zfar"),&Camera3D::get_zfar );
+	ObjectTypeDB::bind_method( _MD("get_znear"),&Camera3D::get_znear );
+	ObjectTypeDB::bind_method( _MD("get_projection"),&Camera3D::get_projection );
+	ObjectTypeDB::bind_method( _MD("set_visible_layers","mask"),&Camera3D::set_visible_layers );
+	ObjectTypeDB::bind_method( _MD("get_visible_layers"),&Camera3D::get_visible_layers );
+	ObjectTypeDB::bind_method( _MD("look_at","target","up"),&Camera3D::look_at );
+	ObjectTypeDB::bind_method( _MD("look_at_from_pos","pos","target","up"),&Camera3D::look_at_from_pos );
+	ObjectTypeDB::bind_method(_MD("set_environment","env:Environment"),&Camera3D::set_environment);
+	ObjectTypeDB::bind_method(_MD("get_environment:Environment"),&Camera3D::get_environment);
+	ObjectTypeDB::bind_method(_MD("set_keep_aspect_mode","mode"),&Camera3D::set_keep_aspect_mode);
+	ObjectTypeDB::bind_method(_MD("get_keep_aspect_mode"),&Camera3D::get_keep_aspect_mode);
+	ObjectTypeDB::bind_method(_MD("_camera_make_next_current"),&Camera3D::_camera_make_next_current);
+	//ObjectTypeDB::bind_method( _MD("_camera_make_current"),&Camera3D::_camera_make_current );
 
 	BIND_CONSTANT( PROJECTION_PERSPECTIVE );
 	BIND_CONSTANT( PROJECTION_ORTHOGONAL );
@@ -685,45 +685,45 @@ void Camera::_bind_methods() {
 
 }
 
-float Camera::get_fov() const {
+float Camera3D::get_fov() const {
 
 	return fov;
 }
 
-float Camera::get_size() const {
+float Camera3D::get_size() const {
 
 	return size;
 }
 
-float Camera::get_znear() const {
+float Camera3D::get_znear() const {
 
 	return near;
 }
 
-float Camera::get_zfar() const {
+float Camera3D::get_zfar() const {
 
 	return far;
 }
 
 
-Camera::Projection Camera::get_projection() const {
+Camera3D::Projection Camera3D::get_projection() const {
 
 	return mode;
 }
 
-void Camera::set_visible_layers(uint32_t p_layers) {
+void Camera3D::set_visible_layers(uint32_t p_layers) {
 
 	layers=p_layers;
 	VisualServer::get_singleton()->camera_set_visible_layers(camera,layers);
 }
 
-uint32_t Camera::get_visible_layers() const{
+uint32_t Camera3D::get_visible_layers() const{
 
 	return layers;
 }
 
 
-Vector<Plane> Camera::get_frustum() const {
+Vector<Plane> Camera3D::get_frustum() const {
 
 	ERR_FAIL_COND_V(!is_inside_world(),Vector<Plane>());
 
@@ -740,17 +740,17 @@ Vector<Plane> Camera::get_frustum() const {
 
 
 
-void Camera::look_at(const Vector3& p_target, const Vector3& p_up_normal) {
+void Camera3D::look_at(const Vector3& p_target, const Vector3& p_up_normal) {
 
-	Transform lookat;
+	Transform3D lookat;
 	lookat.origin=get_camera_transform().origin;
 	lookat=lookat.looking_at(p_target,p_up_normal);
 	set_global_transform(lookat);
 }
 
-void Camera::look_at_from_pos(const Vector3& p_pos,const Vector3& p_target, const Vector3& p_up_normal) {
+void Camera3D::look_at_from_pos(const Vector3& p_pos,const Vector3& p_target, const Vector3& p_up_normal) {
 
-	Transform lookat;
+	Transform3D lookat;
 	lookat.origin=p_pos;
 	lookat=lookat.looking_at(p_target,p_up_normal);
 	set_global_transform(lookat);
@@ -758,7 +758,7 @@ void Camera::look_at_from_pos(const Vector3& p_pos,const Vector3& p_target, cons
 }
 
 
-Camera::Camera() {
+Camera3D::Camera3D() {
 
 	camera = VisualServer::get_singleton()->camera_create();
 	size=1;
@@ -777,7 +777,7 @@ Camera::Camera() {
 }
 
 
-Camera::~Camera() {
+Camera3D::~Camera3D() {
 
 	VisualServer::get_singleton()->free(camera);
 

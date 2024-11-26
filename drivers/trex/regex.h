@@ -17,9 +17,9 @@
 #include "core/reference.h"
 struct TRex;
 
-class RegEx : public Reference {
+class RegEx : public RefCounted {
 
-	OBJ_TYPE(RegEx, Reference);
+	OBJ_TYPE(RegEx, RefCounted);
 
 	mutable String text;
 	TRex *exp;
@@ -29,7 +29,7 @@ protected:
 	static void _bind_methods();
 
 	int _bind_find(const String& p_text, int p_start = 0, int p_end = -1) const;
-	StringArray _bind_get_captures() const;
+	PackedStringArray _bind_get_captures() const;
 public:
 
 	void clear();

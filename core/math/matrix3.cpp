@@ -33,7 +33,7 @@
 #define cofac(row1,col1, row2, col2)\
 	(elements[row1][col1] * elements[row2][col2] - elements[row1][col2] * elements[row2][col1])
 
-void Matrix3::from_z(const Vector3& p_z) {
+void Basis::from_z(const Vector3& p_z) {
 
 	if (Math::abs(p_z.z) > Math_SQRT12 ) {
 
@@ -53,7 +53,7 @@ void Matrix3::from_z(const Vector3& p_z) {
 	elements[2]=p_z;
 }
 
-void Matrix3::invert() {
+void Basis::invert() {
 
 
 	real_t co[3]={
@@ -72,7 +72,7 @@ void Matrix3::invert() {
 
 }
 
-void Matrix3::orthonormalize() {
+void Basis::orthonormalize() {
 
 	// Gram-Schmidt Process
 
@@ -92,36 +92,36 @@ void Matrix3::orthonormalize() {
 
 }
 
-Matrix3 Matrix3::orthonormalized() const {
+Basis Basis::orthonormalized() const {
 
-	Matrix3 c = *this;
+	Basis c = *this;
 	c.orthonormalize();
 	return c;
 }
 
 
-Matrix3 Matrix3::inverse() const {
+Basis Basis::inverse() const {
 
-	Matrix3 inv=*this;
+	Basis inv=*this;
 	inv.invert();
 	return inv;
 }
 
-void Matrix3::transpose() {
+void Basis::transpose() {
 
 	SWAP(elements[0][1],elements[1][0]);
 	SWAP(elements[0][2],elements[2][0]);
 	SWAP(elements[1][2],elements[2][1]);
 }
 
-Matrix3 Matrix3::transposed() const {
+Basis Basis::transposed() const {
 
-	Matrix3 tr=*this;
+	Basis tr=*this;
 	tr.transpose();
 	return tr;
 }
 
-void Matrix3::scale(const Vector3& p_scale) {
+void Basis::scale(const Vector3& p_scale) {
 
 	elements[0][0]*=p_scale.x;
 	elements[1][0]*=p_scale.x;
@@ -134,14 +134,14 @@ void Matrix3::scale(const Vector3& p_scale) {
 	elements[2][2]*=p_scale.z;
 }
 
-Matrix3 Matrix3::scaled( const Vector3& p_scale ) const {
+Basis Basis::scaled( const Vector3& p_scale ) const {
 
-	Matrix3 m = *this;
+	Basis m = *this;
 	m.scale(p_scale);
 	return m;
 }
 
-Vector3 Matrix3::get_scale() const {
+Vector3 Basis::get_scale() const {
 
 	return Vector3(
 		Vector3(elements[0][0],elements[1][0],elements[2][0]).length(),
@@ -150,24 +150,24 @@ Vector3 Matrix3::get_scale() const {
 	);
 		
 }
-void Matrix3::rotate(const Vector3& p_axis, real_t p_phi) {
+void Basis::rotate(const Vector3& p_axis, real_t p_phi) {
 
-	*this = *this * Matrix3(p_axis, p_phi);
+	*this = *this * Basis(p_axis, p_phi);
 }
 
-Matrix3 Matrix3::rotated(const Vector3& p_axis, real_t p_phi) const {
+Basis Basis::rotated(const Vector3& p_axis, real_t p_phi) const {
 
-	return *this * Matrix3(p_axis, p_phi);
+	return *this * Basis(p_axis, p_phi);
 
 }
 
-Vector3 Matrix3::get_euler() const {
+Vector3 Basis::get_euler() const {
 
 	// rot =  cy*cz          -cy*sz           sy
 	    //        cz*sx*sy+cx*sz  cx*cz-sx*sy*sz -cy*sx
 	    //       -cx*cz*sy+sx*sz  cz*sx+cx*sy*sz  cx*cy
 
-	Matrix3 m = *this;
+	Basis m = *this;
 	m.orthonormalize();
 
 	Vector3 euler;
@@ -195,27 +195,27 @@ Vector3 Matrix3::get_euler() const {
 
 }
 
-void Matrix3::set_euler(const Vector3& p_euler) {
+void Basis::set_euler(const Vector3& p_euler) {
 
 	real_t c, s;
 
 	c = Math::cos(p_euler.x);
 	s = Math::sin(p_euler.x);
-	Matrix3 xmat(1.0,0.0,0.0,0.0,c,-s,0.0,s,c);
+	Basis xmat(1.0,0.0,0.0,0.0,c,-s,0.0,s,c);
 
 	c = Math::cos(p_euler.y);
 	s = Math::sin(p_euler.y);
-	Matrix3 ymat(c,0.0,s,0.0,1.0,0.0,-s,0.0,c);
+	Basis ymat(c,0.0,s,0.0,1.0,0.0,-s,0.0,c);
 
 	c = Math::cos(p_euler.z);
 	s = Math::sin(p_euler.z);
-	Matrix3 zmat(c,-s,0.0,s,c,0.0,0.0,0.0,1.0);
+	Basis zmat(c,-s,0.0,s,c,0.0,0.0,0.0,1.0);
 
 	//optimizer will optimize away all this anyway
 	*this = xmat*(ymat*zmat);
 }
 
-bool Matrix3::operator==(const Matrix3& p_matrix) const {
+bool Basis::operator==(const Basis& p_matrix) const {
 
 	for (int i=0;i<3;i++) {
 		for (int j=0;j<3;j++) {
@@ -226,12 +226,12 @@ bool Matrix3::operator==(const Matrix3& p_matrix) const {
 	
 	return true;
 }
-bool Matrix3::operator!=(const Matrix3& p_matrix) const {
+bool Basis::operator!=(const Basis& p_matrix) const {
 
 	return (!(*this==p_matrix));
 }
 
-Matrix3::operator String() const {
+Basis::operator String() const {
 
 	String mtx;
 	for (int i=0;i<3;i++) {
@@ -248,9 +248,9 @@ Matrix3::operator String() const {
 	return mtx;
 }
 
-Matrix3::operator Quat() const {
+Basis::operator Quat() const {
 
-	Matrix3 m=*this;
+	Basis m=*this;
 	m.orthonormalize();
 
 	real_t trace = m.elements[0][0] + m.elements[1][1] + m.elements[2][2];
@@ -287,37 +287,37 @@ Matrix3::operator Quat() const {
 
 }
 
-static const Matrix3 _ortho_bases[24]={
-	Matrix3(1, 0, 0, 0, 1, 0, 0, 0, 1),
-	Matrix3(0, -1, 0, 1, 0, 0, 0, 0, 1),
-	Matrix3(-1, 0, 0, 0, -1, 0, 0, 0, 1),
-	Matrix3(0, 1, 0, -1, 0, 0, 0, 0, 1),
-	Matrix3(1, 0, 0, 0, 0, -1, 0, 1, 0),
-	Matrix3(0, 0, 1, 1, 0, 0, 0, 1, 0),
-	Matrix3(-1, 0, 0, 0, 0, 1, 0, 1, 0),
-	Matrix3(0, 0, -1, -1, 0, 0, 0, 1, 0),
-	Matrix3(1, 0, 0, 0, -1, 0, 0, 0, -1),
-	Matrix3(0, 1, 0, 1, 0, 0, 0, 0, -1),
-	Matrix3(-1, 0, 0, 0, 1, 0, 0, 0, -1),
-	Matrix3(0, -1, 0, -1, 0, 0, 0, 0, -1),
-	Matrix3(1, 0, 0, 0, 0, 1, 0, -1, 0),
-	Matrix3(0, 0, -1, 1, 0, 0, 0, -1, 0),
-	Matrix3(-1, 0, 0, 0, 0, -1, 0, -1, 0),
-	Matrix3(0, 0, 1, -1, 0, 0, 0, -1, 0),
-	Matrix3(0, 0, 1, 0, 1, 0, -1, 0, 0),
-	Matrix3(0, -1, 0, 0, 0, 1, -1, 0, 0),
-	Matrix3(0, 0, -1, 0, -1, 0, -1, 0, 0),
-	Matrix3(0, 1, 0, 0, 0, -1, -1, 0, 0),
-	Matrix3(0, 0, 1, 0, -1, 0, 1, 0, 0),
-	Matrix3(0, 1, 0, 0, 0, 1, 1, 0, 0),
-	Matrix3(0, 0, -1, 0, 1, 0, 1, 0, 0),
-	Matrix3(0, -1, 0, 0, 0, -1, 1, 0, 0)
+static const Basis _ortho_bases[24]={
+	Basis(1, 0, 0, 0, 1, 0, 0, 0, 1),
+	Basis(0, -1, 0, 1, 0, 0, 0, 0, 1),
+	Basis(-1, 0, 0, 0, -1, 0, 0, 0, 1),
+	Basis(0, 1, 0, -1, 0, 0, 0, 0, 1),
+	Basis(1, 0, 0, 0, 0, -1, 0, 1, 0),
+	Basis(0, 0, 1, 1, 0, 0, 0, 1, 0),
+	Basis(-1, 0, 0, 0, 0, 1, 0, 1, 0),
+	Basis(0, 0, -1, -1, 0, 0, 0, 1, 0),
+	Basis(1, 0, 0, 0, -1, 0, 0, 0, -1),
+	Basis(0, 1, 0, 1, 0, 0, 0, 0, -1),
+	Basis(-1, 0, 0, 0, 1, 0, 0, 0, -1),
+	Basis(0, -1, 0, -1, 0, 0, 0, 0, -1),
+	Basis(1, 0, 0, 0, 0, 1, 0, -1, 0),
+	Basis(0, 0, -1, 1, 0, 0, 0, -1, 0),
+	Basis(-1, 0, 0, 0, 0, -1, 0, -1, 0),
+	Basis(0, 0, 1, -1, 0, 0, 0, -1, 0),
+	Basis(0, 0, 1, 0, 1, 0, -1, 0, 0),
+	Basis(0, -1, 0, 0, 0, 1, -1, 0, 0),
+	Basis(0, 0, -1, 0, -1, 0, -1, 0, 0),
+	Basis(0, 1, 0, 0, 0, -1, -1, 0, 0),
+	Basis(0, 0, 1, 0, -1, 0, 1, 0, 0),
+	Basis(0, 1, 0, 0, 0, 1, 1, 0, 0),
+	Basis(0, 0, -1, 0, 1, 0, 1, 0, 0),
+	Basis(0, -1, 0, 0, 0, -1, 1, 0, 0)
 };
 
-int Matrix3::get_orthogonal_index() const {
+int Basis::get_orthogonal_index() const {
 
 	//could be sped up if i come up with a way
-	Matrix3 orth=*this;
+	Basis orth=*this;
 	for(int i=0;i<3;i++) {
 		for(int j=0;j<3;j++) {
 
@@ -344,7 +344,7 @@ int Matrix3::get_orthogonal_index() const {
 	return 0;
 }
 
-void Matrix3::set_orthogonal_index(int p_index){
+void Basis::set_orthogonal_index(int p_index){
 
 	//there only exist 24 orthogonal bases in r3
 	ERR_FAIL_INDEX(p_index,24);
@@ -355,7 +355,7 @@ void Matrix3::set_orthogonal_index(int p_index){
 }
 
 
-void Matrix3::get_axis_and_angle(Vector3 &r_axis,real_t& r_angle) const {
+void Basis::get_axis_and_angle(Vector3 &r_axis,real_t& r_angle) const {
 
 
 	double angle,x,y,z; // variables for result
@@ -436,13 +436,13 @@ void Matrix3::get_axis_and_angle(Vector3 &r_axis,real_t& r_angle) const {
 	r_angle=angle;
 }
 
-Matrix3::Matrix3(const Vector3& p_euler) {
+Basis::Basis(const Vector3& p_euler) {
 
 	set_euler( p_euler );
 		
 }
 
-Matrix3::Matrix3(const Quat& p_quat) {
+Basis::Basis(const Quat& p_quat) {
 
 	real_t d = p_quat.length_squared();
 	real_t s = 2.0 / d;
@@ -456,7 +456,7 @@ Matrix3::Matrix3(const Quat& p_quat) {
 
 }
 
-Matrix3::Matrix3(const Vector3& p_axis, real_t p_phi) {
+Basis::Basis(const Vector3& p_axis, real_t p_phi) {
 
 	Vector3 axis_sq(p_axis.x*p_axis.x,p_axis.y*p_axis.y,p_axis.z*p_axis.z);
 

@@ -203,7 +203,7 @@ void CameraMatrix::get_viewport_size(float& r_width, float& r_height) const {
 	r_height=res.y;
 }
 
-bool CameraMatrix::get_endpoints(const Transform& p_transform, Vector3 *p_8points) const {
+bool CameraMatrix::get_endpoints(const Transform3D& p_transform, Vector3 *p_8points) const {
 
 	const float * matrix = (const float*)this->matrix;		
 		
@@ -253,7 +253,7 @@ bool CameraMatrix::get_endpoints(const Transform& p_transform, Vector3 *p_8point
 	return true;
 }
 
-Vector<Plane> CameraMatrix::get_projection_planes(const Transform& p_transform) const {
+Vector<Plane> CameraMatrix::get_projection_planes(const Transform3D& p_transform) const {
 
 	/** Fast Plane Extraction from combined modelview/projection matrices.
 	 * References:
@@ -557,9 +557,9 @@ void CameraMatrix::scale_translate_to_fit(const AABB& p_aabb) {
 	matrix[3][3]=1;
 }
 
-CameraMatrix::operator Transform() const {
+CameraMatrix::operator Transform3D() const {
 
-	Transform tr;
+	Transform3D tr;
 	const float *m=&matrix[0][0];
 
 	tr.basis.elements[0][0]=m[0];
@@ -581,9 +581,9 @@ CameraMatrix::operator Transform() const {
 	return tr;
 }
 
-CameraMatrix::CameraMatrix(const Transform& p_transform) {
+CameraMatrix::CameraMatrix(const Transform3D& p_transform) {
 
-	const Transform &tr = p_transform;
+	const Transform3D &tr = p_transform;
 	float *m=&matrix[0][0];
 	
 	m[0]=tr.basis.elements[0][0];

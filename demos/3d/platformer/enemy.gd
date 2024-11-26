@@ -1,5 +1,5 @@
 
-extends RigidBody
+extends RigidBody3D
 
 # member variables here, example:
 # var a=2
@@ -72,8 +72,8 @@ func _integrate_forces(state):
 		if (prev_advance):
 			rot_dir = 1 #randf() * 2.0 -1.0
 		
-		dir = Matrix3(up,rot_dir * rot_speed * delta).xform(dir)
-		get_node("Armature").set_transform( Transform().looking_at(-dir,up) )
+		dir = Basis(up,rot_dir * rot_speed * delta).xform(dir)
+		get_node("Armature").set_transform( Transform3D().looking_at(-dir,up) )
 		
 		
 	var dspeed = deaccel_dir.dot(lv)

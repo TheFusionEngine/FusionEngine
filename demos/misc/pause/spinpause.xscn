@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resource_file type="PackedScene" subresource_count="3" version="1.0" version_name="Fusion Engine v1.0.stable.custom_build">
+	<ext_resource path="res://spinpause.gd" type="Script"></ext_resource>
+	<resource type="Animation" path="local://0">
+		<string name="resource/name"> "spin" </string>
+		<real name="length"> 10 </real>
+		<bool name="loop"> True </bool>
+		<real name="step"> 0.1 </real>
+		<string name="tracks/0/type"> "value" </string>
+		<node_path name="tracks/0/path"> "cube:transform/rotation" </node_path>
+		<int name="tracks/0/interp"> 1 </int>
+		<dictionary name="tracks/0/keys" shared="false">
+			<string> "cont" </string>
+			<bool> True </bool>
+			<string> "transitions" </string>
+			<real_array  len="2"> 				1, 1 </real_array>
+			<string> "values" </string>
+			<array  len="2" shared="false">
+				<vector3> 0, 0, 0 </vector3>
+				<vector3> 0, -360, 0 </vector3>
+			</array>
+			<string> "times" </string>
+			<real_array  len="2"> 				0, 10 </real_array>
+		</dictionary>
+
+	</resource>
+	<main_resource>
+		<dictionary name="_bundled" shared="false">
+			<string> "names" </string>
+			<string_array  len="109">
+				<string> "pause_scene" </string>
+				<string> "Node3D" </string>
+				<string> "_import_path" </string>
+				<string> "_import_transform" </string>
+				<string> "visibility/visible" </string>
+				<string> "script/script" </string>
+				<string> "__meta__" </string>
+				<string> "cube" </string>
+				<string> "TestCube" </string>
+				<string> "layers" </string>
+				<string> "geometry/visible" </string>
+				<string> "geometry/material_override" </string>
+				<string> "geometry/cast_shadow" </string>
+				<string> "geometry/receive_shadows" </string>
+				<string> "geometry/range_begin" </string>
+				<string> "geometry/range_end" </string>
+				<string> "geometry/billboard" </string>
+				<string> "geometry/billboard_y" </string>
+				<string> "geometry/depth_scale" </string>
+				<string> "geometry/visible_in_all_rooms" </string>
+				<string> "geometry/use_baked_light" </string>
+				<string> "geometry/baked_light_tex_id" </string>
+				<string> "camera" </string>
+				<string> "Camera3D" </string>
+				<string> "transform/local" </string>
+				<string> "projection" </string>
+				<string> "fov" </string>
+				<string> "near" </string>
+				<string> "far" </string>
+				<string> "keep_aspect" </string>
+				<string> "current" </string>
+				<string> "visible_layers" </string>
+				<string> "environment" </string>
+				<string> "anim" </string>
+				<string> "AnimationPlayer" </string>
+				<string> "playback/process_mode" </string>
+				<string> "playback/default_blend_time" </string>
+				<string> "root/root" </string>
+				<string> "anims/spin" </string>
+				<string> "playback/active" </string>
+				<string> "playback/speed" </string>
+				<string> "blend_times" </string>
+				<string> "autoplay" </string>
+				<string> "spot" </string>
+				<string> "SpotLight3D" </string>
+				<string> "params/enabled" </string>
+				<string> "params/editor_only" </string>
+				<string> "params/bake_mode" </string>
+				<string> "params/energy" </string>
+				<string> "colors/diffuse" </string>
+				<string> "colors/specular" </string>
+				<string> "shadow/shadow" </string>
+				<string> "shadow/darkening" </string>
+				<string> "shadow/z_offset" </string>
+				<string> "shadow/z_slope_scale" </string>
+				<string> "shadow/esm_multiplier" </string>
+				<string> "shadow/blur_passes" </string>
+				<string> "projector" </string>
+				<string> "operator" </string>
+				<string> "params/radius" </string>
+				<string> "params/attenuation" </string>
+				<string> "params/spot_angle" </string>
+				<string> "params/spot_attenuation" </string>
+				<string> "pause" </string>
+				<string> "Button" </string>
+				<string> "visibility/opacity" </string>
+				<string> "visibility/self_opacity" </string>
+				<string> "visibility/behind_parent" </string>
+				<string> "margin/left" </string>
+				<string> "margin/top" </string>
+				<string> "margin/right" </string>
+				<string> "margin/bottom" </string>
+				<string> "focus_neighbour/left" </string>
+				<string> "focus_neighbour/top" </string>
+				<string> "focus_neighbour/right" </string>
+				<string> "focus_neighbour/bottom" </string>
+				<string> "focus/ignore_mouse" </string>
+				<string> "focus/stop_mouse" </string>
+				<string> "size_flags/horizontal" </string>
+				<string> "size_flags/vertical" </string>
+				<string> "size_flags/stretch_ratio" </string>
+				<string> "disabled" </string>
+				<string> "toggle_mode" </string>
+				<string> "click_on_press" </string>
+				<string> "text" </string>
+				<string> "icon" </string>
+				<string> "flat" </string>
+				<string> "clip_text" </string>
+				<string> "align" </string>
+				<string> "pause_popup" </string>
+				<string> "PopupPanel" </string>
+				<string> "process/pause_mode" </string>
+				<string> "popup/exclusive" </string>
+				<string> "Label" </string>
+				<string> "range/min" </string>
+				<string> "range/max" </string>
+				<string> "range/step" </string>
+				<string> "range/page" </string>
+				<string> "range/value" </string>
+				<string> "range/exp_edit" </string>
+				<string> "rounded_values" </string>
+				<string> "valign" </string>
+				<string> "autowrap" </string>
+				<string> "uppercase" </string>
+				<string> "percent_visible" </string>
+				<string> "unpause" </string>
+				<string> "_on_pause_pressed" </string>
+				<string> "pressed" </string>
+				<string> "_on_unpause_pressed" </string>
+			</string_array>
+			<string> "version" </string>
+			<int> 1 </int>
+			<string> "conn_count" </string>
+			<int> 2 </int>
+			<string> "node_count" </string>
+			<int> 9 </int>
+			<string> "variants" </string>
+			<array  len="49" shared="false">
+				<node_path> "" </node_path>
+				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 </transform>
+				<bool> True </bool>
+				<resource  resource_type="Script" path="res://spinpause.gd">  </resource>
+				<dictionary  shared="false">
+					<string> "__editor_plugin_states__" </string>
+					<dictionary  shared="false">
+						<string> "Script" </string>
+						<dictionary  shared="false">
+							<string> "current" </string>
+							<int> 0 </int>
+							<string> "sources" </string>
+							<array  len="1" shared="false">
+								<string> "res://spinpause.gd" </string>
+							</array>
+						</dictionary>
+						<string> "2D" </string>
+						<dictionary  shared="false">
+							<string> "pixel_snap" </string>
+							<bool> False </bool>
+							<string> "zoom" </string>
+							<real> 1 </real>
+							<string> "use_snap" </string>
+							<bool> False </bool>
+							<string> "ofs" </string>
+							<vector2> -272.972, -15.6814 </vector2>
+							<string> "snap" </string>
+							<int> 10 </int>
+						</dictionary>
+						<string> "3D" </string>
+						<dictionary  shared="false">
+							<string> "deflight_rot_y" </string>
+							<real> 0.628319 </real>
+							<string> "zfar" </string>
+							<real> 500 </real>
+							<string> "fov" </string>
+							<real> 179 </real>
+							<string> "viewports" </string>
+							<array  len="4" shared="false">
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 10.07268 </real>
+									<string> "x_rot" </string>
+									<real> 1.512503 </real>
+									<string> "y_rot" </string>
+									<real> 3.350003 </real>
+									<string> "listener" </string>
+									<bool> True </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> -0.142703, -0.122403, 1.13688 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+							</array>
+							<string> "viewport_mode" </string>
+							<int> 1 </int>
+							<string> "default_light" </string>
+							<bool> True </bool>
+							<string> "ambient_light_color" </string>
+							<color> 0.15, 0.15, 0.15, 1 </color>
+							<string> "show_grid" </string>
+							<bool> True </bool>
+							<string> "show_origin" </string>
+							<bool> True </bool>
+							<string> "znear" </string>
+							<real> 0.1 </real>
+							<string> "default_srgb" </string>
+							<bool> False </bool>
+							<string> "deflight_rot_x" </string>
+							<real> 0.942478 </real>
+						</dictionary>
+					</dictionary>
+					<string> "__editor_run_settings__" </string>
+					<dictionary  shared="false">
+						<string> "custom_args" </string>
+						<string> "-l $scene" </string>
+						<string> "run_mode" </string>
+						<int> 0 </int>
+					</dictionary>
+					<string> "__editor_plugin_screen__" </string>
+					<string> "3D" </string>
+				</dictionary>
+				<int> 1 </int>
+				<resource name=""></resource>				<real> 0 </real>
+				<bool> False </bool>
+				<int> 0 </int>
+				<transform> 0.571594, 0.275303, -0.772974, 0, 0.942035, 0.335515, 0.820537, -0.191779, 0.538461, -5.59754, 2.75935, 4.01344 </transform>
+				<real> 60 </real>
+				<real> 0.1 </real>
+				<real> 100 </real>
+				<int> -1 </int>
+				<node_path> ".." </node_path>
+				<resource  resource_type="Animation" path="local://0">  </resource>
+				<real> 1 </real>
+				<array  len="0" shared="false">
+				</array>
+				<string> "spin" </string>
+				<transform> 0.792992, 0.251051, -0.555101, 0, 0.911149, 0.412078, 0.609232, -0.326775, 0.722534, -3.05357, 1.80053, 3.64099 </transform>
+				<color> 1, 1, 1, 1 </color>
+				<real> 0.05 </real>
+				<real> 7.067789 </real>
+				<real> 0.378929 </real>
+				<real> 50.625 </real>
+				<real> 12 </real>
+				<real> 7 </real>
+				<real> 79 </real>
+				<real> 29 </real>
+				<int> 2 </int>
+				<string> "PAUSE!" </string>
+				<real> 0.7 </real>
+				<real> 185 </real>
+				<real> 72 </real>
+				<real> 638 </real>
+				<real> 433 </real>
+				<real> 73 </real>
+				<real> 49 </real>
+				<real> 389 </real>
+				<real> 154 </real>
+				<real> 2 </real>
+				<real> 8.076923 </real>
+				<string> "The game has been paused! Nodes are not processing anymore, but this popup can still process!" </string>
+				<real> -1 </real>
+				<real> 306 </real>
+				<real> 273 </real>
+				<real> 326 </real>
+				<string> "UN-PAUSE!" </string>
+			</array>
+			<string> "nodes" </string>
+			<int_array  len="397"> 				-1, -1, 1, 0, -1, 5, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 0, 0, 0, 8, 7, -1, 16, 2, 0, 3, 1, 4, 2, 9, 5, 10, 2, 11, 6, 12, 2, 13, 2, 14, 7, 15, 7, 16, 8, 17, 8, 18, 8, 19, 8, 20, 8, 21, 9, 0, 0, 0, 23, 22, -1, 12, 2, 0, 3, 1, 24, 10, 4, 2, 25, 9, 26, 11, 27, 12, 28, 13, 29, 5, 30, 8, 31, 14, 32, 6, 0, 0, 0, 34, 33, -1, 9, 2, 0, 35, 5, 36, 7, 37, 15, 38, 16, 39, 2, 40, 17, 41, 18, 42, 19, 0, 0, 0, 44, 43, -1, 23, 2, 0, 3, 1, 24, 20, 4, 2, 9, 5, 45, 2, 46, 8, 47, 9, 48, 17, 49, 21, 50, 21, 51, 8, 52, 7, 53, 22, 54, 7, 55, 11, 56, 17, 57, 6, 58, 9, 59, 23, 60, 24, 61, 25, 62, 24, 0, 0, 0, 64, 63, -1, 26, 2, 0, 4, 2, 65, 17, 66, 17, 67, 8, 68, 26, 69, 27, 70, 28, 71, 29, 72, 0, 73, 0, 74, 0, 75, 0, 76, 8, 77, 2, 78, 30, 79, 30, 80, 17, 81, 8, 82, 8, 83, 8, 84, 31, 85, 6, 86, 8, 87, 8, 88, 5, 0, 0, 0, 90, 89, -1, 20, 2, 0, 91, 30, 4, 8, 65, 17, 66, 32, 67, 8, 68, 33, 69, 34, 70, 35, 71, 36, 72, 0, 73, 0, 74, 0, 75, 0, 76, 8, 77, 2, 78, 30, 79, 30, 80, 17, 92, 8, 0, 6, 0, 93, 84, -1, 30, 2, 0, 4, 2, 65, 17, 66, 17, 67, 8, 68, 37, 69, 38, 70, 39, 71, 40, 72, 0, 73, 0, 74, 0, 75, 0, 76, 2, 77, 2, 78, 30, 80, 17, 94, 7, 95, 41, 96, 17, 97, 42, 98, 7, 99, 8, 100, 8, 84, 43, 88, 9, 101, 9, 102, 2, 103, 8, 104, 44, 0, 6, 0, 64, 105, -1, 26, 2, 0, 4, 2, 65, 17, 66, 17, 67, 8, 68, 33, 69, 45, 70, 46, 71, 47, 72, 0, 73, 0, 74, 0, 75, 0, 76, 8, 77, 2, 78, 30, 79, 30, 80, 17, 81, 8, 82, 8, 83, 8, 84, 48, 85, 6, 86, 8, 87, 8, 88, 5, 0 </int_array>
+			<string> "conns" </string>
+			<int_array  len="12"> 				5, 0, 107, 106, 2, 0, 8, 0, 107, 108, 2, 0 </int_array>
+		</dictionary>
+
+	</main_resource>
+</resource_file>

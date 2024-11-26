@@ -36,9 +36,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class VisualInstance : public Spatial {
+class VisualInstance3D : public Node3D {
 
-	OBJ_TYPE( VisualInstance, Spatial );
+	OBJ_TYPE( VisualInstance3D, Node3D );
 	OBJ_CATEGORY("3D Visual Nodes");
 
 	RID instance;
@@ -74,16 +74,16 @@ public:
 	uint32_t get_layer_mask() const;
 
 
-	VisualInstance();	
-	~VisualInstance();
+	VisualInstance3D();	
+	~VisualInstance3D();
 
 };
 
 class BakedLightInstance;
 
-class GeometryInstance : public VisualInstance {
+class GeometryInstance3D : public VisualInstance3D {
 
-	OBJ_TYPE( GeometryInstance, VisualInstance );
+	OBJ_TYPE( GeometryInstance3D, VisualInstance3D );
 public:
 
 	enum Flags {
@@ -132,9 +132,9 @@ public:
 	void set_baked_light_texture_id(int p_id);
 	int get_baked_light_texture_id() const;
 
-	GeometryInstance();
+	GeometryInstance3D();
 };
 
-VARIANT_ENUM_CAST( GeometryInstance::Flags );
+VARIANT_ENUM_CAST( GeometryInstance3D::Flags );
 
 #endif

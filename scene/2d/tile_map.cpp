@@ -71,12 +71,12 @@ void TileMap::_update_quadrant_transform() {
 	if (!is_inside_tree())
 		return;
 
-	Matrix32 global_transform = get_global_transform();
+	Transform2D global_transform = get_global_transform();
 
 	for (Map<PosKey,Quadrant>::Element *E=quadrant_map.front();E;E=E->next()) {
 
 		Quadrant &q=E->get();
-		Matrix32 xform;
+		Transform2D xform;
 		xform.set_origin( q.pos );
 		xform = global_transform * xform;
 		Physics2DServer::get_singleton()->body_set_state(q.static_body,Physics2DServer::BODY_STATE_TRANSFORM,xform);
@@ -241,7 +241,7 @@ void TileMap::_update_dirty_quadrants() {
 				if (shape.is_valid()) {
 
 					Vector2 shape_ofs = tile_set->tile_get_shape_offset(c.id);
-					Matrix32 xform;
+					Transform2D xform;
 					xform.set_origin(offset.floor());
 					if (c.flip_h) {
 						xform.elements[0]=-xform.elements[0];
@@ -331,7 +331,7 @@ void TileMap::_recompute_rect_cache() {
 
 Map<TileMap::PosKey,TileMap::Quadrant>::Element *TileMap::_create_quadrant(const PosKey& p_qk) {
 
-	Matrix32 xform;
+	Transform2D xform;
 	//xform.set_origin(Point2(p_qk.x,p_qk.y)*cell_size*quadrant_size);
 	Quadrant q;
 	q.pos = _map_to_world(p_qk.x*quadrant_size,p_qk.y*quadrant_size);
@@ -679,13 +679,13 @@ TileMap::HalfOffset TileMap::get_half_offset() const {
 	return half_offset;
 }
 
-Matrix32 TileMap::get_cell_transform() const {
+Transform2D TileMap::get_cell_transform() const {
 
 	switch(mode) {
 
 		case MODE_SQUARE: {
 
-			Matrix32 m;
+			Transform2D m;
 			m[0]*=cell_size.x;
 			m[1]*=cell_size.y;
 			return m;
@@ -694,7 +694,7 @@ Matrix32 TileMap::get_cell_transform() const {
 
 			//isometric only makes sense when y is positive in both x and y vectors, otherwise
 			//the drawing of tiles will overlap
-			Matrix32 m;
+			Transform2D m;
 			m[0]=Vector2(cell_size.x*0.5,cell_size.y*0.5);
 			m[1]=Vector2(-cell_size.x*0.5,cell_size.y*0.5);
 			return m;
@@ -706,10 +706,10 @@ Matrix32 TileMap::get_cell_transform() const {
 		} break;
 	}
 
-	return Matrix32();
+	return Transform2D();
 }
 
-void TileMap::set_custom_transform(const Matrix32& p_xform) {
+void TileMap::set_custom_transform(const Transform2D& p_xform) {
 
 	_clear_quadrants();
 	custom_transform=p_xform;
@@ -718,7 +718,7 @@ void TileMap::set_custom_transform(const Matrix32& p_xform) {
 
 }
 
-Matrix32 TileMap::get_custom_transform() const{
+Transform2D TileMap::get_custom_transform() const{
 
 	return custom_transform;
 }

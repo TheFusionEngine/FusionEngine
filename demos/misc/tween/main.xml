@@ -99,7 +99,7 @@
 				<string> "tab_size" </string>
 				<string> "selection_enabled" </string>
 				<string> "sprite" </string>
-				<string> "Sprite" </string>
+				<string> "Sprite2D" </string>
 				<string> "transform/pos" </string>
 				<string> "texture" </string>
 				<string> "centered" </string>

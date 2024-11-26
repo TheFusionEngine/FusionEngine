@@ -473,7 +473,7 @@ VS::FixedMaterialTexCoordMode Rasterizer::fixed_material_get_texcoord_mode(RID p
 	return fm.texture_tc[p_parameter];
 }
 
-void Rasterizer::fixed_material_set_uv_transform(RID p_material,const Transform& p_transform) {
+void Rasterizer::fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform) {
 
 	Map<RID,FixedMaterial*>::Element *E = fixed_materials.find(p_material);
 	ERR_FAIL_COND(!E);
@@ -488,10 +488,10 @@ void Rasterizer::fixed_material_set_uv_transform(RID p_material,const Transform&
 
 
 
-Transform Rasterizer::fixed_material_get_uv_transform(RID p_material) const {
+Transform3D Rasterizer::fixed_material_get_uv_transform(RID p_material) const {
 
 	const Map<RID,FixedMaterial*>::Element *E = fixed_materials.find(p_material);
-	ERR_FAIL_COND_V(!E,Transform());
+	ERR_FAIL_COND_V(!E,Transform3D());
 	const FixedMaterial &fm=*E->get();
 
 	return fm.uv_xform;

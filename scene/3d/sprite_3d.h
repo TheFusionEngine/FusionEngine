@@ -5,9 +5,9 @@
 #include "scene/2d/animated_sprite.h"
 
 
-class SpriteBase3D : public GeometryInstance {
+class SpriteBase3D : public GeometryInstance3D {
 
-	OBJ_TYPE(SpriteBase3D,GeometryInstance);
+	OBJ_TYPE(SpriteBase3D,GeometryInstance3D);
 public:
 
 	enum DrawFlags {

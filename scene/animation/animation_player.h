@@ -71,9 +71,9 @@ private:
 		uint32_t id;
 		RES resource;
 		Node *node;
-		Spatial* spatial;
+		Node3D* spatial;
 		Node2D* node_2d;
-		Skeleton *skeleton;
+		Skeleton3D *skeleton;
 		int bone_idx;
 		// accumulated transforms
 

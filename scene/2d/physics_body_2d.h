@@ -241,9 +241,9 @@ VARIANT_ENUM_CAST(RigidBody2D::CCDMode);
 
 
 
-class KinematicBody2D : public PhysicsBody2D {
+class CharacterBody2D : public PhysicsBody2D {
 
-	OBJ_TYPE(KinematicBody2D,PhysicsBody2D);
+	OBJ_TYPE(CharacterBody2D,PhysicsBody2D);
 
 	float margin;
 	bool collide_static;
@@ -294,8 +294,8 @@ public:
 	void set_collision_margin(float p_margin);
 	float get_collision_margin() const;
 
-	KinematicBody2D();
-	~KinematicBody2D();
+	CharacterBody2D();
+	~CharacterBody2D();
 
 };
 

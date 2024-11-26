@@ -1,6 +1,6 @@
 #include "func_ref.h"
 
-Variant FuncRef::call_func(const Variant** p_args, int p_argcount, Variant::CallError& r_error) {
+Variant Callable::call_func(const Variant** p_args, int p_argcount, Variant::CallError& r_error) {
 
 	if (id==0) {
 		r_error.error=Variant::CallError::CALL_ERROR_INSTANCE_IS_NULL;
@@ -17,17 +17,17 @@ Variant FuncRef::call_func(const Variant** p_args, int p_argcount, Variant::Call
 
 }
 
-void FuncRef::set_instance(Object *p_obj){
+void Callable::set_instance(Object *p_obj){
 
 	ERR_FAIL_NULL(p_obj);
 	id=p_obj->get_instance_ID();
 }
-void FuncRef::set_function(const StringName& p_func){
+void Callable::set_function(const StringName& p_func){
 
 	function=p_func;
 }
 
-void FuncRef::_bind_methods() {
+void Callable::_bind_methods() {
 
 	{
 		MethodInfo mi;
@@ -38,17 +38,17 @@ void FuncRef::_bind_methods() {
 			mi.arguments.push_back( PropertyInfo( Variant::NIL, "arg"+itos(i)));
 			defargs.push_back(Variant());
 		}
-		ObjectTypeDB::bind_native_method(METHOD_FLAGS_DEFAULT,"call_func",&FuncRef::call_func,mi,defargs);
+		ObjectTypeDB::bind_native_method(METHOD_FLAGS_DEFAULT,"call_func",&Callable::call_func,mi,defargs);
 
 	}
 
-	ObjectTypeDB::bind_method(_MD("set_instance","instance"),&FuncRef::set_instance);
-	ObjectTypeDB::bind_method(_MD("set_function","name"),&FuncRef::set_function);
+	ObjectTypeDB::bind_method(_MD("set_instance","instance"),&Callable::set_instance);
+	ObjectTypeDB::bind_method(_MD("set_function","name"),&Callable::set_function);
 
 }
 
 
-FuncRef::FuncRef(){
+Callable::Callable(){
 
 	id=0;
 }

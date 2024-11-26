@@ -28,7 +28,7 @@
 /*************************************************************************/
 #include "bone_attachment.h"
 
-bool BoneAttachment::_get(const StringName& p_name,Variant &r_ret) const {
+bool BoneAttachment3D::_get(const StringName& p_name,Variant &r_ret) const {
 
 	if (String(p_name)=="bone_name") {
 
@@ -38,7 +38,7 @@ bool BoneAttachment::_get(const StringName& p_name,Variant &r_ret) const {
 
 	return false;
 }
-bool BoneAttachment::_set(const StringName& p_name, const Variant& p_value){
+bool BoneAttachment3D::_set(const StringName& p_name, const Variant& p_value){
 
 	if (String(p_name)=="bone_name") {
 
@@ -48,11 +48,11 @@ bool BoneAttachment::_set(const StringName& p_name, const Variant& p_value){
 
 	return false;
 }
-void BoneAttachment::_get_property_list( List<PropertyInfo>* p_list ) const{
+void BoneAttachment3D::_get_property_list( List<PropertyInfo>* p_list ) const{
 
-	Skeleton *parent=NULL;
+	Skeleton3D *parent=NULL;
 	if(get_parent())
-		parent=get_parent()->cast_to<Skeleton>();
+		parent=get_parent()->cast_to<Skeleton3D>();
 
 	if (parent) {
 
@@ -73,10 +73,10 @@ void BoneAttachment::_get_property_list( List<PropertyInfo>* p_list ) const{
 }
 
 
-void BoneAttachment::_check_bind() {
+void BoneAttachment3D::_check_bind() {
 
-	if (get_parent() && get_parent()->cast_to<Skeleton>()) {
-		Skeleton *sk = get_parent()->cast_to<Skeleton>();
+	if (get_parent() && get_parent()->cast_to<Skeleton3D>()) {
+		Skeleton3D *sk = get_parent()->cast_to<Skeleton3D>();
 		int idx = sk->find_bone(bone_name);
 		if (idx!=-1) {
 			sk->bind_child_node_to_bone(idx,this);;
@@ -85,12 +85,12 @@ void BoneAttachment::_check_bind() {
 	}
 }
 
-void BoneAttachment::_check_unbind() {
+void BoneAttachment3D::_check_unbind() {
 
 	if (bound) {
 
-		if (get_parent() && get_parent()->cast_to<Skeleton>()) {
-			Skeleton *sk = get_parent()->cast_to<Skeleton>();
+		if (get_parent() && get_parent()->cast_to<Skeleton3D>()) {
+			Skeleton3D *sk = get_parent()->cast_to<Skeleton3D>();
 			int idx = sk->find_bone(bone_name);
 			if (idx!=-1) {
 				sk->unbind_child_node_from_bone(idx,this);;
@@ -100,7 +100,7 @@ void BoneAttachment::_check_unbind() {
 	}
 }
 
-void BoneAttachment::set_bone_name(const String& p_name) {
+void BoneAttachment3D::set_bone_name(const String& p_name) {
 
 	if (is_inside_tree())
 		_check_unbind();
@@ -111,12 +111,12 @@ void BoneAttachment::set_bone_name(const String& p_name) {
 		_check_bind();
 }
 
-String BoneAttachment::get_bone_name() const{
+String BoneAttachment3D::get_bone_name() const{
 
 	return bone_name;
 }
 
-void BoneAttachment::_notification(int p_what) {
+void BoneAttachment3D::_notification(int p_what) {
 
 	switch(p_what) {
 
@@ -131,7 +131,7 @@ void BoneAttachment::_notification(int p_what) {
 	}
 }
 
-BoneAttachment::BoneAttachment()
+BoneAttachment3D::BoneAttachment3D()
 {
 	bound=false;
 

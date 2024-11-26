@@ -32,7 +32,7 @@
 #include "scene/3d/spatial.h"
 #if 0
 
-class Camera;
+class Camera3D;
 class ProximityArea;
 
 class SpatialIndexer : public Object {
@@ -48,10 +48,10 @@ class SpatialIndexer : public Object {
 	};
 
 
-	Set<Camera*> cameras; //cameras
+	Set<Camera3D*> cameras; //cameras
 	Set<ProximityArea*> proximity_areas;
 
-	Set<TK<Camera> > camera_pairs;
+	Set<TK<Camera3D> > camera_pairs;
 
 	bool pending_update;
 	void _update_pairs();
@@ -62,16 +62,16 @@ protected:
 	static void _bind_methods();
 
 friend class ProximityArea;
-friend class Camera;
+friend class Camera3D;
 
 	void add_proximity_area(ProximityArea* p_area);
 	void remove_proximity_area(ProximityArea* p_area);
 	void update_proximity_area_transform(ProximityArea* p_area);
 	void update_proximity_area_flags(ProximityArea* p_area);
 
-	void add_camera(Camera* p_camera);
-	void remove_camera(Camera* p_camera);
-	void update_camera(Camera* p_camera);
+	void add_camera(Camera3D* p_camera);
+	void remove_camera(Camera3D* p_camera);
+	void update_camera(Camera3D* p_camera);
 
 public:
 

@@ -37,9 +37,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class Reference : public Object{
+class RefCounted : public Object{
 
-	OBJ_TYPE( Reference, Object );
+	OBJ_TYPE( RefCounted, Object );
 friend class RefBase;
 	SafeRefCount refcount;
 	SafeRefCount refcount_init;
@@ -54,18 +54,18 @@ public:
 	void reference();
 	bool unreference();
 
-	Reference();
-	~Reference();
+	RefCounted();
+	~RefCounted();
 };
 
 #if 0
 class RefBase {
 protected:
-	void ref_inc(Reference *p_reference);
-	bool ref_dec(Reference *p_reference);
-	Reference *first_ref(Reference *p_reference);
-	Reference * get_reference_from_ref(const RefBase &p_base);
-	virtual Reference * get_reference() const=0;
+	void ref_inc(RefCounted *p_reference);
+	bool ref_dec(RefCounted *p_reference);
+	RefCounted *first_ref(RefCounted *p_reference);
+	RefCounted * get_reference_from_ref(const RefBase &p_base);
+	virtual RefCounted * get_reference() const=0;
 	char * get_refptr_data(const RefPtr &p_refptr) const;
 public:
 
@@ -98,7 +98,7 @@ class Ref {
 			reference=p_ref;
 	}
 
-	//virtual Reference * get_reference() const { return reference; }
+	//virtual RefCounted * get_reference() const { return reference; }
 public:
 
 
@@ -147,7 +147,7 @@ public:
 	RefPtr get_ref_ptr() const {
 
 		RefPtr refptr;
-		Ref<Reference> * irr = reinterpret_cast<Ref<Reference>*>( refptr.get_data() );
+		Ref<RefCounted> * irr = reinterpret_cast<Ref<RefCounted>*>( refptr.get_data() );
 		*irr = *this;
 		return refptr;
 	};
@@ -175,7 +175,7 @@ public:
 	template<class T_Other>
 	void operator=( const Ref<T_Other>& p_from ) {
 
-		Reference *refb = const_cast<Reference*>(static_cast<const Reference*>(p_from.ptr()));
+		RefCounted *refb = const_cast<RefCounted*>(static_cast<const RefCounted*>(p_from.ptr()));
 		if (!refb) {
 			unref();
 			return;
@@ -188,8 +188,8 @@ public:
 
 	void operator=( const RefPtr& p_refptr ) {
 
-		Ref<Reference> * irr = reinterpret_cast<Ref<Reference>*>( p_refptr.get_data() );
-		Reference *refb = irr->ptr();
+		Ref<RefCounted> * irr = reinterpret_cast<Ref<RefCounted>*>( p_refptr.get_data() );
+		RefCounted *refb = irr->ptr();
 		if (!refb) {
 			unref();
 			return;
@@ -204,8 +204,8 @@ public:
 	void operator=( const Variant& p_variant ) {
 
 		RefPtr refptr=p_variant;
-		Ref<Reference> * irr = reinterpret_cast<Ref<Reference>*>( refptr.get_data() );
-		Reference *refb = irr->ptr();
+		Ref<RefCounted> * irr = reinterpret_cast<Ref<RefCounted>*>( refptr.get_data() );
+		RefCounted *refb = irr->ptr();
 		if (!refb) {
 			unref();
 			return;
@@ -226,7 +226,7 @@ public:
 	Ref( const Ref<T_Other>& p_from ) {
 
 		reference=NULL;
-		Reference *refb = const_cast<Reference*>(static_cast<const Reference*>(p_from.ptr()));
+		RefCounted *refb = const_cast<RefCounted*>(static_cast<const RefCounted*>(p_from.ptr()));
 		if (!refb) {
 			unref();
 			return;
@@ -248,9 +248,9 @@ public:
 	Ref( const Variant& p_variant) {
 
 		RefPtr refptr=p_variant;
-		Ref<Reference> * irr = reinterpret_cast<Ref<Reference>*>( refptr.get_data() );
+		Ref<RefCounted> * irr = reinterpret_cast<Ref<RefCounted>*>( refptr.get_data() );
 		reference=NULL;
-		Reference *refb = irr->ptr();
+		RefCounted *refb = irr->ptr();
 		if (!refb) {
 			unref();
 			return;
@@ -265,9 +265,9 @@ public:
 
 	Ref( const RefPtr& p_refptr) {
 
-		Ref<Reference> * irr = reinterpret_cast<Ref<Reference>*>( p_refptr.get_data() );
+		Ref<RefCounted> * irr = reinterpret_cast<Ref<RefCounted>*>( p_refptr.get_data() );
 		reference=NULL;
-		Reference *refb = irr->ptr();
+		RefCounted *refb = irr->ptr();
 		if (!refb) {
 			unref();
 			return;
@@ -306,12 +306,12 @@ public:
 
 };
 
-typedef Ref<Reference> REF;
+typedef Ref<RefCounted> REF;
 
 
-class WeakRef : public Reference {
+class WeakRef : public RefCounted {
 
-	OBJ_TYPE(WeakRef,Reference);
+	OBJ_TYPE(WeakRef,RefCounted);
 
 	ObjectID ref;
 protected:

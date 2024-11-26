@@ -583,7 +583,7 @@ DVector<Face3> Mesh::get_faces() const {
 
 }
 
-Ref<Shape> Mesh::create_convex_shape() const {
+Ref<Shape3D> Mesh::create_convex_shape() const {
 
 	DVector<Vector3> vertices;
 
@@ -595,16 +595,16 @@ Ref<Shape> Mesh::create_convex_shape() const {
 
 	}
 
-	Ref<ConvexPolygonShape> shape = memnew( ConvexPolygonShape );
+	Ref<ConvexPolygonShape3D> shape = memnew( ConvexPolygonShape3D );
 	shape->set_points(vertices);
 	return shape;
 }
 
-Ref<Shape> Mesh::create_trimesh_shape() const {
+Ref<Shape3D> Mesh::create_trimesh_shape() const {
 
 	DVector<Face3> faces = get_faces();
 	if (faces.size()==0)
-		return Ref<Shape>();
+		return Ref<Shape3D>();
 
 	DVector<Vector3> face_points;
 	face_points.resize( faces.size()*3 );
@@ -615,7 +615,7 @@ Ref<Shape> Mesh::create_trimesh_shape() const {
 		face_points.set(i, f.vertex[i%3] );
 	}
 
-	Ref<ConcavePolygonShape> shape = memnew( ConcavePolygonShape );
+	Ref<ConcavePolygonShape3D> shape = memnew( ConcavePolygonShape3D );
 	shape->set_faces(face_points);
 	return shape;
 }

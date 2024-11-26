@@ -3,17 +3,17 @@
 
 #include "scene/3d/physics_body.h"
 
-class VehicleBody;
+class VehicleBody3D;
 
-class VehicleWheel : public Spatial {
+class VehicleWheel3D : public Node3D {
 
-	OBJ_TYPE(VehicleWheel,Spatial);
+	OBJ_TYPE(VehicleWheel3D,Node3D);
 
-friend class VehicleBody;
+friend class VehicleBody3D;
 
 
-	Transform m_worldTransform;
-	Transform local_xform;
+	Transform3D m_worldTransform;
+	Transform3D local_xform;
 	bool engine_traction;
 	bool steers;
 
@@ -33,7 +33,7 @@ friend class VehicleBody;
 	real_t m_maxSuspensionForce;
 	bool m_bIsFrontWheel;
 
-	VehicleBody *body;
+	VehicleBody3D *body;
 
 //	btVector3	m_wheelAxleCS; // const or modified by steering ?
 
@@ -60,7 +60,7 @@ friend class VehicleBody;
 		Vector3	m_wheelDirectionWS; //direction in worldspace
 		Vector3	m_wheelAxleWS; // axle in worldspace
 		bool m_isInContact;
-		PhysicsBody* m_groundObject; //could be general void* ptr
+		PhysicsBody3D* m_groundObject; //could be general void* ptr
 	} m_raycastInfo;
 
 	void _update(PhysicsDirectBodyState *s);
@@ -101,14 +101,14 @@ public:
 	void set_use_as_steering(bool p_enabled);
 	bool is_used_as_steering() const;
 
-	VehicleWheel();
+	VehicleWheel3D();
 
 };
 
 
-class VehicleBody : public PhysicsBody {
+class VehicleBody3D : public PhysicsBody3D {
 
-	OBJ_TYPE(VehicleBody,PhysicsBody);
+	OBJ_TYPE(VehicleBody3D,PhysicsBody3D);
 
 	real_t mass;
 	real_t friction;
@@ -133,29 +133,29 @@ class VehicleBody : public PhysicsBody {
 
 	struct btVehicleWheelContactPoint {
 		PhysicsDirectBodyState *m_s;
-		PhysicsBody* m_body1;
+		PhysicsBody3D* m_body1;
 		Vector3	m_frictionPositionWorld;
 		Vector3	m_frictionDirectionWorld;
 		real_t	m_jacDiagABInv;
 		real_t	m_maxImpulse;
 
 
-		btVehicleWheelContactPoint(PhysicsDirectBodyState *s,PhysicsBody* body1,const Vector3& frictionPosWorld,const Vector3& frictionDirectionWorld, real_t maxImpulse);
+		btVehicleWheelContactPoint(PhysicsDirectBodyState *s,PhysicsBody3D* body1,const Vector3& frictionPosWorld,const Vector3& frictionDirectionWorld, real_t maxImpulse);
 	};
 
-	void _resolve_single_bilateral(PhysicsDirectBodyState *s, const Vector3& pos1, PhysicsBody* body2, const Vector3& pos2, const Vector3& normal, real_t& impulse);
+	void _resolve_single_bilateral(PhysicsDirectBodyState *s, const Vector3& pos1, PhysicsBody3D* body2, const Vector3& pos2, const Vector3& normal, real_t& impulse);
 	real_t _calc_rolling_friction(btVehicleWheelContactPoint& contactPoint);
 
 	void _update_friction(PhysicsDirectBodyState *s);
 	void _update_suspension(PhysicsDirectBodyState *s);
 	real_t _ray_cast(int p_idx,PhysicsDirectBodyState *s);
-	void _update_wheel_transform(VehicleWheel& wheel ,PhysicsDirectBodyState *s);
+	void _update_wheel_transform(VehicleWheel3D& wheel ,PhysicsDirectBodyState *s);
 	void _update_wheel(int p_idx,PhysicsDirectBodyState *s);
 
 
 
-friend class VehicleWheel;
-	Vector<VehicleWheel*> wheels;
+friend class VehicleWheel3D;
+	Vector<VehicleWheel3D*> wheels;
 
 	static void _bind_methods();
 
@@ -179,7 +179,7 @@ public:
 	float get_steering() const;
 
 
-	VehicleBody();
+	VehicleBody3D();
 };
 
 #endif // VEHICLE_BODY_H

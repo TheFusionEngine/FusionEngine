@@ -45,9 +45,9 @@
 */
 
 
-class Room : public VisualInstance {
+class Room : public VisualInstance3D {
 
-	OBJ_TYPE( Room, VisualInstance );
+	OBJ_TYPE( Room, VisualInstance3D );
 public:
 
 

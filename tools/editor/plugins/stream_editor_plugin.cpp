@@ -104,7 +104,7 @@ void StreamEditorPlugin::edit(Object *p_object) {
 
 bool StreamEditorPlugin::handles(Object *p_object) const {
 
-	return p_object->is_type("StreamPlayer") || p_object->is_type("SpatialStreamPlayer");
+	return p_object->is_type("StreamPlayer") || p_object->is_type("StreamPlayer3D");
 }
 
 void StreamEditorPlugin::make_visible(bool p_visible) {

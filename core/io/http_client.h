@@ -35,9 +35,9 @@
 #include "reference.h"
 
 
-class HTTPClient : public Reference {
+class HTTPClient : public RefCounted {
 
-	OBJ_TYPE(HTTPClient,Reference);
+	OBJ_TYPE(HTTPClient,RefCounted);
 public:
 
 	enum RespondeCode {
@@ -155,7 +155,7 @@ private:
 	Vector<String> response_headers;
 
 	static void _bind_methods();
-	StringArray _get_response_headers();
+	PackedStringArray _get_response_headers();
 	Dictionary _get_response_headers_as_dictionary();
 	ByteArray tmp_read;
 public:

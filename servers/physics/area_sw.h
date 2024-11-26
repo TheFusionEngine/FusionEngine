@@ -107,7 +107,7 @@ class AreaSW : public CollisionObjectSW{
 
 public:
 
-	//_FORCE_INLINE_ const Transform& get_inverse_transform() const { return inverse_transform; }
+	//_FORCE_INLINE_ const Transform3D& get_inverse_transform() const { return inverse_transform; }
 	//_FORCE_INLINE_ SpaceSW* get_owner() { return owner; }
 
 	void set_monitor_callback(ObjectID p_id, const StringName& p_method);
@@ -154,7 +154,7 @@ public:
 	void set_monitorable(bool p_monitorable);
 	_FORCE_INLINE_ bool is_monitorable() const { return monitorable; }
 
-	void set_transform(const Transform& p_transform);
+	void set_transform(const Transform3D& p_transform);
 
 	void set_space(SpaceSW *p_space);
 

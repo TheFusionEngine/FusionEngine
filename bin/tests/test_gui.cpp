@@ -87,15 +87,15 @@ public:
 		vp->set_render_target_update_mode(Viewport::RENDER_TARGET_UPDATE_ALWAYS);
 
 
-		Camera *camera = memnew( Camera );
+		Camera3D *camera = memnew( Camera3D );
 		vp->add_child(camera);
 		camera->make_current();
 
 		TestCube *testcube = memnew( TestCube );
 		vp->add_child(testcube);
-		testcube->set_transform(Transform( Matrix3().rotated(Vector3(0,1,0),Math_PI*0.25), Vector3(0,0,-8)));
+		testcube->set_transform(Transform3D( Basis().rotated(Vector3(0,1,0),Math_PI*0.25), Vector3(0,0,-8)));
 
-		Sprite *sp = memnew( Sprite );
+		Sprite2D *sp = memnew( Sprite2D );
 		sp->set_texture( vp->get_render_target_texture() );
 //		sp->set_texture( ResourceLoader::load("res://ball.png") );
 		sp->set_pos(Point2(300,300));
@@ -133,7 +133,7 @@ public:
 
 
 #if 0
-		Sprite *tf = memnew( Sprite );
+		Sprite2D *tf = memnew( Sprite2D );
 		frame->add_child(tf);
 		Image img;
 		ImageLoader::load_image("LarvoClub.png",&img);
@@ -370,13 +370,13 @@ public:
 		Ref<ImageTexture> text = memnew( ImageTexture );
 		text->load("test_data/concave.png");
 
-		Sprite* sprite = memnew(Sprite);
+		Sprite2D* sprite = memnew(Sprite2D);
 		sprite->set_texture(text);
 		sprite->set_pos(Point2(300, 300));
 		frame->add_child(sprite);
 		sprite->show();
 
-		Sprite* sprite2 = memnew(Sprite);
+		Sprite2D* sprite2 = memnew(Sprite2D);
 		sprite->set_texture(text);
 		sprite->add_child(sprite2);
 		sprite2->set_pos(Point2(50, 50));

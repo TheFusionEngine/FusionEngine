@@ -192,7 +192,7 @@ BSP_Tree SpatialSoundServerSW::room_get_bounds(RID p_room) const {
 	return room->bounds;
 }
 
-void SpatialSoundServerSW::room_set_transform(RID p_room, const Transform& p_transform) {
+void SpatialSoundServerSW::room_set_transform(RID p_room, const Transform3D& p_transform) {
 
 	if (space_owner.owns(p_room))
 		p_room=space_owner.get(p_room)->default_room;
@@ -214,13 +214,13 @@ void SpatialSoundServerSW::room_set_transform(RID p_room, const Transform& p_tra
 	}
 }
 
-Transform SpatialSoundServerSW::room_get_transform(RID p_room) const {
+Transform3D SpatialSoundServerSW::room_get_transform(RID p_room) const {
 
 	if (space_owner.owns(p_room))
 		p_room=space_owner.get(p_room)->default_room;
 
 	Room *room = room_owner.get(p_room);
-	ERR_FAIL_COND_V(!room,Transform());
+	ERR_FAIL_COND_V(!room,Transform3D());
 	return room->transform;
 }
 
@@ -351,17 +351,17 @@ int SpatialSoundServerSW::source_get_polyphony(RID p_source) const {
 
 }
 
-void SpatialSoundServerSW::source_set_transform(RID p_source, const Transform& p_transform) {
+void SpatialSoundServerSW::source_set_transform(RID p_source, const Transform3D& p_transform) {
 
 	Source *source = source_owner.get(p_source);
 	ERR_FAIL_COND(!source);
 	source->transform=p_transform;
 	source->transform.orthonormalize();
 }
-Transform SpatialSoundServerSW::source_get_transform(RID p_source) const {
+Transform3D SpatialSoundServerSW::source_get_transform(RID p_source) const {
 
 	Source *source = source_owner.get(p_source);
-	ERR_FAIL_COND_V(!source,Transform());
+	ERR_FAIL_COND_V(!source,Transform3D());
 	return source->transform;
 }
 
@@ -504,17 +504,17 @@ void SpatialSoundServerSW::listener_set_space(RID p_listener,RID p_space) {
 
 }
 
-void SpatialSoundServerSW::listener_set_transform(RID p_listener, const Transform& p_transform) {
+void SpatialSoundServerSW::listener_set_transform(RID p_listener, const Transform3D& p_transform) {
 
 	Listener *listener = listener_owner.get(p_listener);
 	ERR_FAIL_COND(!listener);
 	listener->transform=p_transform;
 	listener->transform.orthonormalize(); //must be done..
 }
-Transform SpatialSoundServerSW::listener_get_transform(RID p_listener) const {
+Transform3D SpatialSoundServerSW::listener_get_transform(RID p_listener) const {
 
 	Listener *listener = listener_owner.get(p_listener);
-	ERR_FAIL_COND_V(!listener,Transform());
+	ERR_FAIL_COND_V(!listener,Transform3D());
 	return listener->transform;
 }
 

@@ -60,17 +60,17 @@ public:
 		SHAPE_CONCAVE_POLYGON = PhysicsServer::SHAPE_CONCAVE_POLYGON, ///< vector3 array:"triangles"
 	};
 	
-	void add_shape(ShapeType p_shape_type, const Variant& p_data, const Transform& p_transform=Transform ());
+	void add_shape(ShapeType p_shape_type, const Variant& p_data, const Transform3D& p_transform=Transform3D ());
 	
-	void add_plane_shape(const Plane& p_plane,const Transform& p_transform);
-	void add_sphere_shape(float p_radius,const Transform& p_transform);
-	void add_box_shape(const Vector3& p_half_extents,const Transform& p_transform);
-	void add_cylinder_shape(float p_radius, float p_height,const Transform& p_transform);
-	void add_capsule_shape(float p_radius, float p_height,const Transform& p_transform);
+	void add_plane_shape(const Plane& p_plane,const Transform3D& p_transform);
+	void add_sphere_shape(float p_radius,const Transform3D& p_transform);
+	void add_box_shape(const Vector3& p_half_extents,const Transform3D& p_transform);
+	void add_cylinder_shape(float p_radius, float p_height,const Transform3D& p_transform);
+	void add_capsule_shape(float p_radius, float p_height,const Transform3D& p_transform);
 	
 	int get_shape_count() const;
 	ShapeType get_shape_type(int p_shape) const;
-	Transform get_shape_transform(int p_shape) const;
+	Transform3D get_shape_transform(int p_shape) const;
 	Variant get_shape(int p_shape) const;
 
 	virtual RID get_rid();

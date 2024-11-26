@@ -34,23 +34,23 @@
 #include "baked_light_instance.h"
 #include "skeleton.h"
 
-AABB VisualInstance::get_transformed_aabb() const {
+AABB VisualInstance3D::get_transformed_aabb() const {
 
 	return get_global_transform().xform( get_aabb() );
 }
 
 
 
-void VisualInstance::_notification(int p_what) {
+void VisualInstance3D::_notification(int p_what) {
 
 	switch(p_what) {
 
 		case NOTIFICATION_ENTER_WORLD: {
 
 			// CHECK ROOM
-			Spatial * parent = get_parent_spatial();
+			Node3D * parent = get_parent_spatial();
 			Room *room=NULL;
-			bool is_geom = cast_to<GeometryInstance>();
+			bool is_geom = cast_to<GeometryInstance3D>();
 
 			while(parent) {
 
@@ -72,9 +72,9 @@ void VisualInstance::_notification(int p_what) {
 
 				VisualServer::get_singleton()->instance_set_room(instance,room->get_instance());
 			}
-			// CHECK SKELETON => moving skeleton attaching logic to MeshInstance
+			// CHECK SKELETON => moving skeleton attaching logic to MeshInstance3D
 			/*
-			Skeleton *skeleton=get_parent()?get_parent()->cast_to<Skeleton>():NULL;
+			Skeleton3D *skeleton=get_parent()?get_parent()->cast_to<Skeleton3D>():NULL;
 			if (skeleton)
 				VisualServer::get_singleton()->instance_attach_skeleton( instance, skeleton->get_skeleton() );
 			*/
@@ -84,7 +84,7 @@ void VisualInstance::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_TRANSFORM_CHANGED: {
 
-			Transform gt = get_global_transform();
+			Transform3D gt = get_global_transform();
 			VisualServer::get_singleton()->instance_set_transform(instance,gt);
 		} break;
 		case NOTIFICATION_EXIT_WORLD: {
@@ -99,34 +99,34 @@ void VisualInstance::_notification(int p_what) {
 	}
 }
 
-RID VisualInstance::get_instance() const {
+RID VisualInstance3D::get_instance() const {
 
 	return instance;
 }
 
-RID VisualInstance::_get_visual_instance_rid() const {
+RID VisualInstance3D::_get_visual_instance_rid() const {
 
 	return instance;
 }
 
-void VisualInstance::set_layer_mask(uint32_t p_mask) {
+void VisualInstance3D::set_layer_mask(uint32_t p_mask) {
 
 	layers=p_mask;
 	VisualServer::get_singleton()->instance_set_layer_mask(instance,p_mask);
 }
 
-uint32_t VisualInstance::get_layer_mask() const {
+uint32_t VisualInstance3D::get_layer_mask() const {
 
 	return layers;
 }
 
 
-void VisualInstance::_bind_methods() {
+void VisualInstance3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("_get_visual_instance_rid"),&VisualInstance::_get_visual_instance_rid);
-	ObjectTypeDB::bind_method(_MD("set_base","base"), &VisualInstance::set_base);
-	ObjectTypeDB::bind_method(_MD("set_layer_mask","mask"), &VisualInstance::set_layer_mask);
-	ObjectTypeDB::bind_method(_MD("get_layer_mask"), &VisualInstance::get_layer_mask);
+	ObjectTypeDB::bind_method(_MD("_get_visual_instance_rid"),&VisualInstance3D::_get_visual_instance_rid);
+	ObjectTypeDB::bind_method(_MD("set_base","base"), &VisualInstance3D::set_base);
+	ObjectTypeDB::bind_method(_MD("set_layer_mask","mask"), &VisualInstance3D::set_layer_mask);
+	ObjectTypeDB::bind_method(_MD("get_layer_mask"), &VisualInstance3D::get_layer_mask);
 
 	ADD_PROPERTY( PropertyInfo( Variant::INT, "layers",PROPERTY_HINT_ALL_FLAGS), _SCS("set_layer_mask"), _SCS("get_layer_mask"));
 
@@ -134,13 +134,13 @@ void VisualInstance::_bind_methods() {
 }
 
 
-void VisualInstance::set_base(const RID& p_base) {
+void VisualInstance3D::set_base(const RID& p_base) {
 
 	VisualServer::get_singleton()->instance_set_base(instance,p_base);
 }
 
 
-VisualInstance::VisualInstance()
+VisualInstance3D::VisualInstance3D()
 {
 
 	instance = VisualServer::get_singleton()->instance_create();
@@ -149,7 +149,7 @@ VisualInstance::VisualInstance()
 }
 
 
-VisualInstance::~VisualInstance() {
+VisualInstance3D::~VisualInstance3D() {
 
 	VisualServer::get_singleton()->free(instance);
 }
@@ -157,44 +157,44 @@ VisualInstance::~VisualInstance() {
 
 
 
-void GeometryInstance::set_material_override(const Ref<Material>& p_material) {
+void GeometryInstance3D::set_material_override(const Ref<Material>& p_material) {
 
 	material_override=p_material;
 	VS::get_singleton()->instance_geometry_set_material_override(get_instance(),p_material.is_valid() ? p_material->get_rid() : RID());
 }
 
-Ref<Material> GeometryInstance::get_material_override() const{
+Ref<Material> GeometryInstance3D::get_material_override() const{
 
 	return material_override;
 }
 
 
 
-void GeometryInstance::set_draw_range_begin(float p_dist){
+void GeometryInstance3D::set_draw_range_begin(float p_dist){
 
 	draw_begin=p_dist;
 	VS::get_singleton()->instance_geometry_set_draw_range(get_instance(),draw_begin,draw_end);
 }
 
-float GeometryInstance::get_draw_range_begin() const{
+float GeometryInstance3D::get_draw_range_begin() const{
 
 	return draw_begin;
 }
 
 
-void GeometryInstance::set_draw_range_end(float p_dist) {
+void GeometryInstance3D::set_draw_range_end(float p_dist) {
 
 	draw_end=p_dist;
 	VS::get_singleton()->instance_geometry_set_draw_range(get_instance(),draw_begin,draw_end);
 
 }
 
-float GeometryInstance::get_draw_range_end() const {
+float GeometryInstance3D::get_draw_range_end() const {
 
 	return draw_end;
 }
 
-void GeometryInstance::_notification(int p_what) {
+void GeometryInstance3D::_notification(int p_what) {
 
 	if (p_what==NOTIFICATION_ENTER_WORLD) {
 
@@ -225,7 +225,7 @@ void GeometryInstance::_notification(int p_what) {
 
 }
 
-void GeometryInstance::_baked_light_changed() {
+void GeometryInstance3D::_baked_light_changed() {
 
 	if (!baked_light_instance)
 		VS::get_singleton()->instance_geometry_set_baked_light(get_instance(),RID());
@@ -234,7 +234,7 @@ void GeometryInstance::_baked_light_changed() {
 
 }
 
-void GeometryInstance::_find_baked_light() {
+void GeometryInstance3D::_find_baked_light() {
 
 	Node *n=get_parent();
 	while(n) {
@@ -255,7 +255,7 @@ void GeometryInstance::_find_baked_light() {
 	_baked_light_changed();
 }
 
-void GeometryInstance::_update_visibility() {
+void GeometryInstance3D::_update_visibility() {
 
 	if (!is_inside_tree())
 		return;
@@ -264,7 +264,7 @@ void GeometryInstance::_update_visibility() {
 	VS::get_singleton()->instance_geometry_set_flag(get_instance(),VS::INSTANCE_FLAG_VISIBLE,is_visible() && flags[FLAG_VISIBLE]);
 }
 
-void GeometryInstance::set_flag(Flags p_flag,bool p_value) {
+void GeometryInstance3D::set_flag(Flags p_flag,bool p_value) {
 
 	ERR_FAIL_INDEX(p_flag,FLAG_MAX);
 	if (flags[p_flag]==p_value)
@@ -291,44 +291,44 @@ void GeometryInstance::set_flag(Flags p_flag,bool p_value) {
 	}
 }
 
-bool GeometryInstance::get_flag(Flags p_flag) const{
+bool GeometryInstance3D::get_flag(Flags p_flag) const{
 
 	ERR_FAIL_INDEX_V(p_flag,FLAG_MAX,false);
 	return flags[p_flag];
 
 }
 
-void GeometryInstance::set_baked_light_texture_id(int p_id) {
+void GeometryInstance3D::set_baked_light_texture_id(int p_id) {
 
 	baked_light_texture_id=p_id;
 	VS::get_singleton()->instance_geometry_set_baked_light_texture_index(get_instance(),baked_light_texture_id);
 
 }
 
-int GeometryInstance::get_baked_light_texture_id() const{
+int GeometryInstance3D::get_baked_light_texture_id() const{
 
 	return baked_light_texture_id;
 }
 
 
-void GeometryInstance::_bind_methods() {
+void GeometryInstance3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_material_override","material"), &GeometryInstance::set_material_override);
-	ObjectTypeDB::bind_method(_MD("get_material_override"), &GeometryInstance::get_material_override);
+	ObjectTypeDB::bind_method(_MD("set_material_override","material"), &GeometryInstance3D::set_material_override);
+	ObjectTypeDB::bind_method(_MD("get_material_override"), &GeometryInstance3D::get_material_override);
 
-	ObjectTypeDB::bind_method(_MD("set_flag","flag","value"), &GeometryInstance::set_flag);
-	ObjectTypeDB::bind_method(_MD("get_flag","flag"), &GeometryInstance::get_flag);
+	ObjectTypeDB::bind_method(_MD("set_flag","flag","value"), &GeometryInstance3D::set_flag);
+	ObjectTypeDB::bind_method(_MD("get_flag","flag"), &GeometryInstance3D::get_flag);
 
-	ObjectTypeDB::bind_method(_MD("set_draw_range_begin","mode"), &GeometryInstance::set_draw_range_begin);
-	ObjectTypeDB::bind_method(_MD("get_draw_range_begin"), &GeometryInstance::get_draw_range_begin);
+	ObjectTypeDB::bind_method(_MD("set_draw_range_begin","mode"), &GeometryInstance3D::set_draw_range_begin);
+	ObjectTypeDB::bind_method(_MD("get_draw_range_begin"), &GeometryInstance3D::get_draw_range_begin);
 
-	ObjectTypeDB::bind_method(_MD("set_draw_range_end","mode"), &GeometryInstance::set_draw_range_end);
-	ObjectTypeDB::bind_method(_MD("get_draw_range_end"), &GeometryInstance::get_draw_range_end);
+	ObjectTypeDB::bind_method(_MD("set_draw_range_end","mode"), &GeometryInstance3D::set_draw_range_end);
+	ObjectTypeDB::bind_method(_MD("get_draw_range_end"), &GeometryInstance3D::get_draw_range_end);
 
-	ObjectTypeDB::bind_method(_MD("set_baked_light_texture_id","id"), &GeometryInstance::set_baked_light_texture_id);
-	ObjectTypeDB::bind_method(_MD("get_baked_light_texture_id"), &GeometryInstance::get_baked_light_texture_id);
+	ObjectTypeDB::bind_method(_MD("set_baked_light_texture_id","id"), &GeometryInstance3D::set_baked_light_texture_id);
+	ObjectTypeDB::bind_method(_MD("get_baked_light_texture_id"), &GeometryInstance3D::get_baked_light_texture_id);
 
-	ObjectTypeDB::bind_method(_MD("_baked_light_changed"), &GeometryInstance::_baked_light_changed);
+	ObjectTypeDB::bind_method(_MD("_baked_light_changed"), &GeometryInstance3D::_baked_light_changed);
 
 	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "geometry/visible"), _SCS("set_flag"), _SCS("get_flag"),FLAG_VISIBLE);
 	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "geometry/material_override",PROPERTY_HINT_RESOURCE_TYPE,"Material"), _SCS("set_material_override"), _SCS("get_material_override"));
@@ -356,7 +356,7 @@ void GeometryInstance::_bind_methods() {
 
 }
 
-GeometryInstance::GeometryInstance() {
+GeometryInstance3D::GeometryInstance3D() {
 	draw_begin=0;
 	draw_end=0;
 	for(int i=0;i<FLAG_MAX;i++) {

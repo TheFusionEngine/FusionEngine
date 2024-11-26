@@ -112,9 +112,9 @@ void SceneTreeEditor::_cell_button_pressed(Object *p_item,int p_column,int p_id)
 	} else if (p_id==BUTTON_VISIBILITY) {
 
 
-		if (n->is_type("Spatial")) {
+		if (n->is_type("Node3D")) {
 
-			Spatial *ci = n->cast_to<Spatial>();
+			Node3D *ci = n->cast_to<Node3D>();
 			if (!ci->is_visible() && ci->get_parent_spatial() && !ci->get_parent_spatial()->is_visible()) {
 				error->set_text("This item cannot be made visible because the parent is hidden. Unhide the parent first.");
 				error->popup_centered_minsize(Size2(400,80));
@@ -122,7 +122,7 @@ void SceneTreeEditor::_cell_button_pressed(Object *p_item,int p_column,int p_id)
 			}
 
 			bool v = !bool(n->call("is_hidden"));
-			undo_redo->create_action("Toggle Spatial Visible");
+			undo_redo->create_action("Toggle Node3D Visible");
 			undo_redo->add_do_method(n,"_set_visible_",!v);
 			undo_redo->add_undo_method(n,"_set_visible_",v);
 			undo_redo->commit_action();
@@ -259,7 +259,7 @@ void SceneTreeEditor::_add_nodes(Node *p_node,TreeItem *p_parent) {
 			if (!p_node->is_connected("visibility_changed",this,"_node_visibility_changed"))
 				p_node->connect("visibility_changed",this,"_node_visibility_changed",varray(p_node));
 
-		} else if (p_node->is_type("Spatial")) {
+		} else if (p_node->is_type("Node3D")) {
 
 			bool h = p_node->call("is_hidden");
 			if (h)
@@ -313,7 +313,7 @@ void SceneTreeEditor::_node_visibility_changed(Node *p_node) {
 
 	if (p_node->is_type("CanvasItem")) {
 		visible = !p_node->call("is_hidden");
-	} else if (p_node->is_type("Spatial")) {
+	} else if (p_node->is_type("Node3D")) {
 		visible = !p_node->call("is_hidden");
 	}
 
@@ -352,7 +352,7 @@ void SceneTreeEditor::_node_removed(Node *p_node) {
 	if (p_node->is_connected("script_changed",this,"_node_script_changed"))
 		p_node->disconnect("script_changed",this,"_node_script_changed");
 
-	if (p_node->is_type("Spatial") || p_node->is_type("CanvasItem")) {
+	if (p_node->is_type("Node3D") || p_node->is_type("CanvasItem")) {
 		if (p_node->is_connected("visibility_changed",this,"_node_visibility_changed"))
 			p_node->disconnect("visibility_changed",this,"_node_visibility_changed");
 	}

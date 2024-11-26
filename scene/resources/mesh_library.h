@@ -43,7 +43,7 @@ class MeshLibrary : public Resource {
 
 		String name;
 		Ref<Mesh> mesh;
-		Ref<Shape> shape;
+		Ref<Shape3D> shape;
 		Ref<Texture> preview;
 	};
 
@@ -62,11 +62,11 @@ public:
 	void create_item(int p_item);
 	void set_item_name(int p_item,const String& p_name);
 	void set_item_mesh(int p_item,const Ref<Mesh>& p_mesh);
-	void set_item_shape(int p_item,const Ref<Shape>& p_shape);
+	void set_item_shape(int p_item,const Ref<Shape3D>& p_shape);
 	void set_item_preview(int p_item,const Ref<Texture>& p_preview);
 	String get_item_name(int p_item) const;
 	Ref<Mesh> get_item_mesh(int p_item) const;
-	Ref<Shape> get_item_shape(int p_item) const;
+	Ref<Shape3D> get_item_shape(int p_item) const;
 	Ref<Texture> get_item_preview(int p_item) const;
 
 	void remove_item(int p_item);

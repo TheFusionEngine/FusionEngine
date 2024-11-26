@@ -29,9 +29,9 @@
 #include "collision_object_sw.h"
 #include "space_sw.h"
 
-void CollisionObjectSW::add_shape(ShapeSW *p_shape,const Transform& p_transform) {
+void CollisionObjectSW::add_shape(ShapeSW *p_shape,const Transform3D& p_transform) {
 
-	Shape s;
+	Shape3D s;
 	s.shape=p_shape;
 	s.xform=p_transform;
 	s.xform_inv=s.xform.affine_inverse();
@@ -54,7 +54,7 @@ void CollisionObjectSW::set_shape(int p_index,ShapeSW *p_shape){
 	_shapes_changed();
 
 }
-void CollisionObjectSW::set_shape_transform(int p_index,const Transform& p_transform){
+void CollisionObjectSW::set_shape_transform(int p_index,const Transform3D& p_transform){
 
 	ERR_FAIL_INDEX(p_index,shapes.size());
 
@@ -103,7 +103,7 @@ void CollisionObjectSW::_set_static(bool p_static) {
 	if (!space)
 		return;
 	for(int i=0;i<get_shape_count();i++) {
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid>0) {
 			space->get_broadphase()->set_static(s.bpid,_static);
 		}
@@ -115,7 +115,7 @@ void CollisionObjectSW::_unregister_shapes() {
 
 	for(int i=0;i<shapes.size();i++) {
 
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid>0) {
 			space->get_broadphase()->remove(s.bpid);
 			s.bpid=0;
@@ -131,7 +131,7 @@ void CollisionObjectSW::_update_shapes() {
 
 	for(int i=0;i<shapes.size();i++) {
 
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid==0) {
 			s.bpid=space->get_broadphase()->create(this,i);
 			space->get_broadphase()->set_static(s.bpid,_static);
@@ -139,7 +139,7 @@ void CollisionObjectSW::_update_shapes() {
 
 		//not quite correct, should compute the next matrix..
 		AABB shape_aabb=s.shape->get_aabb();
-		Transform xform = transform * s.xform;
+		Transform3D xform = transform * s.xform;
 		shape_aabb=xform.xform(shape_aabb);
 		s.aabb_cache=shape_aabb;
 		s.aabb_cache=s.aabb_cache.grow( (s.aabb_cache.size.x + s.aabb_cache.size.y)*0.5*0.05 );
@@ -158,7 +158,7 @@ void CollisionObjectSW::_update_shapes_with_motion(const Vector3& p_motion) {
 
 	for(int i=0;i<shapes.size();i++) {
 
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid==0) {
 			s.bpid=space->get_broadphase()->create(this,i);
 			space->get_broadphase()->set_static(s.bpid,_static);
@@ -166,7 +166,7 @@ void CollisionObjectSW::_update_shapes_with_motion(const Vector3& p_motion) {
 
 		//not quite correct, should compute the next matrix..
 		AABB shape_aabb=s.shape->get_aabb();
-		Transform xform = transform * s.xform;
+		Transform3D xform = transform * s.xform;
 		shape_aabb=xform.xform(shape_aabb);
 		shape_aabb=shape_aabb.merge(AABB( shape_aabb.pos+p_motion,shape_aabb.size)); //use motion
 		s.aabb_cache=shape_aabb;
@@ -185,7 +185,7 @@ void CollisionObjectSW::_set_space(SpaceSW *p_space) {
 
 		for(int i=0;i<shapes.size();i++) {
 
-			Shape &s=shapes[i];
+			Shape3D &s=shapes[i];
 			if (s.bpid) {
 				space->get_broadphase()->remove(s.bpid);
 				s.bpid=0;

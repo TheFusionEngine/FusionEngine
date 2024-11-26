@@ -37,9 +37,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class TestCube : public GeometryInstance {
+class TestCube : public GeometryInstance3D {
 
-	OBJ_TYPE( TestCube, GeometryInstance );
+	OBJ_TYPE( TestCube, GeometryInstance3D );
 
 	RID instance;
 	

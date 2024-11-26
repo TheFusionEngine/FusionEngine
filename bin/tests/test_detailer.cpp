@@ -60,7 +60,7 @@ public:
 
 		static const int s = 20;
 		for(int i=0;i<s;i++) {
-			Matrix3 rot(Vector3(0,1,0),i*Math_PI/s);
+			Basis rot(Vector3(0,1,0),i*Math_PI/s);
 
 			for(int j=0;j<s;j++) {
 				Vector3 v;
@@ -173,12 +173,12 @@ public:
 		vs->viewport_attach_to_screen(viewport);
 		vs->viewport_set_scenario( viewport, scenario );
 
-		vs->camera_set_transform(camera, Transform( Matrix3(), Vector3(0,0,2 ) ) );
+		vs->camera_set_transform(camera, Transform3D( Basis(), Vector3(0,0,2 ) ) );
 
 		RID lightaux = vs->light_create( VisualServer::LIGHT_DIRECTIONAL );
 		//vs->light_set_color( lightaux, VisualServer::LIGHT_COLOR_AMBIENT, Color(0.3,0.3,0.3) );
 		light = vs->instance_create2( lightaux,scenario );
-		vs->instance_set_transform(light,Transform(Matrix3(Vector3(0.1,0.4,0.7).normalized(),0.9)));
+		vs->instance_set_transform(light,Transform3D(Basis(Vector3(0.1,0.4,0.7).normalized(),0.9)));
 		
 		ofs_x=0;
 		ofs_y=0;
@@ -193,7 +193,7 @@ public:
 	
 		VisualServer *vs=VisualServer::get_singleton();
 			
-		Transform tr_camera;
+		Transform3D tr_camera;
 		tr_camera.rotate( Vector3(0,1,0), ofs_y );
 		tr_camera.rotate( Vector3(1,0,0),ofs_x );
 		tr_camera.translate(0,0,10);

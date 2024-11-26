@@ -65,9 +65,9 @@ class CollisionPolygonEditor : public HBoxContainer {
 
 	EditorNode *editor;
 	Panel *panel;
-	CollisionPolygon *node;
-	ImmediateGeometry *imgeom;
-	MeshInstance *pointsm;
+	CollisionPolygon3D *node;
+	ImmediateGeometry3D *imgeom;
+	MeshInstance3D *pointsm;
 	Ref<Mesh> m;
 
 	MenuButton *options;
@@ -91,7 +91,7 @@ protected:
 public:
 
 	Vector2 snap_point(const Vector2& p_point) const;
-	virtual bool forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event);
+	virtual bool forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event);
 	void edit(Node *p_collision_polygon);
 	CollisionPolygonEditor(EditorNode *p_editor);
 	~CollisionPolygonEditor();
@@ -106,9 +106,9 @@ class CollisionPolygonEditorPlugin : public EditorPlugin {
 
 public:
 
-	virtual bool forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event) { return collision_polygon_editor->forward_spatial_input_event(p_camera,p_event); }
+	virtual bool forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event) { return collision_polygon_editor->forward_spatial_input_event(p_camera,p_event); }
 
-	virtual String get_name() const { return "CollisionPolygon"; }
+	virtual String get_name() const { return "CollisionPolygon3D"; }
 	bool has_main_screen() const { return false; }
 	virtual void edit(Object *p_node);
 	virtual bool handles(Object *p_node) const;

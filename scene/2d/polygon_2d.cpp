@@ -120,7 +120,7 @@ void Polygon2D::_notification(int p_what) {
 
 			if (texture.is_valid()) {
 
-				Matrix32 texmat(tex_rot,tex_ofs);
+				Transform2D texmat(tex_rot,tex_ofs);
 				texmat.scale(tex_scale);
 				Size2 tex_size=Vector2(1,1);
 

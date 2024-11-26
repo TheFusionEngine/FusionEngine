@@ -185,12 +185,12 @@ bool BodyPairSW::setup(float p_step) {
 	validate_contacts();
 
 	Vector3 offset_A = A->get_transform().get_origin();
-	Transform xform_Au = Transform(A->get_transform().basis,Vector3());
-	Transform xform_A = xform_Au * A->get_shape_transform(shape_A);
+	Transform3D xform_Au = Transform3D(A->get_transform().basis,Vector3());
+	Transform3D xform_A = xform_Au * A->get_shape_transform(shape_A);
 
-	Transform xform_Bu = B->get_transform();
+	Transform3D xform_Bu = B->get_transform();
 	xform_Bu.origin-=offset_A;
-	Transform xform_B = xform_Bu * B->get_shape_transform(shape_B);
+	Transform3D xform_B = xform_Bu * B->get_shape_transform(shape_B);
 
 	ShapeSW *shape_A_ptr=A->get_shape(shape_A);
 	ShapeSW *shape_B_ptr=B->get_shape(shape_B);

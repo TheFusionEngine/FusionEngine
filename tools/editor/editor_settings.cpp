@@ -490,7 +490,7 @@ bool EditorSettings::is_plugin_enabled(const String& p_plugin) {
 	if (!has("_plugins/enabled"))
 		return false;
 
-	StringArray sa=get("_plugins/enabled");
+	PackedStringArray sa=get("_plugins/enabled");
 
 	for(int i=0;i<sa.size();i++) {
 
@@ -509,7 +509,7 @@ void EditorSettings::enable_plugins() {
 
 	// editor plugins
 	if (has("_plugins/enabled")) {
-	StringArray sa=get("_plugins/enabled");
+	PackedStringArray sa=get("_plugins/enabled");
 
 		for(int i=0;i<sa.size();i++) {
 
@@ -585,7 +585,7 @@ void EditorSettings::set_plugin_enabled(const String& p_plugin, bool p_enabled) 
 		return;
 
 	print_line("REQUEST "+p_plugin+" to "+itos(p_enabled));
-	StringArray sa;
+	PackedStringArray sa;
 	if (has("_plugins/enabled"))
 		sa=get("_plugins/enabled");
 

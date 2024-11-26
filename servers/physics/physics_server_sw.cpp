@@ -252,7 +252,7 @@ PhysicsServer::AreaSpaceOverrideMode PhysicsServerSW::area_get_space_override_mo
 }
 
 
-void PhysicsServerSW::area_add_shape(RID p_area, RID p_shape, const Transform& p_transform) {
+void PhysicsServerSW::area_add_shape(RID p_area, RID p_shape, const Transform3D& p_transform) {
 
 	AreaSW *area = area_owner.get(p_area);
 	ERR_FAIL_COND(!area);
@@ -276,7 +276,7 @@ void PhysicsServerSW::area_set_shape(RID p_area, int p_shape_idx,RID p_shape) {
 	area->set_shape(p_shape_idx,shape);
 
 }
-void PhysicsServerSW::area_set_shape_transform(RID p_area, int p_shape_idx, const Transform& p_transform) {
+void PhysicsServerSW::area_set_shape_transform(RID p_area, int p_shape_idx, const Transform3D& p_transform) {
 
 	AreaSW *area = area_owner.get(p_area);
 	ERR_FAIL_COND(!area);
@@ -302,10 +302,10 @@ RID PhysicsServerSW::area_get_shape(RID p_area, int p_shape_idx) const {
 
 	return shape->get_self();
 }
-Transform PhysicsServerSW::area_get_shape_transform(RID p_area, int p_shape_idx) const {
+Transform3D PhysicsServerSW::area_get_shape_transform(RID p_area, int p_shape_idx) const {
 
 	AreaSW *area = area_owner.get(p_area);
-	ERR_FAIL_COND_V(!area,Transform());
+	ERR_FAIL_COND_V(!area,Transform3D());
 
 	return area->get_shape_transform(p_shape_idx);
 }
@@ -366,7 +366,7 @@ void PhysicsServerSW::area_set_param(RID p_area,AreaParameter p_param,const Vari
 };
 
 
-void PhysicsServerSW::area_set_transform(RID p_area, const Transform& p_transform) {
+void PhysicsServerSW::area_set_transform(RID p_area, const Transform3D& p_transform) {
 
 	AreaSW *area = area_owner.get(p_area);
 	ERR_FAIL_COND(!area);
@@ -386,10 +386,10 @@ Variant PhysicsServerSW::area_get_param(RID p_area,AreaParameter p_param) const 
 	return area->get_param(p_param);
 };
 
-Transform PhysicsServerSW::area_get_transform(RID p_area) const {
+Transform3D PhysicsServerSW::area_get_transform(RID p_area) const {
 
 	AreaSW *area = area_owner.get(p_area);
-	ERR_FAIL_COND_V(!area,Transform());
+	ERR_FAIL_COND_V(!area,Transform3D());
 
 	return area->get_transform();
 };
@@ -501,7 +501,7 @@ PhysicsServer::BodyMode PhysicsServerSW::body_get_mode(RID p_body, BodyMode p_mo
 	return body->get_mode();
 };
 
-void PhysicsServerSW::body_add_shape(RID p_body, RID p_shape, const Transform& p_transform) {
+void PhysicsServerSW::body_add_shape(RID p_body, RID p_shape, const Transform3D& p_transform) {
 
 	BodySW *body = body_owner.get(p_body);
 	ERR_FAIL_COND(!body);
@@ -525,7 +525,7 @@ void PhysicsServerSW::body_set_shape(RID p_body, int p_shape_idx,RID p_shape) {
 	body->set_shape(p_shape_idx,shape);
 
 }
-void PhysicsServerSW::body_set_shape_transform(RID p_body, int p_shape_idx, const Transform& p_transform) {
+void PhysicsServerSW::body_set_shape_transform(RID p_body, int p_shape_idx, const Transform3D& p_transform) {
 
 	BodySW *body = body_owner.get(p_body);
 	ERR_FAIL_COND(!body);
@@ -571,10 +571,10 @@ bool PhysicsServerSW::body_is_shape_set_as_trigger(RID p_body, int p_shape_idx) 
 }
 
 
-Transform PhysicsServerSW::body_get_shape_transform(RID p_body, int p_shape_idx) const {
+Transform3D PhysicsServerSW::body_get_shape_transform(RID p_body, int p_shape_idx) const {
 
 	BodySW *body = body_owner.get(p_body);
-	ERR_FAIL_COND_V(!body,Transform());
+	ERR_FAIL_COND_V(!body,Transform3D());
 
 	return body->get_shape_transform(p_shape_idx);
 }
@@ -951,7 +951,7 @@ Vector3 PhysicsServerSW::pin_joint_get_local_B(RID p_joint) const{
 }
 
 
-RID PhysicsServerSW::joint_create_hinge(RID p_body_A,const Transform& p_frame_A,RID p_body_B,const Transform& p_frame_B) {
+RID PhysicsServerSW::joint_create_hinge(RID p_body_A,const Transform3D& p_frame_A,RID p_body_B,const Transform3D& p_frame_B) {
 
 	BodySW *body_A = body_owner.get(p_body_A);
 	ERR_FAIL_COND_V(!body_A,RID());
@@ -1055,7 +1055,7 @@ PhysicsServerSW::JointType PhysicsServerSW::joint_get_type(RID p_joint) const {
 	return joint->get_type();
 }
 
-RID PhysicsServerSW::joint_create_slider(RID p_body_A,const Transform& p_local_frame_A,RID p_body_B,const Transform& p_local_frame_B) {
+RID PhysicsServerSW::joint_create_slider(RID p_body_A,const Transform3D& p_local_frame_A,RID p_body_B,const Transform3D& p_local_frame_B) {
 
 	BodySW *body_A = body_owner.get(p_body_A);
 	ERR_FAIL_COND_V(!body_A,RID());
@@ -1094,7 +1094,7 @@ float PhysicsServerSW::slider_joint_get_param(RID p_joint,SliderJointParam p_par
 }
 
 
-RID PhysicsServerSW::joint_create_cone_twist(RID p_body_A,const Transform& p_local_frame_A,RID p_body_B,const Transform& p_local_frame_B) {
+RID PhysicsServerSW::joint_create_cone_twist(RID p_body_A,const Transform3D& p_local_frame_A,RID p_body_B,const Transform3D& p_local_frame_B) {
 
 	BodySW *body_A = body_owner.get(p_body_A);
 	ERR_FAIL_COND_V(!body_A,RID());
@@ -1133,7 +1133,7 @@ float PhysicsServerSW::cone_twist_joint_get_param(RID p_joint,ConeTwistJointPara
 }
 
 
-RID PhysicsServerSW::joint_create_generic_6dof(RID p_body_A,const Transform& p_local_frame_A,RID p_body_B,const Transform& p_local_frame_B) {
+RID PhysicsServerSW::joint_create_generic_6dof(RID p_body_A,const Transform3D& p_local_frame_A,RID p_body_B,const Transform3D& p_local_frame_B) {
 
 	BodySW *body_A = body_owner.get(p_body_A);
 	ERR_FAIL_COND_V(!body_A,RID());

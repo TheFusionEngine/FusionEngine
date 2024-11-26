@@ -29,72 +29,72 @@
 #include "area.h"
 #include "scene/scene_string_names.h"
 #include "servers/physics_server.h"
-void Area::set_space_override_mode(SpaceOverride p_mode) {
+void Area3D::set_space_override_mode(SpaceOverride p_mode) {
 
 	space_override=p_mode;
 	PhysicsServer::get_singleton()->area_set_space_override_mode(get_rid(),PhysicsServer::AreaSpaceOverrideMode(p_mode));
 
 
 }
-Area::SpaceOverride Area::get_space_override_mode() const{
+Area3D::SpaceOverride Area3D::get_space_override_mode() const{
 
 	return space_override;
 }
 
-void Area::set_gravity_is_point(bool p_enabled){
+void Area3D::set_gravity_is_point(bool p_enabled){
 
 	gravity_is_point=p_enabled;
 	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_GRAVITY_IS_POINT,p_enabled);
 
 }
-bool Area::is_gravity_a_point() const{
+bool Area3D::is_gravity_a_point() const{
 
 	return gravity_is_point;
 }
 
-void Area::set_gravity_vector(const Vector3& p_vec){
+void Area3D::set_gravity_vector(const Vector3& p_vec){
 
 	gravity_vec=p_vec;
 	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_GRAVITY_VECTOR,p_vec);
 
 }
-Vector3 Area::get_gravity_vector() const{
+Vector3 Area3D::get_gravity_vector() const{
 
 	return gravity_vec;
 }
 
-void Area::set_gravity(real_t p_gravity){
+void Area3D::set_gravity(real_t p_gravity){
 
 	gravity=p_gravity;
 	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_GRAVITY,p_gravity);
 }
-real_t Area::get_gravity() const{
+real_t Area3D::get_gravity() const{
 
 	return gravity;
 }
 
-void Area::set_density(real_t p_density){
+void Area3D::set_density(real_t p_density){
 
 	density=p_density;
 	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_DENSITY,p_density);
 }
-real_t Area::get_density() const{
+real_t Area3D::get_density() const{
 
 	return density;
 }
 
-void Area::set_priority(real_t p_priority){
+void Area3D::set_priority(real_t p_priority){
 
 	priority=p_priority;
 	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_PRIORITY,p_priority);
 }
-real_t Area::get_priority() const{
+real_t Area3D::get_priority() const{
 
 	return priority;
 }
 
 
-void Area::_body_enter_tree(ObjectID p_id) {
+void Area3D::_body_enter_tree(ObjectID p_id) {
 
 	Object *obj = ObjectDB::get_instance(p_id);
 	Node *node = obj ? obj->cast_to<Node>() : NULL;
@@ -113,7 +113,7 @@ void Area::_body_enter_tree(ObjectID p_id) {
 
 }
 
-void Area::_body_exit_tree(ObjectID p_id) {
+void Area3D::_body_exit_tree(ObjectID p_id) {
 
 
 	Object *obj = ObjectDB::get_instance(p_id);
@@ -131,7 +131,7 @@ void Area::_body_exit_tree(ObjectID p_id) {
 
 }
 
-void Area::_body_inout(int p_status,const RID& p_body, int p_instance, int p_body_shape,int p_area_shape) {
+void Area3D::_body_inout(int p_status,const RID& p_body, int p_instance, int p_body_shape,int p_area_shape) {
 
 
 	bool body_in = p_status==PhysicsServer::AREA_BODY_ADDED;
@@ -207,7 +207,7 @@ void Area::_body_inout(int p_status,const RID& p_body, int p_instance, int p_bod
 }
 
 
-void Area::_clear_monitoring() {
+void Area3D::_clear_monitoring() {
 
 	if (locked) {
 		ERR_EXPLAIN("This function can't be used during the in/out signal.");
@@ -268,14 +268,14 @@ void Area::_clear_monitoring() {
 	}
 
 }
-void Area::_notification(int p_what) {
+void Area3D::_notification(int p_what) {
 
 	if (p_what==NOTIFICATION_EXIT_TREE) {
 		_clear_monitoring();
 	}
 }
 
-void Area::set_enable_monitoring(bool p_enable) {
+void Area3D::set_enable_monitoring(bool p_enable) {
 
 	if (locked) {
 		ERR_EXPLAIN("This function can't be used during the in/out signal.");
@@ -298,12 +298,12 @@ void Area::set_enable_monitoring(bool p_enable) {
 	}
 }
 
-bool Area::is_monitoring_enabled() const {
+bool Area3D::is_monitoring_enabled() const {
 
 	return monitoring;
 }
 
-void Area::_area_enter_tree(ObjectID p_id) {
+void Area3D::_area_enter_tree(ObjectID p_id) {
 
 	Object *obj = ObjectDB::get_instance(p_id);
 	Node *node = obj ? obj->cast_to<Node>() : NULL;
@@ -322,7 +322,7 @@ void Area::_area_enter_tree(ObjectID p_id) {
 
 }
 
-void Area::_area_exit_tree(ObjectID p_id) {
+void Area3D::_area_exit_tree(ObjectID p_id) {
 
 	Object *obj = ObjectDB::get_instance(p_id);
 	Node *node = obj ? obj->cast_to<Node>() : NULL;
@@ -339,7 +339,7 @@ void Area::_area_exit_tree(ObjectID p_id) {
 
 }
 
-void Area::_area_inout(int p_status,const RID& p_area, int p_instance, int p_area_shape,int p_self_shape) {
+void Area3D::_area_inout(int p_status,const RID& p_area, int p_instance, int p_area_shape,int p_self_shape) {
 
 
 	bool area_in = p_status==PhysicsServer::AREA_BODY_ADDED;
@@ -416,7 +416,7 @@ void Area::_area_inout(int p_status,const RID& p_area, int p_instance, int p_are
 
 }
 
-void Area::set_monitorable(bool p_enable) {
+void Area3D::set_monitorable(bool p_enable) {
 
 	if (locked) {
 		ERR_EXPLAIN("This function can't be used during the in/out signal.");
@@ -431,13 +431,13 @@ void Area::set_monitorable(bool p_enable) {
 	PhysicsServer::get_singleton()->area_set_monitorable(get_rid(),monitorable);
 }
 
-bool Area::is_monitorable() const {
+bool Area3D::is_monitorable() const {
 
 	return monitorable;
 }
 
 
-Array Area::get_overlapping_areas() const {
+Array Area3D::get_overlapping_areas() const {
 
 	ERR_FAIL_COND_V(!monitoring,Array());
 	Array ret;
@@ -456,7 +456,7 @@ Array Area::get_overlapping_areas() const {
 	return ret;
 }
 
-bool Area::overlaps_area(Node* p_area) const {
+bool Area3D::overlaps_area(Node* p_area) const {
 
 	ERR_FAIL_NULL_V(p_area,false);
 	const Map<ObjectID,AreaState>::Element *E=area_map.find(p_area->get_instance_ID());
@@ -468,7 +468,7 @@ bool Area::overlaps_area(Node* p_area) const {
 
 }
 
-bool Area::overlaps_body(Node* p_body) const{
+bool Area3D::overlaps_body(Node* p_body) const{
 
 	ERR_FAIL_NULL_V(p_body,false);
 	const Map<ObjectID,BodyState>::Element *E=body_map.find(p_body->get_instance_ID());
@@ -478,7 +478,7 @@ bool Area::overlaps_body(Node* p_body) const{
 
 }
 
-Array Area::get_overlapping_bodies() const {
+Array Area3D::get_overlapping_bodies() const {
 
 	ERR_FAIL_COND_V(!monitoring,Array());
 	Array ret;
@@ -497,55 +497,55 @@ Array Area::get_overlapping_bodies() const {
 	return ret;
 }
 
-void Area::_bind_methods() {
+void Area3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("_body_enter_tree","id"),&Area::_body_enter_tree);
-	ObjectTypeDB::bind_method(_MD("_body_exit_tree","id"),&Area::_body_exit_tree);
+	ObjectTypeDB::bind_method(_MD("_body_enter_tree","id"),&Area3D::_body_enter_tree);
+	ObjectTypeDB::bind_method(_MD("_body_exit_tree","id"),&Area3D::_body_exit_tree);
 	
-	ObjectTypeDB::bind_method(_MD("_area_enter_tree","id"),&Area::_area_enter_tree);
-	ObjectTypeDB::bind_method(_MD("_area_exit_tree","id"),&Area::_area_exit_tree);
+	ObjectTypeDB::bind_method(_MD("_area_enter_tree","id"),&Area3D::_area_enter_tree);
+	ObjectTypeDB::bind_method(_MD("_area_exit_tree","id"),&Area3D::_area_exit_tree);
 
-	ObjectTypeDB::bind_method(_MD("set_space_override_mode","enable"),&Area::set_space_override_mode);
-	ObjectTypeDB::bind_method(_MD("get_space_override_mode"),&Area::get_space_override_mode);
+	ObjectTypeDB::bind_method(_MD("set_space_override_mode","enable"),&Area3D::set_space_override_mode);
+	ObjectTypeDB::bind_method(_MD("get_space_override_mode"),&Area3D::get_space_override_mode);
 
-	ObjectTypeDB::bind_method(_MD("set_gravity_is_point","enable"),&Area::set_gravity_is_point);
-	ObjectTypeDB::bind_method(_MD("is_gravity_a_point"),&Area::is_gravity_a_point);
+	ObjectTypeDB::bind_method(_MD("set_gravity_is_point","enable"),&Area3D::set_gravity_is_point);
+	ObjectTypeDB::bind_method(_MD("is_gravity_a_point"),&Area3D::is_gravity_a_point);
 
-	ObjectTypeDB::bind_method(_MD("set_gravity_vector","vector"),&Area::set_gravity_vector);
-	ObjectTypeDB::bind_method(_MD("get_gravity_vector"),&Area::get_gravity_vector);
+	ObjectTypeDB::bind_method(_MD("set_gravity_vector","vector"),&Area3D::set_gravity_vector);
+	ObjectTypeDB::bind_method(_MD("get_gravity_vector"),&Area3D::get_gravity_vector);
 
-	ObjectTypeDB::bind_method(_MD("set_gravity","gravity"),&Area::set_gravity);
-	ObjectTypeDB::bind_method(_MD("get_gravity"),&Area::get_gravity);
+	ObjectTypeDB::bind_method(_MD("set_gravity","gravity"),&Area3D::set_gravity);
+	ObjectTypeDB::bind_method(_MD("get_gravity"),&Area3D::get_gravity);
 
-	ObjectTypeDB::bind_method(_MD("set_density","density"),&Area::set_density);
-	ObjectTypeDB::bind_method(_MD("get_density"),&Area::get_density);
+	ObjectTypeDB::bind_method(_MD("set_density","density"),&Area3D::set_density);
+	ObjectTypeDB::bind_method(_MD("get_density"),&Area3D::get_density);
 
-	ObjectTypeDB::bind_method(_MD("set_priority","priority"),&Area::set_priority);
-	ObjectTypeDB::bind_method(_MD("get_priority"),&Area::get_priority);
+	ObjectTypeDB::bind_method(_MD("set_priority","priority"),&Area3D::set_priority);
+	ObjectTypeDB::bind_method(_MD("get_priority"),&Area3D::get_priority);
 
-	ObjectTypeDB::bind_method(_MD("set_monitorable","enable"),&Area::set_monitorable);
-	ObjectTypeDB::bind_method(_MD("is_monitorable"),&Area::is_monitorable);
+	ObjectTypeDB::bind_method(_MD("set_monitorable","enable"),&Area3D::set_monitorable);
+	ObjectTypeDB::bind_method(_MD("is_monitorable"),&Area3D::is_monitorable);
 	
-	ObjectTypeDB::bind_method(_MD("set_enable_monitoring","enable"),&Area::set_enable_monitoring);
-	ObjectTypeDB::bind_method(_MD("is_monitoring_enabled"),&Area::is_monitoring_enabled);
+	ObjectTypeDB::bind_method(_MD("set_enable_monitoring","enable"),&Area3D::set_enable_monitoring);
+	ObjectTypeDB::bind_method(_MD("is_monitoring_enabled"),&Area3D::is_monitoring_enabled);
 
-	ObjectTypeDB::bind_method(_MD("get_overlapping_bodies"),&Area::get_overlapping_bodies);
-	ObjectTypeDB::bind_method(_MD("get_overlapping_areas"),&Area::get_overlapping_areas);
+	ObjectTypeDB::bind_method(_MD("get_overlapping_bodies"),&Area3D::get_overlapping_bodies);
+	ObjectTypeDB::bind_method(_MD("get_overlapping_areas"),&Area3D::get_overlapping_areas);
 
-	ObjectTypeDB::bind_method(_MD("overlaps_body:PhysicsBody","body"),&Area::overlaps_body);
-	ObjectTypeDB::bind_method(_MD("overlaps_area:Area","area"),&Area::overlaps_area);
+	ObjectTypeDB::bind_method(_MD("overlaps_body:PhysicsBody3D","body"),&Area3D::overlaps_body);
+	ObjectTypeDB::bind_method(_MD("overlaps_area:Area3D","area"),&Area3D::overlaps_area);
 
-	ObjectTypeDB::bind_method(_MD("_body_inout"),&Area::_body_inout);
-	ObjectTypeDB::bind_method(_MD("_area_inout"),&Area::_area_inout);
+	ObjectTypeDB::bind_method(_MD("_body_inout"),&Area3D::_body_inout);
+	ObjectTypeDB::bind_method(_MD("_area_inout"),&Area3D::_area_inout);
 
 	ADD_SIGNAL( MethodInfo("body_enter_shape",PropertyInfo(Variant::INT,"body_id"),PropertyInfo(Variant::OBJECT,"body"),PropertyInfo(Variant::INT,"body_shape"),PropertyInfo(Variant::INT,"area_shape")));
 	ADD_SIGNAL( MethodInfo("body_exit_shape",PropertyInfo(Variant::INT,"body_id"),PropertyInfo(Variant::OBJECT,"body"),PropertyInfo(Variant::INT,"body_shape"),PropertyInfo(Variant::INT,"area_shape")));
 	ADD_SIGNAL( MethodInfo("body_enter",PropertyInfo(Variant::OBJECT,"body")));
 	ADD_SIGNAL( MethodInfo("body_exit",PropertyInfo(Variant::OBJECT,"body")));
-	ADD_SIGNAL( MethodInfo("area_enter_shape",PropertyInfo(Variant::INT,"area_id"),PropertyInfo(Variant::OBJECT,"area",PROPERTY_HINT_RESOURCE_TYPE,"Area"),PropertyInfo(Variant::INT,"area_shape"),PropertyInfo(Variant::INT,"area_shape")));
-	ADD_SIGNAL( MethodInfo("area_exit_shape",PropertyInfo(Variant::INT,"area_id"),PropertyInfo(Variant::OBJECT,"area",PROPERTY_HINT_RESOURCE_TYPE,"Area"),PropertyInfo(Variant::INT,"area_shape"),PropertyInfo(Variant::INT,"area_shape")));
-	ADD_SIGNAL( MethodInfo("area_enter",PropertyInfo(Variant::OBJECT,"area",PROPERTY_HINT_RESOURCE_TYPE,"Area")));
-	ADD_SIGNAL( MethodInfo("area_exit",PropertyInfo(Variant::OBJECT,"area",PROPERTY_HINT_RESOURCE_TYPE,"Area")));
+	ADD_SIGNAL( MethodInfo("area_enter_shape",PropertyInfo(Variant::INT,"area_id"),PropertyInfo(Variant::OBJECT,"area",PROPERTY_HINT_RESOURCE_TYPE,"Area3D"),PropertyInfo(Variant::INT,"area_shape"),PropertyInfo(Variant::INT,"area_shape")));
+	ADD_SIGNAL( MethodInfo("area_exit_shape",PropertyInfo(Variant::INT,"area_id"),PropertyInfo(Variant::OBJECT,"area",PROPERTY_HINT_RESOURCE_TYPE,"Area3D"),PropertyInfo(Variant::INT,"area_shape"),PropertyInfo(Variant::INT,"area_shape")));
+	ADD_SIGNAL( MethodInfo("area_enter",PropertyInfo(Variant::OBJECT,"area",PROPERTY_HINT_RESOURCE_TYPE,"Area3D")));
+	ADD_SIGNAL( MethodInfo("area_exit",PropertyInfo(Variant::OBJECT,"area",PROPERTY_HINT_RESOURCE_TYPE,"Area3D")));
 	
 	
 	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"monitorable"),_SCS("set_monitorable"),_SCS("is_monitorable"));
@@ -559,7 +559,7 @@ void Area::_bind_methods() {
 
 }
 
-Area::Area() : CollisionObject(PhysicsServer::get_singleton()->area_create(),true) {
+Area3D::Area3D() : CollisionObject3D(PhysicsServer::get_singleton()->area_create(),true) {
 
 	space_override=SPACE_OVERRIDE_DISABLED;
 	set_gravity(9.8);;
@@ -574,7 +574,7 @@ Area::Area() : CollisionObject(PhysicsServer::get_singleton()->area_create(),tru
 	set_monitorable(true);
 }
 
-Area::~Area() {
+Area3D::~Area3D() {
 
 
 }

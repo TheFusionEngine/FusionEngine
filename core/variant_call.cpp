@@ -462,53 +462,53 @@ static void _call_##m_type##_##m_method(Variant& r_ret,Variant& p_self,const Var
 	VCALL_LOCALMEM1(ByteArray,append);
 	VCALL_LOCALMEM1(ByteArray,append_array);
 
-	VCALL_LOCALMEM0R(IntArray,size);
-	VCALL_LOCALMEM2(IntArray,set);
-	VCALL_LOCALMEM1R(IntArray,get);
-	VCALL_LOCALMEM1(IntArray,push_back);
-	VCALL_LOCALMEM1(IntArray,resize);
-	VCALL_LOCALMEM1(IntArray,append);
-	VCALL_LOCALMEM1(IntArray,append_array);
+	VCALL_LOCALMEM0R(PackedIntArray,size);
+	VCALL_LOCALMEM2(PackedIntArray,set);
+	VCALL_LOCALMEM1R(PackedIntArray,get);
+	VCALL_LOCALMEM1(PackedIntArray,push_back);
+	VCALL_LOCALMEM1(PackedIntArray,resize);
+	VCALL_LOCALMEM1(PackedIntArray,append);
+	VCALL_LOCALMEM1(PackedIntArray,append_array);
 
-	VCALL_LOCALMEM0R(RealArray,size);
-	VCALL_LOCALMEM2(RealArray,set);
-	VCALL_LOCALMEM1R(RealArray,get);
-	VCALL_LOCALMEM1(RealArray,push_back);
-	VCALL_LOCALMEM1(RealArray,resize);
-	VCALL_LOCALMEM1(RealArray,append);
-	VCALL_LOCALMEM1(RealArray,append_array);
+	VCALL_LOCALMEM0R(PackedFloatArray,size);
+	VCALL_LOCALMEM2(PackedFloatArray,set);
+	VCALL_LOCALMEM1R(PackedFloatArray,get);
+	VCALL_LOCALMEM1(PackedFloatArray,push_back);
+	VCALL_LOCALMEM1(PackedFloatArray,resize);
+	VCALL_LOCALMEM1(PackedFloatArray,append);
+	VCALL_LOCALMEM1(PackedFloatArray,append_array);
 
-	VCALL_LOCALMEM0R(StringArray,size);
-	VCALL_LOCALMEM2(StringArray,set);
-	VCALL_LOCALMEM1R(StringArray,get);
-	VCALL_LOCALMEM1(StringArray,push_back);
-	VCALL_LOCALMEM1(StringArray,resize);
-	VCALL_LOCALMEM1(StringArray,append);
-	VCALL_LOCALMEM1(StringArray,append_array);
+	VCALL_LOCALMEM0R(PackedStringArray,size);
+	VCALL_LOCALMEM2(PackedStringArray,set);
+	VCALL_LOCALMEM1R(PackedStringArray,get);
+	VCALL_LOCALMEM1(PackedStringArray,push_back);
+	VCALL_LOCALMEM1(PackedStringArray,resize);
+	VCALL_LOCALMEM1(PackedStringArray,append);
+	VCALL_LOCALMEM1(PackedStringArray,append_array);
 
-	VCALL_LOCALMEM0R(Vector2Array,size);
-	VCALL_LOCALMEM2(Vector2Array,set);
-	VCALL_LOCALMEM1R(Vector2Array,get);
-	VCALL_LOCALMEM1(Vector2Array,push_back);
-	VCALL_LOCALMEM1(Vector2Array,resize);
-	VCALL_LOCALMEM1(Vector2Array,append);
-	VCALL_LOCALMEM1(Vector2Array,append_array);
+	VCALL_LOCALMEM0R(PackedVector2Array,size);
+	VCALL_LOCALMEM2(PackedVector2Array,set);
+	VCALL_LOCALMEM1R(PackedVector2Array,get);
+	VCALL_LOCALMEM1(PackedVector2Array,push_back);
+	VCALL_LOCALMEM1(PackedVector2Array,resize);
+	VCALL_LOCALMEM1(PackedVector2Array,append);
+	VCALL_LOCALMEM1(PackedVector2Array,append_array);
 
-	VCALL_LOCALMEM0R(Vector3Array,size);
-	VCALL_LOCALMEM2(Vector3Array,set);
-	VCALL_LOCALMEM1R(Vector3Array,get);
-	VCALL_LOCALMEM1(Vector3Array,push_back);
-	VCALL_LOCALMEM1(Vector3Array,resize);
-	VCALL_LOCALMEM1(Vector3Array,append);
-	VCALL_LOCALMEM1(Vector3Array,append_array);
+	VCALL_LOCALMEM0R(PackedVector3Array,size);
+	VCALL_LOCALMEM2(PackedVector3Array,set);
+	VCALL_LOCALMEM1R(PackedVector3Array,get);
+	VCALL_LOCALMEM1(PackedVector3Array,push_back);
+	VCALL_LOCALMEM1(PackedVector3Array,resize);
+	VCALL_LOCALMEM1(PackedVector3Array,append);
+	VCALL_LOCALMEM1(PackedVector3Array,append_array);
 
-	VCALL_LOCALMEM0R(ColorArray,size);
-	VCALL_LOCALMEM2(ColorArray,set);
-	VCALL_LOCALMEM1R(ColorArray,get);
-	VCALL_LOCALMEM1(ColorArray,push_back);
-	VCALL_LOCALMEM1(ColorArray,resize);
-	VCALL_LOCALMEM1(ColorArray,append);
-	VCALL_LOCALMEM1(ColorArray,append_array);
+	VCALL_LOCALMEM0R(PackedColorArray,size);
+	VCALL_LOCALMEM2(PackedColorArray,set);
+	VCALL_LOCALMEM1R(PackedColorArray,get);
+	VCALL_LOCALMEM1(PackedColorArray,push_back);
+	VCALL_LOCALMEM1(PackedColorArray,resize);
+	VCALL_LOCALMEM1(PackedColorArray,append);
+	VCALL_LOCALMEM1(PackedColorArray,append_array);
 
 #define VCALL_PTR0(m_type,m_method)\
 static void _call_##m_type##m_method(Variant& r_ret,Variant& p_self,const Variant** p_args) { reinterpret_cast<m_type*>(p_self._data._ptr)->m_method(); }
@@ -575,112 +575,112 @@ static void _call_##m_type##_##m_method(Variant& r_ret,Variant& p_self,const Var
 	VCALL_PTR1R( AABB, grow );
 	VCALL_PTR1R( AABB, get_endpoint );
 
-	VCALL_PTR0R( Matrix32, inverse );
-	VCALL_PTR0R( Matrix32, affine_inverse );
-	VCALL_PTR0R( Matrix32, get_rotation );
-	VCALL_PTR0R( Matrix32, get_origin );
-	VCALL_PTR0R( Matrix32, get_scale );
-	VCALL_PTR0R( Matrix32, orthonormalized );
-	VCALL_PTR1R( Matrix32, rotated );
-	VCALL_PTR1R( Matrix32, scaled );
-	VCALL_PTR1R( Matrix32, translated );
-	VCALL_PTR2R( Matrix32, interpolate_with );
+	VCALL_PTR0R( Transform2D, inverse );
+	VCALL_PTR0R( Transform2D, affine_inverse );
+	VCALL_PTR0R( Transform2D, get_rotation );
+	VCALL_PTR0R( Transform2D, get_origin );
+	VCALL_PTR0R( Transform2D, get_scale );
+	VCALL_PTR0R( Transform2D, orthonormalized );
+	VCALL_PTR1R( Transform2D, rotated );
+	VCALL_PTR1R( Transform2D, scaled );
+	VCALL_PTR1R( Transform2D, translated );
+	VCALL_PTR2R( Transform2D, interpolate_with );
 
-	static void _call_Matrix32_xform(Variant& r_ret,Variant& p_self,const Variant** p_args) {
+	static void _call_Transform2D_xform(Variant& r_ret,Variant& p_self,const Variant** p_args) {
 
 		switch(p_args[0]->type) {
 
-			case Variant::VECTOR2: r_ret=reinterpret_cast<Matrix32*>(p_self._data._ptr)->xform( p_args[0]->operator Vector2()); return;
-			case Variant::RECT2: r_ret=reinterpret_cast<Matrix32*>(p_self._data._ptr)->xform( p_args[0]->operator Rect2()); return;
+			case Variant::VECTOR2: r_ret=reinterpret_cast<Transform2D*>(p_self._data._ptr)->xform( p_args[0]->operator Vector2()); return;
+			case Variant::RECT2: r_ret=reinterpret_cast<Transform2D*>(p_self._data._ptr)->xform( p_args[0]->operator Rect2()); return;
 			default: r_ret=Variant();
 		}
 
 	}
 
-	static void _call_Matrix32_xform_inv(Variant& r_ret,Variant& p_self,const Variant** p_args) {
+	static void _call_Transform2D_xform_inv(Variant& r_ret,Variant& p_self,const Variant** p_args) {
 
 		switch(p_args[0]->type) {
 
-			case Variant::VECTOR2: r_ret=reinterpret_cast<Matrix32*>(p_self._data._ptr)->xform_inv( p_args[0]->operator Vector2()); return;
-			case Variant::RECT2: r_ret=reinterpret_cast<Matrix32*>(p_self._data._ptr)->xform_inv( p_args[0]->operator Rect2()); return;
+			case Variant::VECTOR2: r_ret=reinterpret_cast<Transform2D*>(p_self._data._ptr)->xform_inv( p_args[0]->operator Vector2()); return;
+			case Variant::RECT2: r_ret=reinterpret_cast<Transform2D*>(p_self._data._ptr)->xform_inv( p_args[0]->operator Rect2()); return;
 			default: r_ret=Variant();
 		}
 	}
 
-	static void _call_Matrix32_basis_xform(Variant& r_ret,Variant& p_self,const Variant** p_args) {
+	static void _call_Transform2D_basis_xform(Variant& r_ret,Variant& p_self,const Variant** p_args) {
 
 		switch(p_args[0]->type) {
 
-			case Variant::VECTOR2: r_ret=reinterpret_cast<Matrix32*>(p_self._data._ptr)->basis_xform( p_args[0]->operator Vector2()); return;
-			default: r_ret=Variant();
-		}
-
-	}
-
-	static void _call_Matrix32_basis_xform_inv(Variant& r_ret,Variant& p_self,const Variant** p_args) {
-
-		switch(p_args[0]->type) {
-
-			case Variant::VECTOR2: r_ret=reinterpret_cast<Matrix32*>(p_self._data._ptr)->basis_xform_inv( p_args[0]->operator Vector2()); return;
-			default: r_ret=Variant();
-		}
-	}
-
-
-	VCALL_PTR0R( Matrix3, inverse );
-	VCALL_PTR0R( Matrix3, transposed );
-	VCALL_PTR0R( Matrix3, determinant );
-	VCALL_PTR2R( Matrix3, rotated );
-	VCALL_PTR1R( Matrix3, scaled );
-	VCALL_PTR0R( Matrix3, get_scale );
-	VCALL_PTR0R( Matrix3, get_euler );
-	VCALL_PTR1R( Matrix3, tdotx );
-	VCALL_PTR1R( Matrix3, tdoty );
-	VCALL_PTR1R( Matrix3, tdotz );
-	VCALL_PTR1R( Matrix3, xform );
-	VCALL_PTR1R( Matrix3, xform_inv );
-	VCALL_PTR0R( Matrix3, get_orthogonal_index );
-	VCALL_PTR0R( Matrix3, orthonormalized );
-
-
-	VCALL_PTR0R( Transform, inverse );
-	VCALL_PTR0R( Transform, affine_inverse );
-	VCALL_PTR2R( Transform, rotated );
-	VCALL_PTR1R( Transform, scaled );
-	VCALL_PTR1R( Transform, translated );
-	VCALL_PTR0R( Transform, orthonormalized );
-	VCALL_PTR2R( Transform, looking_at );
-
-	static void _call_Transform_xform(Variant& r_ret,Variant& p_self,const Variant** p_args) {
-
-		switch(p_args[0]->type) {
-
-			case Variant::VECTOR3: r_ret=reinterpret_cast<Transform*>(p_self._data._ptr)->xform( p_args[0]->operator Vector3()); return;
-			case Variant::PLANE: r_ret=reinterpret_cast<Transform*>(p_self._data._ptr)->xform( p_args[0]->operator Plane()); return;
-			case Variant::_AABB: r_ret=reinterpret_cast<Transform*>(p_self._data._ptr)->xform( p_args[0]->operator AABB()); return;
+			case Variant::VECTOR2: r_ret=reinterpret_cast<Transform2D*>(p_self._data._ptr)->basis_xform( p_args[0]->operator Vector2()); return;
 			default: r_ret=Variant();
 		}
 
 	}
 
-	static void _call_Transform_xform_inv(Variant& r_ret,Variant& p_self,const Variant** p_args) {
+	static void _call_Transform2D_basis_xform_inv(Variant& r_ret,Variant& p_self,const Variant** p_args) {
 
 		switch(p_args[0]->type) {
 
-			case Variant::VECTOR3: r_ret=reinterpret_cast<Transform*>(p_self._data._ptr)->xform_inv( p_args[0]->operator Vector3()); return;
-			case Variant::PLANE: r_ret=reinterpret_cast<Transform*>(p_self._data._ptr)->xform_inv( p_args[0]->operator Plane()); return;
-			case Variant::_AABB: r_ret=reinterpret_cast<Transform*>(p_self._data._ptr)->xform_inv( p_args[0]->operator AABB()); return;
+			case Variant::VECTOR2: r_ret=reinterpret_cast<Transform2D*>(p_self._data._ptr)->basis_xform_inv( p_args[0]->operator Vector2()); return;
+			default: r_ret=Variant();
+		}
+	}
+
+
+	VCALL_PTR0R( Basis, inverse );
+	VCALL_PTR0R( Basis, transposed );
+	VCALL_PTR0R( Basis, determinant );
+	VCALL_PTR2R( Basis, rotated );
+	VCALL_PTR1R( Basis, scaled );
+	VCALL_PTR0R( Basis, get_scale );
+	VCALL_PTR0R( Basis, get_euler );
+	VCALL_PTR1R( Basis, tdotx );
+	VCALL_PTR1R( Basis, tdoty );
+	VCALL_PTR1R( Basis, tdotz );
+	VCALL_PTR1R( Basis, xform );
+	VCALL_PTR1R( Basis, xform_inv );
+	VCALL_PTR0R( Basis, get_orthogonal_index );
+	VCALL_PTR0R( Basis, orthonormalized );
+
+
+	VCALL_PTR0R( Transform3D, inverse );
+	VCALL_PTR0R( Transform3D, affine_inverse );
+	VCALL_PTR2R( Transform3D, rotated );
+	VCALL_PTR1R( Transform3D, scaled );
+	VCALL_PTR1R( Transform3D, translated );
+	VCALL_PTR0R( Transform3D, orthonormalized );
+	VCALL_PTR2R( Transform3D, looking_at );
+
+	static void _call_Transform3D_xform(Variant& r_ret,Variant& p_self,const Variant** p_args) {
+
+		switch(p_args[0]->type) {
+
+			case Variant::VECTOR3: r_ret=reinterpret_cast<Transform3D*>(p_self._data._ptr)->xform( p_args[0]->operator Vector3()); return;
+			case Variant::PLANE: r_ret=reinterpret_cast<Transform3D*>(p_self._data._ptr)->xform( p_args[0]->operator Plane()); return;
+			case Variant::_AABB: r_ret=reinterpret_cast<Transform3D*>(p_self._data._ptr)->xform( p_args[0]->operator AABB()); return;
+			default: r_ret=Variant();
+		}
+
+	}
+
+	static void _call_Transform3D_xform_inv(Variant& r_ret,Variant& p_self,const Variant** p_args) {
+
+		switch(p_args[0]->type) {
+
+			case Variant::VECTOR3: r_ret=reinterpret_cast<Transform3D*>(p_self._data._ptr)->xform_inv( p_args[0]->operator Vector3()); return;
+			case Variant::PLANE: r_ret=reinterpret_cast<Transform3D*>(p_self._data._ptr)->xform_inv( p_args[0]->operator Plane()); return;
+			case Variant::_AABB: r_ret=reinterpret_cast<Transform3D*>(p_self._data._ptr)->xform_inv( p_args[0]->operator AABB()); return;
 			default: r_ret=Variant();
 		}
 	}
 
 /*
-	VCALL_PTR0( Transform, invert );
-	VCALL_PTR0( Transform, affine_invert );
-	VCALL_PTR2( Transform, rotate );
-	VCALL_PTR1( Transform, scale );
-	VCALL_PTR1( Transform, translate );
-	VCALL_PTR0( Transform, orthonormalize ); */
+	VCALL_PTR0( Transform3D, invert );
+	VCALL_PTR0( Transform3D, affine_invert );
+	VCALL_PTR2( Transform3D, rotate );
+	VCALL_PTR1( Transform3D, scale );
+	VCALL_PTR1( Transform3D, translate );
+	VCALL_PTR0( Transform3D, orthonormalize ); */
 
 	VCALL_PTR0R( InputEvent, is_pressed );
 	VCALL_PTR1R( InputEvent, is_action );
@@ -721,7 +721,7 @@ static void _call_##m_type##_##m_method(Variant& r_ret,Variant& p_self,const Var
 
 	static void Matrix32_init3(Variant& r_ret,const Variant** p_args) {
 
-		Matrix32 m;
+		Transform2D m;
 		m[0]=*p_args[0];
 		m[1]=*p_args[1];
 		m[2]=*p_args[2];
@@ -784,7 +784,7 @@ static void _call_##m_type##_##m_method(Variant& r_ret,Variant& p_self,const Var
 
 	static void Matrix3_init1(Variant& r_ret,const Variant** p_args) {
 
-		Matrix3 m;
+		Basis m;
 		m.set_axis(0,*p_args[0]);
 		m.set_axis(1,*p_args[1]);
 		m.set_axis(2,*p_args[2]);
@@ -793,12 +793,12 @@ static void _call_##m_type##_##m_method(Variant& r_ret,Variant& p_self,const Var
 
 	static void Matrix3_init2(Variant& r_ret,const Variant** p_args) {
 
-		r_ret=Matrix3(p_args[0]->operator Vector3(),p_args[1]->operator real_t());
+		r_ret=Basis(p_args[0]->operator Vector3(),p_args[1]->operator real_t());
 	}
 
 	static void Transform_init1(Variant& r_ret,const Variant** p_args) {
 
-		Transform t;
+		Transform3D t;
 		t.basis.set_axis(0,*p_args[0]);
 		t.basis.set_axis(1,*p_args[1]);
 		t.basis.set_axis(2,*p_args[2]);
@@ -808,7 +808,7 @@ static void _call_##m_type##_##m_method(Variant& r_ret,Variant& p_self,const Var
 
 	static void Transform_init2(Variant& r_ret,const Variant** p_args) {
 
-		r_ret=Transform(p_args[0]->operator Matrix3(),p_args[1]->operator Vector3());
+		r_ret=Transform3D(p_args[0]->operator Basis(),p_args[1]->operator Vector3());
 	}
 
 	static void add_constructor(VariantConstructFunc p_func,const Variant::Type p_type,
@@ -934,12 +934,12 @@ Variant Variant::construct(const Variant::Type p_type,const Variant** p_args,int
 			case VECTOR2: return Vector2();		// 5
 			case RECT2: return Rect2();
 			case VECTOR3: return Vector3();
-			case MATRIX32: return Matrix32();
+			case MATRIX32: return Transform2D();
 			case PLANE: return Plane();
 			case QUAT: return Quat();
 			case _AABB: return AABB(); //sorry naming convention fail :( not like it's used often // 10
-			case MATRIX3: return Matrix3();
-			case TRANSFORM: return Transform();
+			case MATRIX3: return Basis();
+			case TRANSFORM: return Transform3D();
 
 			// misc types
 			case COLOR: return Color();
@@ -951,12 +951,12 @@ Variant Variant::construct(const Variant::Type p_type,const Variant** p_args,int
 			case DICTIONARY: return Dictionary();;
 			case ARRAY: return Array();;			// 20
 			case RAW_ARRAY: return ByteArray();;
-			case INT_ARRAY: return IntArray();;
-			case REAL_ARRAY: return RealArray();;
-			case STRING_ARRAY: return StringArray();;
-			case VECTOR2_ARRAY: return Vector2Array();; 	// 25
-			case VECTOR3_ARRAY: return Vector3Array();; 	// 25
-			case COLOR_ARRAY: return ColorArray();;
+			case INT_ARRAY: return PackedIntArray();;
+			case REAL_ARRAY: return PackedFloatArray();;
+			case STRING_ARRAY: return PackedStringArray();;
+			case VECTOR2_ARRAY: return PackedVector2Array();; 	// 25
+			case VECTOR3_ARRAY: return PackedVector3Array();; 	// 25
+			case COLOR_ARRAY: return PackedColorArray();;
 			default: return Variant();
 		}
 
@@ -1006,8 +1006,8 @@ Variant Variant::construct(const Variant::Type p_type,const Variant** p_args,int
 			case PLANE: return (Plane(*p_args[0]));
 			case QUAT: return (Quat(*p_args[0]));
 			case _AABB: return (AABB(*p_args[0])); //sorry naming convention fail :( not like it's used often // 10
-			case MATRIX3: return (Matrix3(p_args[0]->operator Matrix3()));
-			case TRANSFORM: return (Transform(p_args[0]->operator Transform()));
+			case MATRIX3: return (Basis(p_args[0]->operator Basis()));
+			case TRANSFORM: return (Transform3D(p_args[0]->operator Transform3D()));
 
 			// misc types
 			case COLOR: return p_args[0]->type == Variant::STRING ? Color::html(*p_args[0]) : Color::hex(*p_args[0]);
@@ -1021,11 +1021,11 @@ Variant Variant::construct(const Variant::Type p_type,const Variant** p_args,int
 
 			// arrays
 			case RAW_ARRAY: return (ByteArray(*p_args[0]));
-			case INT_ARRAY: return (IntArray(*p_args[0]));
-			case REAL_ARRAY: return (RealArray(*p_args[0]));
-			case STRING_ARRAY: return (StringArray(*p_args[0]));
-			case VECTOR2_ARRAY: return (Vector2Array(*p_args[0])); 	// 25
-			case VECTOR3_ARRAY: return (Vector3Array(*p_args[0])); 	// 25
+			case INT_ARRAY: return (PackedIntArray(*p_args[0]));
+			case REAL_ARRAY: return (PackedFloatArray(*p_args[0]));
+			case STRING_ARRAY: return (PackedStringArray(*p_args[0]));
+			case VECTOR2_ARRAY: return (PackedVector2Array(*p_args[0])); 	// 25
+			case VECTOR3_ARRAY: return (PackedVector3Array(*p_args[0])); 	// 25
 			case COLOR_ARRAY: return (Color(*p_args[0]));
 			default: return Variant();
 		}
@@ -1384,41 +1384,41 @@ _VariantCall::addfunc(Variant::m_vtype,Variant::m_ret,_SCS(#m_method),VCALL(m_cl
 	ADDFUNC0(RAW_ARRAY,STRING,ByteArray,get_string_from_utf8,varray());
 
 
-	ADDFUNC0(INT_ARRAY,INT,IntArray,size,varray());
-	ADDFUNC2(INT_ARRAY,NIL,IntArray,set,INT,"idx",INT,"integer",varray());
-	ADDFUNC1(INT_ARRAY,INT,IntArray,get,INT,"idx",varray());
-	ADDFUNC1(INT_ARRAY,NIL,IntArray,push_back,INT,"integer",varray());
-	ADDFUNC1(INT_ARRAY,NIL,IntArray,resize,INT,"idx",varray());
+	ADDFUNC0(INT_ARRAY,INT,PackedIntArray,size,varray());
+	ADDFUNC2(INT_ARRAY,NIL,PackedIntArray,set,INT,"idx",INT,"integer",varray());
+	ADDFUNC1(INT_ARRAY,INT,PackedIntArray,get,INT,"idx",varray());
+	ADDFUNC1(INT_ARRAY,NIL,PackedIntArray,push_back,INT,"integer",varray());
+	ADDFUNC1(INT_ARRAY,NIL,PackedIntArray,resize,INT,"idx",varray());
 
-	ADDFUNC0(REAL_ARRAY,INT,RealArray,size,varray());
-	ADDFUNC2(REAL_ARRAY,NIL,RealArray,set,INT,"idx",REAL,"value",varray());
-	ADDFUNC1(REAL_ARRAY,REAL,RealArray,get,INT,"idx",varray());
-	ADDFUNC1(REAL_ARRAY,NIL,RealArray,push_back,REAL,"value",varray());
-	ADDFUNC1(REAL_ARRAY,NIL,RealArray,resize,INT,"idx",varray());
+	ADDFUNC0(REAL_ARRAY,INT,PackedFloatArray,size,varray());
+	ADDFUNC2(REAL_ARRAY,NIL,PackedFloatArray,set,INT,"idx",REAL,"value",varray());
+	ADDFUNC1(REAL_ARRAY,REAL,PackedFloatArray,get,INT,"idx",varray());
+	ADDFUNC1(REAL_ARRAY,NIL,PackedFloatArray,push_back,REAL,"value",varray());
+	ADDFUNC1(REAL_ARRAY,NIL,PackedFloatArray,resize,INT,"idx",varray());
 
-	ADDFUNC0(STRING_ARRAY,INT,StringArray,size,varray());
-	ADDFUNC2(STRING_ARRAY,NIL,StringArray,set,INT,"idx",STRING,"string",varray());
-	ADDFUNC1(STRING_ARRAY,STRING,StringArray,get,INT,"idx",varray());
-	ADDFUNC1(STRING_ARRAY,NIL,StringArray,push_back,STRING,"string",varray());
-	ADDFUNC1(STRING_ARRAY,NIL,StringArray,resize,INT,"idx",varray());
+	ADDFUNC0(STRING_ARRAY,INT,PackedStringArray,size,varray());
+	ADDFUNC2(STRING_ARRAY,NIL,PackedStringArray,set,INT,"idx",STRING,"string",varray());
+	ADDFUNC1(STRING_ARRAY,STRING,PackedStringArray,get,INT,"idx",varray());
+	ADDFUNC1(STRING_ARRAY,NIL,PackedStringArray,push_back,STRING,"string",varray());
+	ADDFUNC1(STRING_ARRAY,NIL,PackedStringArray,resize,INT,"idx",varray());
 
-	ADDFUNC0(VECTOR2_ARRAY,INT,Vector2Array,size,varray());
-	ADDFUNC2(VECTOR2_ARRAY,NIL,Vector2Array,set,INT,"idx",VECTOR2,"vector2",varray());
-	ADDFUNC1(VECTOR2_ARRAY,VECTOR2,Vector2Array,get,INT,"idx",varray());
-	ADDFUNC1(VECTOR2_ARRAY,NIL,Vector2Array,push_back,VECTOR2,"vector2",varray());
-	ADDFUNC1(VECTOR2_ARRAY,NIL,Vector2Array,resize,INT,"idx",varray());
+	ADDFUNC0(VECTOR2_ARRAY,INT,PackedVector2Array,size,varray());
+	ADDFUNC2(VECTOR2_ARRAY,NIL,PackedVector2Array,set,INT,"idx",VECTOR2,"vector2",varray());
+	ADDFUNC1(VECTOR2_ARRAY,VECTOR2,PackedVector2Array,get,INT,"idx",varray());
+	ADDFUNC1(VECTOR2_ARRAY,NIL,PackedVector2Array,push_back,VECTOR2,"vector2",varray());
+	ADDFUNC1(VECTOR2_ARRAY,NIL,PackedVector2Array,resize,INT,"idx",varray());
 
-	ADDFUNC0(VECTOR3_ARRAY,INT,Vector3Array,size,varray());
-	ADDFUNC2(VECTOR3_ARRAY,NIL,Vector3Array,set,INT,"idx",VECTOR3,"vector3",varray());
-	ADDFUNC1(VECTOR3_ARRAY,VECTOR3,Vector3Array,get,INT,"idx",varray());
-	ADDFUNC1(VECTOR3_ARRAY,NIL,Vector3Array,push_back,VECTOR3,"vector3",varray());
-	ADDFUNC1(VECTOR3_ARRAY,NIL,Vector3Array,resize,INT,"idx",varray());
+	ADDFUNC0(VECTOR3_ARRAY,INT,PackedVector3Array,size,varray());
+	ADDFUNC2(VECTOR3_ARRAY,NIL,PackedVector3Array,set,INT,"idx",VECTOR3,"vector3",varray());
+	ADDFUNC1(VECTOR3_ARRAY,VECTOR3,PackedVector3Array,get,INT,"idx",varray());
+	ADDFUNC1(VECTOR3_ARRAY,NIL,PackedVector3Array,push_back,VECTOR3,"vector3",varray());
+	ADDFUNC1(VECTOR3_ARRAY,NIL,PackedVector3Array,resize,INT,"idx",varray());
 
-	ADDFUNC0(COLOR_ARRAY,INT,ColorArray,size,varray());
-	ADDFUNC2(COLOR_ARRAY,NIL,ColorArray,set,INT,"idx",COLOR,"color",varray());
-	ADDFUNC1(COLOR_ARRAY,COLOR,ColorArray,get,INT,"idx",varray());
-	ADDFUNC1(COLOR_ARRAY,NIL,ColorArray,push_back,COLOR,"color",varray());
-	ADDFUNC1(COLOR_ARRAY,NIL,ColorArray,resize,INT,"idx",varray());
+	ADDFUNC0(COLOR_ARRAY,INT,PackedColorArray,size,varray());
+	ADDFUNC2(COLOR_ARRAY,NIL,PackedColorArray,set,INT,"idx",COLOR,"color",varray());
+	ADDFUNC1(COLOR_ARRAY,COLOR,PackedColorArray,get,INT,"idx",varray());
+	ADDFUNC1(COLOR_ARRAY,NIL,PackedColorArray,push_back,COLOR,"color",varray());
+	ADDFUNC1(COLOR_ARRAY,NIL,PackedColorArray,resize,INT,"idx",varray());
 
 	//pointerbased
 
@@ -1443,45 +1443,45 @@ _VariantCall::addfunc(Variant::m_vtype,Variant::m_ret,_SCS(#m_method),VCALL(m_cl
 	ADDFUNC1(_AABB,_AABB,AABB,grow,REAL,"by",varray());
 	ADDFUNC1(_AABB,VECTOR3,AABB,get_endpoint,INT,"idx",varray());
 
-	ADDFUNC0(MATRIX32,MATRIX32,Matrix32,inverse,varray());
-	ADDFUNC0(MATRIX32,MATRIX32,Matrix32,affine_inverse,varray());
-	ADDFUNC0(MATRIX32,REAL,Matrix32,get_rotation,varray());
-	ADDFUNC0(MATRIX32,VECTOR2,Matrix32,get_origin,varray());
-	ADDFUNC0(MATRIX32,VECTOR2,Matrix32,get_scale,varray());
-	ADDFUNC0(MATRIX32,MATRIX32,Matrix32,orthonormalized,varray());
-	ADDFUNC1(MATRIX32,MATRIX32,Matrix32,rotated,REAL,"phi",varray());
-	ADDFUNC1(MATRIX32,MATRIX32,Matrix32,scaled,VECTOR2,"scale",varray());
-	ADDFUNC1(MATRIX32,MATRIX32,Matrix32,translated,VECTOR2,"offset",varray());
-	ADDFUNC1(MATRIX32,MATRIX32,Matrix32,xform,NIL,"v",varray());
-	ADDFUNC1(MATRIX32,MATRIX32,Matrix32,xform_inv,NIL,"v",varray());
-	ADDFUNC1(MATRIX32,MATRIX32,Matrix32,basis_xform,NIL,"v",varray());
-	ADDFUNC1(MATRIX32,MATRIX32,Matrix32,basis_xform_inv,NIL,"v",varray());
-	ADDFUNC2(MATRIX32,MATRIX32,Matrix32,interpolate_with,MATRIX32,"m",REAL,"c",varray());
+	ADDFUNC0(MATRIX32,MATRIX32,Transform2D,inverse,varray());
+	ADDFUNC0(MATRIX32,MATRIX32,Transform2D,affine_inverse,varray());
+	ADDFUNC0(MATRIX32,REAL,Transform2D,get_rotation,varray());
+	ADDFUNC0(MATRIX32,VECTOR2,Transform2D,get_origin,varray());
+	ADDFUNC0(MATRIX32,VECTOR2,Transform2D,get_scale,varray());
+	ADDFUNC0(MATRIX32,MATRIX32,Transform2D,orthonormalized,varray());
+	ADDFUNC1(MATRIX32,MATRIX32,Transform2D,rotated,REAL,"phi",varray());
+	ADDFUNC1(MATRIX32,MATRIX32,Transform2D,scaled,VECTOR2,"scale",varray());
+	ADDFUNC1(MATRIX32,MATRIX32,Transform2D,translated,VECTOR2,"offset",varray());
+	ADDFUNC1(MATRIX32,MATRIX32,Transform2D,xform,NIL,"v",varray());
+	ADDFUNC1(MATRIX32,MATRIX32,Transform2D,xform_inv,NIL,"v",varray());
+	ADDFUNC1(MATRIX32,MATRIX32,Transform2D,basis_xform,NIL,"v",varray());
+	ADDFUNC1(MATRIX32,MATRIX32,Transform2D,basis_xform_inv,NIL,"v",varray());
+	ADDFUNC2(MATRIX32,MATRIX32,Transform2D,interpolate_with,MATRIX32,"m",REAL,"c",varray());
 
-	ADDFUNC0(MATRIX3,MATRIX3,Matrix3,inverse,varray());
-	ADDFUNC0(MATRIX3,MATRIX3,Matrix3,transposed,varray());
-	ADDFUNC0(MATRIX3,MATRIX3,Matrix3,orthonormalized,varray());
-	ADDFUNC0(MATRIX3,REAL,Matrix3,determinant,varray());
-	ADDFUNC2(MATRIX3,MATRIX3,Matrix3,rotated,VECTOR3,"axis",REAL,"phi",varray());
-	ADDFUNC1(MATRIX3,MATRIX3,Matrix3,scaled,VECTOR3,"scale",varray());
-	ADDFUNC0(MATRIX3,VECTOR3,Matrix3,get_scale,varray());
-	ADDFUNC0(MATRIX3,VECTOR3,Matrix3,get_euler,varray());
-	ADDFUNC1(MATRIX3,REAL,Matrix3,tdotx,VECTOR3,"with",varray());
-	ADDFUNC1(MATRIX3,REAL,Matrix3,tdoty,VECTOR3,"with",varray());
-	ADDFUNC1(MATRIX3,REAL,Matrix3,tdotz,VECTOR3,"with",varray());
-	ADDFUNC1(MATRIX3,VECTOR3,Matrix3,xform,VECTOR3,"v",varray());
-	ADDFUNC1(MATRIX3,VECTOR3,Matrix3,xform_inv,VECTOR3,"v",varray());
-	ADDFUNC0(MATRIX3,INT,Matrix3,get_orthogonal_index,varray());
+	ADDFUNC0(MATRIX3,MATRIX3,Basis,inverse,varray());
+	ADDFUNC0(MATRIX3,MATRIX3,Basis,transposed,varray());
+	ADDFUNC0(MATRIX3,MATRIX3,Basis,orthonormalized,varray());
+	ADDFUNC0(MATRIX3,REAL,Basis,determinant,varray());
+	ADDFUNC2(MATRIX3,MATRIX3,Basis,rotated,VECTOR3,"axis",REAL,"phi",varray());
+	ADDFUNC1(MATRIX3,MATRIX3,Basis,scaled,VECTOR3,"scale",varray());
+	ADDFUNC0(MATRIX3,VECTOR3,Basis,get_scale,varray());
+	ADDFUNC0(MATRIX3,VECTOR3,Basis,get_euler,varray());
+	ADDFUNC1(MATRIX3,REAL,Basis,tdotx,VECTOR3,"with",varray());
+	ADDFUNC1(MATRIX3,REAL,Basis,tdoty,VECTOR3,"with",varray());
+	ADDFUNC1(MATRIX3,REAL,Basis,tdotz,VECTOR3,"with",varray());
+	ADDFUNC1(MATRIX3,VECTOR3,Basis,xform,VECTOR3,"v",varray());
+	ADDFUNC1(MATRIX3,VECTOR3,Basis,xform_inv,VECTOR3,"v",varray());
+	ADDFUNC0(MATRIX3,INT,Basis,get_orthogonal_index,varray());
 
-	ADDFUNC0(TRANSFORM,TRANSFORM,Transform,inverse,varray());
-	ADDFUNC0(TRANSFORM,TRANSFORM,Transform,affine_inverse,varray());
-	ADDFUNC0(TRANSFORM,TRANSFORM,Transform,orthonormalized,varray());
-	ADDFUNC2(TRANSFORM,TRANSFORM,Transform,rotated,VECTOR3,"axis",REAL,"phi",varray());
-	ADDFUNC1(TRANSFORM,TRANSFORM,Transform,scaled,VECTOR3,"scale",varray());
-	ADDFUNC1(TRANSFORM,TRANSFORM,Transform,translated,VECTOR3,"ofs",varray());
-	ADDFUNC2(TRANSFORM,TRANSFORM,Transform,looking_at,VECTOR3,"target",VECTOR3,"up",varray());
-	ADDFUNC1(TRANSFORM,NIL,Transform,xform,NIL,"v",varray());
-	ADDFUNC1(TRANSFORM,NIL,Transform,xform_inv,NIL,"v",varray());
+	ADDFUNC0(TRANSFORM,TRANSFORM,Transform3D,inverse,varray());
+	ADDFUNC0(TRANSFORM,TRANSFORM,Transform3D,affine_inverse,varray());
+	ADDFUNC0(TRANSFORM,TRANSFORM,Transform3D,orthonormalized,varray());
+	ADDFUNC2(TRANSFORM,TRANSFORM,Transform3D,rotated,VECTOR3,"axis",REAL,"phi",varray());
+	ADDFUNC1(TRANSFORM,TRANSFORM,Transform3D,scaled,VECTOR3,"scale",varray());
+	ADDFUNC1(TRANSFORM,TRANSFORM,Transform3D,translated,VECTOR3,"ofs",varray());
+	ADDFUNC2(TRANSFORM,TRANSFORM,Transform3D,looking_at,VECTOR3,"target",VECTOR3,"up",varray());
+	ADDFUNC1(TRANSFORM,NIL,Transform3D,xform,NIL,"v",varray());
+	ADDFUNC1(TRANSFORM,NIL,Transform3D,xform_inv,NIL,"v",varray());
 
 #ifdef DEBUG_ENABLED	
 	_VariantCall::type_funcs[Variant::TRANSFORM].functions["xform"].returns=true;

@@ -20,7 +20,7 @@ static void plane_space(const Vector3& n, Vector3& p, Vector3& q) {
   }
 }
 
-HingeJointSW::HingeJointSW(BodySW* rbA,BodySW* rbB, const Transform& frameA, const Transform& frameB) :  JointSW(_arr,2) {
+HingeJointSW::HingeJointSW(BodySW* rbA,BodySW* rbB, const Transform3D& frameA, const Transform3D& frameB) :  JointSW(_arr,2) {
 
 	A=rbA;
 	B=rbB;
@@ -78,7 +78,7 @@ HingeJointSW::HingeJointSW(BodySW* rbA,BodySW* rbB, const Vector3& pivotInA,cons
 		rbAxisA1 = rbAxisA2.cross(axisInA);
 	}
 
-	m_rbAFrame.basis=Matrix3( rbAxisA1.x,rbAxisA2.x,axisInA.x,
+	m_rbAFrame.basis=Basis( rbAxisA1.x,rbAxisA2.x,axisInA.x,
 									rbAxisA1.y,rbAxisA2.y,axisInA.y,
 									rbAxisA1.z,rbAxisA2.z,axisInA.z );
 
@@ -87,7 +87,7 @@ HingeJointSW::HingeJointSW(BodySW* rbA,BodySW* rbB, const Vector3& pivotInA,cons
 	Vector3 rbAxisB2 =  axisInB.cross(rbAxisB1);
 
 	m_rbBFrame.origin = pivotInB;
-	m_rbBFrame.basis=Matrix3( rbAxisB1.x,rbAxisB2.x,-axisInB.x,
+	m_rbBFrame.basis=Basis( rbAxisB1.x,rbAxisB2.x,-axisInB.x,
 									rbAxisB1.y,rbAxisB2.y,-axisInB.y,
 									rbAxisB1.z,rbAxisB2.z,-axisInB.z );
 

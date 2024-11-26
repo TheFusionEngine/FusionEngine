@@ -477,7 +477,7 @@ void ControlEditor::_update_scroll(float) {
 
 //	current_window->set_scroll(-ofs);
 
-	transform=Matrix32();
+	transform=Transform2D();
 
 	transform.scale_basis(Size2(zoom,zoom));
 	transform.elements[2]=-ofs*zoom;
@@ -686,7 +686,7 @@ void ControlEditor::_update_scrollbars() {
 		ofs.x=-h_scroll->get_val();
 	}
 
-//	transform=Matrix32();
+//	transform=Transform2D();
 	transform.elements[2]=ofs*zoom;
 	RID viewport = editor->get_scene_root()->get_viewport();
 	VisualServer::get_singleton()->viewport_set_global_canvas_transform(viewport,transform);

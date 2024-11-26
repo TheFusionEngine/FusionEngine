@@ -104,7 +104,7 @@ Plane PlaneShapeSW::get_plane() const {
 	return plane;
 }
 
-void PlaneShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void PlaneShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 	// gibberish, a plane is infinity
 	r_min=-1e7;
@@ -159,7 +159,7 @@ float RayShapeSW::get_length() const {
 	return length;
 }
 
-void RayShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void RayShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 	// don't think this will be even used
 	r_min=0;
@@ -232,7 +232,7 @@ real_t SphereShapeSW::get_radius() const {
 	return radius;
 }
 
-void SphereShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void SphereShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 	float d = p_normal.dot( p_transform.origin );
 
@@ -294,7 +294,7 @@ SphereShapeSW::SphereShapeSW() {
 /********** BOX *************/
 
 
-void BoxShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void BoxShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 	// no matter the angle, the box is mirrored anyway
 	Vector3 local_normal=p_transform.basis.xform_inv(p_normal);
@@ -457,7 +457,7 @@ BoxShapeSW::BoxShapeSW()  {
 /********** CAPSULE *************/
 
 
-void CapsuleShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void CapsuleShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 	Vector3 n=p_transform.basis.xform_inv(p_normal).normalized();
 	float h = (n.z > 0) ? height : -height;
@@ -636,7 +636,7 @@ CapsuleShapeSW::CapsuleShapeSW()  {
 /********** CONVEX POLYGON *************/
 
 
-void ConvexPolygonShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void ConvexPolygonShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 
 	int vertex_count=mesh.vertices.size();
@@ -855,7 +855,7 @@ ConvexPolygonShapeSW::ConvexPolygonShapeSW()  {
 /********** FACE POLYGON *************/
 
 
-void FaceShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void FaceShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 	for (int i=0;i<3;i++) {
 
@@ -994,7 +994,7 @@ DVector<Vector3> ConcavePolygonShapeSW::get_faces() const {
 	return rfaces;
 }
 
-void ConcavePolygonShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void ConcavePolygonShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 	int count=vertices.size();
 	DVector<Vector3>::Read r=vertices.read();
@@ -1558,7 +1558,7 @@ float HeightMapShapeSW::get_cell_size() const {
 }
 
 
-void HeightMapShapeSW::project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+void HeightMapShapeSW::project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 	//not very useful, but not very used either
 	p_transform.xform(get_aabb()).project_range_in_plane( Plane(p_normal,0),r_min,r_max );

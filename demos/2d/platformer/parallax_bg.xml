@@ -43,7 +43,7 @@
 				<string> "transform/scale" </string>
 				<string> "motion/scale" </string>
 				<string> "motion/mirroring" </string>
-				<string> "Sprite" </string>
+				<string> "Sprite2D" </string>
 				<string> "texture" </string>
 				<string> "centered" </string>
 				<string> "flip_h" </string>
@@ -55,11 +55,11 @@
 				<string> "region" </string>
 				<string> "region_rect" </string>
 				<string> "clouds" </string>
-				<string> "Sprite 2" </string>
-				<string> "Sprite 3" </string>
-				<string> "Sprite 4" </string>
-				<string> "Sprite 5" </string>
-				<string> "Sprite 6" </string>
+				<string> "Sprite2D 2" </string>
+				<string> "Sprite2D 3" </string>
+				<string> "Sprite2D 4" </string>
+				<string> "Sprite2D 5" </string>
+				<string> "Sprite2D 6" </string>
 				<string> "mount_ 2" </string>
 				<string> "mount_1" </string>
 			</string_array>

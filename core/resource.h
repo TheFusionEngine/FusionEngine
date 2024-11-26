@@ -46,9 +46,9 @@ virtual String get_base_extension() const { return m_ext; }\
 private:
 
 
-class ResourceImportMetadata : public Reference {
+class ResourceImportMetadata : public RefCounted {
 
-	OBJ_TYPE( ResourceImportMetadata, Reference );
+	OBJ_TYPE( ResourceImportMetadata, RefCounted );
 
 	struct Source {
 		String path;
@@ -60,7 +60,7 @@ class ResourceImportMetadata : public Reference {
 
 	Map<String,Variant> options;
 
-	StringArray _get_options() const;
+	PackedStringArray _get_options() const;
 protected:
 	virtual bool _use_builtin_script() const { return false; }
 	static void _bind_methods();
@@ -86,9 +86,9 @@ public:
 };
 
 
-class Resource : public Reference {
+class Resource : public RefCounted {
 	
-	OBJ_TYPE( Resource, Reference );
+	OBJ_TYPE( Resource, RefCounted );
 	OBJ_CATEGORY("Resources");
 	RES_BASE_EXTENSION("res");
 

@@ -301,9 +301,9 @@ Variant Tween::_run_equation(InterpolateData& p_data) {
 
 	case Variant::MATRIX3:
 		{
-			Matrix3 i = initial_val;
-			Matrix3 d = delta_val;
-			Matrix3 r;
+			Basis i = initial_val;
+			Basis d = delta_val;
+			Basis r;
 
 			APPLY_EQUATION(elements[0][0]);
 			APPLY_EQUATION(elements[0][1]);
@@ -321,9 +321,9 @@ Variant Tween::_run_equation(InterpolateData& p_data) {
 
 	case Variant::MATRIX32:
 		{
-			Matrix3 i = initial_val;
-			Matrix3 d = delta_val;
-			Matrix3 r;
+			Basis i = initial_val;
+			Basis d = delta_val;
+			Basis r;
 
 			APPLY_EQUATION(elements[0][0]);
 			APPLY_EQUATION(elements[0][1]);
@@ -367,9 +367,9 @@ Variant Tween::_run_equation(InterpolateData& p_data) {
 		break;
 	case Variant::TRANSFORM:
 		{
-			Transform i = initial_val;
-			Transform d = delta_val;
-			Transform r;
+			Transform3D i = initial_val;
+			Transform3D d = delta_val;
+			Transform3D r;
 
 			APPLY_EQUATION(basis.elements[0][0]);
 			APPLY_EQUATION(basis.elements[0][1]);
@@ -797,9 +797,9 @@ bool Tween::_calc_delta_val(const Variant& p_initial_val, const Variant& p_final
 
 		case Variant::MATRIX3:
 			{
-				Matrix3 i = initial_val;
-				Matrix3 f = final_val;
-				delta_val = Matrix3(f.elements[0][0] - i.elements[0][0],
+				Basis i = initial_val;
+				Basis f = final_val;
+				delta_val = Basis(f.elements[0][0] - i.elements[0][0],
 					f.elements[0][1] - i.elements[0][1],
 					f.elements[0][2] - i.elements[0][2],
 					f.elements[1][0] - i.elements[1][0],
@@ -814,9 +814,9 @@ bool Tween::_calc_delta_val(const Variant& p_initial_val, const Variant& p_final
 
 		case Variant::MATRIX32:
 			{
-				Matrix32 i = initial_val;
-				Matrix32 f = final_val;
-				Matrix32 d = Matrix32();
+				Transform2D i = initial_val;
+				Transform2D f = final_val;
+				Transform2D d = Transform2D();
 				d[0][0] = f.elements[0][0] - i.elements[0][0];
 				d[0][1] = f.elements[0][1] - i.elements[0][1];
 				d[1][0] = f.elements[1][0] - i.elements[1][0];
@@ -838,9 +838,9 @@ bool Tween::_calc_delta_val(const Variant& p_initial_val, const Variant& p_final
 			break;
 		case Variant::TRANSFORM:
 			{
-				Transform i = initial_val;
-				Transform f = final_val;
-				Transform d;
+				Transform3D i = initial_val;
+				Transform3D f = final_val;
+				Transform3D d;
 				d.set(f.basis.elements[0][0] - i.basis.elements[0][0],
 					f.basis.elements[0][1] - i.basis.elements[0][1],
 					f.basis.elements[0][2] - i.basis.elements[0][2],

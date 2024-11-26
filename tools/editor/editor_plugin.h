@@ -38,8 +38,8 @@
 */
 
 class EditorNode;
-class Spatial;
-class Camera;
+class Node3D;
+class Camera3D;
 
 class EditorPlugin : public Node {
 	
@@ -73,9 +73,9 @@ public:
 
 	void add_custom_control(CustomControlContainer p_location,Control *p_control);
 
-	virtual bool create_spatial_gizmo(Spatial* p_spatial);
+	virtual bool create_spatial_gizmo(Node3D* p_spatial);
 	virtual bool forward_input_event(const InputEvent& p_event);
-	virtual bool forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event);
+	virtual bool forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event);
 	virtual String get_name() const;
 	virtual bool has_main_screen() const;
 	virtual void make_visible(bool p_visible);

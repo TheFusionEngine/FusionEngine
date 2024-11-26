@@ -684,7 +684,7 @@ void RasterizerFlash::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 	ERR_FAIL_COND(!multimesh);
 	multimesh->aabb=p_aabb;
 }
-void RasterizerFlash::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void RasterizerFlash::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -738,15 +738,15 @@ AABB RasterizerFlash::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform RasterizerFlash::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D RasterizerFlash::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
-	ERR_FAIL_COND_V(!multimesh,Transform());
+	ERR_FAIL_COND_V(!multimesh,Transform3D());
 
-	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform());
+	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform3D());
 	MultiMesh::Element &e=multimesh->elements[p_index];
 
-	Transform tr;
+	Transform3D tr;
 
 	tr.basis.elements[0][0]=e.matrix[0];
 	tr.basis.elements[1][0]=e.matrix[1];
@@ -800,7 +800,7 @@ int RasterizerFlash::multimesh_get_visible_instances(RID p_multimesh) const {
 
 RID RasterizerFlash::particles_create() {
 
-	Particles *particles = memnew( Particles );
+	Particles3D *particles = memnew( Particles3D );
 	ERR_FAIL_COND_V(!particles,RID());
 	return particles_owner.make_rid(particles);
 }
@@ -808,7 +808,7 @@ RID RasterizerFlash::particles_create() {
 void RasterizerFlash::particles_set_amount(RID p_particles, int p_amount) {
 
 	ERR_FAIL_COND(p_amount<1);
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.amount=p_amount;
 
@@ -816,7 +816,7 @@ void RasterizerFlash::particles_set_amount(RID p_particles, int p_amount) {
 
 int RasterizerFlash::particles_get_amount(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.amount;
 
@@ -824,14 +824,14 @@ int RasterizerFlash::particles_get_amount(RID p_particles) const {
 
 void RasterizerFlash::particles_set_emitting(RID p_particles, bool p_emitting) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.emitting=p_emitting;;
 
 }
 bool RasterizerFlash::particles_is_emitting(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
 	return particles->data.emitting;
 
@@ -839,7 +839,7 @@ bool RasterizerFlash::particles_is_emitting(RID p_particles) const {
 
 void RasterizerFlash::particles_set_visibility_aabb(RID p_particles, const AABB& p_visibility) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.visibility_aabb=p_visibility;
 
@@ -847,14 +847,14 @@ void RasterizerFlash::particles_set_visibility_aabb(RID p_particles, const AABB&
 
 void RasterizerFlash::particles_set_emission_half_extents(RID p_particles, const Vector3& p_half_extents) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.emission_half_extents=p_half_extents;
 }
 Vector3 RasterizerFlash::particles_get_emission_half_extents(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
 
 	return particles->data.emission_half_extents;
@@ -862,7 +862,7 @@ Vector3 RasterizerFlash::particles_get_emission_half_extents(RID p_particles) co
 
 void RasterizerFlash::particles_set_emission_base_velocity(RID p_particles, const Vector3& p_base_velocity) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.emission_base_velocity=p_base_velocity;
@@ -870,7 +870,7 @@ void RasterizerFlash::particles_set_emission_base_velocity(RID p_particles, cons
 
 Vector3 RasterizerFlash::particles_get_emission_base_velocity(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
 
 	return particles->data.emission_base_velocity;
@@ -879,7 +879,7 @@ Vector3 RasterizerFlash::particles_get_emission_base_velocity(RID p_particles) c
 
 void RasterizerFlash::particles_set_emission_points(RID p_particles, const DVector<Vector3>& p_points) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.emission_points=p_points;
@@ -887,7 +887,7 @@ void RasterizerFlash::particles_set_emission_points(RID p_particles, const DVect
 
 DVector<Vector3> RasterizerFlash::particles_get_emission_points(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,DVector<Vector3>());
 
 	return particles->data.emission_points;
@@ -896,7 +896,7 @@ DVector<Vector3> RasterizerFlash::particles_get_emission_points(RID p_particles)
 
 void RasterizerFlash::particles_set_gravity_normal(RID p_particles, const Vector3& p_normal) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.gravity_normal=p_normal;
@@ -904,7 +904,7 @@ void RasterizerFlash::particles_set_gravity_normal(RID p_particles, const Vector
 }
 Vector3 RasterizerFlash::particles_get_gravity_normal(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
 
 	return particles->data.gravity_normal;
@@ -913,7 +913,7 @@ Vector3 RasterizerFlash::particles_get_gravity_normal(RID p_particles) const {
 
 AABB RasterizerFlash::particles_get_visibility_aabb(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,AABB());
 	return particles->data.visibility_aabb;
 
@@ -923,28 +923,28 @@ void RasterizerFlash::particles_set_variable(RID p_particles, VS::ParticleVariab
 
 	ERR_FAIL_INDEX(p_variable,VS::PARTICLE_VAR_MAX);
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.particle_vars[p_variable]=p_value;
 
 }
 float RasterizerFlash::particles_get_variable(RID p_particles, VS::ParticleVariable p_variable) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.particle_vars[p_variable];
 }
 
 void RasterizerFlash::particles_set_randomness(RID p_particles, VS::ParticleVariable p_variable,float p_randomness) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.particle_randomness[p_variable]=p_randomness;
 
 }
 float RasterizerFlash::particles_get_randomness(RID p_particles, VS::ParticleVariable p_variable) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.particle_randomness[p_variable];
 
@@ -952,7 +952,7 @@ float RasterizerFlash::particles_get_randomness(RID p_particles, VS::ParticleVar
 
 void RasterizerFlash::particles_set_color_phases(RID p_particles, int p_phases) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_COND( p_phases<0 || p_phases>VS::MAX_PARTICLE_COLOR_PHASES );
 	particles->data.color_phase_count=p_phases;
@@ -960,7 +960,7 @@ void RasterizerFlash::particles_set_color_phases(RID p_particles, int p_phases) 
 }
 int RasterizerFlash::particles_get_color_phases(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.color_phase_count;
 }
@@ -974,7 +974,7 @@ void RasterizerFlash::particles_set_color_phase_pos(RID p_particles, int p_phase
 	if (p_pos>1.0)
 		p_pos=1.0;
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.color_phases[p_phase].pos=p_pos;
 
@@ -983,7 +983,7 @@ float RasterizerFlash::particles_get_color_phase_pos(RID p_particles, int p_phas
 
 	ERR_FAIL_INDEX_V(p_phase, VS::MAX_PARTICLE_COLOR_PHASES, -1.0);
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.color_phases[p_phase].pos;
 
@@ -992,7 +992,7 @@ float RasterizerFlash::particles_get_color_phase_pos(RID p_particles, int p_phas
 void RasterizerFlash::particles_set_color_phase_color(RID p_particles, int p_phase, const Color& p_color) {
 
 	ERR_FAIL_INDEX(p_phase, VS::MAX_PARTICLE_COLOR_PHASES);
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.color_phases[p_phase].color=p_color;
 
@@ -1009,7 +1009,7 @@ Color RasterizerFlash::particles_get_color_phase_color(RID p_particles, int p_ph
 
 	ERR_FAIL_INDEX_V(p_phase, VS::MAX_PARTICLE_COLOR_PHASES, Color());
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Color());
 	return particles->data.color_phases[p_phase].color;
 
@@ -1017,7 +1017,7 @@ Color RasterizerFlash::particles_get_color_phase_color(RID p_particles, int p_ph
 
 void RasterizerFlash::particles_set_attractors(RID p_particles, int p_attractors) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_COND( p_attractors<0 || p_attractors>VisualServer::MAX_PARTICLE_ATTRACTORS );
 	particles->data.attractor_count=p_attractors;
@@ -1025,21 +1025,21 @@ void RasterizerFlash::particles_set_attractors(RID p_particles, int p_attractors
 }
 int RasterizerFlash::particles_get_attractors(RID p_particles) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.attractor_count;
 }
 
 void RasterizerFlash::particles_set_attractor_pos(RID p_particles, int p_attractor, const Vector3& p_pos) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_INDEX(p_attractor,particles->data.attractor_count);
 	particles->data.attractors[p_attractor].pos=p_pos;;
 }
 Vector3 RasterizerFlash::particles_get_attractor_pos(RID p_particles,int p_attractor) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
 	ERR_FAIL_INDEX_V(p_attractor,particles->data.attractor_count,Vector3());
 	return particles->data.attractors[p_attractor].pos;
@@ -1047,7 +1047,7 @@ Vector3 RasterizerFlash::particles_get_attractor_pos(RID p_particles,int p_attra
 
 void RasterizerFlash::particles_set_attractor_strength(RID p_particles, int p_attractor, float p_force) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_INDEX(p_attractor,particles->data.attractor_count);
 	particles->data.attractors[p_attractor].force=p_force;
@@ -1055,7 +1055,7 @@ void RasterizerFlash::particles_set_attractor_strength(RID p_particles, int p_at
 
 float RasterizerFlash::particles_get_attractor_strength(RID p_particles,int p_attractor) const {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,0);
 	ERR_FAIL_INDEX_V(p_attractor,particles->data.attractor_count,0);
 	return particles->data.attractors[p_attractor].force;
@@ -1063,7 +1063,7 @@ float RasterizerFlash::particles_get_attractor_strength(RID p_particles,int p_at
 
 void RasterizerFlash::particles_set_material(RID p_particles, RID p_material,bool p_owned) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	if (particles->material_owned && particles->material.is_valid())
 		free(particles->material);
@@ -1075,7 +1075,7 @@ void RasterizerFlash::particles_set_material(RID p_particles, RID p_material,boo
 }
 RID RasterizerFlash::particles_get_material(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,RID());
 	return particles->material;
 
@@ -1083,7 +1083,7 @@ RID RasterizerFlash::particles_get_material(RID p_particles) const {
 
 void RasterizerFlash::particles_set_use_local_coordinates(RID p_particles, bool p_enable) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.local_coordinates=p_enable;
 
@@ -1091,20 +1091,20 @@ void RasterizerFlash::particles_set_use_local_coordinates(RID p_particles, bool 
 
 bool RasterizerFlash::particles_is_using_local_coordinates(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
 	return particles->data.local_coordinates;
 }
 bool RasterizerFlash::particles_has_height_from_velocity(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
 	return particles->data.height_from_velocity;
 }
 
 void RasterizerFlash::particles_set_height_from_velocity(RID p_particles, bool p_enable) {
 
-	Particles* particles = particles_owner.get( p_particles );
+	Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.height_from_velocity=p_enable;
 
@@ -1112,7 +1112,7 @@ void RasterizerFlash::particles_set_height_from_velocity(RID p_particles, bool p
 
 AABB RasterizerFlash::particles_get_aabb(RID p_particles) const {
 
-	const Particles* particles = particles_owner.get( p_particles );
+	const Particles3D* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,AABB());
 	return particles->data.visibility_aabb;
 }
@@ -1121,13 +1121,13 @@ AABB RasterizerFlash::particles_get_aabb(RID p_particles) const {
 
 RID RasterizerFlash::skeleton_create() {
 
-	Skeleton *skeleton = memnew( Skeleton );
+	Skeleton3D *skeleton = memnew( Skeleton3D );
 	ERR_FAIL_COND_V(!skeleton,RID());
 	return skeleton_owner.make_rid( skeleton );
 }
 void RasterizerFlash::skeleton_resize(RID p_skeleton,int p_bones) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
 	if (p_bones == skeleton->bones.size()) {
 		return;
@@ -1138,24 +1138,24 @@ void RasterizerFlash::skeleton_resize(RID p_skeleton,int p_bones) {
 }
 int RasterizerFlash::skeleton_get_bone_count(RID p_skeleton) const {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void RasterizerFlash::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void RasterizerFlash::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
 	ERR_FAIL_INDEX( p_bone, skeleton->bones.size() );
 
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform RasterizerFlash::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D RasterizerFlash::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
-	ERR_FAIL_COND_V(!skeleton, Transform());
-	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
+	ERR_FAIL_COND_V(!skeleton, Transform3D());
+	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform3D() );
 
 	// something
 	return skeleton->bones[p_bone];
@@ -1349,7 +1349,7 @@ RID RasterizerFlash::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void RasterizerFlash::light_instance_set_transform(RID p_light_instance,const Transform& p_transform) {
+void RasterizerFlash::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1421,7 +1421,7 @@ int RasterizerFlash::light_instance_get_shadow_passes(RID p_light_instance) cons
 		return 1;
 }
 
-void RasterizerFlash::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void RasterizerFlash::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1445,7 +1445,7 @@ RID RasterizerFlash::particles_instance_create(RID p_particles) {
 	return particles_instance_owner.make_rid(particles_instance);
 }
 
-void RasterizerFlash::particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform) {
+void RasterizerFlash::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 	ParticlesInstance *particles_instance=particles_instance_owner.get(p_particles_instance);
 	ERR_FAIL_COND(!particles_instance);
@@ -1478,7 +1478,7 @@ void RasterizerFlash::begin_shadow_map( RID p_light_instance, int p_shadow_pass 
 
 }
 
-void RasterizerFlash::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
+void RasterizerFlash::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
 
 	camera_transform=p_world;
 	camera_transform_inverse=camera_transform.inverse();
@@ -1747,7 +1747,7 @@ void RasterizerFlash::add_particles( const RID& p_particle_instance, const Insta
 	//print_line("adding particles");
 	ParticlesInstance *particles_instance = particles_instance_owner.get(p_particle_instance);
 	ERR_FAIL_COND(!particles_instance);
-	Particles *p=particles_owner.get( particles_instance->particles );
+	Particles3D *p=particles_owner.get( particles_instance->particles );
 	ERR_FAIL_COND(!p);
 
 	_add_geometry(p,p_data,p,particles_instance);
@@ -1814,13 +1814,13 @@ void RasterizerFlash::_setup_lights(const uint16_t * p_lights,int p_light_count)
 }
 
 
-Error RasterizerFlash::_setup_geometry(const Geometry *p_geometry, const Material* p_material, const Skeleton *p_skeleton,const float *p_morphs) {
+Error RasterizerFlash::_setup_geometry(const Geometry *p_geometry, const Material* p_material, const Skeleton3D *p_skeleton,const float *p_morphs) {
 
 	return OK;
 };
 
 
-void RasterizerFlash::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner) {
+void RasterizerFlash::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton3D* p_skeleton, const GeometryOwner *p_owner) {
 
 };
 
@@ -1861,7 +1861,7 @@ void RasterizerFlash::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 }
 
 
-void RasterizerFlash::canvas_begin_rect(const Matrix32& p_transform) {
+void RasterizerFlash::canvas_begin_rect(const Transform2D& p_transform) {
 
 }
 
@@ -2018,7 +2018,7 @@ void RasterizerFlash::canvas_draw_polygon(int p_vertex_count, const int* p_indic
 };
 
 
-void RasterizerFlash::canvas_set_transform(const Matrix32& p_transform) {
+void RasterizerFlash::canvas_set_transform(const Transform2D& p_transform) {
 
 }
 
@@ -2442,7 +2442,7 @@ void RasterizerFlash::free(const RID& p_rid) {
 
 	} else if (particles_owner.owns(p_rid)) {
 
-		Particles *particles = particles_owner.get(p_rid);
+		Particles3D *particles = particles_owner.get(p_rid);
 		ERR_FAIL_COND(!particles);
 
 		particles_owner.free(p_rid);
@@ -2457,7 +2457,7 @@ void RasterizerFlash::free(const RID& p_rid) {
 
 	} else if (skeleton_owner.owns(p_rid)) {
 
-		Skeleton *skeleton = skeleton_owner.get( p_rid );
+		Skeleton3D *skeleton = skeleton_owner.get( p_rid );
 		ERR_FAIL_COND(!skeleton)
 
 		skeleton_owner.free(p_rid);

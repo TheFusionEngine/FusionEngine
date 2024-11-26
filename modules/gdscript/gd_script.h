@@ -175,9 +175,9 @@ public:
 };
 
 
-class GDFunctionState : public Reference {
+class GDFunctionState : public RefCounted {
 
-	OBJ_TYPE(GDFunctionState,Reference);
+	OBJ_TYPE(GDFunctionState,RefCounted);
 friend class GDFunction;
 	GDFunction *function;
 	GDFunction::CallState state;
@@ -193,9 +193,9 @@ public:
 };
 
 
-class GDNativeClass : public Reference {
+class GDNativeClass : public RefCounted {
 
-	OBJ_TYPE(GDNativeClass,Reference);
+	OBJ_TYPE(GDNativeClass,RefCounted);
 
 	StringName name;
 protected:
@@ -487,7 +487,7 @@ public:
 	virtual Script *create_script() const;
 	virtual bool has_named_classes() const;
 	virtual int find_function(const String& p_function,const String& p_code) const;
-	virtual String make_function(const String& p_class,const String& p_name,const StringArray& p_args) const;
+	virtual String make_function(const String& p_class,const String& p_name,const PackedStringArray& p_args) const;
 	virtual Error complete_keyword(const String& p_code, int p_line, const String& p_base_path,const String& p_keyword, List<String>* r_options);
 	virtual void auto_indent_code(String& p_code,int p_from_line,int p_to_line) const;
 

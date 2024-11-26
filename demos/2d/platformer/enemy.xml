@@ -226,7 +226,7 @@
 				<string> "CollisionShape2D 2" </string>
 				<string> "CollisionShape2D 3" </string>
 				<string> "sprite" </string>
-				<string> "Sprite" </string>
+				<string> "Sprite2D" </string>
 				<string> "texture" </string>
 				<string> "centered" </string>
 				<string> "offset" </string>

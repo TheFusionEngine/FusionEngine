@@ -233,7 +233,7 @@ public:
 	BVH*bvh;
 	Vector<Triangle> triangles;
 	Vector<BakeTexture> baked_textures;
-	Transform base_inv;
+	Transform3D base_inv;
 	int leaf_list;
 	int octree_depth;
 	int bvh_depth;
@@ -286,7 +286,7 @@ public:
 
 
 	MeshTexture* _get_mat_tex(const Ref<Texture>& p_tex);
-	void _add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_mat_override,const Transform& p_xform,int p_baked_texture=-1);
+	void _add_mesh(const Ref<Mesh>& p_mesh,const Ref<Material>& p_mat_override,const Transform3D& p_xform,int p_baked_texture=-1);
 	void _parse_geometry(Node* p_node);
 	BVH* _parse_bvh(BVH** p_children,int p_size,int p_depth,int& max_depth);
 	void _make_bvh();

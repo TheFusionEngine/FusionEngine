@@ -33,7 +33,7 @@
 #include "servers/spatial_sound_server.h"
 #include "scene/scene_string_names.h"
 
-bool SpatialSamplePlayer::_set(const StringName& p_name, const Variant& p_value) {
+bool SamplePlayer3D::_set(const StringName& p_name, const Variant& p_value) {
 
 	String name=p_name;
 
@@ -55,7 +55,7 @@ bool SpatialSamplePlayer::_set(const StringName& p_name, const Variant& p_value)
 	return false;
 }
 
-bool SpatialSamplePlayer::_get(const StringName& p_name,Variant &r_ret) const {
+bool SamplePlayer3D::_get(const StringName& p_name,Variant &r_ret) const {
 
 
 	String name=p_name;
@@ -68,7 +68,7 @@ bool SpatialSamplePlayer::_get(const StringName& p_name,Variant &r_ret) const {
 	return false;
 }
 
-void SpatialSamplePlayer::_get_property_list(List<PropertyInfo> *p_list) const {
+void SamplePlayer3D::_get_property_list(List<PropertyInfo> *p_list) const {
 
 	String en="";
 	if (library.is_valid()) {
@@ -85,7 +85,7 @@ void SpatialSamplePlayer::_get_property_list(List<PropertyInfo> *p_list) const {
 	p_list->push_back( PropertyInfo( Variant::STRING, "play/play", PROPERTY_HINT_ENUM, en,PROPERTY_USAGE_EDITOR));
 
 }
-void SpatialSamplePlayer::_notification(int p_what) {
+void SamplePlayer3D::_notification(int p_what) {
 
 
 	switch(p_what) {
@@ -100,17 +100,17 @@ void SpatialSamplePlayer::_notification(int p_what) {
 
 }
 
-void SpatialSamplePlayer::set_sample_library(const Ref<SampleLibrary>& p_library) {
+void SamplePlayer3D::set_sample_library(const Ref<SampleLibrary>& p_library) {
 
 	library=p_library;
 }
 
-Ref<SampleLibrary> SpatialSamplePlayer::get_sample_library() const {
+Ref<SampleLibrary> SamplePlayer3D::get_sample_library() const {
 
 	return library;
 }
 
-void SpatialSamplePlayer::set_polyphony(int p_voice_count) {
+void SamplePlayer3D::set_polyphony(int p_voice_count) {
 
 	ERR_FAIL_COND(p_voice_count<0 || p_voice_count>64);
 	polyphony=p_voice_count;
@@ -119,12 +119,12 @@ void SpatialSamplePlayer::set_polyphony(int p_voice_count) {
 
 }
 
-int SpatialSamplePlayer::get_polyphony() const {
+int SamplePlayer3D::get_polyphony() const {
 
 	return polyphony;
 }
 
-SpatialSamplePlayer::VoiceID SpatialSamplePlayer::play(const String& p_sample,int p_voice) {
+SamplePlayer3D::VoiceID SamplePlayer3D::play(const String& p_sample,int p_voice) {
 
 	if (!get_source_rid().is_valid())
 		return INVALID_VOICE;
@@ -145,7 +145,7 @@ SpatialSamplePlayer::VoiceID SpatialSamplePlayer::play(const String& p_sample,in
 
 }
 //voices
-void SpatialSamplePlayer::voice_set_pitch_scale(VoiceID p_voice, float p_pitch_scale) {
+void SamplePlayer3D::voice_set_pitch_scale(VoiceID p_voice, float p_pitch_scale) {
 
 	if (!get_source_rid().is_valid())
 		return;
@@ -154,7 +154,7 @@ void SpatialSamplePlayer::voice_set_pitch_scale(VoiceID p_voice, float p_pitch_s
 
 }
 
-void SpatialSamplePlayer::voice_set_volume_scale_db(VoiceID p_voice, float p_volume_db) {
+void SamplePlayer3D::voice_set_volume_scale_db(VoiceID p_voice, float p_volume_db) {
 
 	if (!get_source_rid().is_valid())
 		return;
@@ -162,7 +162,7 @@ void SpatialSamplePlayer::voice_set_volume_scale_db(VoiceID p_voice, float p_vol
 
 }
 
-bool SpatialSamplePlayer::is_voice_active(VoiceID p_voice) const {
+bool SamplePlayer3D::is_voice_active(VoiceID p_voice) const {
 
 	if (!get_source_rid().is_valid())
 		return false;
@@ -170,7 +170,7 @@ bool SpatialSamplePlayer::is_voice_active(VoiceID p_voice) const {
 
 }
 
-void SpatialSamplePlayer::stop_voice(VoiceID p_voice) {
+void SamplePlayer3D::stop_voice(VoiceID p_voice) {
 
 	if (!get_source_rid().is_valid())
 		return;
@@ -178,7 +178,7 @@ void SpatialSamplePlayer::stop_voice(VoiceID p_voice) {
 
 }
 
-void SpatialSamplePlayer::stop_all() {
+void SamplePlayer3D::stop_all() {
 
 	if (!get_source_rid().is_valid())
 		return;
@@ -189,23 +189,23 @@ void SpatialSamplePlayer::stop_all() {
 	}
 }
 
-void SpatialSamplePlayer::_bind_methods() {
+void SamplePlayer3D::_bind_methods() {
 
 
-	ObjectTypeDB::bind_method(_MD("set_sample_library","library:SampleLibrary"),&SpatialSamplePlayer::set_sample_library);
-	ObjectTypeDB::bind_method(_MD("get_sample_library:SampleLibrary"),&SpatialSamplePlayer::get_sample_library);
+	ObjectTypeDB::bind_method(_MD("set_sample_library","library:SampleLibrary"),&SamplePlayer3D::set_sample_library);
+	ObjectTypeDB::bind_method(_MD("get_sample_library:SampleLibrary"),&SamplePlayer3D::get_sample_library);
 
-	ObjectTypeDB::bind_method(_MD("set_polyphony","voices"),&SpatialSamplePlayer::set_polyphony);
-	ObjectTypeDB::bind_method(_MD("get_polyphony"),&SpatialSamplePlayer::get_polyphony);
+	ObjectTypeDB::bind_method(_MD("set_polyphony","voices"),&SamplePlayer3D::set_polyphony);
+	ObjectTypeDB::bind_method(_MD("get_polyphony"),&SamplePlayer3D::get_polyphony);
 
-	ObjectTypeDB::bind_method(_MD("play","sample","voice"),&SpatialSamplePlayer::play,DEFVAL(NEXT_VOICE));
+	ObjectTypeDB::bind_method(_MD("play","sample","voice"),&SamplePlayer3D::play,DEFVAL(NEXT_VOICE));
 	//voices,DEV
-	ObjectTypeDB::bind_method(_MD("voice_set_pitch_scale","voice","ratio"),&SpatialSamplePlayer::voice_set_pitch_scale);
-	ObjectTypeDB::bind_method(_MD("voice_set_volume_scale_db","voice","db"),&SpatialSamplePlayer::voice_set_volume_scale_db);
+	ObjectTypeDB::bind_method(_MD("voice_set_pitch_scale","voice","ratio"),&SamplePlayer3D::voice_set_pitch_scale);
+	ObjectTypeDB::bind_method(_MD("voice_set_volume_scale_db","voice","db"),&SamplePlayer3D::voice_set_volume_scale_db);
 
-	ObjectTypeDB::bind_method(_MD("is_voice_active","voice"),&SpatialSamplePlayer::is_voice_active);
-	ObjectTypeDB::bind_method(_MD("stop_voice","voice"),&SpatialSamplePlayer::stop_voice);
-	ObjectTypeDB::bind_method(_MD("stop_all"),&SpatialSamplePlayer::stop_all);
+	ObjectTypeDB::bind_method(_MD("is_voice_active","voice"),&SamplePlayer3D::is_voice_active);
+	ObjectTypeDB::bind_method(_MD("stop_voice","voice"),&SamplePlayer3D::stop_voice);
+	ObjectTypeDB::bind_method(_MD("stop_all"),&SamplePlayer3D::stop_all);
 
 	BIND_CONSTANT( INVALID_VOICE );
 	BIND_CONSTANT( NEXT_VOICE );
@@ -217,13 +217,13 @@ void SpatialSamplePlayer::_bind_methods() {
 }
 
 
-SpatialSamplePlayer::SpatialSamplePlayer() {
+SamplePlayer3D::SamplePlayer3D() {
 
 	polyphony=1;
 
 }
 
-SpatialSamplePlayer::~SpatialSamplePlayer() {
+SamplePlayer3D::~SamplePlayer3D() {
 
 
 }

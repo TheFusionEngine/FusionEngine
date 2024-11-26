@@ -231,7 +231,7 @@ public:
 		String base;
 		bool use_idrefs;
 
-		Transform bind_shape;
+		Transform3D bind_shape;
 
 		struct Source {
 
@@ -267,7 +267,7 @@ public:
 			int count;
 		} weights;
 
-		Map<String,Transform> bone_rest_map;
+		Map<String,Transform3D> bone_rest_map;
 
 		SkinControllerData() { use_idrefs=false; }
 	};
@@ -387,15 +387,15 @@ public:
 		String id;
 		bool noname;
 		Vector<XForm> xform_list;
-		Transform default_transform;
-		Transform post_transform;
+		Transform3D default_transform;
+		Transform3D post_transform;
 		Vector<Node*> children;
 
 		Node* parent;
 
-		Transform compute_transform(Collada &state) const;
-		Transform get_global_transform() const;
-		Transform get_transform() const;
+		Transform3D compute_transform(Collada &state) const;
+		Transform3D get_global_transform() const;
+		Transform3D get_transform() const;
 
 		bool ignore_anim;
 
@@ -553,7 +553,7 @@ public:
 		Map<String,String> sid_to_node_map;
 		//Map<String,NodeJoint*> bone_map;
 
-		Map<String,Transform> bone_rest_map;
+		Map<String,Transform3D> bone_rest_map;
 
 		String local_path;
 		String root_visual_scene;
@@ -574,9 +574,9 @@ public:
 
 	Collada();
 
-	Transform fix_transform(const Transform& p_transform);
+	Transform3D fix_transform(const Transform3D& p_transform);
 
-	Transform get_root_transform() const;
+	Transform3D get_root_transform() const;
 
 	int get_uv_channel(String p_name);
 
@@ -616,7 +616,7 @@ private: // private stuff
 	Variant _parse_param(XMLParser& parser);
 	Vector<float> _read_float_array(XMLParser& parser);
 	Vector<String> _read_string_array(XMLParser& parser);
-	Transform _read_transform(XMLParser& parser);
+	Transform3D _read_transform(XMLParser& parser);
 
 	void _joint_set_owner(Collada::Node *p_node, NodeSkeleton *p_owner);
 	void _create_skeletons(Collada::Node **p_node, NodeSkeleton *p_skeleton=NULL);

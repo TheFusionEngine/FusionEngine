@@ -157,7 +157,7 @@ friend class Node;
 	void _flush_delete_queue();
 //optimization
 friend class CanvasItem;
-friend class Spatial;
+friend class Node3D;
 friend class Viewport;
 
 	SelfList<Node>::List xform_change_list;

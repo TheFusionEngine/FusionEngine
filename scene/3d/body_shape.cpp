@@ -41,15 +41,15 @@
 #include "physics_body.h"
 #include "quick_hull.h"
 
-void CollisionShape::_update_body() {
+void CollisionShape3D::_update_body() {
 
 
-	if (get_parent() && get_parent()->cast_to<CollisionObject>())
-		get_parent()->cast_to<CollisionObject>()->_update_shapes_from_children();
+	if (get_parent() && get_parent()->cast_to<CollisionObject3D>())
+		get_parent()->cast_to<CollisionObject3D>()->_update_shapes_from_children();
 
 }
 
-void CollisionShape::make_convex_from_brothers() {
+void CollisionShape3D::make_convex_from_brothers() {
 
 	Node *p = get_parent();
 	if (!p)
@@ -58,13 +58,13 @@ void CollisionShape::make_convex_from_brothers() {
 	for(int i=0;i<p->get_child_count();i++) {
 
 		Node *n = p->get_child(i);
-		if (n->cast_to<MeshInstance>()) {
+		if (n->cast_to<MeshInstance3D>()) {
 
-			MeshInstance *mi=n->cast_to<MeshInstance>();
+			MeshInstance3D *mi=n->cast_to<MeshInstance3D>();
 			Ref<Mesh> m = mi->get_mesh();
 			if (m.is_valid()) {
 
-				Ref<Shape> s = m->create_convex_shape();
+				Ref<Shape3D> s = m->create_convex_shape();
 				set_shape(s);
 			}
 		}
@@ -73,7 +73,7 @@ void CollisionShape::make_convex_from_brothers() {
 }
 /*
 
-void CollisionShape::_update_indicator() {
+void CollisionShape3D::_update_indicator() {
 
 	while (VisualServer::get_singleton()->mesh_get_surface_count(indicator))
 		VisualServer::get_singleton()->mesh_remove_surface(indicator,0);
@@ -86,16 +86,16 @@ void CollisionShape::_update_indicator() {
 
 	VS::PrimitiveType pt = VS::PRIMITIVE_TRIANGLES;
 
-	if (shape->cast_to<RayShape>()) {
+	if (shape->cast_to<RayShape3D>()) {
 
-		RayShape *rs = shape->cast_to<RayShape>();
+		RayShape3D *rs = shape->cast_to<RayShape3D>();
 		points.push_back(Vector3());
 		points.push_back(Vector3(0,0,rs->get_length()));
 		pt = VS::PRIMITIVE_LINES;
-	} else if (shape->cast_to<SphereShape>()) {
+	} else if (shape->cast_to<SphereShape3D>()) {
 
 //		VisualServer *vs=VisualServer::get_singleton();
-		SphereShape *shapeptr=shape->cast_to<SphereShape>();
+		SphereShape3D *shapeptr=shape->cast_to<SphereShape3D>();
 
 
 		Color col(0.4,1.0,1.0,0.5);
@@ -154,9 +154,9 @@ void CollisionShape::_update_indicator() {
 
 			}
 		}
-	} else if (shape->cast_to<BoxShape>()) {
+	} else if (shape->cast_to<BoxShape3D>()) {
 
-		BoxShape *shapeptr=shape->cast_to<BoxShape>();
+		BoxShape3D *shapeptr=shape->cast_to<BoxShape3D>();
 
 		for (int i=0;i<6;i++) {
 
@@ -198,9 +198,9 @@ void CollisionShape::_update_indicator() {
 
 		}
 
-	} else if (shape->cast_to<ConvexPolygonShape>()) {
+	} else if (shape->cast_to<ConvexPolygonShape3D>()) {
 
-		ConvexPolygonShape *shapeptr=shape->cast_to<ConvexPolygonShape>();
+		ConvexPolygonShape3D *shapeptr=shape->cast_to<ConvexPolygonShape3D>();
 
 		Geometry::MeshData md;
 		QuickHull::build(Variant(shapeptr->get_points()),md);
@@ -216,9 +216,9 @@ void CollisionShape::_update_indicator() {
 				normals.push_back(md.faces[i].plane.normal);
 			}
 		}
-	} else if (shape->cast_to<ConcavePolygonShape>()) {
+	} else if (shape->cast_to<ConcavePolygonShape3D>()) {
 
-		ConcavePolygonShape *shapeptr=shape->cast_to<ConcavePolygonShape>();
+		ConcavePolygonShape3D *shapeptr=shape->cast_to<ConcavePolygonShape3D>();
 
 		points = shapeptr->get_faces();
 		for(int i=0;i<points.size()/3;i++) {
@@ -229,9 +229,9 @@ void CollisionShape::_update_indicator() {
 			normals.push_back(n);
 		}
 
-	} else if (shape->cast_to<CapsuleShape>()) {
+	} else if (shape->cast_to<CapsuleShape3D>()) {
 
-		CapsuleShape *shapeptr=shape->cast_to<CapsuleShape>();
+		CapsuleShape3D *shapeptr=shape->cast_to<CapsuleShape3D>();
 
 		DVector<Plane> planes = Geometry::build_capsule_planes(shapeptr->get_radius(), shapeptr->get_height()/2.0, 12, Vector3::AXIS_Z);
 		Geometry::MeshData md = Geometry::build_convex_mesh(planes);
@@ -249,9 +249,9 @@ void CollisionShape::_update_indicator() {
 			}
 		}
 
-	} else if (shape->cast_to<PlaneShape>()) {
+	} else if (shape->cast_to<PlaneShape3D>()) {
 
-		PlaneShape *shapeptr=shape->cast_to<PlaneShape>();
+		PlaneShape3D *shapeptr=shape->cast_to<PlaneShape3D>();
 
 		Plane p = shapeptr->get_plane();
 		Vector3 n1 = p.get_any_perpendicular_normal();
@@ -300,12 +300,12 @@ void CollisionShape::_update_indicator() {
 }
 
 */
-void CollisionShape::_add_to_collision_object(Object* p_cshape) {
+void CollisionShape3D::_add_to_collision_object(Object* p_cshape) {
 
 	if (unparenting)
 		return;
 
-	CollisionObject *co=p_cshape->cast_to<CollisionObject>();
+	CollisionObject3D *co=p_cshape->cast_to<CollisionObject3D>();
 	ERR_FAIL_COND(!co);
 
 	if (shape.is_valid()) {
@@ -316,7 +316,7 @@ void CollisionShape::_add_to_collision_object(Object* p_cshape) {
     }
 }
 
-void CollisionShape::_notification(int p_what) {
+void CollisionShape3D::_notification(int p_what) {
 
 	switch(p_what) {
 
@@ -350,32 +350,32 @@ void CollisionShape::_notification(int p_what) {
 }
 
 
-void CollisionShape::resource_changed(RES res) {
+void CollisionShape3D::resource_changed(RES res) {
 
 	update_gizmo();
 
 
 }
 
-void CollisionShape::_bind_methods() {
+void CollisionShape3D::_bind_methods() {
 
 	//not sure if this should do anything
-	ObjectTypeDB::bind_method(_MD("resource_changed"),&CollisionShape::resource_changed);
-	ObjectTypeDB::bind_method(_MD("set_shape","shape"),&CollisionShape::set_shape);
-	ObjectTypeDB::bind_method(_MD("get_shape"),&CollisionShape::get_shape);
-	ObjectTypeDB::bind_method(_MD("_add_to_collision_object"),&CollisionShape::_add_to_collision_object);
-	ObjectTypeDB::bind_method(_MD("set_trigger","enable"),&CollisionShape::set_trigger);
-	ObjectTypeDB::bind_method(_MD("is_trigger"),&CollisionShape::is_trigger);
-	ObjectTypeDB::bind_method(_MD("make_convex_from_brothers"),&CollisionShape::make_convex_from_brothers);
-	ObjectTypeDB::set_method_flags("CollisionShape","make_convex_from_brothers",METHOD_FLAGS_DEFAULT|METHOD_FLAG_EDITOR);
+	ObjectTypeDB::bind_method(_MD("resource_changed"),&CollisionShape3D::resource_changed);
+	ObjectTypeDB::bind_method(_MD("set_shape","shape"),&CollisionShape3D::set_shape);
+	ObjectTypeDB::bind_method(_MD("get_shape"),&CollisionShape3D::get_shape);
+	ObjectTypeDB::bind_method(_MD("_add_to_collision_object"),&CollisionShape3D::_add_to_collision_object);
+	ObjectTypeDB::bind_method(_MD("set_trigger","enable"),&CollisionShape3D::set_trigger);
+	ObjectTypeDB::bind_method(_MD("is_trigger"),&CollisionShape3D::is_trigger);
+	ObjectTypeDB::bind_method(_MD("make_convex_from_brothers"),&CollisionShape3D::make_convex_from_brothers);
+	ObjectTypeDB::set_method_flags("CollisionShape3D","make_convex_from_brothers",METHOD_FLAGS_DEFAULT|METHOD_FLAG_EDITOR);
 
 
-	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "shape", PROPERTY_HINT_RESOURCE_TYPE, "Shape"), _SCS("set_shape"), _SCS("get_shape"));
+	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "shape", PROPERTY_HINT_RESOURCE_TYPE, "Shape3D"), _SCS("set_shape"), _SCS("get_shape"));
     ADD_PROPERTY(PropertyInfo(Variant::BOOL,"trigger"),_SCS("set_trigger"),_SCS("is_trigger"));
 }
 
 
-void CollisionShape::set_shape(const Ref<Shape> &p_shape) {
+void CollisionShape3D::set_shape(const Ref<Shape3D> &p_shape) {
 
 	if (!shape.is_null())
 		shape->unregister_owner(this);
@@ -387,34 +387,34 @@ void CollisionShape::set_shape(const Ref<Shape> &p_shape) {
 		_update_body();
 }
 
-Ref<Shape> CollisionShape::get_shape() const {
+Ref<Shape3D> CollisionShape3D::get_shape() const {
 
 	return shape;
 }
 
 
-void CollisionShape::set_updating_body(bool p_update) {
+void CollisionShape3D::set_updating_body(bool p_update) {
 	updating_body=p_update;
 }
 
-bool CollisionShape::is_updating_body() const {
+bool CollisionShape3D::is_updating_body() const {
 
 	return updating_body;
 }
 
-void CollisionShape::set_trigger(bool p_trigger) {
+void CollisionShape3D::set_trigger(bool p_trigger) {
 
     trigger=p_trigger;
     if (updating_body)
         _update_body();
 }
 
-bool CollisionShape::is_trigger() const{
+bool CollisionShape3D::is_trigger() const{
 
     return trigger;
 }
 
-CollisionShape::CollisionShape() {
+CollisionShape3D::CollisionShape3D() {
 
 	//indicator = VisualServer::get_singleton()->mesh_create();
 	updating_body=true;
@@ -422,7 +422,7 @@ CollisionShape::CollisionShape() {
     trigger=false;
 }
 
-CollisionShape::~CollisionShape() {
+CollisionShape3D::~CollisionShape3D() {
 	if (!shape.is_null())
 		shape->unregister_owner(this);
 	//VisualServer::get_singleton()->free(indicator);
@@ -450,7 +450,7 @@ CollisionShape::~CollisionShape() {
 }
 
 
-void CollisionShape::_notification(int p_what) {
+void CollisionShape3D::_notification(int p_what) {
 
 	switch (p_what) {
 		case NOTIFICATION_ENTER_SCENE: {
@@ -497,7 +497,7 @@ void CollisionShape::_notification(int p_what) {
 	}
 }
 
-void CollisionShape::volume_changed() {
+void CollisionShape3D::volume_changed() {
 
 	if (indicator.is_valid())
 		update_indicator(indicator);
@@ -505,31 +505,31 @@ void CollisionShape::volume_changed() {
 	Object *parent=get_parent();
 	if (!parent)
 		return;
-	PhysicsBody *physics_body=parent->cast_to<PhysicsBody>();
+	PhysicsBody3D *physics_body=parent->cast_to<PhysicsBody3D>();
 
-	ERR_EXPLAIN("CollisionShape parent is not of type PhysicsBody");
+	ERR_EXPLAIN("CollisionShape3D parent is not of type PhysicsBody3D");
 	ERR_FAIL_COND(!physics_body);
 
 	physics_body->recompute_child_volumes();
 
 }
 
-RID CollisionShape::_get_visual_instance_rid() const {
+RID CollisionShape3D::_get_visual_instance_rid() const {
 
 	return indicator_instance;
 
 }
 
-void CollisionShape::_bind_methods() {
+void CollisionShape3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method("_get_visual_instance_rid",&CollisionShape::_get_visual_instance_rid);
+	ObjectTypeDB::bind_method("_get_visual_instance_rid",&CollisionShape3D::_get_visual_instance_rid);
 }
 
-CollisionShape::CollisionShape() {
+CollisionShape3D::CollisionShape3D() {
 
 }
 
-CollisionShape::~CollisionShape() {
+CollisionShape3D::~CollisionShape3D() {
 
 	if (indicator.is_valid()) {
 
@@ -614,7 +614,7 @@ void CollisionShapeSphere::update_indicator(RID p_indicator) {
 	}
 }
 
-void CollisionShapeSphere::append_to_volume(Ref<Shape> p_volume) {
+void CollisionShapeSphere::append_to_volume(Ref<Shape3D> p_volume) {
 
 	p_volume->add_sphere_shape(radius,get_transform());
 }
@@ -690,7 +690,7 @@ void CollisionShapeBox::update_indicator(RID p_indicator) {
 	}
 }
 
-void CollisionShapeBox::append_to_volume(Ref<Shape> p_volume) {
+void CollisionShapeBox::append_to_volume(Ref<Shape3D> p_volume) {
 
 	p_volume->add_box_shape(half_extents,get_transform());
 }
@@ -754,7 +754,7 @@ void CollisionShapeCylinder::update_indicator(RID p_indicator) {
 
 }
 
-void CollisionShapeCylinder::append_to_volume(Ref<Shape> p_volume) {
+void CollisionShapeCylinder::append_to_volume(Ref<Shape3D> p_volume) {
 
 	p_volume->add_cylinder_shape(radius,height*2.0,get_transform());
 }
@@ -820,7 +820,7 @@ void CollisionShapeCapsule::update_indicator(RID p_indicator) {
 
 }
 
-void CollisionShapeCapsule::append_to_volume(Ref<Shape> p_volume) {
+void CollisionShapeCapsule::append_to_volume(Ref<Shape3D> p_volume) {
 
 
 	p_volume->add_capsule_shape(radius,height,get_transform());

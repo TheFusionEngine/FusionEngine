@@ -35,44 +35,44 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class Transform {
+class Transform3D {
 public:
 
-	Matrix3 basis;
+	Basis basis;
 	Vector3 origin;
 	
 	void invert(); 
-	Transform inverse() const; 
+	Transform3D inverse() const; 
 
 	void affine_invert();
-	Transform affine_inverse() const;
+	Transform3D affine_inverse() const;
 
-	Transform rotated(const Vector3& p_axis,real_t p_phi) const;
+	Transform3D rotated(const Vector3& p_axis,real_t p_phi) const;
 
 	void rotate(const Vector3& p_axis,real_t p_phi);
 	void rotate_basis(const Vector3& p_axis,real_t p_phi);
 
 	void set_look_at( const Vector3& p_eye, const Vector3& p_target, const Vector3& p_up );
-	Transform looking_at( const Vector3& p_target, const Vector3& p_up ) const;
+	Transform3D looking_at( const Vector3& p_target, const Vector3& p_up ) const;
 
 	void scale(const Vector3& p_scale);
-	Transform scaled(const Vector3& p_scale) const;
+	Transform3D scaled(const Vector3& p_scale) const;
 	void scale_basis(const Vector3& p_scale);
 	void translate( real_t p_tx, real_t p_ty, real_t p_tz );
 	void translate( const Vector3& p_translation );
-	Transform translated( const Vector3& p_translation ) const;
+	Transform3D translated( const Vector3& p_translation ) const;
 
-	const Matrix3& get_basis() const { return basis; }
-	void set_basis(const Matrix3& p_basis) { basis=p_basis; }
+	const Basis& get_basis() const { return basis; }
+	void set_basis(const Basis& p_basis) { basis=p_basis; }
 
 	const Vector3& get_origin() const { return origin; }
 	void set_origin(const Vector3& p_origin) { origin=p_origin; }
 
 	void orthonormalize();
-	Transform orthonormalized() const;
+	Transform3D orthonormalized() const;
 
-	bool operator==(const Transform& p_transform) const;
-	bool operator!=(const Transform& p_transform) const;
+	bool operator==(const Transform3D& p_transform) const;
+	bool operator!=(const Transform3D& p_transform) const;
 
 	_FORCE_INLINE_ Vector3 xform(const Vector3& p_vector) const;
 	_FORCE_INLINE_ Vector3 xform_inv(const Vector3& p_vector) const;
@@ -83,15 +83,15 @@ public:
 	_FORCE_INLINE_ AABB xform(const AABB& p_aabb) const;
 	_FORCE_INLINE_ AABB xform_inv(const AABB& p_aabb) const;
 	
-	void operator*=(const Transform& p_transform);
-	Transform operator*(const Transform& p_transform) const;
+	void operator*=(const Transform3D& p_transform);
+	Transform3D operator*(const Transform3D& p_transform) const;
 
-	Transform interpolate_with(const Transform& p_transform, float p_c) const;
+	Transform3D interpolate_with(const Transform3D& p_transform, float p_c) const;
 	
-	_FORCE_INLINE_ Transform inverse_xform(const Transform& t) const {
+	_FORCE_INLINE_ Transform3D inverse_xform(const Transform3D& t) const {
 		
 		Vector3 v = t.origin - origin;
-		return Transform(basis.transpose_xform(t.basis),
+		return Transform3D(basis.transpose_xform(t.basis),
 			basis.xform(v));
 	}
 	
@@ -113,13 +113,13 @@ public:
 	
 	operator String() const;
 	
-	Transform(const Matrix3& p_basis, const Vector3& p_origin=Vector3());
-	Transform() {}
+	Transform3D(const Basis& p_basis, const Vector3& p_origin=Vector3());
+	Transform3D() {}
 
 };
 
 
-_FORCE_INLINE_ Vector3 Transform::xform(const Vector3& p_vector) const {
+_FORCE_INLINE_ Vector3 Transform3D::xform(const Vector3& p_vector) const {
 
 	return Vector3(
 		basis[0].dot(p_vector)+origin.x,
@@ -127,7 +127,7 @@ _FORCE_INLINE_ Vector3 Transform::xform(const Vector3& p_vector) const {
 		basis[2].dot(p_vector)+origin.z
 	);
 }
-_FORCE_INLINE_ Vector3 Transform::xform_inv(const Vector3& p_vector) const {
+_FORCE_INLINE_ Vector3 Transform3D::xform_inv(const Vector3& p_vector) const {
 	
 	Vector3 v = p_vector - origin;
 	
@@ -138,7 +138,7 @@ _FORCE_INLINE_ Vector3 Transform::xform_inv(const Vector3& p_vector) const {
 	);
 }
 
-_FORCE_INLINE_ Plane Transform::xform(const Plane& p_plane) const {
+_FORCE_INLINE_ Plane Transform3D::xform(const Plane& p_plane) const {
 
 	
 	Vector3 point=p_plane.normal*p_plane.d;
@@ -153,7 +153,7 @@ _FORCE_INLINE_ Plane Transform::xform(const Plane& p_plane) const {
 	return Plane(normal,d);
 
 }
-_FORCE_INLINE_ Plane Transform::xform_inv(const Plane& p_plane) const {
+_FORCE_INLINE_ Plane Transform3D::xform_inv(const Plane& p_plane) const {
 
 	Vector3 point=p_plane.normal*p_plane.d;
 	Vector3 point_dir=point+p_plane.normal;
@@ -168,7 +168,7 @@ _FORCE_INLINE_ Plane Transform::xform_inv(const Plane& p_plane) const {
 
 }
 
-_FORCE_INLINE_ AABB Transform::xform(const AABB& p_aabb) const {
+_FORCE_INLINE_ AABB Transform3D::xform(const AABB& p_aabb) const {
 	/* define vertices */
 #if 1
 	Vector3 x=basis.get_axis(0)*p_aabb.size.x;
@@ -214,7 +214,7 @@ _FORCE_INLINE_ AABB Transform::xform(const AABB& p_aabb) const {
 #endif
 
 }
-_FORCE_INLINE_ AABB Transform::xform_inv(const AABB& p_aabb) const {
+_FORCE_INLINE_ AABB Transform3D::xform_inv(const AABB& p_aabb) const {
 
 	/* define vertices */
 	Vector3 vertices[8]={
@@ -248,17 +248,17 @@ _FORCE_INLINE_ AABB Transform::xform_inv(const AABB& p_aabb) const {
 
 struct OptimizedTransform {
 
-	Transform transform;
+	Transform3D transform;
 
 	_FORCE_INLINE_ void invert() {transform.invert(); }
 	_FORCE_INLINE_ void affine_invert() {transform.affine_invert(); }
 	_FORCE_INLINE_ Vector3 xform(const Vector3& p_vec) const { return transform.xform(p_vec); };
 	_FORCE_INLINE_ Vector3 xform_inv(const Vector3& p_vec) const { return transform.xform_inv(p_vec); };
 	_FORCE_INLINE_ OptimizedTransform operator*(const OptimizedTransform& p_ot ) const { return OptimizedTransform( transform * p_ot.transform ) ; }
-	_FORCE_INLINE_ Transform get_transform() const { return transform; }
-	_FORCE_INLINE_ void set_transform(const Transform& p_transform)  { transform=p_transform; }
+	_FORCE_INLINE_ Transform3D get_transform() const { return transform; }
+	_FORCE_INLINE_ void set_transform(const Transform3D& p_transform)  { transform=p_transform; }
 
-	OptimizedTransform(const Transform& p_transform) {
+	OptimizedTransform(const Transform3D& p_transform) {
 		transform=p_transform;
 	}
 };

@@ -33,7 +33,7 @@
 #include "scene/animation/animation_player.h"
 #include "scene/scene_string_names.h"
 
-void VisibilityNotifier::_enter_camera(Camera* p_camera) {
+void VisibilityNotifier3D::_enter_camera(Camera3D* p_camera) {
 
 	ERR_FAIL_COND(cameras.has(p_camera));
 	cameras.insert(p_camera);
@@ -45,7 +45,7 @@ void VisibilityNotifier::_enter_camera(Camera* p_camera) {
 
 }
 
-void VisibilityNotifier::_exit_camera(Camera* p_camera){
+void VisibilityNotifier3D::_exit_camera(Camera3D* p_camera){
 
 	ERR_FAIL_COND(!cameras.has(p_camera));
 	cameras.erase(p_camera);
@@ -60,7 +60,7 @@ void VisibilityNotifier::_exit_camera(Camera* p_camera){
 }
 
 
-void VisibilityNotifier::set_aabb(const AABB& p_aabb){
+void VisibilityNotifier3D::set_aabb(const AABB& p_aabb){
 
 	if (aabb==p_aabb)
 		return;
@@ -74,13 +74,13 @@ void VisibilityNotifier::set_aabb(const AABB& p_aabb){
 	update_gizmo();
 }
 
-AABB VisibilityNotifier::get_aabb() const{
+AABB VisibilityNotifier3D::get_aabb() const{
 
 	return aabb;
 }
 
 
-void VisibilityNotifier::_notification(int p_what) {
+void VisibilityNotifier3D::_notification(int p_what) {
 
 
 	switch(p_what) {
@@ -102,27 +102,27 @@ void VisibilityNotifier::_notification(int p_what) {
 }
 
 
-bool VisibilityNotifier::is_on_screen() const {
+bool VisibilityNotifier3D::is_on_screen() const {
 
 	return cameras.size()!=0;
 }
 
-void VisibilityNotifier::_bind_methods(){
+void VisibilityNotifier3D::_bind_methods(){
 
-	ObjectTypeDB::bind_method(_MD("set_aabb","rect"),&VisibilityNotifier::set_aabb);
-	ObjectTypeDB::bind_method(_MD("get_aabb"),&VisibilityNotifier::get_aabb);
-	ObjectTypeDB::bind_method(_MD("is_on_screen"),&VisibilityNotifier::is_on_screen);
+	ObjectTypeDB::bind_method(_MD("set_aabb","rect"),&VisibilityNotifier3D::set_aabb);
+	ObjectTypeDB::bind_method(_MD("get_aabb"),&VisibilityNotifier3D::get_aabb);
+	ObjectTypeDB::bind_method(_MD("is_on_screen"),&VisibilityNotifier3D::is_on_screen);
 
 	ADD_PROPERTY( PropertyInfo(Variant::_AABB,"aabb"),_SCS("set_aabb"),_SCS("get_aabb"));
 
-	ADD_SIGNAL( MethodInfo("enter_camera",PropertyInfo(Variant::OBJECT,"camera",PROPERTY_HINT_RESOURCE_TYPE,"Camera")) );
-	ADD_SIGNAL( MethodInfo("exit_camera",PropertyInfo(Variant::OBJECT,"camera",PROPERTY_HINT_RESOURCE_TYPE,"Camera")) );
+	ADD_SIGNAL( MethodInfo("enter_camera",PropertyInfo(Variant::OBJECT,"camera",PROPERTY_HINT_RESOURCE_TYPE,"Camera3D")) );
+	ADD_SIGNAL( MethodInfo("exit_camera",PropertyInfo(Variant::OBJECT,"camera",PROPERTY_HINT_RESOURCE_TYPE,"Camera3D")) );
 	ADD_SIGNAL( MethodInfo("enter_screen"));
 	ADD_SIGNAL( MethodInfo("exit_screen"));
 }
 
 
-VisibilityNotifier::VisibilityNotifier() {
+VisibilityNotifier3D::VisibilityNotifier3D() {
 
 	aabb=AABB(Vector3(-1,-1,-1),Vector3(2,2,2));
 
@@ -135,7 +135,7 @@ VisibilityNotifier::VisibilityNotifier() {
 //////////////////////////////////////
 
 
-void VisibilityEnabler::_screen_enter() {
+void VisibilityEnabler3D::_screen_enter() {
 
 
 	for(Map<Node*,Variant>::Element *E=nodes.front();E;E=E->next()) {
@@ -146,7 +146,7 @@ void VisibilityEnabler::_screen_enter() {
 	visible=true;
 }
 
-void VisibilityEnabler::_screen_exit() {
+void VisibilityEnabler3D::_screen_exit() {
 
 	for(Map<Node*,Variant>::Element *E=nodes.front();E;E=E->next()) {
 
@@ -156,7 +156,7 @@ void VisibilityEnabler::_screen_exit() {
 	visible=false;
 }
 
-void VisibilityEnabler::_find_nodes(Node* p_node) {
+void VisibilityEnabler3D::_find_nodes(Node* p_node) {
 
 
 	bool add=false;
@@ -164,8 +164,8 @@ void VisibilityEnabler::_find_nodes(Node* p_node) {
 
 	if (enabler[ENABLER_FREEZE_BODIES]) {
 
-		RigidBody *rb = p_node->cast_to<RigidBody>();
-		if (rb && ((rb->get_mode()==RigidBody::MODE_CHARACTER || (rb->get_mode()==RigidBody::MODE_RIGID && !rb->is_able_to_sleep())))) {
+		RigidBody3D *rb = p_node->cast_to<RigidBody3D>();
+		if (rb && ((rb->get_mode()==RigidBody3D::MODE_CHARACTER || (rb->get_mode()==RigidBody3D::MODE_RIGID && !rb->is_able_to_sleep())))) {
 
 
 			add=true;
@@ -198,7 +198,7 @@ void VisibilityEnabler::_find_nodes(Node* p_node) {
 
 }
 
-void VisibilityEnabler::_notification(int p_what){
+void VisibilityEnabler3D::_notification(int p_what){
 
 	if (p_what==NOTIFICATION_ENTER_TREE) {
 
@@ -236,20 +236,20 @@ void VisibilityEnabler::_notification(int p_what){
 	}
 }
 
-void VisibilityEnabler::_change_node_state(Node* p_node,bool p_enabled) {
+void VisibilityEnabler3D::_change_node_state(Node* p_node,bool p_enabled) {
 
 	ERR_FAIL_COND(!nodes.has(p_node));
 
 	{
-		RigidBody *rb = p_node->cast_to<RigidBody>();
+		RigidBody3D *rb = p_node->cast_to<RigidBody3D>();
 		if (rb) {
 
 			if (p_enabled) {
-				RigidBody::Mode mode = RigidBody::Mode(nodes[p_node].operator int());
+				RigidBody3D::Mode mode = RigidBody3D::Mode(nodes[p_node].operator int());
 				//rb->set_mode(mode);
 				rb->set_sleeping(false);
 			} else {
-				//rb->set_mode(RigidBody::MODE_STATIC);
+				//rb->set_mode(RigidBody3D::MODE_STATIC);
 				rb->set_sleeping(true);
 			}
 		}
@@ -267,7 +267,7 @@ void VisibilityEnabler::_change_node_state(Node* p_node,bool p_enabled) {
 }
 
 
-void VisibilityEnabler::_node_removed(Node* p_node) {
+void VisibilityEnabler3D::_node_removed(Node* p_node) {
 
 	if (!visible)
 		_change_node_state(p_node,true);
@@ -276,11 +276,11 @@ void VisibilityEnabler::_node_removed(Node* p_node) {
 
 }
 
-void VisibilityEnabler::_bind_methods(){
+void VisibilityEnabler3D::_bind_methods(){
 
-	ObjectTypeDB::bind_method(_MD("set_enabler","enabler","enabled"),&VisibilityEnabler::set_enabler);
-	ObjectTypeDB::bind_method(_MD("is_enabler_enabled","enabler"),&VisibilityEnabler::is_enabler_enabled);
-	ObjectTypeDB::bind_method(_MD("_node_removed"),&VisibilityEnabler::_node_removed);
+	ObjectTypeDB::bind_method(_MD("set_enabler","enabler","enabled"),&VisibilityEnabler3D::set_enabler);
+	ObjectTypeDB::bind_method(_MD("is_enabler_enabled","enabler"),&VisibilityEnabler3D::is_enabler_enabled);
+	ObjectTypeDB::bind_method(_MD("_node_removed"),&VisibilityEnabler3D::_node_removed);
 
 	ADD_PROPERTYI( PropertyInfo(Variant::BOOL,"enabler/pause_animations"),_SCS("set_enabler"),_SCS("is_enabler_enabled"), ENABLER_PAUSE_ANIMATIONS );
 	ADD_PROPERTYI( PropertyInfo(Variant::BOOL,"enabler/freeze_bodies"),_SCS("set_enabler"),_SCS("is_enabler_enabled"), ENABLER_FREEZE_BODIES);
@@ -290,20 +290,20 @@ void VisibilityEnabler::_bind_methods(){
 	BIND_CONSTANT( ENABLER_MAX);
 }
 
-void VisibilityEnabler::set_enabler(Enabler p_enabler,bool p_enable){
+void VisibilityEnabler3D::set_enabler(Enabler p_enabler,bool p_enable){
 
 	ERR_FAIL_INDEX(p_enabler,ENABLER_MAX);
 	enabler[p_enabler]=p_enable;
 
 }
-bool VisibilityEnabler::is_enabler_enabled(Enabler p_enabler) const{
+bool VisibilityEnabler3D::is_enabler_enabled(Enabler p_enabler) const{
 
 	ERR_FAIL_INDEX_V(p_enabler,ENABLER_MAX,false);
 	return enabler[p_enabler];
 
 }
 
-VisibilityEnabler::VisibilityEnabler() {
+VisibilityEnabler3D::VisibilityEnabler3D() {
 
 	for(int i=0;i<ENABLER_MAX;i++)
 		enabler[i]=true;

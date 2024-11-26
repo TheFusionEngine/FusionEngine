@@ -146,7 +146,7 @@ void Navigation::_navmesh_unlink(int p_id) {
 }
 
 
-int Navigation::navmesh_create(const Ref<NavigationMesh>& p_mesh, const Transform& p_xform, Object *p_owner) {
+int Navigation::navmesh_create(const Ref<NavigationMesh>& p_mesh, const Transform3D& p_xform, Object *p_owner) {
 
 	int id = last_id++;
 	NavMesh nm;
@@ -161,7 +161,7 @@ int Navigation::navmesh_create(const Ref<NavigationMesh>& p_mesh, const Transfor
 	return id;
 }
 
-void Navigation::navmesh_set_transform(int p_id, const Transform& p_xform){
+void Navigation::navmesh_set_transform(int p_id, const Transform3D& p_xform){
 
 	ERR_FAIL_COND(!navmesh_map.has(p_id));
 	NavMesh &nm=navmesh_map[p_id];

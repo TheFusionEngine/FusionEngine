@@ -36,12 +36,12 @@ void _ResourceLoader::set_abort_on_missing_resources(bool p_abort) {
 	ResourceLoader::set_abort_on_missing_resources(p_abort);
 }
 
-StringArray _ResourceLoader::get_dependencies(const String& p_path) {
+PackedStringArray _ResourceLoader::get_dependencies(const String& p_path) {
 
 	List<String> deps;
 	ResourceLoader::get_dependencies(p_path, &deps);
 
-	StringArray ret;
+	PackedStringArray ret;
 	for(List<String>::Element *E=deps.front();E;E=E->next()) {
 		ret.push_back(E->get());
 	}

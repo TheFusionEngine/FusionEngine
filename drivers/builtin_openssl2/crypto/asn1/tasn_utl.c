@@ -116,7 +116,7 @@ int asn1_do_lock(ASN1_VALUE **pval, int op, const ASN1_ITEM *it)
 		}
 	ret = CRYPTO_add(lck, op, aux->ref_lock);
 #ifdef REF_PRINT
-	fprintf(stderr, "%s: Reference Count: %d\n", it->sname, *lck);
+	fprintf(stderr, "%s: RefCounted Count: %d\n", it->sname, *lck);
 #endif
 #ifdef REF_CHECK
 	if (ret < 0) 

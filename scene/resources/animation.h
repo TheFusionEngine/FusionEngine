@@ -48,7 +48,7 @@ public:
 
 	enum TrackType {
 		TYPE_VALUE, ///< Set a value in a property, can be interpolated.
-		TYPE_TRANSFORM, ///< Transform a node or a bone.
+		TYPE_TRANSFORM, ///< Transform3D a node or a bone.
 		TYPE_METHOD, ///< Call any method on a specific node.
 	};
 
