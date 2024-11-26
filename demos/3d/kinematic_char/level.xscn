@@ -787,7 +787,7 @@
 				<real> 0.5 </real>
 				<resource  resource_type="Environment" path="local://0">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.73254, 4.51999, 8.01683 </transform>
-				<resource  resource_type="Shape" path="local://1">  </resource>
+				<resource  resource_type="Shape3D" path="local://1">  </resource>
 				<transform> 0.95, 0, 0, 0, -4.15258e-08, -0.95, 0, 0.95, -4.15258e-08, 0, 0, 0 </transform>
 				<real> 0.001 </real>
 				<resource  resource_type="Script" path="res://cubio.gd">  </resource>
@@ -806,7 +806,7 @@
 				<int> 25 </int>
 				<int> 50 </int>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 9, -5 </transform>
-				<resource  resource_type="Shape" path="local://4">  </resource>
+				<resource  resource_type="Shape3D" path="local://4">  </resource>
 				<real> 0.01 </real>
 				<resource  resource_type="Mesh" path="local://6">  </resource>
 				<resource  resource_type="Animation" path="local://7">  </resource>
@@ -817,7 +817,7 @@
 				<resource  resource_type="Animation" path="local://8">  </resource>
 				<string> "side" </string>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.5054, 5.89978 </transform>
-				<resource  resource_type="Shape" path="local://9">  </resource>
+				<resource  resource_type="Shape3D" path="local://9">  </resource>
 				<vector3> 0, -1, 0 </vector3>
 				<real> 9.8 </real>
 				<node_path> "Cube" </node_path>

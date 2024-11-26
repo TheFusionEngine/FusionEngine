@@ -312,7 +312,7 @@
 				<bool> True </bool>
 				<bool> False </bool>
 				<int> 1 </int>
-				<resource  resource_type="Shape" path="local://0">  </resource>
+				<resource  resource_type="Shape3D" path="local://0">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00894194, 0.575859, 0.0193955 </transform>
 				<int> 0 </int>
 				<vector3> 0, -1, 0 </vector3>

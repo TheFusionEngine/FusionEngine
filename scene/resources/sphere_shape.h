@@ -32,9 +32,9 @@
 
 #include "scene/resources/shape.h"
 
-class SphereShape3D : public Shape {
+class SphereShape3D : public Shape3D {
 
-	OBJ_TYPE(SphereShape3D,Shape);
+	OBJ_TYPE(SphereShape3D,Shape3D);
 	float radius;
 
 protected:

@@ -837,7 +837,7 @@
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00169557, 0.637902, -2.78118 </transform>
 				<bool> False </bool>
 				<int> 1 </int>
-				<resource  resource_type="Shape" path="local://0">  </resource>
+				<resource  resource_type="Shape3D" path="local://0">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.383046, -0.0335202 </transform>
 				<real> 0 </real>
 				<real> 40 </real>
@@ -868,7 +868,7 @@
 				<node_path> "TRAILER-vehicle" </node_path>
 				<resource  resource_type="Mesh" path="local://8">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00169557, 0.222867, -0.0955184 </transform>
-				<resource  resource_type="Shape" path="local://9">  </resource>
+				<resource  resource_type="Shape3D" path="local://9">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.571059, 0.132248 </transform>
 				<resource  resource_type="Script" path="res://vehicle.gd">  </resource>
 				<int> 200 </int>

@@ -85,7 +85,7 @@ class GridMap : public Node3D {
 
 			Set<IndexKey> cells;
 			Ref<Mesh> mesh;
-			Ref<Shape> shape;
+			Ref<Shape3D> shape;
 			Ref<MultiMesh> multimesh;
 			RID multimesh_instance;
 

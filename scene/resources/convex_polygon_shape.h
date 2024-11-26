@@ -31,9 +31,9 @@
 
 #include "scene/resources/shape.h"
 
-class ConvexPolygonShape3D : public Shape {
+class ConvexPolygonShape3D : public Shape3D {
 
-	OBJ_TYPE(ConvexPolygonShape3D,Shape);
+	OBJ_TYPE(ConvexPolygonShape3D,Shape3D);
 	DVector<Vector3> points;
 
 protected:

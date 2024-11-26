@@ -33,19 +33,19 @@
 
 
 
-Shape::Shape() {
+Shape3D::Shape3D() {
 
 	ERR_PRINT("Constructor must not be called!");
 
 }
 
 
-Shape::Shape(RID p_shape) {
+Shape3D::Shape3D(RID p_shape) {
 
 	shape=p_shape;
 }
 
-Shape::~Shape() {
+Shape3D::~Shape3D() {
 
 	PhysicsServer::get_singleton()->free(shape);
 }

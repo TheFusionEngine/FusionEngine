@@ -216,7 +216,7 @@
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.669487, 0 </transform>
 				<bool> False </bool>
 				<int> 1 </int>
-				<resource  resource_type="Shape" path="local://0">  </resource>
+				<resource  resource_type="Shape3D" path="local://0">  </resource>
 				<int> 0 </int>
 				<real> 1 </real>
 				<real> 0 </real>
@@ -598,7 +598,7 @@
 					<string> "3D" </string>
 				</dictionary>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.79071, 0, 0 </transform>
-				<resource  resource_type="Shape" path="local://1">  </resource>
+				<resource  resource_type="Shape3D" path="local://1">  </resource>
 				<dictionary  shared="false">
 					<string> "_editor_collapsed" </string>
 					<bool> True </bool>
@@ -724,18 +724,18 @@
 					<string> "3D" </string>
 				</dictionary>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.68637, 0, 3.81405 </transform>
-				<resource  resource_type="Shape" path="local://2">  </resource>
+				<resource  resource_type="Shape3D" path="local://2">  </resource>
 				<dictionary  shared="false">
 					<string> "_editor_collapsed" </string>
 					<bool> True </bool>
 				</dictionary>
-				<resource  resource_type="Shape" path="local://3">  </resource>
+				<resource  resource_type="Shape3D" path="local://3">  </resource>
 				<dictionary  shared="false">
 					<string> "_editor_collapsed" </string>
 					<bool> True </bool>
 				</dictionary>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.72079 </transform>
-				<resource  resource_type="Shape" path="local://4">  </resource>
+				<resource  resource_type="Shape3D" path="local://4">  </resource>
 				<dictionary  shared="false">
 					<string> "_editor_collapsed" </string>
 					<bool> True </bool>

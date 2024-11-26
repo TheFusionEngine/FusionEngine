@@ -64,7 +64,7 @@ void CollisionShape3D::make_convex_from_brothers() {
 			Ref<Mesh> m = mi->get_mesh();
 			if (m.is_valid()) {
 
-				Ref<Shape> s = m->create_convex_shape();
+				Ref<Shape3D> s = m->create_convex_shape();
 				set_shape(s);
 			}
 		}
@@ -370,12 +370,12 @@ void CollisionShape3D::_bind_methods() {
 	ObjectTypeDB::set_method_flags("CollisionShape3D","make_convex_from_brothers",METHOD_FLAGS_DEFAULT|METHOD_FLAG_EDITOR);
 
 
-	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "shape", PROPERTY_HINT_RESOURCE_TYPE, "Shape"), _SCS("set_shape"), _SCS("get_shape"));
+	ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "shape", PROPERTY_HINT_RESOURCE_TYPE, "Shape3D"), _SCS("set_shape"), _SCS("get_shape"));
     ADD_PROPERTY(PropertyInfo(Variant::BOOL,"trigger"),_SCS("set_trigger"),_SCS("is_trigger"));
 }
 
 
-void CollisionShape3D::set_shape(const Ref<Shape> &p_shape) {
+void CollisionShape3D::set_shape(const Ref<Shape3D> &p_shape) {
 
 	if (!shape.is_null())
 		shape->unregister_owner(this);
@@ -387,7 +387,7 @@ void CollisionShape3D::set_shape(const Ref<Shape> &p_shape) {
 		_update_body();
 }
 
-Ref<Shape> CollisionShape3D::get_shape() const {
+Ref<Shape3D> CollisionShape3D::get_shape() const {
 
 	return shape;
 }
@@ -614,7 +614,7 @@ void CollisionShapeSphere::update_indicator(RID p_indicator) {
 	}
 }
 
-void CollisionShapeSphere::append_to_volume(Ref<Shape> p_volume) {
+void CollisionShapeSphere::append_to_volume(Ref<Shape3D> p_volume) {
 
 	p_volume->add_sphere_shape(radius,get_transform());
 }
@@ -690,7 +690,7 @@ void CollisionShapeBox::update_indicator(RID p_indicator) {
 	}
 }
 
-void CollisionShapeBox::append_to_volume(Ref<Shape> p_volume) {
+void CollisionShapeBox::append_to_volume(Ref<Shape3D> p_volume) {
 
 	p_volume->add_box_shape(half_extents,get_transform());
 }
@@ -754,7 +754,7 @@ void CollisionShapeCylinder::update_indicator(RID p_indicator) {
 
 }
 
-void CollisionShapeCylinder::append_to_volume(Ref<Shape> p_volume) {
+void CollisionShapeCylinder::append_to_volume(Ref<Shape3D> p_volume) {
 
 	p_volume->add_cylinder_shape(radius,height*2.0,get_transform());
 }
@@ -820,7 +820,7 @@ void CollisionShapeCapsule::update_indicator(RID p_indicator) {
 
 }
 
-void CollisionShapeCapsule::append_to_volume(Ref<Shape> p_volume) {
+void CollisionShapeCapsule::append_to_volume(Ref<Shape3D> p_volume) {
 
 
 	p_volume->add_capsule_shape(radius,height,get_transform());

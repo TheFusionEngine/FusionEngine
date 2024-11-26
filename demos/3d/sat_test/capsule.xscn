@@ -266,7 +266,7 @@
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.31527, 0, 0 </transform>
 				<bool> False </bool>
 				<int> 1 </int>
-				<resource  resource_type="Shape" path="local://0">  </resource>
+				<resource  resource_type="Shape3D" path="local://0">  </resource>
 				<transform> 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 </transform>
 				<int> 0 </int>
 				<real> 1 </real>

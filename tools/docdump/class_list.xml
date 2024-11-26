@@ -1501,7 +1501,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="BoxShape3D" inherits="Shape" category="Resources">
+<class name="BoxShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -1837,7 +1837,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="CapsuleShape3D" inherits="Shape" category="Resources">
+<class name="CapsuleShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -1923,7 +1923,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="ConcavePolygonShape3D" inherits="Shape" category="Resources">
+<class name="ConcavePolygonShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2407,7 +2407,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="ConvexPolygonShape3D" inherits="Shape" category="Resources">
+<class name="ConvexPolygonShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2811,7 +2811,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="CylinderShape" inherits="Shape" category="Resources">
+<class name="CylinderShape" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7151,7 +7151,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PlaneShape3D" inherits="Shape" category="Resources">
+<class name="PlaneShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7658,7 +7658,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="RayShape3D" inherits="Shape" category="Resources">
+<class name="RayShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -8870,7 +8870,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Shape" inherits="Resource" category="Core">
+<class name="Shape3D" inherits="Resource" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9347,7 +9347,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SphereShape3D" inherits="Shape" category="Resources">
+<class name="SphereShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>

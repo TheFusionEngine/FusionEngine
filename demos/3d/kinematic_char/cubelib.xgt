@@ -87,7 +87,7 @@
 	<main_resource>
 		<string name="item/0/name"> "cube" </string>
 		<resource name="item/0/mesh" resource_type="Mesh" path="local://1">  </resource>
-		<resource name="item/0/shape" resource_type="Shape" path="local://2">  </resource>
+		<resource name="item/0/shape" resource_type="Shape3D" path="local://2">  </resource>
 		<resource name="item/0/preview" resource_type="Texture" path="local://3">  </resource>
 
 	</main_resource>

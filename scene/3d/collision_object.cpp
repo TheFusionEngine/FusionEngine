@@ -164,7 +164,7 @@ void CollisionObject3D::_get_property_list( List<PropertyInfo> *p_list) const {
 
 	for(int i=0;i<shapes.size();i++) {
 		String path="shapes/"+itos(i)+"/";
-		p_list->push_back( PropertyInfo(Variant::OBJECT,path+"shape",PROPERTY_HINT_RESOURCE_TYPE,"Shape",PROPERTY_USAGE_NOEDITOR|PROPERTY_USAGE_NO_INSTANCE_STATE) );
+		p_list->push_back( PropertyInfo(Variant::OBJECT,path+"shape",PROPERTY_HINT_RESOURCE_TYPE,"Shape3D",PROPERTY_USAGE_NOEDITOR|PROPERTY_USAGE_NO_INSTANCE_STATE) );
 		p_list->push_back( PropertyInfo(Variant::TRANSFORM,path+"transform",PROPERTY_HINT_NONE,"",PROPERTY_USAGE_NOEDITOR|PROPERTY_USAGE_NO_INSTANCE_STATE) );
 		p_list->push_back( PropertyInfo(Variant::BOOL,path+"trigger",PROPERTY_HINT_NONE,"",PROPERTY_USAGE_NOEDITOR|PROPERTY_USAGE_NO_INSTANCE_STATE) );
 
@@ -223,14 +223,14 @@ bool CollisionObject3D::is_ray_pickable() const {
 
 void CollisionObject3D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("add_shape","shape:Shape","transform"),&CollisionObject3D::add_shape,DEFVAL(Transform3D()));
+	ObjectTypeDB::bind_method(_MD("add_shape","shape:Shape3D","transform"),&CollisionObject3D::add_shape,DEFVAL(Transform3D()));
 	ObjectTypeDB::bind_method(_MD("get_shape_count"),&CollisionObject3D::get_shape_count);
-	ObjectTypeDB::bind_method(_MD("set_shape","shape_idx","shape:Shape"),&CollisionObject3D::set_shape);
+	ObjectTypeDB::bind_method(_MD("set_shape","shape_idx","shape:Shape3D"),&CollisionObject3D::set_shape);
 	ObjectTypeDB::bind_method(_MD("set_shape_transform","shape_idx","transform"),&CollisionObject3D::set_shape_transform);
 //    ObjectTypeDB::bind_method(_MD("set_shape_transform","shape_idx","transform"),&CollisionObject3D::set_shape_transform);
 	ObjectTypeDB::bind_method(_MD("set_shape_as_trigger","shape_idx","enable"),&CollisionObject3D::set_shape_as_trigger);
 	ObjectTypeDB::bind_method(_MD("is_shape_set_as_trigger","shape_idx"),&CollisionObject3D::is_shape_set_as_trigger);
-	ObjectTypeDB::bind_method(_MD("get_shape:Shape","shape_idx"),&CollisionObject3D::get_shape);
+	ObjectTypeDB::bind_method(_MD("get_shape:Shape3D","shape_idx"),&CollisionObject3D::get_shape);
 	ObjectTypeDB::bind_method(_MD("get_shape_transform","shape_idx"),&CollisionObject3D::get_shape_transform);
 	ObjectTypeDB::bind_method(_MD("remove_shape","shape_idx"),&CollisionObject3D::remove_shape);
 	ObjectTypeDB::bind_method(_MD("clear_shapes"),&CollisionObject3D::clear_shapes);
@@ -250,7 +250,7 @@ void CollisionObject3D::_bind_methods() {
 }
 
 
-void CollisionObject3D::add_shape(const Ref<Shape>& p_shape, const Transform3D& p_transform) {
+void CollisionObject3D::add_shape(const Ref<Shape3D>& p_shape, const Transform3D& p_transform) {
 
 	ShapeData sdata;
 	sdata.shape=p_shape;
@@ -264,7 +264,7 @@ int CollisionObject3D::get_shape_count() const {
 	return shapes.size();
 
 }
-void CollisionObject3D::set_shape(int p_shape_idx, const Ref<Shape>& p_shape) {
+void CollisionObject3D::set_shape(int p_shape_idx, const Ref<Shape3D>& p_shape) {
 
 	ERR_FAIL_INDEX(p_shape_idx,shapes.size());
 	shapes[p_shape_idx].shape=p_shape;
@@ -279,9 +279,9 @@ void CollisionObject3D::set_shape_transform(int p_shape_idx, const Transform3D& 
 	_update_shapes();
 }
 
-Ref<Shape> CollisionObject3D::get_shape(int p_shape_idx) const {
+Ref<Shape3D> CollisionObject3D::get_shape(int p_shape_idx) const {
 
-	ERR_FAIL_INDEX_V(p_shape_idx,shapes.size(),Ref<Shape>());
+	ERR_FAIL_INDEX_V(p_shape_idx,shapes.size(),Ref<Shape3D>());
 	return shapes[p_shape_idx].shape;
 
 }

@@ -52,7 +52,7 @@ private:
 	ObjectID instance_id;
 	uint32_t layer_mask;
 
-	struct Shape {
+	struct Shape3D {
 
 		Transform3D xform;
 		Transform3D xform_inv;
@@ -61,10 +61,10 @@ private:
 		ShapeSW *shape;
 		bool trigger;
 
-		Shape() { trigger=false; }
+		Shape3D() { trigger=false; }
 	};
 
-	Vector<Shape> shapes;
+	Vector<Shape3D> shapes;
 	SpaceSW *space;
 	Transform3D transform;
 	Transform3D inv_transform;

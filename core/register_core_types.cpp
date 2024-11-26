@@ -112,7 +112,7 @@ void register_core_types() {
 	ObjectTypeDB::register_type<RefCounted>();
 	ObjectTypeDB::register_type<ResourceImportMetadata>();
 	ObjectTypeDB::register_type<Resource>();
-	ObjectTypeDB::register_type<FuncRef>();
+	ObjectTypeDB::register_type<Callable>();
 	ObjectTypeDB::register_virtual_type<StreamPeer>();
 	ObjectTypeDB::register_create_type<StreamPeerTCP>();
 	ObjectTypeDB::register_create_type<TCP_Server>();

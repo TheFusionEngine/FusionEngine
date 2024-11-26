@@ -107,7 +107,7 @@ class EditorSceneImportPlugin : public EditorImportPlugin {
 	};
 
 	void _find_resources(const Variant& p_var,Map<Ref<ImageTexture>,TextureRole >& image_map,int p_flags);
-	Node* _fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>,Ref<Shape> > &collision_map,uint32_t p_flags,Map<Ref<ImageTexture>,TextureRole >& image_map);
+	Node* _fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>,Ref<Shape3D> > &collision_map,uint32_t p_flags,Map<Ref<ImageTexture>,TextureRole >& image_map);
 	void _create_clips(Node *scene, const Array& p_clips, bool p_bake_all);
 	void _filter_anim_tracks(Ref<Animation> anim,Set<String> &keep);
 	void _filter_tracks(Node *scene, const String& p_text);

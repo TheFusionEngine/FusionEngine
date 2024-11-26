@@ -292,7 +292,7 @@
 				<resource  resource_type="Mesh" path="local://1">  </resource>
 				<node_path> ".." </node_path>
 				<node_path> "" </node_path>
-				<resource  resource_type="Shape" path="local://2">  </resource>
+				<resource  resource_type="Shape3D" path="local://2">  </resource>
 				<real> 1 </real>
 				<vector3> 0, 0, 0 </vector3>
 				<node_path> "Lamp" </node_path>

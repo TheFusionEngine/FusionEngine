@@ -764,75 +764,75 @@
 	<main_resource>
 		<string name="item/0/name"> "ceilingcorner" </string>
 		<resource name="item/0/mesh" resource_type="Mesh" path="local://1">  </resource>
-		<resource name="item/0/shape" resource_type="Shape" path="local://2">  </resource>
+		<resource name="item/0/shape" resource_type="Shape3D" path="local://2">  </resource>
 		<resource name="item/0/preview" resource_type="Texture" path="local://3">  </resource>
 		<string name="item/1/name"> "ceiling" </string>
 		<resource name="item/1/mesh" resource_type="Mesh" path="local://4">  </resource>
-		<resource name="item/1/shape" resource_type="Shape" path="local://5">  </resource>
+		<resource name="item/1/shape" resource_type="Shape3D" path="local://5">  </resource>
 		<resource name="item/1/preview" resource_type="Texture" path="local://6">  </resource>
 		<string name="item/2/name"> "wallvar" </string>
 		<resource name="item/2/mesh" resource_type="Mesh" path="local://7">  </resource>
-		<resource name="item/2/shape" resource_type="Shape" path="local://8">  </resource>
+		<resource name="item/2/shape" resource_type="Shape3D" path="local://8">  </resource>
 		<resource name="item/2/preview" resource_type="Texture" path="local://9">  </resource>
 		<string name="item/3/name"> "wallfloor" </string>
 		<resource name="item/3/mesh" resource_type="Mesh" path="local://10">  </resource>
-		<resource name="item/3/shape" resource_type="Shape" path="local://11">  </resource>
+		<resource name="item/3/shape" resource_type="Shape3D" path="local://11">  </resource>
 		<resource name="item/3/preview" resource_type="Texture" path="local://12">  </resource>
 		<string name="item/4/name"> "cornerfloor" </string>
 		<resource name="item/4/mesh" resource_type="Mesh" path="local://13">  </resource>
-		<resource name="item/4/shape" resource_type="Shape" path="local://14">  </resource>
+		<resource name="item/4/shape" resource_type="Shape3D" path="local://14">  </resource>
 		<resource name="item/4/preview" resource_type="Texture" path="local://15">  </resource>
 		<string name="item/5/name"> "floorcorner" </string>
 		<resource name="item/5/mesh" resource_type="Mesh" path="local://16">  </resource>
-		<resource name="item/5/shape" resource_type="Shape" path="local://17">  </resource>
+		<resource name="item/5/shape" resource_type="Shape3D" path="local://17">  </resource>
 		<resource name="item/5/preview" resource_type="Texture" path="local://18">  </resource>
 		<string name="item/6/name"> "flooredge" </string>
 		<resource name="item/6/mesh" resource_type="Mesh" path="local://19">  </resource>
-		<resource name="item/6/shape" resource_type="Shape" path="local://20">  </resource>
+		<resource name="item/6/shape" resource_type="Shape3D" path="local://20">  </resource>
 		<resource name="item/6/preview" resource_type="Texture" path="local://21">  </resource>
 		<string name="item/7/name"> "floor" </string>
 		<resource name="item/7/mesh" resource_type="Mesh" path="local://22">  </resource>
-		<resource name="item/7/shape" resource_type="Shape" path="local://23">  </resource>
+		<resource name="item/7/shape" resource_type="Shape3D" path="local://23">  </resource>
 		<resource name="item/7/preview" resource_type="Texture" path="local://24">  </resource>
 		<string name="item/8/name"> "wall" </string>
 		<resource name="item/8/mesh" resource_type="Mesh" path="local://25">  </resource>
-		<resource name="item/8/shape" resource_type="Shape" path="local://26">  </resource>
+		<resource name="item/8/shape" resource_type="Shape3D" path="local://26">  </resource>
 		<resource name="item/8/preview" resource_type="Texture" path="local://27">  </resource>
 		<string name="item/9/name"> "corner" </string>
 		<resource name="item/9/mesh" resource_type="Mesh" path="local://28">  </resource>
-		<resource name="item/9/shape" resource_type="Shape" path="local://29">  </resource>
+		<resource name="item/9/shape" resource_type="Shape3D" path="local://29">  </resource>
 		<resource name="item/9/preview" resource_type="Texture" path="local://30">  </resource>
 		<string name="item/10/name"> "trunkfloor" </string>
 		<resource name="item/10/mesh" resource_type="Mesh" path="local://31">  </resource>
-		<resource name="item/10/shape" resource_type="Shape" path="local://32">  </resource>
+		<resource name="item/10/shape" resource_type="Shape3D" path="local://32">  </resource>
 		<resource name="item/10/preview" resource_type="Texture" path="local://33">  </resource>
 		<string name="item/11/name"> "trunk" </string>
 		<resource name="item/11/mesh" resource_type="Mesh" path="local://34">  </resource>
-		<resource name="item/11/shape" resource_type="Shape" path="local://35">  </resource>
+		<resource name="item/11/shape" resource_type="Shape3D" path="local://35">  </resource>
 		<resource name="item/11/preview" resource_type="Texture" path="local://36">  </resource>
 		<string name="item/12/name"> "trunkdeco" </string>
 		<resource name="item/12/mesh" resource_type="Mesh" path="local://37">  </resource>
-		<resource name="item/12/shape" resource_type="Shape" path="local://38">  </resource>
+		<resource name="item/12/shape" resource_type="Shape3D" path="local://38">  </resource>
 		<resource name="item/12/preview" resource_type="Texture" path="local://39">  </resource>
 		<string name="item/13/name"> "treetop" </string>
 		<resource name="item/13/mesh" resource_type="Mesh" path="local://40">  </resource>
-		<resource name="item/13/shape" resource_type="Shape" path="local://41">  </resource>
+		<resource name="item/13/shape" resource_type="Shape3D" path="local://41">  </resource>
 		<resource name="item/13/preview" resource_type="Texture" path="local://42">  </resource>
 		<string name="item/14/name"> "cilingwall" </string>
 		<resource name="item/14/mesh" resource_type="Mesh" path="local://43">  </resource>
-		<resource name="item/14/shape" resource_type="Shape" path="local://44">  </resource>
+		<resource name="item/14/shape" resource_type="Shape3D" path="local://44">  </resource>
 		<resource name="item/14/preview" resource_type="Texture" path="local://45">  </resource>
 		<string name="item/15/name"> "ramp" </string>
 		<resource name="item/15/mesh" resource_type="Mesh" path="local://46">  </resource>
-		<resource name="item/15/shape" resource_type="Shape" path="local://47">  </resource>
+		<resource name="item/15/shape" resource_type="Shape3D" path="local://47">  </resource>
 		<resource name="item/15/preview" resource_type="Texture" path="local://48">  </resource>
 		<string name="item/16/name"> "cornerfix" </string>
 		<resource name="item/16/mesh" resource_type="Mesh" path="local://49">  </resource>
-		<resource name="item/16/shape" resource_type="Shape" path="local://50">  </resource>
+		<resource name="item/16/shape" resource_type="Shape3D" path="local://50">  </resource>
 		<resource name="item/16/preview" resource_type="Texture" path="local://51">  </resource>
 		<string name="item/17/name"> "cornerfixr" </string>
 		<resource name="item/17/mesh" resource_type="Mesh" path="local://52">  </resource>
-		<resource name="item/17/shape" resource_type="Shape" path="local://53">  </resource>
+		<resource name="item/17/shape" resource_type="Shape3D" path="local://53">  </resource>
 		<resource name="item/17/preview" resource_type="Texture" path="local://54">  </resource>
 
 	</main_resource>

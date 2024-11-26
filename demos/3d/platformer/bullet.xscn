@@ -268,7 +268,7 @@
 				<bool> True </bool>
 				<bool> False </bool>
 				<int> 1 </int>
-				<resource  resource_type="Shape" path="local://0">  </resource>
+				<resource  resource_type="Shape3D" path="local://0">  </resource>
 				<int> 0 </int>
 				<real> 0.4 </real>
 				<real> 1 </real>

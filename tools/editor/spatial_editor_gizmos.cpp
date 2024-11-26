@@ -1658,7 +1658,7 @@ TestCubeSpatialGizmo::TestCubeSpatialGizmo(TestCube* p_tc) {
 
 String CollisionShapeSpatialGizmo::get_handle_name(int p_idx) const {
 
-	Ref<Shape> s = cs->get_shape();
+	Ref<Shape3D> s = cs->get_shape();
 	if (s.is_null())
 		return "";
 
@@ -1686,7 +1686,7 @@ String CollisionShapeSpatialGizmo::get_handle_name(int p_idx) const {
 }
 Variant CollisionShapeSpatialGizmo::get_handle_value(int p_idx) const{
 
-	Ref<Shape> s = cs->get_shape();
+	Ref<Shape3D> s = cs->get_shape();
 	if (s.is_null())
 		return Variant();
 
@@ -1717,7 +1717,7 @@ Variant CollisionShapeSpatialGizmo::get_handle_value(int p_idx) const{
 	return Variant();
 }
 void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point){
-	Ref<Shape> s = cs->get_shape();
+	Ref<Shape3D> s = cs->get_shape();
 	if (s.is_null())
 		return;
 
@@ -1794,7 +1794,7 @@ void CollisionShapeSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const 
 
 }
 void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restore,bool p_cancel){
-	Ref<Shape> s = cs->get_shape();
+	Ref<Shape3D> s = cs->get_shape();
 	if (s.is_null())
 		return;
 
@@ -1807,7 +1807,7 @@ void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restor
 		}
 
 		UndoRedo *ur = SpatialEditor::get_singleton()->get_undo_redo();
-		ur->create_action("Change Sphere Shape Radius");
+		ur->create_action("Change Sphere Shape3D Radius");
 		ur->add_do_method(ss.ptr(),"set_radius",ss->get_radius());
 		ur->add_undo_method(ss.ptr(),"set_radius",p_restore);
 		ur->commit_action();
@@ -1823,7 +1823,7 @@ void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restor
 		}
 
 		UndoRedo *ur = SpatialEditor::get_singleton()->get_undo_redo();
-		ur->create_action("Change Box Shape Extents");
+		ur->create_action("Change Box Shape3D Extents");
 		ur->add_do_method(ss.ptr(),"set_extents",ss->get_extents());
 		ur->add_undo_method(ss.ptr(),"set_extents",p_restore);
 		ur->commit_action();
@@ -1842,11 +1842,11 @@ void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restor
 
 		UndoRedo *ur = SpatialEditor::get_singleton()->get_undo_redo();
 		if (p_idx==0) {
-			ur->create_action("Change Capsule Shape Radius");
+			ur->create_action("Change Capsule Shape3D Radius");
 			ur->add_do_method(ss.ptr(),"set_radius",ss->get_radius());
 			ur->add_undo_method(ss.ptr(),"set_radius",p_restore);
 		} else {
-			ur->create_action("Change Capsule Shape Height");
+			ur->create_action("Change Capsule Shape3D Height");
 			ur->add_do_method(ss.ptr(),"set_height",ss->get_height());
 			ur->add_undo_method(ss.ptr(),"set_height",p_restore);
 
@@ -1865,7 +1865,7 @@ void CollisionShapeSpatialGizmo::commit_handle(int p_idx,const Variant& p_restor
 		}
 
 		UndoRedo *ur = SpatialEditor::get_singleton()->get_undo_redo();
-		ur->create_action("Change Ray Shape Length");
+		ur->create_action("Change Ray Shape3D Length");
 		ur->add_do_method(ss.ptr(),"set_length",ss->get_length());
 		ur->add_undo_method(ss.ptr(),"set_length",p_restore);
 		ur->commit_action();
@@ -1877,7 +1877,7 @@ void CollisionShapeSpatialGizmo::redraw(){
 
 	clear();
 
-	Ref<Shape> s = cs->get_shape();
+	Ref<Shape3D> s = cs->get_shape();
 	if (s.is_null())
 		return;
 

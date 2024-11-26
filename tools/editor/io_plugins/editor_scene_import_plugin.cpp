@@ -174,7 +174,7 @@ class EditorSceneImportDialog : public ConfirmationDialog  {
 
 	Vector<TreeItem*> scene_flags;
 
-	Map<Ref<Mesh>,Ref<Shape> > collision_map;
+	Map<Ref<Mesh>,Ref<Shape3D> > collision_map;
 	ConfirmationDialog *error_dialog;
 
 	OptionButton *this_import;
@@ -1350,7 +1350,7 @@ void EditorSceneImportPlugin::_find_resources(const Variant& p_var, Map<Ref<Imag
 }
 
 
-Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>,Ref<Shape> > &collision_map,uint32_t p_flags,Map<Ref<ImageTexture>,TextureRole >& image_map) {
+Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>,Ref<Shape3D> > &collision_map,uint32_t p_flags,Map<Ref<ImageTexture>,TextureRole >& image_map) {
 
 	// children first..
 	for(int i=0;i<p_node->get_child_count();i++) {
@@ -1832,7 +1832,7 @@ Node* EditorSceneImportPlugin::_fix_node(Node *p_node,Node *p_root,Map<Ref<Mesh>
 			if (p_flags&SCENE_FLAG_CREATE_COLLISIONS && _teststr(mesh->get_name(),"col")) {
 
 				mesh->set_name( _fixstr(mesh->get_name(),"col") );
-				Ref<Shape> shape;
+				Ref<Shape3D> shape;
 
 				if (collision_map.has(mesh)) {
 					shape = collision_map[mesh];
@@ -2663,7 +2663,7 @@ Error EditorSceneImportPlugin::import2(Node *scene, const String& p_dest_path, c
 	from->set_option("reimport",false);
 	String target_res_path=p_dest_path.get_base_dir();
 
-	Map<Ref<Mesh>,Ref<Shape> > collision_map;
+	Map<Ref<Mesh>,Ref<Shape3D> > collision_map;
 
 	Ref<ResourceImportMetadata> imd = memnew(ResourceImportMetadata);
 

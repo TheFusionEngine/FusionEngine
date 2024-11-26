@@ -1412,10 +1412,10 @@
 					<string> "3D" </string>
 				</dictionary>
 				<transform> 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.954765, 0 </transform>
-				<resource  resource_type="Shape" path="local://0">  </resource>
+				<resource  resource_type="Shape3D" path="local://0">  </resource>
 				<bool> False </bool>
 				<transform> 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.01236, 0 </transform>
-				<resource  resource_type="Shape" path="local://1">  </resource>
+				<resource  resource_type="Shape3D" path="local://1">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95244, 0 </transform>
 				<transform> 0.645265, -0.104346, 0.756799, -0.0362869, 0.985324, 0.166793, -0.763096, -0.135088, 0.632009, 2.40709, -0.187178, 2.31605 </transform>
 				<int> 0 </int>

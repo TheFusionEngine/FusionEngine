@@ -713,9 +713,9 @@
 				<bool> True </bool>
 				<bool> False </bool>
 				<int> 5 </int>
-				<resource  resource_type="Shape" path="local://0">  </resource>
+				<resource  resource_type="Shape3D" path="local://0">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74185, 0.267137 </transform>
-				<resource  resource_type="Shape" path="local://1">  </resource>
+				<resource  resource_type="Shape3D" path="local://1">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.491839, 0.74185, 0.852485 </transform>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.652943, 0.74185, 0.852485 </transform>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.524937, 0.74185, -0.335599 </transform>

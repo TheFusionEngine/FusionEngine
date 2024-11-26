@@ -160,7 +160,7 @@ Node* MeshInstance3D::create_trimesh_collision_node() {
 	if (mesh.is_null())
 		return NULL;
 
-	Ref<Shape> shape = mesh->create_trimesh_shape();
+	Ref<Shape3D> shape = mesh->create_trimesh_shape();
 	if (shape.is_null())
 		return NULL;
 
@@ -194,7 +194,7 @@ Node* MeshInstance3D::create_convex_collision_node() {
 	if (mesh.is_null())
 		return NULL;
 
-	Ref<Shape> shape = mesh->create_convex_shape();
+	Ref<Shape3D> shape = mesh->create_convex_shape();
 	if (shape.is_null())
 		return NULL;
 

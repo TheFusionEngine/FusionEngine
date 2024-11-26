@@ -583,7 +583,7 @@ DVector<Face3> Mesh::get_faces() const {
 
 }
 
-Ref<Shape> Mesh::create_convex_shape() const {
+Ref<Shape3D> Mesh::create_convex_shape() const {
 
 	DVector<Vector3> vertices;
 
@@ -600,11 +600,11 @@ Ref<Shape> Mesh::create_convex_shape() const {
 	return shape;
 }
 
-Ref<Shape> Mesh::create_trimesh_shape() const {
+Ref<Shape3D> Mesh::create_trimesh_shape() const {
 
 	DVector<Face3> faces = get_faces();
 	if (faces.size()==0)
-		return Ref<Shape>();
+		return Ref<Shape3D>();
 
 	DVector<Vector3> face_points;
 	face_points.resize( faces.size()*3 );

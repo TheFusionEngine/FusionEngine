@@ -60,7 +60,7 @@ void RayShape3D::_bind_methods() {
 
 }
 
-RayShape3D::RayShape3D() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_RAY)) {
+RayShape3D::RayShape3D() : Shape3D( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_RAY)) {
 
 	set_length(1.0);
 }

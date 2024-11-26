@@ -31,9 +31,9 @@
 
 #include "scene/resources/shape.h"
 
-class BoxShape3D : public Shape {
+class BoxShape3D : public Shape3D {
 
-	OBJ_TYPE(BoxShape3D,Shape);
+	OBJ_TYPE(BoxShape3D,Shape3D);
 	Vector3 extents;
 
 protected:

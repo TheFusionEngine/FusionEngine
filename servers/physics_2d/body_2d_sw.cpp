@@ -129,7 +129,7 @@ void Body2DSW::set_active(bool p_active) {
 		return;
 
 	for(int i=0;i<get_shape_count();i++) {
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid>0) {
 			get_space()->get_broadphase()->set_active(s.bpid,active);
 		}

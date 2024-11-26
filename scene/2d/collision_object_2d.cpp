@@ -170,7 +170,7 @@ void CollisionObject2D::_bind_methods() {
 
 	ObjectTypeDB::bind_method(_MD("add_shape","shape:Shape2D","transform"),&CollisionObject2D::add_shape,DEFVAL(Transform2D()));
 	ObjectTypeDB::bind_method(_MD("get_shape_count"),&CollisionObject2D::get_shape_count);
-	ObjectTypeDB::bind_method(_MD("set_shape","shape_idx","shape:Shape"),&CollisionObject2D::set_shape);
+	ObjectTypeDB::bind_method(_MD("set_shape","shape_idx","shape:Shape3D"),&CollisionObject2D::set_shape);
 	ObjectTypeDB::bind_method(_MD("set_shape_transform","shape_idx","transform"),&CollisionObject2D::set_shape_transform);
 	ObjectTypeDB::bind_method(_MD("set_shape_as_trigger","shape_idx","enable"),&CollisionObject2D::set_shape_as_trigger);
 	ObjectTypeDB::bind_method(_MD("get_shape:Shape2D","shape_idx"),&CollisionObject2D::get_shape);

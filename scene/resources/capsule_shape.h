@@ -31,9 +31,9 @@
 
 #include "scene/resources/shape.h"
 
-class CapsuleShape3D : public Shape {
+class CapsuleShape3D : public Shape3D {
 
-	OBJ_TYPE(CapsuleShape3D,Shape);
+	OBJ_TYPE(CapsuleShape3D,Shape3D);
 	float radius;
 	float height;
 

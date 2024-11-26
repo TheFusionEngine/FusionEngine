@@ -37,7 +37,7 @@ class CollisionShape3D : public Node3D {
 	OBJ_TYPE( CollisionShape3D, Node3D );
 	OBJ_CATEGORY("3D Physics Nodes");
 
-	Ref<Shape> shape;
+	Ref<Shape3D> shape;
 
 	/*
 	RID _get_visual_instance_rid() const;
@@ -67,8 +67,8 @@ public:
 
 	void make_convex_from_brothers();
 
-	void set_shape(const Ref<Shape> &p_shape);
-	Ref<Shape> get_shape() const;
+	void set_shape(const Ref<Shape3D> &p_shape);
+	Ref<Shape3D> get_shape() const;
 
 	void set_updating_body(bool p_update);
 	bool is_updating_body() const;

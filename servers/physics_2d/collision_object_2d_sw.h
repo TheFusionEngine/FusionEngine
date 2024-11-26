@@ -48,7 +48,7 @@ private:
 	RID self;
 	ObjectID instance_id;
 
-	struct Shape {
+	struct Shape3D {
 
 		Transform2D xform;
 		Transform2D xform_inv;
@@ -57,10 +57,10 @@ private:
 		Shape2DSW *shape;
 		Variant metadata;
 		bool trigger;
-		Shape() { trigger=false; }
+		Shape3D() { trigger=false; }
 	};
 
-	Vector<Shape> shapes;
+	Vector<Shape3D> shapes;
 	Space2DSW *space;
 	Transform2D transform;
 	Transform2D inv_transform;

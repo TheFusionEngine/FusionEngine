@@ -31,9 +31,9 @@
 
 #include "scene/resources/shape.h"
 
-class ConcavePolygonShape3D : public Shape {
+class ConcavePolygonShape3D : public Shape3D {
 
-	OBJ_TYPE(ConcavePolygonShape3D,Shape);
+	OBJ_TYPE(ConcavePolygonShape3D,Shape3D);
 
 
 protected:

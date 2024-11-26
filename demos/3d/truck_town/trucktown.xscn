@@ -1623,12 +1623,12 @@
 				<transform> 3.55498, 0, 0, 0, 3.55498, 0, 0, 0, 3.55498, 3.24208, 0.00395584, 0.181654 </transform>
 				<resource  resource_type="Mesh" path="local://14">  </resource>
 				<node_path> "" </node_path>
-				<resource  resource_type="Shape" path="local://15">  </resource>
+				<resource  resource_type="Shape3D" path="local://15">  </resource>
 				<real> 1 </real>
 				<vector3> 0, 0, 0 </vector3>
 				<node_path> "grass-col" </node_path>
 				<resource  resource_type="Mesh" path="local://17">  </resource>
-				<resource  resource_type="Shape" path="local://18">  </resource>
+				<resource  resource_type="Shape3D" path="local://18">  </resource>
 				<node_path> "Grid" </node_path>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.80006, 0.0039559, -0.0595486 </transform>
 				<resource  resource_type="Mesh" path="local://19">  </resource>
@@ -1658,7 +1658,7 @@
 				<resource  resource_type="Mesh" path="local://26">  </resource>
 				<node_path> "house7-col/window_03_GEO.016" </node_path>
 				<transform> -4.37113e-08, 1, 4.37114e-08, 0, -4.37114e-08, 1, 1, 4.37113e-08, 1.91068e-15, 0.0613388, 0.0373665, -0.0162845 </transform>
-				<resource  resource_type="Shape" path="local://27">  </resource>
+				<resource  resource_type="Shape3D" path="local://27">  </resource>
 				<node_path> "house10-col" </node_path>
 				<resource  resource_type="Mesh" path="local://28">  </resource>
 				<node_path> "house10-col/door_04_GEO.005" </node_path>
@@ -1690,7 +1690,7 @@
 				<transform> 6.48949e-08, -1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 1, -1, -7.54978e-08, -4.37114e-08, -0.0720218, 0.0876775, 0.0314384 </transform>
 				<node_path> "house10-col/window_03_GEO.014" </node_path>
 				<transform> 1, -1.06029e-08, -4.63463e-16, 4.84109e-15, -4.37114e-08, 1, -0, -1, -4.37114e-08, 0.0415633, 0.0383933, 0.00158703 </transform>
-				<resource  resource_type="Shape" path="local://31">  </resource>
+				<resource  resource_type="Shape3D" path="local://31">  </resource>
 				<node_path> "house3-col" </node_path>
 				<resource  resource_type="Mesh" path="local://32">  </resource>
 				<node_path> "house3-col/door_03_GEO.002" </node_path>
@@ -1720,7 +1720,7 @@
 				<transform> 1, -4.12694e-08, -5.35666e-15, 3.55271e-15, -4.37114e-08, 1, -7.18771e-08, -1, -4.37114e-08, 0.0341114, 0.0859701, -0.0125916 </transform>
 				<node_path> "house3-col/window_02_GEO.040" </node_path>
 				<transform> 7.5498e-08, 1, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, 1, -1.06106e-07, -4.37114e-08, 0.0630491, 0.0859701, 0.0408069 </transform>
-				<resource  resource_type="Shape" path="local://34">  </resource>
+				<resource  resource_type="Shape3D" path="local://34">  </resource>
 				<node_path> "house5-col" </node_path>
 				<resource  resource_type="Mesh" path="local://35">  </resource>
 				<node_path> "house5-col/door_01_GEO.004" </node_path>
@@ -1760,7 +1760,7 @@
 				<transform> 1, 4.1211e-08, 1.31306e-08, -1.31306e-08, -4.37114e-08, 1, 4.13274e-08, -1, -4.37114e-08, -0.0586339, 0.0892521, 0.00193866 </transform>
 				<node_path> "house5-col/window_03_GEO.021" </node_path>
 				<transform> -1, -1.50874e-07, -8.74228e-08, -8.74228e-08, -4.37114e-08, 1, -1.51107e-07, 1, 4.37114e-08, -0.0390904, 0.0892521, 0.121015 </transform>
-				<resource  resource_type="Shape" path="local://37">  </resource>
+				<resource  resource_type="Shape3D" path="local://37">  </resource>
 				<node_path> "house1-col" </node_path>
 				<resource  resource_type="Mesh" path="local://38">  </resource>
 				<node_path> "house1-col/door_01_GEO.005" </node_path>
@@ -1818,7 +1818,7 @@
 				<transform> 7.54979e-08, -1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 1, -1, -7.54979e-08, -4.37114e-08, -0.0763552, 0.0910551, 0.069336 </transform>
 				<node_path> "house1-col/window_03_GEO.023" </node_path>
 				<transform> -1, -1.50996e-07, -8.74228e-08, -8.74228e-08, -4.37114e-08, 1, -1.50996e-07, 1, 4.37114e-08, -0.0517201, 0.0910551, 0.0891725 </transform>
-				<resource  resource_type="Shape" path="local://40">  </resource>
+				<resource  resource_type="Shape3D" path="local://40">  </resource>
 				<node_path> "house2-col" </node_path>
 				<resource  resource_type="Mesh" path="local://41">  </resource>
 				<node_path> "house2-col/door_01_GEO.002" </node_path>
@@ -1849,7 +1849,7 @@
 				<transform> 7.54953e-08, -1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 1, -1, -7.54953e-08, -4.37114e-08, -0.076355, 0.0364428, 0.069336 </transform>
 				<node_path> "house2-col/window_03_GEO.008" </node_path>
 				<transform> -1, -1.51049e-07, -8.74228e-08, -8.74228e-08, -4.37114e-08, 1, -1.51049e-07, 1, 4.37114e-08, -0.0517194, 0.0364428, 0.0891723 </transform>
-				<resource  resource_type="Shape" path="local://42">  </resource>
+				<resource  resource_type="Shape3D" path="local://42">  </resource>
 				<node_path> "house8-col" </node_path>
 				<resource  resource_type="Mesh" path="local://43">  </resource>
 				<node_path> "house8-col/door_01_GEO.003" </node_path>
@@ -1870,7 +1870,7 @@
 				<transform> 7.54979e-08, -1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 1, -1, -3.48879e-08, -4.37114e-08, -0.0778807, 0.0383933, 0.0691765 </transform>
 				<node_path> "house8-col/window_03_GEO.006" </node_path>
 				<transform> 7.54979e-08, 1, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, 1, -1.16108e-07, -4.37114e-08, 0.0604249, 0.03686, 0.0685785 </transform>
-				<resource  resource_type="Shape" path="local://44">  </resource>
+				<resource  resource_type="Shape3D" path="local://44">  </resource>
 				<node_path> "house6-col" </node_path>
 				<resource  resource_type="Mesh" path="local://45">  </resource>
 				<node_path> "house6-col/door_03_GEO.001" </node_path>
@@ -1885,7 +1885,7 @@
 				<transform> 7.54979e-08, -1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 1, -1, -7.54979e-08, -4.37114e-08, -0.172729, 0.0383933, 0.031372 </transform>
 				<node_path> "house6-col/window_02_GEO.005" </node_path>
 				<transform> 7.54979e-08, 1, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, 1, -7.54979e-08, -4.37114e-08, 0.0630495, 0.0369723, 0.026001 </transform>
-				<resource  resource_type="Shape" path="local://46">  </resource>
+				<resource  resource_type="Shape3D" path="local://46">  </resource>
 				<node_path> "house9-col" </node_path>
 				<resource  resource_type="Mesh" path="local://47">  </resource>
 				<node_path> "house9-col/door_04_GEO.002" </node_path>
@@ -1902,7 +1902,7 @@
 				<transform> 5.40167e-08, -1, -4.37114e-08, -4.11737e-08, -4.36629e-08, 1, -1, -7.63685e-08, -4.37114e-08, -0.0720213, 0.0369723, 0.0314381 </transform>
 				<node_path> "house9-col/window_03_GEO.003" </node_path>
 				<transform> 1, -2.23517e-08, -9.99201e-16, -4.85179e-11, -4.11737e-08, 1, -0, -1, -4.37114e-08, 0.0415632, 0.0383933, 0.00158679 </transform>
-				<resource  resource_type="Shape" path="local://48">  </resource>
+				<resource  resource_type="Shape3D" path="local://48">  </resource>
 				<node_path> "house4-col" </node_path>
 				<resource  resource_type="Mesh" path="local://49">  </resource>
 				<node_path> "house4-col/door_01_GEO.001" </node_path>
@@ -1917,7 +1917,7 @@
 				<transform> -4.47035e-08, 1, 4.37114e-08, 0, -4.37114e-08, 1, 1, 4.37722e-08, 1.94289e-15, 0.0613389, 0.0373665, -0.0162845 </transform>
 				<node_path> "house4-col/window_03_GEO.002" </node_path>
 				<transform> 7.63685e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, -7.54371e-08, -3.33067e-15, -0.0613381, 0.0373665, 0.0176313 </transform>
-				<resource  resource_type="Shape" path="local://50">  </resource>
+				<resource  resource_type="Shape3D" path="local://50">  </resource>
 				<node_path> "AnimationPlayer" </node_path>
 				<array  len="0" shared="false">
 				</array>

@@ -60,7 +60,7 @@ void PlaneShape3D::_bind_methods() {
 
 }
 
-PlaneShape3D::PlaneShape3D() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_PLANE)) {
+PlaneShape3D::PlaneShape3D() : Shape3D( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_PLANE)) {
 
 	set_plane(Plane(0,1,0,0));
 }

@@ -40,7 +40,7 @@ void MeshInstanceEditor::_menu_option(int p_option) {
 	switch(p_option) {
 		case MENU_OPTION_CREATE_STATIC_TRIMESH_BODY: {
 
-			Ref<Shape> shape = mesh->create_trimesh_shape();
+			Ref<Shape3D> shape = mesh->create_trimesh_shape();
 			if (shape.is_null())
 				return;
 			StaticBody3D *body = memnew( StaticBody3D );
@@ -61,7 +61,7 @@ void MeshInstanceEditor::_menu_option(int p_option) {
 		} break;
 		case MENU_OPTION_CREATE_STATIC_CONVEX_BODY: {
 
-			Ref<Shape> shape = mesh->create_convex_shape();
+			Ref<Shape3D> shape = mesh->create_convex_shape();
 			if (shape.is_null())
 				return;
 			StaticBody3D *body = memnew( StaticBody3D );
@@ -88,7 +88,7 @@ void MeshInstanceEditor::_menu_option(int p_option) {
 				err_dialog->popup_centered(Size2(100,50));
 				return;
 			}
-			Ref<Shape> shape = mesh->create_trimesh_shape();
+			Ref<Shape3D> shape = mesh->create_trimesh_shape();
 			if (shape.is_null())
 				return;
 			CollisionShape3D *cshape = memnew( CollisionShape3D );
@@ -114,7 +114,7 @@ void MeshInstanceEditor::_menu_option(int p_option) {
 				err_dialog->popup_centered(Size2(100,50));
 				return;
 			}
-			Ref<Shape> shape = mesh->create_convex_shape();
+			Ref<Shape3D> shape = mesh->create_convex_shape();
 			if (shape.is_null())
 				return;
 			CollisionShape3D *cshape = memnew( CollisionShape3D );

@@ -31,7 +31,7 @@
 
 void CollisionObjectSW::add_shape(ShapeSW *p_shape,const Transform3D& p_transform) {
 
-	Shape s;
+	Shape3D s;
 	s.shape=p_shape;
 	s.xform=p_transform;
 	s.xform_inv=s.xform.affine_inverse();
@@ -103,7 +103,7 @@ void CollisionObjectSW::_set_static(bool p_static) {
 	if (!space)
 		return;
 	for(int i=0;i<get_shape_count();i++) {
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid>0) {
 			space->get_broadphase()->set_static(s.bpid,_static);
 		}
@@ -115,7 +115,7 @@ void CollisionObjectSW::_unregister_shapes() {
 
 	for(int i=0;i<shapes.size();i++) {
 
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid>0) {
 			space->get_broadphase()->remove(s.bpid);
 			s.bpid=0;
@@ -131,7 +131,7 @@ void CollisionObjectSW::_update_shapes() {
 
 	for(int i=0;i<shapes.size();i++) {
 
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid==0) {
 			s.bpid=space->get_broadphase()->create(this,i);
 			space->get_broadphase()->set_static(s.bpid,_static);
@@ -158,7 +158,7 @@ void CollisionObjectSW::_update_shapes_with_motion(const Vector3& p_motion) {
 
 	for(int i=0;i<shapes.size();i++) {
 
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid==0) {
 			s.bpid=space->get_broadphase()->create(this,i);
 			space->get_broadphase()->set_static(s.bpid,_static);
@@ -185,7 +185,7 @@ void CollisionObjectSW::_set_space(SpaceSW *p_space) {
 
 		for(int i=0;i<shapes.size();i++) {
 
-			Shape &s=shapes[i];
+			Shape3D &s=shapes[i];
 			if (s.bpid) {
 				space->get_broadphase()->remove(s.bpid);
 				s.bpid=0;

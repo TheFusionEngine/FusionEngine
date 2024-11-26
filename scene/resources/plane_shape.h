@@ -31,9 +31,9 @@
 
 #include "scene/resources/shape.h"
 
-class PlaneShape3D : public Shape {
+class PlaneShape3D : public Shape3D {
 
-	OBJ_TYPE(PlaneShape3D,Shape);
+	OBJ_TYPE(PlaneShape3D,Shape3D);
 	Plane plane;
 
 protected:

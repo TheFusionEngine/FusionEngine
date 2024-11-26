@@ -105,7 +105,7 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 
 		p_library->set_item_mesh(id,mesh);
 
-		Ref<Shape> collision;
+		Ref<Shape3D> collision;
 
 		for(int j=0;j<mi->get_child_count();j++) {
 #if 1

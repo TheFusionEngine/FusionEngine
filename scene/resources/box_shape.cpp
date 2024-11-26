@@ -58,7 +58,7 @@ void BoxShape3D::_bind_methods() {
 
 }
 
-BoxShape3D::BoxShape3D() : Shape( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_BOX)) {
+BoxShape3D::BoxShape3D() : Shape3D( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_BOX)) {
 
 	set_extents(Vector3(1,1,1));
 }

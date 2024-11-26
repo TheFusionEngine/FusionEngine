@@ -1902,7 +1902,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="BoxShape3D" inherits="Shape" category="Core">
+<class name="BoxShape3D" inherits="Shape3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2738,7 +2738,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="CapsuleShape3D" inherits="Shape" category="Core">
+<class name="CapsuleShape3D" inherits="Shape3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2883,7 +2883,7 @@
 		<method name="set_shape"  >
 			<argument index="0" name="shape_idx" type="int">
 			</argument>
-			<argument index="1" name="shape" type="Shape">
+			<argument index="1" name="shape" type="Shape3D">
 			</argument>
 			<description>
 			</description>
@@ -2988,7 +2988,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="ConcavePolygonShape3D" inherits="Shape" category="Core">
+<class name="ConcavePolygonShape3D" inherits="Shape3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -3568,7 +3568,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="ConvexPolygonShape3D" inherits="Shape" category="Core">
+<class name="ConvexPolygonShape3D" inherits="Shape3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -6215,7 +6215,7 @@
 		<method name="set_item_shape"  >
 			<argument index="0" name="id" type="int">
 			</argument>
-			<argument index="1" name="shape" type="Shape">
+			<argument index="1" name="shape" type="Shape3D">
 			</argument>
 			<description>
 			</description>
@@ -6237,7 +6237,7 @@
 			</description>
 		</method>
 		<method name="get_item_shape" qualifiers="const" >
-			<return type="Shape">
+			<return type="Shape3D">
 			</return>
 			<argument index="0" name="id" type="int">
 			</argument>
@@ -9189,7 +9189,7 @@
 	</description>
 	<methods>
 		<method name="add_shape"  >
-			<argument index="0" name="shape" type="Shape">
+			<argument index="0" name="shape" type="Shape3D">
 			</argument>
 			<argument index="1" name="transform" type="Transform3D" default="Transform3D()">
 			</argument>
@@ -9205,7 +9205,7 @@
 		<method name="set_shape"  >
 			<argument index="0" name="shape_idx" type="int">
 			</argument>
-			<argument index="1" name="shape" type="Shape">
+			<argument index="1" name="shape" type="Shape3D">
 			</argument>
 			<description>
 			</description>
@@ -9219,7 +9219,7 @@
 			</description>
 		</method>
 		<method name="get_shape" qualifiers="const" >
-			<return type="Shape">
+			<return type="Shape3D">
 			</return>
 			<argument index="0" name="shape_idx" type="int">
 			</argument>
@@ -10038,7 +10038,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PlaneShape3D" inherits="Shape" category="Core">
+<class name="PlaneShape3D" inherits="Shape3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10720,7 +10720,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="RayShape3D" inherits="Shape" category="Core">
+<class name="RayShape3D" inherits="Shape3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12478,7 +12478,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Shape" inherits="Resource" category="Core">
+<class name="Shape3D" inherits="Resource" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -12998,7 +12998,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SphereShape3D" inherits="Shape" category="Core">
+<class name="SphereShape3D" inherits="Shape3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>

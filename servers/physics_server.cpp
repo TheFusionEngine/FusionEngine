@@ -187,7 +187,7 @@ Vector<RID> PhysicsShapeQueryParameters::get_exclude() const{
 
 void PhysicsShapeQueryParameters::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_shape","shape:Shape"),&PhysicsShapeQueryParameters::set_shape);
+	ObjectTypeDB::bind_method(_MD("set_shape","shape:Shape3D"),&PhysicsShapeQueryParameters::set_shape);
 	ObjectTypeDB::bind_method(_MD("set_shape_rid","shape"),&PhysicsShapeQueryParameters::set_shape_rid);
 	ObjectTypeDB::bind_method(_MD("get_shape_rid"),&PhysicsShapeQueryParameters::get_shape_rid);
 

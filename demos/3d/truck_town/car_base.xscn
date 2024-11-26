@@ -545,7 +545,7 @@
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00169557, 0.222867, -0.0955184 </transform>
 				<bool> False </bool>
 				<int> 1 </int>
-				<resource  resource_type="Shape" path="local://0">  </resource>
+				<resource  resource_type="Shape3D" path="local://0">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.588269, 0.0774262 </transform>
 				<real> 0 </real>
 				<real> 40 </real>
