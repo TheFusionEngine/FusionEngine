@@ -29,11 +29,8 @@
 #ifndef TCP_SERVER_POSIX_H
 #define TCP_SERVER_POSIX_H
 
-<<<<<<< HEAD
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
-=======
-#if defined(UNIX_ENABLED) || defined(PSP)
->>>>>>> fbdd36df3a8b2e204567fa7fd666453ee94e0c0c
+#if defined(UNIX_ENABLED) || defined(PSP)  || defined(__3DS__)
+
 #include "core/io/tcp_server.h"
 
 class TCPServerPosix : public TCP_Server {

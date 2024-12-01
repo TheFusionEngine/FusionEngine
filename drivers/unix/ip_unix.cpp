@@ -76,29 +76,16 @@ IP_Address IP_Unix::_resolve_hostname(const String& p_hostname) {
 
 }
 
-<<<<<<< HEAD
-#ifdef __3DS__
-/*unsigned short ntohs(unsigned short netshort) {
-    return ((netshort & 0xFF) << 8) | ((netshort >> 8) & 0xFF);
-}
 
-unsigned short htons(unsigned short hostshort) {
-    return ((hostshort & 0xFF) << 8) | ((hostshort >> 8) & 0xFF);
-}*/
-=======
-#if defined(PSP)
->>>>>>> fbdd36df3a8b2e204567fa7fd666453ee94e0c0c
+#if defined(PSP) || defined(__3DS__)
+
 void IP_Unix::get_local_addresses(List<IP_Address> *r_addresses) const {
 
 
 };
-<<<<<<< HEAD
 
 #else 
-=======
-#else
 
->>>>>>> fbdd36df3a8b2e204567fa7fd666453ee94e0c0c
 #if defined(WINDOWS_ENABLED)
 
 #if defined(WINRT_ENABLED) || defined(WIN98_ENABLED)

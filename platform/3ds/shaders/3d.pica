@@ -1,6 +1,12 @@
 ; Uniforms
 .fvec projection[4], worldTransform[4], modelView[4], extra[4]
 
+.fvec lightVec, lightHalfVec, lightClr, material[4]
+
+.alias mat_amb material[0]
+.alias mat_dif material[1]
+.alias mat_spe material[2]
+.alias mat_emi material[3]
 ; Constants
 .constf myconst(0.0, 1.0, -1.0, 0.5)
 .alias  zeros myconst.xxxx ; Vector full of zeros
@@ -18,6 +24,7 @@
 .alias inpos v0
 .alias innrm v1
 .alias intex v2
+;.alias inclr v3
 
 .proc main
 	; Force the w component of inpos to be 1.0
@@ -47,27 +54,55 @@
 
 	; outtex = intex
 	mov outtc0, intex
+; 
+; 	; Transform the normal vector with the modelView matrix
+; 	; TODO: use a separate normal matrix that is the transpose of the inverse of modelView
+; 	dp3 r14.x, modelView[0], innrm
+; 	dp3 r14.y, modelView[1], innrm
+; 	dp3 r14.z, modelView[2], innrm
+; 	dp3 r6.x, r14, r14
+; 	rsq r6.x, r6.x
+; 	mul r14.xyz, r14.xyz, r6.x
+; 
+; 	mov r0, myconst.yxxx
+; 	add r4, ones, r14.z
+; 	mul r4, half, r4
+; 	cmp zeros, ge, ge, r4.x
+; 	rsq r4, r4.x
+; 	mul r5, half, r14
+; 	jmpc cmp.x, degenerate
+; 
+; 	rcp r0.z, r4.x
+; 	mul r0.xy, r5, r4
+	
+	;mov outclr, mat_dif
 
-	; Transform the normal vector with the modelView matrix
-	; TODO: use a separate normal matrix that is the transpose of the inverse of modelView
-	dp3 r14.x, modelView[0], innrm
-	dp3 r14.y, modelView[1], innrm
-	dp3 r14.z, modelView[2], innrm
-	dp3 r6.x, r14, r14
-	rsq r6.x, r6.x
-	mul r14.xyz, r14.xyz, r6.x
+	; Calculate the diffuse level (r0.x) and the shininess level (r0.y)
+	; r0.x = max(0, -(lightVec * r1))
+	; r0.y = max(0, (-lightHalfVec[i]) * r1) ^ 2
+	dp3 r0.x, lightVec,      r1
+	add r0.x, zeros,         -r0
+	dp3 r0.y, -lightHalfVec, r1
+	max r0,   zeros,         r0
+	mul r0.y, r0,            r0
+	
+	
+	mov r1, mat_emi
 
-	mov r0, myconst.yxxx
-	add r4, ones, r14.z
-	mul r4, half, r4
-	cmp zeros, ge, ge, r4.x
-	rsq r4, r4.x
-	mul r5, half, r14
-	jmpc cmp.x, degenerate
+	; r1 += specularColor * lightClr * shininessLevel
+	mul r2, lightClr, r0.yyyy
+	mad r1, r2, mat_spe, r1
 
-	rcp r0.z, r4.x
-	mul r0.xy, r5, r4
+	; r1 += diffuseColor * lightClr * diffuseLevel
+	mul r2, lightClr, r0.xxxx
+	mad r1, r2, mat_dif, r1
 
+	; r1 += ambientColor * lightClr
+	mov r2, lightClr
+	mad r1, r2, mat_amb, r1
+
+	; outclr = clamp r1 to [0,1]
+	min outclr, ones, r1
 degenerate:
 	mov outnq, r0
 	mov outclr, ones

@@ -28,15 +28,11 @@
 /*************************************************************************/
 #include "dir_access_unix.h"
 
-<<<<<<< HEAD
-#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__3DS__)
 
-#if !defined(PSP) || !defined(__3DS__)
-=======
-#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__) || defined(__3DS__)
 
-#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST)
->>>>>>> fbdd36df3a8b2e204567fa7fd666453ee94e0c0c
+#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST) && !defined(__3DS__)
+
 #include <sys/statvfs.h>
 #endif
 

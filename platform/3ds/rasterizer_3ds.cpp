@@ -3165,6 +3165,23 @@ Variant Rasterizer3DS::environment_get_background_param(RID p_env,VS::Environmen
 
 }
 
+void Rasterizer3DS::environment_set_group(RID p_env,VS::Group p_param, const Variant& p_value){
+
+	ERR_FAIL_INDEX(p_param,VS::ENV_GROUP_MAX);
+	Environment * env = environment_owner.get(p_env);
+	ERR_FAIL_COND(!env);
+	env->group[p_param]=p_value;
+
+}
+Variant Rasterizer3DS::environment_get_group(RID p_env,VS::Group p_param) const{
+
+	ERR_FAIL_INDEX_V(p_param,VS::ENV_GROUP_MAX,Variant());
+	const Environment * env = environment_owner.get(p_env);
+	ERR_FAIL_COND_V(!env,Variant());
+	return env->group[p_param];
+
+}
+
 void Rasterizer3DS::environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled){
 
 	ERR_FAIL_INDEX(p_effect,VS::ENV_FX_MAX);
@@ -3470,7 +3487,18 @@ void Rasterizer3DS::_render_list_forward(RenderList *p_render_list,const Transfo
 
 	bool prev_blend=false;
 // 	glDisable(GL_BLEND);
-	
+	/*
+						C3D_Mtx material =
+				{
+				{
+					{ { 0.0f, 0.2f, 0.2f, 0.2f } }, // Ambient
+					{ { 0.0f, 0.8f, 0.8f, 0.4f } }, // Diffuse
+					{ { 0.0f, 0.8f, 0.8f, 0.8f } }, // Specular
+					{ { 1.0f, 0.0f, 0.0f, 0.0f } }, // Emission
+				}
+				};
+
+				C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene_shader->location_material, &material);*/
 	for (int i=0;i<p_render_list->element_count;i++) {
 
 		RenderList::Element *e = p_render_list->elements[i];
@@ -3766,12 +3794,12 @@ void Rasterizer3DS::_render_list_forward(RenderList *p_render_list,const Transfo
 // 			DEBUG_TEST_ERROR("Setup geometry");
 		};
 
-		if (i==0 || light!=prev_light || rebind) {
-			if (e->light!=0xFFFF) {
-				// _setup_light(e->light);
-			}
+		// if (i==0 || light!=prev_light || rebind) {
+			// if (e->light!=0xFFFF) {
+				_setup_light(e->light);
+			// }
 // 			_setup_lights(e->lights,e->light_count);
-		}
+		// }
 /*
 		if (bind_baked_light_octree && (baked_light!=prev_baked_light || rebind)) {
 
@@ -3944,6 +3972,8 @@ bool Rasterizer3DS::_setup_material(const Geometry *p_geometry,const Material *p
 	
 	C3D_TexEnv *env = C3D_GetTexEnv(1);
 
+				
+
 // 	if (p_material->line_width)
 // 		glLineWidth(p_material->line_width);
 /*
@@ -4042,9 +4072,19 @@ bool Rasterizer3DS::_setup_material(const Geometry *p_geometry,const Material *p
 // 				glUniform1i(loc,texcoord); //TODO - this could happen automatically on compile...
 				texcoord++;
 
-			} else if (E->get().value.get_type()==Variant::COLOR){
-				// Color c = E->get().value;
+			} else if (E->get().value.get_type()==Variant::COLOR) {/*
+				Color c = E->get().value;
+				C3D_AttrInfo* attrInfo = C3D_GetAttrInfo();
+				AttrInfo_Init(attrInfo);
+				// AttrInfo_AddLoader(attrInfo, 0, GPU_FLOAT, 3); // v0=position
+				AttrInfo_AddFixed(attrInfo, 3); // v1=color
+				C3D_FixedAttribSet(3, c.r, c.g, c.b, c.a);*/
+				// 
 				// _set_uniform(scene_shader->location_material, c);
+			// C3D_TexEnvSrc(env, C3D_Both, GPU_PRIMARY_COLOR, (GPU_TEVSRC)0, (GPU_TEVSRC)0);
+			// C3D_TexEnvOpRgb(env, GPU_TEVOP_RGB_SRC_COLOR);
+			// C3D_TexEnvOpAlpha(env,GPU_TEVOP_A_SRC_ALPHA);
+			// C3D_TexEnvFunc(env, C3D_Both, GPU_REPLACE);
 				
 				// printf("a\n");
 // 				material_shader.set_custom_uniform(E->get().index,_convert_color(c));
@@ -4154,10 +4194,10 @@ void Rasterizer3DS::_setup_light(uint16_t p_light)
 	Light *l=li->base;
 	Color col_diffuse = (l->colors[VS::LIGHT_COLOR_DIFFUSE]);
 	Color col_specular=(l->colors[VS::LIGHT_COLOR_SPECULAR]);
+	// printf("col\n");
 	
 	
-	
-	if (l->type!=VS::LIGHT_DIRECTIONAL) {
+	// if (l->type!=VS::LIGHT_DIRECTIONAL) {
 		Vector3 pos = li->transform.get_origin();
 		pos = camera_transform_inverse.xform(pos);
 		
@@ -4166,8 +4206,11 @@ void Rasterizer3DS::_setup_light(uint16_t p_light)
 		// C3D_LightPosition(&l->light, &lightVec);
 		// C3D_LightDiffuse(&l->light, col_diffuse.r, col_diffuse.g, col_diffuse.b);
 		// C3D_LightSpecular0(&l->light, col_specular.r, col_specular.g, col_specular.b);
-		
-	}
+		// printf("light\n");
+		C3D_FVUnifSet(GPU_VERTEX_SHADER, scene_shader->uLoc_lightVec,    pos.x, pos.y, pos.z, 0.0f);
+		C3D_FVUnifSet(GPU_VERTEX_SHADER, scene_shader->uLoc_lightHalfVec,pos.x, pos.y, pos.z, 0.0f);
+		C3D_FVUnifSet(GPU_VERTEX_SHADER, scene_shader->uLoc_lightClr,     col_diffuse.r, col_diffuse.g, col_diffuse.b, 1.0f);
+	// }
 	
 	// if(li->near_shadow_buffer) {
 		// C3D_LightShadowEnable(&l->light, true);
@@ -4309,9 +4352,12 @@ void Rasterizer3DS::_render(const Geometry *p_geometry,const Material *p_materia
 				AttrInfo_AddLoader(attrInfo, 2, GPU_FLOAT, 2); // v2=tex_uv
 			else
 			{
-// 				AttrInfo_AddFixed(attrInfo, 2);
-// 				C3D_FixedAttribSet(2, 1.f, 1.f, 1.f, 1.f);
-				AttrInfo_AddLoader(attrInfo, 3, GPU_FLOAT, 4);
+				/*
+ 				AttrInfo_AddFixed(attrInfo, 3);
+ 				C3D_FixedAttribSet(3, 1.f, 1.f, 1.f, 1.f);*/
+				// AttrInfo_AddLoader(attrInfo, 3, GPU_FLOAT, 4);
+				// BufInfo_Add(bufInfo, s->array_local, s->stride, has_tex ? 3 : 2, has_tex ? 0x210 : 0x10);
+
 			}
 			
 			BufInfo_Add(bufInfo, s->array_local, s->stride, has_tex ? 3 : 2, has_tex ? 0x210 : 0x10);
@@ -4723,6 +4769,7 @@ void Rasterizer3DS::init()
 	base_framebuffer->texture = texture_owner.make_rid( texture );
 	
 	// Frag lighting
+	
 	C3D_LightEnvInit(&lightEnv);
 	C3D_LightEnvBind(&lightEnv);
 	C3D_LightEnvMaterial(&lightEnv, &material);
@@ -4731,6 +4778,7 @@ void Rasterizer3DS::init()
 	C3D_LightEnvLut(&lightEnv, GPU_LUT_D0, GPU_LUTINPUT_LN, false, &lut_Phong);
 	
 	C3D_FVec lightVec = { { 1.0, -1.5, 0.0, 0.0 } };
+	
 	
 
 // 	C3D_LightInit(&light, &lightEnv);
