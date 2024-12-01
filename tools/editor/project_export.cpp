@@ -343,7 +343,7 @@ void ProjectExportDialog::_notification(int p_what) {
 
 void ProjectExportDialog::_validate_platform() {
 
-	get_ok()->set_disabled(true);
+	//get_ok()->set_disabled(true);
 	button_export->set_disabled(true);
 	TreeItem *selected = platforms->get_selected();
 	plat_errors->hide();

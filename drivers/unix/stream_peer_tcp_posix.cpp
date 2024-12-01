@@ -26,11 +26,19 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
+
+#if defined(UNIX_ENABLED)  || defined(__3DS__) || defined(PSP)
 
 #include "stream_peer_tcp_posix.h"
  #include <arpa/inet.h>
+
+
+#ifndef PSP
 #include <poll.h>
+#else
+#include <sys/select.h>
+#define MSG_NOSIGNAL    0
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -73,7 +81,28 @@ void StreamPeerTCPPosix::make_default() {
 
 	StreamPeerTCP::_create = StreamPeerTCPPosix::_create;
 };
+#ifdef PSP
+Error StreamPeerTCPPosix::_block(int p_sockfd, bool p_read, bool p_write) const {
 
+	fd_set readfds, writefds;
+	FD_ZERO(&readfds);
+	FD_ZERO(&writefds);
+
+	FD_SET(p_sockfd, &readfds);
+	FD_SET(p_sockfd, &writefds);
+
+	int maxfd = p_sockfd + 1;
+
+	if (!p_read)
+		FD_CLR(p_sockfd, &readfds);
+	if (!p_write)
+		FD_CLR(p_sockfd, &writefds);
+
+	int ret = select(maxfd, &readfds, &writefds, NULL, NULL);
+	return ret < 0 ? FAILED : OK;
+};
+
+#else
 Error StreamPeerTCPPosix::_block(int p_sockfd, bool p_read, bool p_write) const {
 
 	struct pollfd pfd;
@@ -88,7 +117,7 @@ Error StreamPeerTCPPosix::_block(int p_sockfd, bool p_read, bool p_write) const 
 	int ret = poll(&pfd, 1, -1);
 	return ret < 0 ? FAILED : OK;
 };
-
+#endif
 Error StreamPeerTCPPosix::_poll_connection(bool p_block) const {
 
 	ERR_FAIL_COND_V(status != STATUS_CONNECTING || sockfd == -1, FAILED);
@@ -143,7 +172,9 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 		//perror("socket");
 		return FAILED;
 	};
-#ifndef __3DS__
+#if !defined(__3DS__) && ! defined(PSP)
+
+
 #ifndef NO_FCNTL
 	fcntl(sockfd, F_SETFL, O_NONBLOCK);
 #else
@@ -151,6 +182,7 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 	ioctl(sockfd, FIONBIO, &bval);
 #endif
 #endif
+
 #ifdef __3DS__
 	#define atoa(x) #x
 	struct addrinfo hints;
@@ -160,7 +192,7 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	//TODO: Do not embed this
-	if(getaddrinfo("reshop.elementfx.com", "80", &hints, &resaddr)!=0)
+	if(getaddrinfo("google.com", "80", &hints, &resaddr)!=0)
 	{
 		printf("getaddrinfo() failed.\n");
 		closesocket(sockfd);
@@ -181,6 +213,7 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 		// return;
 	}
 #else
+
 	struct sockaddr_in their_addr;
 	set_addr_in(their_addr, p_host, p_port);
 

@@ -92,7 +92,7 @@ class OS_Windows : public OS {
 	int old_x,old_y;
 	Point2i center;
 	unsigned int last_id;
-#if defined(OPENGL_ENABLED) || defined(LEGACYGL_ENABLED) || defined(GLES2_ENABLED)
+#if defined(OPENGL_ENABLED) || defined(LEGACYGL_ENABLED) || defined(GLES2_ENABLED) || defined(GLES1_ENABLED)
 	ContextGL_Win *gl_context;
 #endif
 	VisualServer *visual_server;
@@ -153,6 +153,8 @@ class OS_Windows : public OS {
 	CursorShape cursor_shape;
 
 	InputDefault *input;
+
+	bool unicode;
 
 #ifdef RTAUDIO_ENABLED
 	AudioDriverRtAudio driver_rtaudio;

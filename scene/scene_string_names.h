@@ -81,7 +81,13 @@ public:
 	StringName body_exit_shape;
 	StringName body_exit;
 
+	StringName _area_enter_tree;
+	StringName _area_exit_tree;
 
+	
+	StringName area_enter_shape;
+	StringName area_exit_shape;
+	
 	StringName _get_gizmo_geometry;
 	StringName _can_gizmo_scale;
 

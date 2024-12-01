@@ -28,7 +28,7 @@ sources_lib = [
 	"vorbis/smallft.c",
 	"vorbis/synthesis.c",
 	#"vorbis/tone.c",
-	"vorbis/vorbisenc.c",
+	#"vorbis/vorbisenc.c",
 	"vorbis/vorbisfile.c",
 	"vorbis/window.c",
 ]

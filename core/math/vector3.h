@@ -29,14 +29,17 @@
 #ifndef VECTOR3_H
 #define VECTOR3_H
 
+#ifdef MODULE_PSPMATH_ENABLED
+#include <modules/pspmath/pspmath.h>
+#endif
+
 #include "typedefs.h"
 #include "math_defs.h"
 #include "math_funcs.h"
 #include "ustring.h"
 
-
 struct Vector3 {
-
+        
 	enum Axis {
 		AXIS_X,
 		AXIS_Y,
@@ -143,7 +146,7 @@ struct Vector3 {
 
 	operator String() const;
 
-       _FORCE_INLINE_ Vector3() { x=y=z=0; }
+        _FORCE_INLINE_ Vector3() { x=y=z=0; }
         _FORCE_INLINE_ Vector3(real_t p_x,real_t p_y,real_t p_z) { x=p_x; y=p_y; z=p_z; }
 
 };
@@ -345,7 +348,10 @@ real_t Vector3::length_squared() const {
 }
 
 void Vector3::normalize() {
-
+#if defined(MODULE_PSPMATH_ENABLED) //&& defined(USE_QUAD_VECTORS)
+        // FIXME:XXX: This might crash when using non-quad vectors, but FE breaks with quad vectors
+        vfpu_normalize_vector(reinterpret_cast<ScePspFVector4 *>(this));
+#else
         real_t l=length();
         if (l==0) {
 
@@ -356,6 +362,7 @@ void Vector3::normalize() {
 		y/=l;
 		z/=l;
         }
+#endif
 }
 Vector3 Vector3::normalized() const {
 

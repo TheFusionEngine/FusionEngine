@@ -44,33 +44,36 @@ Error AudioDriverPSP::init() {
 	pcm_open = false;
 	samples_in = NULL;
 
+	samples_out = NULL;
+
+
 	mix_rate = 44100;
 	output_format = OUTPUT_STEREO;
 	channels = 2;
 
-	int latency = GLOBAL_DEF("audio/output_latency",25);
+	int latency = GLOBAL_DEF("audio/output_latency",50);
+
  	buffer_size = nearest_power_of_2( latency * mix_rate / 1000 );
 
 	samples_in = memnew_arr(int32_t, buffer_size*channels);
 	samples_out = memnew_arr(int16_t, buffer_size*channels);
-    
+
 	sceAudioOutput2Reserve(buffer_size);
 
 	mutex = Mutex::create();
-	// thread = Thread::create(AudioDriverPSP::thread_func, this);
-	SceUID thid;
-	thid = sceKernelCreateThread("audio_thread", (SceKernelThreadEntry)AudioDriverPSP::thread_func, 0x18, 0x10000, 0, NULL);
-	sceKernelStartThread(thid, sizeof(AudioDriverPSP), this);
+	thread = Thread::create(AudioDriverPSP::thread_func, this);
+
 
 	return OK;
 };
 
 void AudioDriverPSP::thread_func(void *p_udata) {
 	int buffer_index = 0;
- 	AudioDriverPSP* ad = (AudioDriverPSP*)p_udata;
 
-	int sample_count = ad->buffer_size ;
-	uint64_t usdelay = (ad->buffer_size / float(ad->mix_rate)) * 1000000;
+ 	AudioDriverPSP *ad = (AudioDriverPSP *)p_udata;
+
+	int sample_count = ad->buffer_size;
+	uint64_t usdelay = (ad->buffer_size / float(ad->mix_rate)) / 1000;
 
  	while (!ad->exit_thread) {
 
@@ -79,18 +82,15 @@ void AudioDriverPSP::thread_func(void *p_udata) {
  			break;
 
 		if (ad->active) {
-			ad->lock();
 
 			ad->audio_server_process(ad->buffer_size, ad->samples_in);
-
-			ad->unlock();
 
 			for(int i = 0; i < sample_count*2; ++i) {
 				ad->samples_out[i] = ad->samples_in[i] >> 16;
 			}
+		}
+		else
 
-
-		} else
 		{
 			for (int i = 0; i < sample_count*2; i++) {
 
@@ -99,6 +99,7 @@ void AudioDriverPSP::thread_func(void *p_udata) {
 		}
 		
 		sceAudioOutput2OutputBlocking(0x8000*3, ad->samples_out);
+
 	}
 
 
@@ -133,9 +134,13 @@ void AudioDriverPSP::unlock() {
 
 void AudioDriverPSP::finish() {
 	exit_thread = true;
- 	Thread::wait_to_finish(thread);
+
+	if (thread) {
+		Thread::wait_to_finish(thread);
+	}
 
 	sceAudioOutput2Release();
+
 
 	if (samples_in) {
  		memdelete_arr(samples_in);
@@ -153,6 +158,11 @@ void AudioDriverPSP::finish() {
 AudioDriverPSP::AudioDriverPSP() {
 
  	mutex = NULL;
+
+ 	samples_in = NULL;
+ 	samples_out = NULL;
+ 	thread = NULL;
+
 	active = false;
 };
 

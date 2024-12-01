@@ -9,72 +9,56 @@ def is_active():
 	return True
         
 def get_name():
-        return "Windows"
+	return "Windows"
 
 def can_build():
-	
-	
-	if (os.name=="nt"):
-		#building natively on windows!
-		if (os.getenv("VSINSTALLDIR")):
-			return True 
-		else:
-			print("MSVC Not detected, attempting mingw.")
-			return True
-			
-			
-			
-	if (os.name=="posix"):
-
-		mingw = "i586-mingw32msvc-"
-		mingw64 = "i686-w64-mingw32-"
-		if (os.getenv("MINGW32_PREFIX")):
-			mingw=os.getenv("MINGW32_PREFIX")
-		if (os.getenv("MINGW64_PREFIX")):
-			mingw64=os.getenv("MINGW64_PREFIX")
-
-		if os.system(mingw+"gcc --version >/dev/null") == 0 or os.system(mingw64+"gcc --version >/dev/null") ==0:
-			return True
-
-
-			
-	return False
+	return True
 		
 def get_opts():
 
-	mingw=""
-	mingw64=""
-	if (os.name!="nt"):
-		mingw = "i586-mingw32msvc-"
-		mingw64 = "i686-w64-mingw32-"
-		if (os.getenv("MINGW32_PREFIX")):
-			mingw=os.getenv("MINGW32_PREFIX")
-		if (os.getenv("MINGW64_PREFIX")):
-			mingw64=os.getenv("MINGW64_PREFIX")
+	gcc=""
+	gcc64=""
+	#if (os.name!="nt"):
+	#	gcc = "i586-gcc32msvc-"
+	#	gcc64 = "i686-w64-gcc32-"
 
+	#pdb_available = os.name == "nt"
+	pdb_available = False
+
+	if (os.getenv("GCC32_PREFIX")):
+		gcc=os.getenv("GCC32_PREFIX")
+	if (os.getenv("GCC64_PREFIX")):
+		gcc64=os.getenv("GCC64_PREFIX")
 
 	return [
-		('mingw_prefix','Mingw Prefix',mingw),
-		('mingw_prefix_64','Mingw Prefix 64 bits',mingw64),
-		('mingw64_for_32','Use Mingw 64 for 32 Bits Build',"no"),
+		('gcc_prefix','GCC Prefix',gcc),
+		('gcc_prefix_64','GCC Prefix 64 bits',gcc64),
+		('gcc64_for_32','Use GCC 64 for 32 Bits Build','no'),
+		('compiler', 'Compiler to use (gcc, msvc)', 'gcc'),
+		('pdb', 'Generate PDB', 'yes' if pdb_available else 'no'),
 	]
-  
+
+
 def get_flags():
 
 	return [
 		('freetype','builtin'), #use builtin freetype
-		('openssl','builtin'), #use builtin openssl
+		('openssl','no'), #use builtin openssl
 		('theora','no'),
 	]
-			
 
 
 def configure(env):
 
 	env.Append(CPPPATH=['#platform/windows'])
 
+	nulstr=""
+	if (os.name=="posix"):
+		nulstr=">/dev/null"
+	else:
+		nulstr=">nul"
 
-	if (os.name=="nt" and os.getenv("VSINSTALLDIR")!=None):
+	if env['compiler'] == 'msvc':
 		#build using visual studio
 		env['ENV']['TMP'] = os.environ['TMP']
 		env.Append(CPPPATH=['#platform/windows/include'])
@@ -134,14 +118,15 @@ def configure(env):
 		env.Append(CCFLAGS=["/I"+DIRECTX_PATH+"/Include"])
 		env.Append(LIBPATH=[DIRECTX_PATH+"/Lib/x86"])
 		env['ENV'] = os.environ;
-	else:
-		#build using mingw
+	elif env['compiler'] == 'gcc':
+		env.use_windows_spawn_fix()
+
 		if (os.name=="nt"):
 			env['ENV']['TMP'] = os.environ['TMP'] #way to go scons, you can be so stupid sometimes
 		else:
 			env["PROGSUFFIX"]=env["PROGSUFFIX"]+".exe"
 
-		mingw_prefix=""
+		gcc_prefix=""
 
 		if (env["bits"]=="default"):
 			env["bits"]="32"
@@ -149,42 +134,37 @@ def configure(env):
 		use64=False
 		if (env["bits"]=="32"):
 
-			if (env["mingw64_for_32"]=="yes"):
+			if (env["gcc64_for_32"]=="yes"):
 				env.Append(CCFLAGS=['-m32'])
 				env.Append(LINKFLAGS=['-m32'])
 				env.Append(LINKFLAGS=['-static-libgcc'])
 				env.Append(LINKFLAGS=['-static-libstdc++'])
-				mingw_prefix=env["mingw_prefix_64"];
+				gcc_prefix=env["gcc_prefix_64"];
 			else:
-				mingw_prefix=env["mingw_prefix"];
+				gcc_prefix=env["gcc_prefix"];
 
 
 		else:
-			mingw_prefix=env["mingw_prefix_64"];
+			gcc_prefix=env["gcc_prefix_64"];
 			env.Append(LINKFLAGS=['-static'])
 
-		nulstr=""
 
-		if (os.name=="posix"):
-		    nulstr=">/dev/null"
-		else:
-		    nulstr=">nul"
-
-
-
-		if os.system(mingw_prefix+"gcc --version"+nulstr)!=0:
+		if os.system(gcc_prefix+"gcc --version"+nulstr)!=0:
 			#not really super consistent but..
-			print("Can't find Windows compiler: "+mingw_prefix)
+			print("Can't find Windows compiler: "+gcc_prefix)
 			sys.exit(255)
 
 		if (env["target"]=="release"):
 			
-			env.Append(CCFLAGS=['-O3','-ffast-math','-fomit-frame-pointer','-msse2'])
+			env.Append(CCFLAGS=['-O2','-ffast-math','-fomit-frame-pointer'])
 			env.Append(LINKFLAGS=['-Wl,--subsystem,windows'])
 
 		elif (env["target"]=="release_debug"):
 
-			env.Append(CCFLAGS=['-O2','-DDEBUG_ENABLED'])
+			env.Append(CCFLAGS=['-O2', '-g','-ffast-math','-DDEBUG_ENABLED'])
+
+			if env["tools"]!="no":
+				env.Append(CCFLAGS=['-fno-omit-frame-pointer', '-fno-tree-vectorize'])
 
 		elif (env["target"]=="debug"):
 					
@@ -195,39 +175,26 @@ def configure(env):
 			env.Append(CPPPATH=['#tools/freetype'])
 			env.Append(CPPPATH=['#tools/freetype/freetype/include'])
 
-		env["CC"]=mingw_prefix+"gcc"
-		env['AS']=mingw_prefix+"as"
-		env['CXX'] = mingw_prefix+"g++"
-		env['AR'] = mingw_prefix+"ar"
-		env['RANLIB'] = mingw_prefix+"ranlib"
-		env['LD'] = mingw_prefix+"g++"
+		env["CC"] = gcc_prefix+"gcc.exe"
+		env['AS'] = gcc_prefix+"as.exe"
+		env['CXX'] = gcc_prefix+"g++.exe"
+		env['AR'] = gcc_prefix+"ar.exe"
+		env['RANLIB'] = gcc_prefix+"ranlib.exe"
+		env['LD'] = gcc_prefix+"g++.exe"
 
-		#env['CC'] = "winegcc"
-		#env['CXX'] = "wineg++"
+		env.Append(CCFLAGS=['-DWINDOWS_ENABLED', '-DWIN98_ENABLED', '-D_UNICODE', '-DUNICODE', '-mwindows', '-D__MSVCRT_VERSION__=0x400', '-DWINDOWS_USE_MUTEX=1'])
+		env.Append(CPPFLAGS=['-DRTAUDIO_ENABLED', '-DWIN98_ENABLED', '-D_UNICODE', '-DUNICODE', '-DMINGW_ENABLED'])
+		env.Append(CCFLAGS=['-DGLES1_ENABLED', '-DOPENGL_ENABLED', '-DGLES_OVER_GL', '-DGLEW_ENABLED', '-DMINGW_ENABLED', '-DNO_SAFE_CAST', '-fno-rtti'])
+		env.Append(LIBS=['unicows', 'mingw32', 'opengl32', 'dsound', 'ole32', 'winmm', 'gdi32', 'iphlpapi', 'wsock32', 'kernel32', 'comctl32'])
 
-		env.Append(CCFLAGS=['-DWINDOWS_ENABLED','-mwindows'])
-		env.Append(CPPFLAGS=['-DRTAUDIO_ENABLED'])
-		env.Append(CCFLAGS=['-DGLES2_ENABLED','-DGLES1_ENABLED','-DGLEW_ENABLED'])
-		env.Append(LIBS=['mingw32','opengl32', 'dsound', 'ole32', 'd3d9','winmm','gdi32','iphlpapi','wsock32','kernel32'])
+		env.Append(LINKFLAGS=['-Wl,--stack,'+str(16*1024*1024), '-static-libgcc'])
 
-		if (env["bits"]=="32" and env["mingw64_for_32"]!="yes"):
-#			env.Append(LIBS=['gcc_s'])
-			#--with-arch=i686
-			env.Append(CPPFLAGS=['-march=i686'])
-			env.Append(LINKFLAGS=['-march=i686'])
-
-
-
-
-		#'d3dx9d'
-		env.Append(CPPFLAGS=['-DMINGW_ENABLED'])
-		env.Append(LINKFLAGS=['-g'])
-
-	import methods
-	env.Append( BUILDERS = { 'GLSL120' : env.Builder(action = methods.build_legacygl_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
-	env.Append( BUILDERS = { 'GLSL' : env.Builder(action = methods.build_glsl_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
-	env.Append( BUILDERS = { 'HLSL9' : env.Builder(action = methods.build_hlsl_dx9_headers, suffix = 'hlsl.h',src_suffix = '.hlsl') } )
-	env.Append( BUILDERS = { 'GLSL120GLES' : env.Builder(action = methods.build_gles2_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
-
-	
-
+		env.Append(CCFLAGS=['-march=pentium','-mtune=generic'])
+		env.Append(CPPFLAGS=['-march=pentium','-mtune=generic'])
+		env.Append(LINKFLAGS=['-march=pentium','-mtune=generic'])
+		
+	# import methods
+	# env.Append( BUILDERS = { 'GLSL120' : env.Builder(action = methods.build_legacygl_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
+	# env.Append( BUILDERS = { 'GLSL' : env.Builder(action = methods.build_glsl_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
+	# env.Append( BUILDERS = { 'HLSL9' : env.Builder(action = methods.build_hlsl_dx9_headers, suffix = 'hlsl.h',src_suffix = '.hlsl') } )
+	# env.Append( BUILDERS = { 'GLSL120GLES' : env.Builder(action = methods.build_gles2_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )

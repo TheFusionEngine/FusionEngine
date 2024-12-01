@@ -29,10 +29,18 @@
 #include "tcp_server_posix.h"
 #include "stream_peer_tcp_posix.h"
 
-#if defined(UNIX_ENABLED)  || defined(__3DS__)
+#if defined(UNIX_ENABLED)  || defined(__3DS__)  || defined(PSP)
 
+
+#ifndef PSP
 #include <poll.h>
+
  #include <arpa/inet.h>
+
+#else
+#include <sys/select.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -116,20 +124,27 @@ bool TCPServerPosix::is_connection_available() const {
 		return false;
 	};
 
-	struct pollfd pfd;
-	pfd.fd = listen_sockfd;
-	pfd.events = POLLIN;
-	pfd.revents = 0;
+	fd_set readfds;
+	FD_ZERO(&readfds);
+	FD_SET(listen_sockfd, &readfds);
 
-	int ret = poll(&pfd, 1, 0);
-	ERR_FAIL_COND_V(ret < 0, FAILED);
+	struct timeval timeout;
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
 
-	if (ret && (pfd.revents & POLLIN)) {
+	int maxfd = listen_sockfd + 1;
+
+	int ret = select(maxfd, &readfds, NULL, NULL, &timeout);
+	if (ret == -1) {
+		// Handle error
+		return FAILED;
+	} else if (ret > 0 && FD_ISSET(listen_sockfd, &readfds)) {
 		printf("has connection!\n");
 		return true;
-	};
+	}
 
 	return false;
+
 };
 
 Ref<StreamPeerTCP> TCPServerPosix::take_connection() {

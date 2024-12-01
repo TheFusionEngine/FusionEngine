@@ -26,12 +26,18 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
+#ifdef MODULE_PSPMATH_ENABLED
+#include <modules/pspmath/pspmath.h>
+#endif
+
 #include "camera_matrix.h"
 #include "math_funcs.h"
 #include "print_string.h"
 
 void CameraMatrix::set_identity() {
-
+#ifdef MODULE_PSPMATH_ENABLED
+	vfpu_identity_matrix(reinterpret_cast<ScePspFMatrix4 *>(&matrix[0][0]), radians, p_aspect, p_z_near, p_z_far);
+#else
 	for (int i=0;i<4;i++) {
 	
 		for (int j=0;j<4;j++) {
@@ -39,6 +45,7 @@ void CameraMatrix::set_identity() {
 			matrix[i][j]=(i==j)?1:0;
 		}
 	}
+#endif
 }
 
 
@@ -75,6 +82,12 @@ void CameraMatrix::set_perspective(float p_fovy_degrees, float p_aspect, float p
 	float sine, cotangent, deltaZ;
 	float radians = p_fovy_degrees / 2.0 * Math_PI / 180.0;
 
+#ifdef MODULE_PSPMATH_ENABLED
+	set_identity();
+
+	vfpu_perspective_matrix(reinterpret_cast<ScePspFMatrix4 *>(&matrix[0][0]), radians, p_aspect, p_z_near, p_z_far);
+#else
+
 	deltaZ = p_z_far - p_z_near;
 	sine = Math::sin(radians);
 
@@ -91,14 +104,15 @@ void CameraMatrix::set_perspective(float p_fovy_degrees, float p_aspect, float p
 	matrix[2][3] = -1;
 	matrix[3][2] = -2 * p_z_near * p_z_far / deltaZ;
 	matrix[3][3] = 0;	
-
+#endif
 }
 
 void CameraMatrix::set_orthogonal(float p_left, float p_right, float p_bottom, float p_top,  float p_znear, float p_zfar) {
-
-
 	set_identity();
 
+#ifdef MODULE_PSPMATH_ENABLED
+	vfpu_ortho_matrix(reinterpret_cast<ScePspFMatrix4 *>(&matrix[0][0]), p_left, p_right, p_bottom, p_top, p_znear, p_zfar);
+#else
 	matrix[0][0] = 2.0/(p_right-p_left);
 	matrix[3][0] = -((p_right+p_left)/(p_right-p_left));
 	matrix[1][1] = 2.0/(p_top-p_bottom);
@@ -106,7 +120,7 @@ void CameraMatrix::set_orthogonal(float p_left, float p_right, float p_bottom, f
 	matrix[2][2] = -2.0/(p_zfar-p_znear);
 	matrix[3][2] = -((p_zfar+p_znear)/(p_zfar-p_znear));
 	matrix[3][3] = 1.0;
-
+#endif
 }
 
 void CameraMatrix::set_orthogonal(float p_size, float p_aspect, float p_znear, float p_zfar,bool p_flip_fov) {

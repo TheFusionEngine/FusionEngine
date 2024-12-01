@@ -33,6 +33,7 @@
 #include "list.h"
 #include "vector.h"
 #include "os/main_loop.h"
+#include "scene/resources/texture.h"
 #include <stdarg.h>
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
@@ -46,13 +47,14 @@ class OS {
 	List<String> _cmdline;
 	int ips;
 	bool low_processor_usage_mode;
-	bool _verbose_stdout;
 	String _local_clipboard;
 	uint64_t frames_drawn;
 	uint32_t _frame_delay;
 	bool _no_window;
 	int _exit_code;
 	int _orientation;
+	bool camera_enabled = false;
+
 	float _fps;
 	int _target_fps;
 	float _time_scale;
@@ -76,6 +78,8 @@ public:
 	};
 protected:
 friend class Main;
+
+	bool _verbose_stdout;
 	
 	RenderThreadMode _render_thread_mode;
 
@@ -102,7 +106,7 @@ friend class Main;
 	void _ensure_data_dir();
 	
 public:
-	
+	Ref<ImageTexture> p_camera_image;
 	typedef int64_t ProcessID;
 
 	static OS* get_singleton();
@@ -124,6 +128,7 @@ public:
 	virtual void set_last_error(const char* p_error);
 	virtual const char *get_last_error() const;
 	virtual void clear_last_error();
+
 
 
 
@@ -326,7 +331,10 @@ public:
 	virtual void release_rendering_thread();
 	virtual void make_rendering_thread();
 	virtual void swap_buffers();
-
+	virtual void set_camera_enabled(bool p_enable);
+	virtual bool get_camera_enabled() {return camera_enabled;};
+	virtual void set_camera_image(Ref<ImageTexture> data);
+	virtual Ref<ImageTexture> get_camera_image() {return p_camera_image;};
 
 	virtual void set_icon(const Image& p_icon);
 
@@ -347,6 +355,12 @@ public:
 	virtual Error dialog_show(String p_title, String p_description, Vector<String> p_buttons, Object* p_obj, String p_callback);
 	virtual Error dialog_input_text(String p_title, String p_description, String p_partial, Object* p_obj, String p_callback);
 
+	enum Charset {
+		OS_CHARSET_ANSI,
+		OS_CHARSET_UTF8,
+		OS_CHARSET_UNICODE,
+	};
+	virtual Charset get_charset() const { return OS_CHARSET_UTF8; }
 
 	void set_time_scale(float p_scale);
 	float get_time_scale() const;

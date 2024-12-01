@@ -172,15 +172,8 @@ void EditorSettings::create() {
 	String config_dir;
 	String config_file="editor_settings.xml";
 
-	if (OS::get_singleton()->has_environment("APPDATA")) {
-		// Most likely under windows, save here
-		config_path=OS::get_singleton()->get_environment("APPDATA");
-		config_dir=String(_MKSTR(VERSION_SHORT_NAME)).capitalize();
-	} else if (OS::get_singleton()->has_environment("HOME")) {
-
-		config_path=OS::get_singleton()->get_environment("HOME");
-		config_dir="."+String(_MKSTR(VERSION_SHORT_NAME)).to_lower();
-	}
+	config_path = OS::get_singleton()->get_system_dir(OS::SYSTEM_DIR_DOCUMENTS);
+	config_dir=String(_MKSTR(VERSION_SHORT_NAME)).capitalize();
 
 	ObjectTypeDB::register_type<EditorSettings>(); //otherwise it can't be unserialized
 	String config_file_path;

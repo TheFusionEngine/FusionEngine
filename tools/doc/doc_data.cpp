@@ -133,7 +133,6 @@ void DocData::merge_from(const DocData& p_data) {
 
 void DocData::generate(bool p_basic_types) {
 
-
 	List<String> classes;
 	ObjectTypeDB::get_type_list(&classes);
 	classes.sort();

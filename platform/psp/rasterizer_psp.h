@@ -33,7 +33,10 @@
 
 #ifdef PSP
 
+#include <bit>
 #include <cstdlib>
+#include <climits>
+#include <initializer_list>
 #include "image.h"
 #include "rid.h"
 #include "servers/visual_server.h"
@@ -43,26 +46,26 @@
 #include "sort.h"
 // #include "tools/editor/scene_tree_editor.h"
 #include "platform_config.h"
-#include <psptypes.h>
-#include <pspgu.h>
-#include <pspdisplay.h>
-#include <pspgum.h>
-
-#include <malloc.h>
-#define BUF_WIDTH (512)
-#define SCR_WIDTH (480)
-#define SCR_HEIGHT (272)
-
 #include "servers/visual/particle_system_sw.h"
 
-#define MK_RGBA(r,g,b,a) GU_RGBA((int)(r),(int)(g),(int)(b),(int)(a))
-#include <pspge.h>
-// #include "os_psp.h"
-/*
-*/
+#include "gu_common.h"
 
-inline const ScePspFVector3 g_idMapping{32768.0f, 32768.0f, 32768.0f};
+#include "psp_edram.h"
+#include "psp_volatile.h"
 
+namespace {
+
+struct Vector2FE {
+	real_t x;
+	real_t y;
+};
+
+struct Vector3FE {
+	real_t x;
+	real_t y;
+	real_t z;
+};
+}
 
 struct VertexPool {
 	VertexPool(int p_points) : m_points{p_points}, m_weights{nullptr}, m_vertices{nullptr}, m_normals{nullptr}, m_uvs{nullptr}, m_colors{nullptr} {}
@@ -72,39 +75,67 @@ struct VertexPool {
 
 	int size() const { return m_points; }
 
-	void *pack() const {
+	template <auto Malloc = sceGuGetMemory>
+	void *pack(const AABB &aabb = {}, const Rect2 &uvbb = {}) const {
 		ERR_FAIL_NULL_V(m_vertices, nullptr);
+		ERR_FAIL_COND_V(m_points < 1, nullptr);
 
-		const int sz = m_points * (
-			3 * sizeof(float)
-			+ (m_weights ? 3 * sizeof(float) : 0)
-			+ ((m_uvs || m_uvs2) ? 2 * sizeof(float) : 0)
-			+ (m_colors ? 4 : 0)
-			+ (m_normals ? 3 * sizeof(float) : 0)
-			);
-		void *mem = sceGuGetMemory(sz);
-		ERR_FAIL_NULL_V(mem, nullptr);
+		const int sz = m_points * stride();
+		void *mem = Malloc(sz);
 
 		int ptr{};
 
 		for (int i = 0; i < m_points; ++i) {
 			if (m_weights) {
-				paste<Vector3>(mem, m_weights[i], ptr);
+				for (int j = 0; j < VS::ARRAY_WEIGHTS_SIZE; ++j) {
+					if (m_weights_compressed)
+						paste<float, char>(mem, &m_weights[i * m_weights_stride + j * sizeof(float)], ptr);
+					else
+						paste<float>(mem, &m_weights[i * m_weights_stride + j * sizeof(float)], ptr);
+				}
 			}
 			if (m_uvs) {
-				paste<float>(mem, m_uvs[i].x, ptr);
-				paste<float>(mem, m_uvs[i].y, ptr);
-			} else if (m_uvs2) {
-				paste<Vector2>(mem, m_uvs2[i], ptr);
+				if (m_uvs_compressed) {
+					paste<float, short, 2>(mem, &m_uvs[i * m_uvs_stride], ptr, aabb, uvbb, 0);
+					paste<float, short, 2>(mem, &m_uvs[i * m_uvs_stride + sizeof(float)], ptr, aabb, uvbb, 1);
+				} else {
+					paste<float>(mem, &m_uvs[i * m_uvs_stride], ptr);
+					paste<float>(mem, &m_uvs[i * m_uvs_stride + sizeof(float)], ptr);
+				}
 			}
 			if (m_colors) {
-				paste<int>(mem, MK_RGBA(m_colors[i].r * 255, m_colors[i].g * 255, m_colors[i].b * 255, m_colors[i].a * 255), ptr);
+				const auto *color = reinterpret_cast<const Color *>(&m_colors[i * m_colors_stride]);
+				paste<unsigned int>(mem, MK_RGBA_F(color->r, color->g, color->b, color->a), ptr);
 			}
 			if (m_normals) {
-				paste<Vector3>(mem, m_normals[i], ptr);
+				if (m_normals_compressed) {
+					paste<float, short>(mem, &m_normals[i * m_normals_stride], ptr);
+					paste<float, short>(mem, &m_normals[i * m_normals_stride + 4], ptr);
+					paste<float, short>(mem, &m_normals[i * m_normals_stride + 8], ptr);
+				} else {
+					paste<float>(mem, &m_normals[i * m_normals_stride], ptr);
+					paste<float>(mem, &m_normals[i * m_normals_stride + 4], ptr);
+					paste<float>(mem, &m_normals[i * m_normals_stride + 8], ptr);
+				}
 			}
 
-			paste<Vector3>(mem, m_vertices[i], ptr);
+			if (m_vertices_compressed) {
+				paste<float, short, 3>(mem, &m_vertices[i * m_vertices_stride], ptr, aabb, uvbb, 0);
+				paste<float, short, 3>(mem, &m_vertices[i * m_vertices_stride + 4], ptr, aabb, uvbb, 1);
+				paste<float, short, 3>(mem, &m_vertices[i * m_vertices_stride + 8], ptr, aabb, uvbb, 2);
+			} else {
+				paste<float>(mem, &m_vertices[i * m_vertices_stride], ptr);
+				paste<float>(mem, &m_vertices[i * m_vertices_stride + 4], ptr);
+				paste<float>(mem, &m_vertices[i * m_vertices_stride + 8], ptr);
+			}
+
+			const auto pad = stride() - elem_size();
+			if (pad > 0) {
+				ptr += pad;
+			}
+
+			ERR_FAIL_COND_V(ptr % stride() != 0, nullptr);
+
 		}
 
 		return mem;
@@ -112,56 +143,167 @@ struct VertexPool {
 
 	int attrs() const {
 		return (
-			GU_VERTEX_32BITF
-			| (m_weights ? GU_WEIGHT_32BITF : 0)
-			| ((m_uvs || m_uvs2) ? GU_TEXTURE_32BITF : 0)
+			(m_vertices_compressed ? GU_VERTEX_16BIT : GU_VERTEX_32BITF)
+			| (m_weights ? ((m_weights_compressed ? GU_WEIGHT_8BIT : GU_WEIGHT_32BITF) | GU_WEIGHTS(VS::ARRAY_WEIGHTS_SIZE)) : 0)
+			| (m_uvs ? (m_uvs_compressed ? GU_TEXTURE_16BIT : GU_TEXTURE_32BITF) : 0)
 			| (m_colors ? GU_COLOR_8888 : 0)
-			| (m_normals ? GU_NORMAL_32BITF : 0)
+			| (m_normals ? (m_normals_compressed ? GU_NORMAL_16BIT : GU_NORMAL_32BITF) : 0)
 		);
 	}
 
-	void vertex(const Vector3 *p_vertices) {
-		m_vertices = p_vertices;
+	void vertex(const Vector3 *p_vertices, int p_stride = 0, bool compress=false) {
+		m_vertices = reinterpret_cast<const char *>(p_vertices);
+		m_vertices_stride = p_stride ? p_stride : sizeof(Vector3);
+		m_vertices_compressed = compress;
 	}
 
-	void weight(const Vector3 *p_weights) {
-		m_weights = p_weights;
+	void weight(const float *p_weights, int p_stride = 0, bool compress=false) {
+		m_weights = reinterpret_cast<const char *>(p_weights);
+		m_weights_stride = p_stride ? p_stride : (sizeof(float) * VS::ARRAY_WEIGHTS_SIZE);
+		m_weights_compressed = compress;
 	}
 
-	void uv(const Vector3 *p_uvs) {
-		m_uvs = p_uvs;
-		m_uvs2 = nullptr;
+	void uv(const Vector3 *p_uvs, int p_stride = 0, bool compress=false) {
+		m_uvs = reinterpret_cast<const char *>(p_uvs);
+		m_uvs_stride = p_stride ? p_stride : sizeof(Vector3);
+		m_uvs_compressed = compress;
 	}
 
-	void uv(const Vector2 *p_uvs) {
-		m_uvs2 = p_uvs;
-		m_uvs = nullptr;
+	void uv(const Vector2 *p_uvs, int p_stride = 0, bool compress=false) {
+		m_uvs = reinterpret_cast<const char *>(p_uvs);
+		m_uvs_stride = p_stride ? p_stride : sizeof(Vector2);
+		m_uvs_compressed = compress;
 	}
 
-	void color(const Color *p_colors) {
-		m_colors = p_colors;
+	void color(const Color *p_colors, int p_stride = 0) {
+		m_colors = reinterpret_cast<const char *>(p_colors);
+		m_colors_stride = p_stride ? p_stride : sizeof(unsigned int);
 	}
 
-	void normal(const Vector3 *p_normals) {
-		m_normals = p_normals;
+	void normal(const Vector3 *p_normals, int p_stride = 0, bool compress=false) {
+		m_normals = reinterpret_cast<const char *>(p_normals);
+		m_normals_stride = p_stride ? p_stride : sizeof(Vector3);
+		m_normals_compressed = compress;
 	}
 
 private:
-	template <class T>
-	static inline void paste(void *mem, const T &value, int &ptr) {
-		*reinterpret_cast<T *>(&reinterpret_cast<char *>(mem)[ptr]) = value;
-		ptr += sizeof(T);
+	int elem_size() const {
+		return 3 * (m_vertices_compressed ? 2 : 4)
+			+ (m_weights ? VS::ARRAY_WEIGHTS_SIZE * (m_weights_compressed ? 1 : 4) : 0)
+			+ (m_uvs ? 2 * (m_uvs_compressed ? 2 : 4) : 0)
+			+ (m_colors ? sizeof(unsigned int) : 0)
+			+ (m_normals ? 3 * (m_normals_compressed ? 2 : 4) : 0);
+	}
+
+	int stride() const {
+		const auto sz = elem_size();
+		//return ((sz % 16) == 0) ? sz : ((sz + 16) - (sz % 16));
+		return sz;
+	}
+
+	template <class T, class U = T, int Dims = 1>
+	static inline void paste(void *mem, const T &value, int &ptr, const AABB &aabb = {}, const Rect2 &uvbb = {}, int coord = 0) {
+		constexpr auto u_bits = sizeof(U) * CHAR_BIT;
+		constexpr auto u_bits_num = u_bits - 1;
+
+		U val = static_cast<U>(value);
+
+		if constexpr (Dims == 2) {
+			constexpr auto intg_mask = (1 << u_bits_num) - 1;
+			constexpr auto sign_mask = 1 << u_bits_num; // sign bit
+
+			const float s = coord == 1 ? uvbb.size.y : uvbb.size.x;
+			if (s != .0f) {
+				const float p = coord == 1 ? uvbb.pos.y : uvbb.pos.x;
+				const float cv = value + p;
+				const float intgf = Math::abs(cv / s);
+
+				unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
+
+				val = intg & ~sign_mask;
+				if (cv < 0)
+					val = -val;
+			} else {
+				val = 0;
+			}
+		} else if constexpr (Dims == 3) {
+			constexpr auto intg_mask = (1 << u_bits_num) - 1;
+			constexpr auto sign_mask = 1 << u_bits_num; // sign bit
+
+			const float s = aabb.size.coord[coord];
+			if (s != .0f) {
+				const float p = aabb.pos.coord[coord];
+				const float cv = value - p;
+				const float intgf = Math::abs(cv / s);
+
+				unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
+
+				val = intg & ~sign_mask;
+				if (cv < 0)
+					val = -val;
+			} else {
+				val = 0;
+			}
+		} else if constexpr (sizeof(T) != sizeof(U)) {
+			val = value * ((1 << u_bits_num) - 1);
+		}
+		*reinterpret_cast<U *>(&reinterpret_cast<char *>(mem)[ptr]) = val;
+		ptr += sizeof(U);
+	}
+
+	template <class T, class U = T, int Dims = 1>
+	static inline void paste(void *mem, const void *value, int &ptr, const AABB &aabb = {}, const Rect2 &uvbb = {}, int coord = 0) {
+		const auto &val = *reinterpret_cast<const T *>(value);
+		paste<T, U, Dims>(mem, val, ptr, aabb, uvbb, coord);
 	}
 
 	int m_points;
 
-	const Vector3 *m_weights;
-	const Vector3 *m_uvs;
-	const Vector2 *m_uvs2;
-	const Color *m_colors;
-	const Vector3 *m_normals;
-	const Vector3 *m_vertices;
+	int m_weights_stride;
+	int m_uvs_stride;
+	int m_colors_stride;
+	int m_normals_stride;
+	int m_vertices_stride;
+
+	int m_weights_compressed;
+	int m_uvs_compressed;
+	//int m_colors_compressed;
+	int m_normals_compressed;
+	int m_vertices_compressed;
+
+	const char *m_weights;
+	const char *m_uvs;
+	const char *m_colors;
+	const char *m_normals;
+	const char *m_vertices;
 };
+
+template <class T>
+_FORCE_INLINE_ T *gumake(T &&il) {
+	constexpr auto sz = sizeof(T);
+
+	auto mem = reinterpret_cast<T *>(sceGuGetMemory(sz));
+	*mem = il;
+	return mem;
+}
+
+inline void swizzle(uint8_t *out, const uint8_t *in, uint32_t width, uint32_t height) {
+	int rowblocks = width / 16;
+
+	for (int j = 0; j < height; j++) {
+		for (int i = 0; i < width; i++) {
+			int blockx = i / 16;
+			int blocky = j / 8;
+
+			int x = i - blockx * 16;
+			int y = j - blocky * 8;
+			int block_index   = blockx + blocky * rowblocks;
+			int block_address = block_index * 16 * 8;
+
+			out[block_address + x + y * 16] = in[i + j * width];
+		}
+	}
+}
 
 class RasterizerPSP : public Rasterizer {
 
@@ -170,11 +312,11 @@ class RasterizerPSP : public Rasterizer {
 		MAX_SCENE_LIGHTS=2048,
 		LIGHT_SPOT_BIT=0x80,
 		DEFAULT_SKINNED_BUFFER_SIZE = 1024 * 1024, // 10k vertices
-		MAX_HW_LIGHTS = 1,
+		MAX_HW_LIGHTS = 4,
 	};
 	
 	
-	unsigned int list[262144] [[gnu::aligned(16)]];
+	unsigned int list[GU_CMDLIST_SIZE] [[gnu::aligned(16)]];
 	
 
 	uint8_t *skinned_buffer;
@@ -182,7 +324,6 @@ class RasterizerPSP : public Rasterizer {
 	bool pvr_supported;
 	bool s3tc_supported;
 	bool etc_supported;
-	bool npo2_textures_available;
 	bool pack_arrays;
 	bool use_reload_hooks;
 	void* fbp0;
@@ -199,8 +340,8 @@ class RasterizerPSP : public Rasterizer {
 		int alloc_width, alloc_height;
 		Image::Format format;
 
-		// GLenum target;
-		// GLenum gl_format_cache;
+		bool swizzle;
+		int gu_format_cache;
 		int gl_components_cache;
 		int data_size; //original data size, useful for retrieving back
 		bool format_has_alpha;
@@ -211,7 +352,7 @@ class RasterizerPSP : public Rasterizer {
 		Image image[6];
 
 		bool active;
-		Vector<void *> mipmaps;
+		Vector<uint8_t *> mipmaps;
 
 		ObjectID reloader;
 		StringName reloader_func;
@@ -232,7 +373,7 @@ class RasterizerPSP : public Rasterizer {
 
 		inline void _free_mipmaps() {
 			for (int i = 0; i < mipmaps.size(); ++i) {
-				std::free(mipmaps[i]);
+				gufree(mipmaps[i]);
 			}
 			mipmaps.clear();
 		}
@@ -363,6 +504,9 @@ class RasterizerPSP : public Rasterizer {
 		uint8_t *array_local;
 		uint8_t *index_array_local;
 
+		unsigned int psp_vattribs;
+		void *psp_array_local;
+
 		bool packed;	
 
 		VertexPool vp;
@@ -395,12 +539,13 @@ class RasterizerPSP : public Rasterizer {
 
 		bool active;
 
-		Point2 uv_min;
-		Point2 uv_max;
+		Rect2 uv_bb;
 
 		Surface() : vp{0} {
 
-			array_local = index_array_local = 0;
+			psp_array_local = array_local = index_array_local = 0;
+
+			psp_vattribs = 0;
 
 			array_len=0;
 			local_stride=0;
@@ -590,7 +735,8 @@ class RasterizerPSP : public Rasterizer {
 		Variant bg_param[VS::ENV_BG_PARAM_MAX];
 		bool fx_enabled[VS::ENV_FX_MAX];
 		Variant fx_param[VS::ENV_FX_PARAM_MAX];
-
+		Variant group[VS::ENV_GROUP_MAX];
+		
 		Environment() {
 
 			bg_mode=VS::ENV_BG_DEFAULT_COLOR;
@@ -888,6 +1034,8 @@ class RasterizerPSP : public Rasterizer {
 
 	void _setup_light(LightInstance* p_instance, int p_idx);
 	void _setup_lights(const uint16_t * p_lights,int p_light_count);
+
+	_FORCE_INLINE_ void _setup_texture(const Texture *texture);
 
 	_FORCE_INLINE_ void _setup_shader_params(const Material *p_material);
 	void _setup_fixed_material(const Geometry *p_geometry,const Material *p_material);
@@ -1334,6 +1482,9 @@ public:
 	virtual void environment_set_background_param(RID p_env,VS::EnvironmentBGParam p_param, const Variant& p_value);
 	virtual Variant environment_get_background_param(RID p_env,VS::EnvironmentBGParam p_param) const;
 
+	virtual void environment_set_group(RID p_env,VS::Group p_group, const Variant& p_param);
+	virtual Variant environment_get_group(RID p_env, VS::Group p_param) const;
+	
 	virtual void environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled);
 	virtual bool environment_is_fx_enabled(RID p_env,VS::EnvironmentFx p_effect) const;
 

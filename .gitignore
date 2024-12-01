@@ -34,6 +34,12 @@ platform/android/libs/google_play_services/gen/*
 platform/android/libs/play_licensing/bin/*
 platform/android/libs/play_licensing/gen/*
 
+platform/wiiu/*
+*.rpx
+*fscache
+*.iso
+*.cdi
+*.3dsx
 # General c++ generated files
 *.lib
 *.o
@@ -218,6 +224,7 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
+.cache/
 
 # KDE
 .directory

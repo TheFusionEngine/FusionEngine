@@ -35,7 +35,7 @@
 #include "platform_config.h"
 
 
-#if defined(NO_THREADS) || defined(PSP)
+#if defined(NO_THREADS) || defined(PSP) || defined(DREAMCAST)
 
 struct SafeRefCount {
 

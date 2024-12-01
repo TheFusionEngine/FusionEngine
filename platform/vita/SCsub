@@ -1,0 +1,32 @@
+import shlex
+from SCons.Node import NodeList
+
+Import('env')
+
+
+common_vita=[\
+	"os_vita.cpp",\
+	"rasterizer_vita.cpp",\
+	"audio_driver_vita.cpp",\
+	#"immvertex.c",\
+	#
+]
+
+prog = env.Program('#bin/fe_vita',['godot_vita.cpp']+common_vita)
+
+env.Command(
+	"#bin/fe-vita.elf", prog, shlex.join(['vita-elf-create', str(prog if not isinstance(prog, NodeList) else prog[0]),  'bin/fe-vita.elf'])
+)
+
+env.Command(
+	"#bin/eboot.bin", "#bin/fe-vita.elf" ,"vita-make-fself -c -na bin/fe-vita.elf bin/eboot.bin"
+)
+"""
+env.Command(
+	"#bin/strip2.elf", "#bin/strip.elf" ,"arm-vita-eabi-strip -g bin/strip.elf -o bin/strip2.elf"
+)
+
+env.Command(
+	"#bin/EBOOT.PBP", "#bin/strip2.elf" ,"pack-pbp bin/EBOOT.PBP bin/PARAM.SFO NULL          NULL NULL NULL          NULL  bin/strip2.elf NULL"
+)
+"""

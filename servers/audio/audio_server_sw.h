@@ -109,8 +109,9 @@ class AudioServerSW : public AudioServer {
 
 	static void _mixer_callback(void *p_udata);
 friend class AudioDriverSW;
-	void driver_process(int p_frames,int32_t *p_buffer);
 public:
+	void driver_process(int p_frames,int32_t *p_buffer);
+
 
 
 	/* SAMPLE API */

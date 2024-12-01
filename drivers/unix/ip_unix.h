@@ -31,7 +31,8 @@
 
 #include "io/ip.h"
 
-#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) || defined(__3DS__)
+#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) || defined(__3DS__) || defined(PSP)
+
 
 class IP_Unix : public IP {
 	OBJ_TYPE(IP_Unix, IP);

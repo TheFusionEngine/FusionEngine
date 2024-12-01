@@ -1,0 +1,13 @@
+Import('env')
+
+
+common_kos=[\
+	"os_kos.cpp",\
+	"rasterizer_dc.cpp",\
+]
+
+prog = env.Program('#bin/godot_kos',['godot_kos.cpp']+common_kos)
+
+env.Command(
+	"#bin/fe_dc.elf", prog, 'sh-elf-strip -o bin/fe_dc.elf bin/godot_kos.dreamcast.opt.32'
+)

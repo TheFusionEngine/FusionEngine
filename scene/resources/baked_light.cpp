@@ -67,6 +67,7 @@ void BakedLight::set_lightmap_gen_size(int p_idx,const Size2& p_size){
 Size2 BakedLight::get_lightmap_gen_size(int p_idx) const{
 
 	ERR_FAIL_INDEX_V(p_idx,lightmaps.size(),Size2());
+	printf("gen size%d\n", lightmaps[p_idx].gen_size);
 	return lightmaps[p_idx].gen_size;
 
 }

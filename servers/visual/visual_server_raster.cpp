@@ -1880,6 +1880,14 @@ Variant VisualServerRaster::environment_get_background_param(RID p_env,Environme
 	return rasterizer->environment_get_background_param(p_env,p_param);
 }
 
+void VisualServerRaster::environment_set_group(RID p_env,Group p_param, const Variant& p_value){
+	rasterizer->environment_set_group(p_env, p_param, p_value);
+}
+Variant VisualServerRaster::environment_get_group(RID p_env,Group p_param) const{
+
+	return rasterizer->environment_get_group(p_env, p_param);
+}
+
 void VisualServerRaster::environment_set_enable_fx(RID p_env,EnvironmentFx p_effect,bool p_enabled){
 
 	rasterizer->environment_set_enable_fx(p_env,p_effect,p_enabled);

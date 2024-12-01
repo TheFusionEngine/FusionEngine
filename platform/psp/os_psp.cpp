@@ -39,9 +39,16 @@
 #include "drivers/unix/file_access_unix.h"
 #include "os/memory_pool_dynamic_static.h"
 #include "core/os/thread_dummy.h"
+#include "drivers/unix/thread_posix.h"
 #include "main/main.h"
 #include <sys/time.h>
 #include <unistd.h>
+#include <pspaudio.h>
+#include <pspkernel.h>
+#include "drivers/unix/tcp_server_posix.h"
+#include "drivers/unix/stream_peer_tcp_posix.h"
+#include "drivers/unix/ip_unix.h"
+
 // #include <GL/glut.h>
 int OS_PSP::get_video_driver_count() const {
 
@@ -53,7 +60,9 @@ const char * OS_PSP::get_video_driver_name(int p_driver) const {
 }
 OS::VideoMode OS_PSP::get_default_video_mode() const {
 
-	return OS::VideoMode(800,600,false);
+
+	return OS::VideoMode(480,272,true);
+
 }
 
 static MemoryPoolStaticMalloc *mempool_static=NULL;
@@ -62,7 +71,7 @@ static MemoryPoolDynamicStatic *mempool_dynamic=NULL;
 	
 void OS_PSP::initialize_core() {
 
-	ThreadDummy::make_default();
+	ThreadPosix::make_default();
 	SemaphoreDummy::make_default();
 	MutexDummy::make_default();
 
@@ -81,13 +90,11 @@ void OS_PSP::initialize_core() {
 	ticks_start = 0;
 	ticks_start = get_ticks_usec();
 
-	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_RESOURCES);
-	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_USERDATA);
-	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_FILESYSTEM);
-	//FileAccessBufferedFA<FileAccessUnix>::make_default();
-	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_RESOURCES);
-	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_USERDATA);
-	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_FILESYSTEM);
+#ifdef PSP_NET
+	TCPServerPosix::make_default();
+	StreamPeerTCPPosix::make_default();
+	IP_Unix::make_default();
+#endif
 }
 
 void OS_PSP::finalize_core() {
@@ -102,6 +109,8 @@ void OS_PSP::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	current_videomode=p_desired;
 	main_loop=NULL;
 
+	sceCtrlSetSamplingCycle(0);
+	sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
 	
 	rasterizer = memnew( RasterizerPSP );
 
@@ -173,6 +182,58 @@ void OS_PSP::set_mouse_show(bool p_show) {
 
 
 }
+
+PspCtrlButtons buttons[16] = {
+		PSP_CTRL_CROSS,
+		PSP_CTRL_CIRCLE,
+		PSP_CTRL_SQUARE,
+		PSP_CTRL_TRIANGLE,
+		(PspCtrlButtons)0,
+		(PspCtrlButtons)0,
+		PSP_CTRL_LTRIGGER,
+		PSP_CTRL_RTRIGGER,
+		(PspCtrlButtons)0,
+		(PspCtrlButtons)0,
+		PSP_CTRL_SELECT,
+		PSP_CTRL_START,
+		PSP_CTRL_UP,
+		PSP_CTRL_DOWN,
+		PSP_CTRL_LEFT,
+		PSP_CTRL_RIGHT
+};
+
+void OS_PSP::process_keys() {
+	sceCtrlReadBufferPositive(&pad, 1);
+
+	last++;
+
+	for(int i = 0; i < 16; i++) {
+		if (pad.Buttons & buttons[i]) {
+			InputEvent event;
+			event.type = InputEvent::JOYSTICK_BUTTON;
+			event.device = 0;
+			event.joy_button.button_index = i;
+			event.joy_button.pressed = true;
+			event.ID = last;
+			input->parse_input_event(event);
+		} else {
+			InputEvent event;
+			event.type = InputEvent::JOYSTICK_BUTTON;
+			event.device = 0;
+			event.joy_button.button_index = i;
+			event.joy_button.pressed = false;
+			event.ID = last;
+			input->parse_input_event(event);
+		}
+	}
+
+	uint8_t lx = (pad.Lx - 128);
+	uint8_t ly = (pad.Ly - 128);
+
+	input->set_joy_axis(0, 0, lx);
+	input->set_joy_axis(0, 1, ly);
+}
+
 void OS_PSP::set_mouse_grab(bool p_grab) {
 
 	grab=p_grab;
@@ -229,7 +290,8 @@ uint64_t OS_PSP::get_ticks_usec() const{
 
 OS::VideoMode OS_PSP::get_video_mode(int p_screen) const {
 
-	return current_videomode;
+	//return current_videomode;
+	return get_default_video_mode();
 }
 void OS_PSP::get_fullscreen_mode_list(List<VideoMode> *p_list,int p_screen) const {
 
@@ -277,6 +339,22 @@ void OS_PSP::set_cursor_shape(CursorShape p_shape) {
 
 }
 
+void OS_PSP::process_audio() {
+	// sceAudioOutput
+}
+
+int OS_PSP::psp_callback_thread(unsigned sz, void *thiz) {
+	sceKernelRegisterExitCallback(
+			sceKernelCreateCallback("Confirm Exit Callback", [](int, int, void *up) {
+				reinterpret_cast<OS_PSP *>(up)->force_quit = true;
+				return 0;
+			}, *reinterpret_cast<void **>(thiz)));
+	sceKernelSleepThreadCB();
+	sceKernelExitThread(0);
+
+	return 0;
+}
+
 void OS_PSP::run() {
 
 	force_quit = false;
@@ -285,13 +363,21 @@ void OS_PSP::run() {
 		return;
 		
 	main_loop->init();
-		
+
+	auto thiz = this;
+	sceKernelStartThread(
+			sceKernelCreateThread("Exit Callback Thread", psp_callback_thread, 0x11, 0x200, 0, nullptr),
+			sizeof(this),
+			&thiz);
+
 	while (!force_quit) {
-	
+		// process_audio();
+		process_keys();
+		
 		if (Main::iteration()==true)
 			break;
 	};
-	
+
 	main_loop->finish();
 }
 
@@ -304,5 +390,6 @@ OS_PSP::OS_PSP() {
 	AudioDriverManagerSW::add_driver(&driver_psp);
 	//adriver here
 	grab=false;
+	_verbose_stdout=true;
 
 };

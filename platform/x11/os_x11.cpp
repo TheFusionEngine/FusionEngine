@@ -27,7 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 #include "servers/visual/visual_server_raster.h"
-// #include "drivers/gles2/rasterizer_gles2.h"
+#include "drivers/gles2/rasterizer_gles2.h"
 #include "drivers/gles1/rasterizer_gles1.h"
 #include "os_x11.h"
 #include "key_mapping_x11.h"
@@ -154,11 +154,11 @@ void OS_X11::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	context_gl = memnew( ContextGL_X11( x11_display, x11_window,current_videomode, false ) );
 	context_gl->initialize();
 
-	// if (p_video_driver == 0) {
-		// rasterizer = memnew( RasterizerGLES2 );
-	// } else {
+	if (p_video_driver == 0) {
+		rasterizer = memnew( RasterizerGLES2 );
+	} else {
 		rasterizer = memnew( RasterizerGLES1 );
-	// };
+	};
 
 #endif
 	visual_server = memnew( VisualServerRaster(rasterizer) );

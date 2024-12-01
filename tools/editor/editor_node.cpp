@@ -3988,7 +3988,9 @@ EditorNode::EditorNode() {
 	animation_editor->connect("resource_selected", this,"_resource_selected");
 	//plugin stuff
 
+#ifndef WIN98_ENABLED
 	file_server = memnew( EditorFileServer );
+#endif
 
 
 	editor_import_export->add_import_plugin( Ref<EditorTextureImportPlugin>( memnew(EditorTextureImportPlugin(this,EditorTextureImportPlugin::MODE_TEXTURE_2D) )));
@@ -4169,7 +4171,9 @@ EditorNode::EditorNode() {
 EditorNode::~EditorNode() {	
 
 	memdelete(editor_selection);
+#ifndef WIN98_ENABLED
 	memdelete(file_server);
+#endif
 	EditorSettings::destroy();
 }
 

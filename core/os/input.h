@@ -72,7 +72,10 @@ public:
 	virtual void warp_mouse_pos(const Vector2& p_to)=0;
 
 	virtual Vector3 get_accelerometer()=0;
-
+	virtual Vector3 get_magnetometer()=0;
+	virtual Vector3 get_gravity()=0;
+	virtual Vector3 get_gyroscope()=0;
+	
 	virtual void action_press(const StringName& p_action)=0;
 	virtual void action_release(const StringName& p_action)=0;
 
@@ -94,6 +97,9 @@ class InputDefault : public Input {
 	Map<StringName,int> custom_action_press;
 	Map<int, String> joy_names;
 	Vector3 accelerometer;
+	Vector3 gyroscope;
+	Vector3 magnetometer;
+	Vector3 gravity;
 	Vector2 mouse_pos;
 	MainLoop *main_loop;
 
@@ -125,6 +131,9 @@ public:
 	void joy_connection_changed(int p_idx, bool p_connected, String p_name);
 
 	virtual Vector3 get_accelerometer();
+	virtual Vector3 get_gravity();
+	virtual Vector3 get_magnetometer();
+	virtual Vector3 get_gyroscope();
 
 	virtual Point2 get_mouse_pos() const;
 	virtual Point2 get_mouse_speed() const;
@@ -135,6 +144,9 @@ public:
 
 	void parse_input_event(const InputEvent& p_event);
 	void set_accelerometer(const Vector3& p_accel);
+	void set_gyroscope(const Vector3& p_gyro);
+	void set_magnetometer(const Vector3& p_magnet);
+	void set_gravity(const Vector3& p_gravity);
 	void set_joy_axis(int p_device,int p_axis,float p_value);
 
 	void set_main_loop(MainLoop *main_loop);

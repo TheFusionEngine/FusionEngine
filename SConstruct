@@ -22,7 +22,7 @@ platform_exporters=[]
 global_defaults=[]
 
 for x in glob.glob("platform/*"):
-	if (not os.path.isdir(x)):
+	if not os.path.isdir(x):
 		continue
 	tmppath="./"+x
 
@@ -68,6 +68,8 @@ env_base.android_source_files=[]
 env_base.android_module_libraries=[]
 env_base.android_manifest_chunk=""
 env_base.disabled_modules=[]
+
+env_base.__class__.use_windows_spawn_fix = methods.use_windows_spawn_fix
 
 env_base.__class__.android_module_source = methods.android_module_source
 env_base.__class__.android_module_library = methods.android_module_library
@@ -299,6 +301,12 @@ if selected_platform in platform_list:
 	if (env['xml']=='yes'):
 		env.Append(CPPFLAGS=['-DXML_ENABLED'])
 
+	env.Append(LINKFLAGS = '-Wl,-Map=${TARGET.base}.map')
+
+	scons_cache_path = os.environ.get("SCONS_CACHE")
+	if scons_cache_path is not None:
+    		CacheDir(scons_cache_path)
+    		print("Scons cache enabled... (path: '" + scons_cache_path + "')")
 
 	Export('env')
 

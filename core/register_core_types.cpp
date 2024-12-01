@@ -161,7 +161,9 @@ void register_core_types() {
 void register_core_singletons() {
 
 	Globals::get_singleton()->add_singleton( Globals::Singleton("Globals",Globals::get_singleton()) );
+#ifndef WIN98_ENABLED
 	Globals::get_singleton()->add_singleton( Globals::Singleton("IP",IP::get_singleton()) );
+#endif
 	Globals::get_singleton()->add_singleton( Globals::Singleton("Geometry",_Geometry::get_singleton()) );
 	Globals::get_singleton()->add_singleton( Globals::Singleton("ResourceLoader",_ResourceLoader::get_singleton()) );
 	Globals::get_singleton()->add_singleton( Globals::Singleton("ResourceSaver",_ResourceSaver::get_singleton()) );

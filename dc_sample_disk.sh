@@ -1,0 +1,1 @@
+mkdcdisc -e bin/fe_dc.elf -f demos/2d/tetris/engine.cfg -f demos/2d/tetris/block.png -f demos/2d/tetris/grid.gd -f demos/2d/tetris/grid.xml -f demos/2d/tetris/tetris.png -f demos/2d/tetris/tetris.xml -o fe.cdi

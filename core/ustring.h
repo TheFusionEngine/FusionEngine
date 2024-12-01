@@ -32,6 +32,12 @@
 #include "typedefs.h"
 #include "vector.h"
 
+#ifdef WINDOWS_ENABLED
+#include "tchar.h"
+#endif
+
+#include <cstring>
+
 /**
 	@author red <red@killy>
 */
@@ -176,6 +182,28 @@ public:
 	CharString utf8() const;
 	bool parse_utf8(const char* p_utf8,int p_len=-1); //return true on error
 	static String utf8(const char* p_utf8,int p_len=-1);
+
+#ifdef WINDOWS_ENABLED
+//#ifndef _UNICODE
+//	mutable CharString ascii_;
+//	mutable bool has_ascii_;
+//#endif
+	_FORCE_INLINE_ const TCHAR *t_str() const {
+#ifdef _UNICODE
+		return c_str();
+#else
+#error "not implemented yet"
+		CharString stage = ascii();
+		if (!has_ascii_ || strcmp(ascii_.get_data(), stage.get_data()) != 0) {
+			ascii_ = stage;
+			has_ascii_ = true;
+		}
+		const char *r = ascii_.get_data();
+		ERR_FAIL_NULL_V(r, NULL);
+		return r;
+#endif
+	}
+#endif
 	
 	static uint32_t hash(const CharType* p_str,int p_len); /* hash the string */
 	static uint32_t hash(const CharType* p_str); /* hash the string */
@@ -217,7 +245,13 @@ public:
 	 * The constructors must not depend on other overloads
 	 */
 /*	String(CharType p_char);*/
-	inline String() {}
+	inline String() {
+#ifdef WINDOWS_ENABLED
+#ifndef _UNICODE
+		has_ascii_ = false;
+#endif
+#endif
+	}
 	String(const char *p_str);
 	String(const CharType *p_str,int p_clip_to_len=-1);
 	String(const StrRange& p_range);

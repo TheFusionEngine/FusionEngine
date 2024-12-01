@@ -8,9 +8,13 @@ Export('env')
 SConscript('unix/SCsub');
 SConscript('alsa/SCsub');
 SConscript('windows/SCsub');
-if env['platform'] == "javascript":
+
+if env["platform"] in ("x11", "vita", "javascript"):
 	SConscript('gles2/SCsub');
-else:
+if env["platform"] in ("x11soft", "windows"):
+	SConscript('gl11/SCsub');
+elif env["platform"] != "vita":
+
 	SConscript('gles1/SCsub');
 SConscript('gl_context/SCsub');
 SConscript('openssl/SCsub');

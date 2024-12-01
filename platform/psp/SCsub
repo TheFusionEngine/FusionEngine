@@ -7,6 +7,8 @@ Import('env')
 common_psp=[\
 	"os_psp.cpp",\
 	"rasterizer_psp.cpp",\
+	"psp_volatile.cpp",\
+	"psp_edram.cpp",\
 	"audio_driver_psp.cpp",\
 ]
 

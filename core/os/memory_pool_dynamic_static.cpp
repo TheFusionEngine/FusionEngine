@@ -82,8 +82,8 @@ MemoryPoolDynamic::ID MemoryPoolDynamicStatic::alloc(size_t p_amount,const char*
 		//return INVALID_ID;
 	}
 
-	//chunk[idx].mem = Memory::alloc_static(p_amount,p_description);
-	chunk[idx].mem = memalloc(p_amount);
+	chunk[idx].mem = Memory::alloc_static(p_amount,p_description);
+	//chunk[idx].mem = memalloc(p_amount);
 	if (!chunk[idx].mem)
 		return INVALID_ID;
 		

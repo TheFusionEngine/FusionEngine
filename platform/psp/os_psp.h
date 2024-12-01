@@ -34,7 +34,8 @@
 #include "drivers/unix/os_unix.h"
 #include "servers/visual_server.h"
 #include "servers/visual/rasterizer.h"
-#include "servers/audio/audio_driver_dummy.h"
+// #include "servers/audio/audio_driver_dummy.h"
+#include "audio_driver_psp.h"
 #include "servers/physics_server.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
@@ -42,6 +43,7 @@
 #include "servers/spatial_sound_2d/spatial_sound_2d_server_sw.h"
 #include "drivers/rtaudio/audio_driver_rtaudio.h"
 #include "servers/physics_2d/physics_2d_server_sw.h"
+#include <pspctrl.h>
 
 #undef CursorShape
 
@@ -52,9 +54,9 @@ class OS_PSP : public OS {
 	VideoMode current_videomode;
 	List<String> args;
 	MainLoop *main_loop;	
-	
-	
-	AudioDriverDummy driver_psp;
+
+	AudioDriverPSP driver_dummy;
+
 	bool grab;
 	uint64_t ticks_start;
 	
@@ -68,11 +70,17 @@ class OS_PSP : public OS {
 	SampleManagerMallocSW *sample_manager;
 	SpatialSoundServerSW *spatial_sound_server;
 	SpatialSound2DServerSW *spatial_sound_2d_server;
+	SceCtrlData pad;
+	int last;
+	int32_t* samples_in;
+	int16_t* samples_out;
 
 	bool force_quit;
 
 	InputDefault *input;
 
+
+	static int psp_callback_thread(unsigned, void *);
 
 
 protected:
@@ -85,6 +93,9 @@ protected:
 	virtual void finalize();
 
 	virtual void set_main_loop( MainLoop * p_main_loop );    
+	
+	virtual void process_keys();
+	virtual void process_audio();
 
 public:
 	virtual void initialize_core();
@@ -94,8 +105,10 @@ public:
 	virtual void set_cursor_shape(CursorShape p_shape);
 	
 	virtual int get_audio_driver_count() const { return 1; };
-	virtual const char * get_audio_driver_name(int p_driver) const { return "Dummy"; };
-	virtual void vprint(const char* p_format, va_list p_list, bool p_stderr=false) {};
+	virtual const char * get_audio_driver_name(int p_driver) const { return "pspaudio"; };
+	virtual void vprint(const char* p_format, va_list p_list, bool p_stderr=false) {
+		vfprintf(p_stderr ? stderr : stdout, p_format, p_list);
+	};
 	virtual void alert(const String& p_alert,const String& p_title="ALERT!") {};
 	virtual String get_stdin_string(bool p_block = true) { return ""; };
 	virtual Error execute(const String& p_path, const List<String>& p_arguments,bool p_blocking,ProcessID *r_child_id=NULL,String* r_pipe=NULL,int *r_exitcode=NULL) { return FAILED; };

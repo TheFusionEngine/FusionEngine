@@ -114,7 +114,7 @@ def configure(env):
 	
 	env.Append(CPPFLAGS=['-DOPENGL_ENABLED','-DGLEW_ENABLED'])
 	env.Append(CPPFLAGS=["-DALSA_ENABLED"])
-	env.Append(CPPFLAGS=['-DX11_ENABLED','-DUNIX_ENABLED','-DGLES2_ENABLED','-DGLES1_ENABLED','-DGLES_OVER_GL'])
+	env.Append(CPPFLAGS=['-DX11_ENABLED','-DUNIX_ENABLED','-DGLES2_ENABLED','-DGLES1_ENABLED','-DGLES_OVER_GL','-DRESOURCE_FORMAT_TEXT'])
 	env.Append(LIBS=['GL', 'GLU', 'pthread','asound','z']) #TODO detect linux/BSD!
 	#env.Append(CPPFLAGS=['-DMPC_FIXED_POINT'])
 

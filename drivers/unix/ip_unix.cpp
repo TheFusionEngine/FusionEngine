@@ -28,7 +28,9 @@
 /*************************************************************************/
 #include "ip_unix.h"
 
-#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED) || defined(__3DS__)
+
+#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED) || defined(__3DS__) || defined(PSP)
+
 
 
 #ifdef WINDOWS_ENABLED
@@ -47,7 +49,7 @@
  #endif
 #else
  #include <netdb.h>
-#ifndef __3DS__
+#if !defined(__3DS__) && !defined(PSP)
  #ifdef ANDROID_ENABLED
   #include "platform/android/ifaddrs_android.h"
  #else
@@ -74,6 +76,7 @@ IP_Address IP_Unix::_resolve_hostname(const String& p_hostname) {
 
 }
 
+<<<<<<< HEAD
 #ifdef __3DS__
 /*unsigned short ntohs(unsigned short netshort) {
     return ((netshort & 0xFF) << 8) | ((netshort >> 8) & 0xFF);
@@ -82,15 +85,23 @@ IP_Address IP_Unix::_resolve_hostname(const String& p_hostname) {
 unsigned short htons(unsigned short hostshort) {
     return ((hostshort & 0xFF) << 8) | ((hostshort >> 8) & 0xFF);
 }*/
+=======
+#if defined(PSP)
+>>>>>>> fbdd36df3a8b2e204567fa7fd666453ee94e0c0c
 void IP_Unix::get_local_addresses(List<IP_Address> *r_addresses) const {
 
 
 };
+<<<<<<< HEAD
 
 #else 
+=======
+#else
+
+>>>>>>> fbdd36df3a8b2e204567fa7fd666453ee94e0c0c
 #if defined(WINDOWS_ENABLED)
 
-#if defined(WINRT_ENABLED)
+#if defined(WINRT_ENABLED) || defined(WIN98_ENABLED)
 
 void IP_Unix::get_local_addresses(List<IP_Address> *r_addresses) const {
 

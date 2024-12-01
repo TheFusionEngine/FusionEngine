@@ -7611,8 +7611,6 @@ void RasterizerGLES2::_debug_samplers() {
 		}
 	}
 
-
-
 }
 void RasterizerGLES2::_debug_shadows() {
 
@@ -8198,7 +8196,22 @@ Variant RasterizerGLES2::environment_get_background_param(RID p_env,VS::Environm
 	return env->bg_param[p_param];
 
 }
+void RasterizerGLES2::environment_set_group(RID p_env,VS::Group p_param, const Variant& p_value){
 
+	ERR_FAIL_INDEX(p_param,VS::ENV_GROUP_MAX);
+	Environment * env = environment_owner.get(p_env);
+	ERR_FAIL_COND(!env);
+	env->group[p_param]=p_value;
+
+}
+Variant RasterizerGLES2::environment_get_group(RID p_env,VS::Group p_param) const{
+
+	ERR_FAIL_INDEX_V(p_param,VS::ENV_GROUP_MAX,Variant());
+	const Environment * env = environment_owner.get(p_env);
+	ERR_FAIL_COND_V(!env,Variant());
+	return env->group[p_param];
+
+}
 void RasterizerGLES2::environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled){
 
 	ERR_FAIL_INDEX(p_effect,VS::ENV_FX_MAX);

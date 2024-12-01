@@ -134,6 +134,17 @@ void Image::get_mipmap_offset_and_size(int p_mipmap,int &r_ofs, int &r_size) con
 
 }
 
+void Image::get_mipmap_offset_and_size(int p_mipmap,int &r_ofs, int &r_size, int &r_w, int &r_h) const {
+
+	int ofs,w,h;
+	_get_mipmap_offset_and_size(p_mipmap,ofs,r_w,r_h);
+	int ofs2;
+	_get_mipmap_offset_and_size(p_mipmap+1,ofs2,w,h);
+	r_ofs=ofs;
+	r_size=ofs2-ofs;
+
+}
+
 void Image::put_pixel(int p_x,int p_y, const Color& p_color,int p_mipmap){
 
 	ERR_FAIL_INDEX(p_mipmap,mipmaps+1);

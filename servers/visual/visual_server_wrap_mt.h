@@ -997,6 +997,9 @@ public:
 
 	FUNC3(environment_set_background_param,RID,EnvironmentBGParam, const Variant&);
 	FUNC2RC(Variant,environment_get_background_param,RID,EnvironmentBGParam );
+	
+	FUNC3(environment_set_group,RID,Group, const Variant&);
+	FUNC2RC(Variant,environment_get_group,RID,Group );
 
 	FUNC3(environment_set_enable_fx,RID,EnvironmentFx,bool);
 	FUNC2RC(bool,environment_is_fx_enabled,RID,EnvironmentFx);
