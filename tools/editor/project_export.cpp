@@ -696,7 +696,7 @@ void ProjectExportDialog::_update_group_tree() {
 
 		extensions.insert(E->get());
 	}
-
+	extensions.insert("tex");
 	List<StringName> grouplist;
 	EditorImportExport::get_singleton()->image_export_get_groups(&grouplist);
 	grouplist.sort_custom<StringName::AlphCompare>();
