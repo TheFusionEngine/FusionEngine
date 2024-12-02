@@ -1,0 +1,14 @@
+::res://::1705781638
+brick_color.png::ImageTexture::1705781638::
+brick_detail.png::ImageTexture::1705781638::
+brick_detail_emission.png::ImageTexture::1705781638::
+brick_detail_glow.png::ImageTexture::1705781638::
+brick_emission.png::ImageTexture::1705781638::
+brick_normal.png::ImageTexture::1705781638::
+fixed_materials.scn::PackedScene::1705781638::scene_3d<>./boxsphere.dae<>97feba9c1b870d4caf1d354f6adcb5db<>0
+icon.png::ImageTexture::1705781638::
+refmap.png::ImageTexture::1705781638::
+rim.png::ImageTexture::1705781638::
+rocky_specular.png::ImageTexture::1705781638::
+s.xml::Mesh::1705781638::
+tournesol.png::ImageTexture::1705781638::

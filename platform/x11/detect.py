@@ -54,7 +54,7 @@ def get_flags():
 	return [
 	('builtin_zlib', 'no'),
 	("builtin_openssl", "yes"),
-	("theora","no"),
+	("theora","yes"),
         ]
 			
 

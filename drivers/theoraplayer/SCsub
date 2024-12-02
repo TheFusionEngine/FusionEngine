@@ -2,7 +2,7 @@ Import("env")
 
 import string
 
-sources = string.split("""
+sources = """
 src/TheoraVideoClip.cpp
 src/FFmpeg/TheoraVideoClip_FFmpeg.cpp
 src/TheoraAsync.cpp
@@ -59,7 +59,7 @@ src/YUV/C/yuv420_grey_c.c
 src/YUV/C/yuv420_yuv_c.c
 src/YUV/C/yuv420_rgb_c.c
 src/TheoraVideoFrame.cpp
-""")
+""".split()
 
 if env["platform"] == "iphone":
 	sources.append("src/AVFoundation/TheoraVideoClip_AVFoundation.mm")

@@ -766,10 +766,18 @@ Error EditorTextureImportPlugin::import2(const String& p_path, const Ref<Resourc
 			ep.step("Loading Image: "+path,i);
 			print_line("source path: "+path+" md5 "+md5);
 			Image src;
-			Error err = ImageLoader::load_image(path,&src);
-			if (err) {
-				EditorNode::add_io_error("Couldn't load image: "+path);
-				return err;
+			if(path.extension() == "tex") {
+				Ref<ImageTexture> te;
+				te = ResourceLoader::load(path);
+				ERR_FAIL_COND_V(te.is_null(), ERR_CANT_OPEN);
+				src = te->get_data();
+
+			} else {
+				Error err = ImageLoader::load_image(path,&src);
+				if (err) {
+					EditorNode::add_io_error("Couldn't load image: "+path);
+					return err;
+				}
 			}
 
 			if (src.detect_alpha())
@@ -799,7 +807,9 @@ Error EditorTextureImportPlugin::import2(const String& p_path, const Ref<Resourc
 		ep.step("Cropping Images",sources.size()+1);
 
 		for(int j=0;j<sources.size();j++) {
-
+			int orig_w=sources[j].get_width();
+			int orig_h=sources[j].get_height();
+			sources[j].resize(orig_w/8,orig_h/8);
 			Size2i s;
 			if (crop) {
 				Rect2 crop = sources[j].get_used_rect();
@@ -810,6 +820,7 @@ Error EditorTextureImportPlugin::import2(const String& p_path, const Ref<Resourc
 
 				s=Size2i(sources[j].get_width(),sources[j].get_height());
 			}
+			
 			s+=Size2i(border*2,border*2);
 			src_sizes.push_back(s); //add a line to constraint width
 		}
@@ -946,9 +957,8 @@ Error EditorTextureImportPlugin::import2(const String& p_path, const Ref<Resourc
 
 		//	image.srgb_to_linear();
 		//}
-
 		if (shrink>1) {
-
+			
 			int orig_w=image.get_width();
 			int orig_h=image.get_height();
 			image.resize(orig_w/shrink,orig_h/shrink);

@@ -28,7 +28,9 @@
 /*************************************************************************/
 #include "ip_unix.h"
 
-#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED) || defined(PSP)
+
+#if defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED) || defined(__3DS__) || defined(PSP)
+
 
 
 #ifdef WINDOWS_ENABLED
@@ -47,7 +49,7 @@
  #endif
 #else
  #include <netdb.h>
-#ifndef PSP
+#if !defined(__3DS__) && !defined(PSP)
  #ifdef ANDROID_ENABLED
   #include "platform/android/ifaddrs_android.h"
  #else
@@ -74,12 +76,15 @@ IP_Address IP_Unix::_resolve_hostname(const String& p_hostname) {
 
 }
 
-#if defined(PSP)
+
+#if defined(PSP) || defined(__3DS__)
+
 void IP_Unix::get_local_addresses(List<IP_Address> *r_addresses) const {
 
 
 };
-#else
+
+#else 
 
 #if defined(WINDOWS_ENABLED)
 
@@ -145,6 +150,9 @@ void IP_Unix::get_local_addresses(List<IP_Address> *r_addresses) const {
 };
 
 #endif
+
+
+// #else
 
 #else
 

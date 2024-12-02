@@ -43,13 +43,16 @@ Error AudioDriverPSP::init() {
 	exit_thread=false;
 	pcm_open = false;
 	samples_in = NULL;
+
 	samples_out = NULL;
+
 
 	mix_rate = 44100;
 	output_format = OUTPUT_STEREO;
 	channels = 2;
 
 	int latency = GLOBAL_DEF("audio/output_latency",50);
+
  	buffer_size = nearest_power_of_2( latency * mix_rate / 1000 );
 
 	samples_in = memnew_arr(int32_t, buffer_size*channels);
@@ -60,11 +63,13 @@ Error AudioDriverPSP::init() {
 	mutex = Mutex::create();
 	thread = Thread::create(AudioDriverPSP::thread_func, this);
 
+
 	return OK;
 };
 
 void AudioDriverPSP::thread_func(void *p_udata) {
 	int buffer_index = 0;
+
  	AudioDriverPSP *ad = (AudioDriverPSP *)p_udata;
 
 	int sample_count = ad->buffer_size;
@@ -72,10 +77,12 @@ void AudioDriverPSP::thread_func(void *p_udata) {
 
  	while (!ad->exit_thread) {
 
+
  		if (ad->exit_thread)
  			break;
 
 		if (ad->active) {
+
 			ad->audio_server_process(ad->buffer_size, ad->samples_in);
 
 			for(int i = 0; i < sample_count*2; ++i) {
@@ -83,6 +90,7 @@ void AudioDriverPSP::thread_func(void *p_udata) {
 			}
 		}
 		else
+
 		{
 			for (int i = 0; i < sample_count*2; i++) {
 
@@ -90,7 +98,8 @@ void AudioDriverPSP::thread_func(void *p_udata) {
 			}
 		}
 		
-		sceAudioOutput2OutputBlocking(0x8000, ad->samples_out);
+		sceAudioOutput2OutputBlocking(0x8000*3, ad->samples_out);
+
 	}
 
 
@@ -125,11 +134,13 @@ void AudioDriverPSP::unlock() {
 
 void AudioDriverPSP::finish() {
 	exit_thread = true;
+
 	if (thread) {
 		Thread::wait_to_finish(thread);
 	}
 
-	//sceAudioOutput2Release();
+	sceAudioOutput2Release();
+
 
 	if (samples_in) {
  		memdelete_arr(samples_in);
@@ -147,9 +158,11 @@ void AudioDriverPSP::finish() {
 AudioDriverPSP::AudioDriverPSP() {
 
  	mutex = NULL;
+
  	samples_in = NULL;
  	samples_out = NULL;
  	thread = NULL;
+
 	active = false;
 };
 

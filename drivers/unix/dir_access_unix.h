@@ -29,7 +29,8 @@
 #ifndef DIR_ACCESS_UNIX_H
 #define DIR_ACCESS_UNIX_H
 
-#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__3DS__) || defined(__psp2__)
+
 
 #include <sys/types.h>
 #include <sys/stat.h>

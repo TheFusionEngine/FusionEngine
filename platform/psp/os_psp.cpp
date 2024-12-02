@@ -60,7 +60,9 @@ const char * OS_PSP::get_video_driver_name(int p_driver) const {
 }
 OS::VideoMode OS_PSP::get_default_video_mode() const {
 
+
 	return OS::VideoMode(480,272,true);
+
 }
 
 static MemoryPoolStaticMalloc *mempool_static=NULL;
@@ -385,7 +387,7 @@ void OS_PSP::swap_buffers() {
 
 OS_PSP::OS_PSP() {
 
-	AudioDriverManagerSW::add_driver(&driver_dummy);
+	AudioDriverManagerSW::add_driver(&driver_psp);
 	//adriver here
 	grab=false;
 	_verbose_stdout=true;

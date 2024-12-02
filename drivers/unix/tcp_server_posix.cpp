@@ -29,10 +29,14 @@
 #include "tcp_server_posix.h"
 #include "stream_peer_tcp_posix.h"
 
-#if defined(UNIX_ENABLED) || defined(PSP)
+#if defined(UNIX_ENABLED)  || defined(__3DS__)  || defined(PSP)
+
 
 #ifndef PSP
 #include <poll.h>
+
+ #include <arpa/inet.h>
+
 #else
 #include <sys/select.h>
 #endif

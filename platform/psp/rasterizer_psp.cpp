@@ -3018,8 +3018,6 @@ void RasterizerPSP::set_render_target(RID p_render_target, bool p_transparent_bg
 
 
 void RasterizerPSP::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug) {
-
-
 	opaque_render_list.clear();
 	alpha_render_list.clear();
 	light_instance_count=0;
@@ -3814,7 +3812,6 @@ void RasterizerPSP::_render(const Geometry *p_geometry,const Material *p_materia
 
 	switch(p_geometry->type) {
 		case Geometry::GEOMETRY_SURFACE: {
-
 			Surface *s = (Surface*)p_geometry;
 
 			_rinfo.vertex_count+=s->array_len;
@@ -3944,7 +3941,6 @@ void RasterizerPSP::_setup_shader_params(const Material *p_material) {
 }
 
 void RasterizerPSP::_render_list_forward(RenderList *p_render_list,bool p_reverse_cull) {
-
 	const Material *prev_material=NULL;
 	uint64_t prev_light_key=0;
 	const Skeleton *prev_skeleton=NULL;
@@ -3959,7 +3955,7 @@ void RasterizerPSP::_render_list_forward(RenderList *p_render_list,bool p_revers
 		uint64_t light_key = e->light_key;
 		const Skeleton *skeleton = e->skeleton;
 		const Geometry *geometry = e->geometry;
-
+		
 		if (material!=prev_material || geometry->type!=prev_geometry_type) {
 			_setup_material(e->geometry,material);
 			_rinfo.mat_change_count++;
@@ -4036,7 +4032,6 @@ void RasterizerPSP::_render_list_forward(RenderList *p_render_list,bool p_revers
 
 
 void RasterizerPSP::end_scene() {
-
 	sceGuEnable(GU_BLEND);
 	sceGuDepthMask(GU_FALSE);
 	// sceGuDepthRange(0,20000);

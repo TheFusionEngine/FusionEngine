@@ -67,7 +67,7 @@ static String _escape_string(const String& p_str) {
 	ret=ret.replace("\"","&quot;");
 	for (int i=1;i<32;i++) {
 
-		char chr[2]={i,0};
+		char chr[2]={(char)i,(char)0};
 		ret=ret.replace(chr,"&#"+String::num(i)+";");
 	}
 	ret=ret.utf8();

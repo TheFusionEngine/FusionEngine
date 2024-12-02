@@ -155,9 +155,9 @@ void OS_X11::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	context_gl->initialize();
 
 	if (p_video_driver == 0) {
-		rasterizer = memnew( RasterizerGLES2 );
-	} else {
 		rasterizer = memnew( RasterizerGLES1 );
+	} else {
+		rasterizer = memnew( RasterizerGLES2 );
 	};
 
 #endif

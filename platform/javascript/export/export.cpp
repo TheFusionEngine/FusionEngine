@@ -330,7 +330,7 @@ bool EditorExportPlatformJavaScript::can_export(String *r_error) const {
 	String exe_path = EditorSettings::get_singleton()->get_settings_path()+"/templates/";
 
 	if (!FileAccess::exists(exe_path+"javascript_debug.zip") || !FileAccess::exists(exe_path+"javascript_release.zip")) {
-		valid=false;
+		// valid=false;
 		err+="No export templates found.\nDownload and install export templates.\n";
 	}
 

@@ -488,10 +488,10 @@ Error ShaderCompilerGLES2::compile_node(SL::ProgramNode *p_program) {
 			header+=_typestr(fnode->arguments[i].type)+" "+replace_string(fnode->arguments[i].name);
 		}
 
-		header+=") {"ENDL;
+		header+=") {" ENDL;
 		String fcode=header;
 		fcode+=dump_node_code(fnode->body,1);
-		fcode+="}"ENDL;
+		fcode+="}" ENDL;
 		global_code+=fcode;
 
 	}

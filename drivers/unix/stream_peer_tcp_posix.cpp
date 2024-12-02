@@ -26,9 +26,12 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#if defined(UNIX_ENABLED) || defined(PSP)
+
+#if defined(UNIX_ENABLED)  || defined(__3DS__) || defined(PSP)
 
 #include "stream_peer_tcp_posix.h"
+ #include <arpa/inet.h>
+
 
 #ifndef PSP
 #include <poll.h>
@@ -62,7 +65,7 @@
 #endif
 
 static void set_addr_in(struct sockaddr_in& their_addr, const IP_Address& p_host, uint16_t p_port) {
-
+	// printf("%s\n", p_host.host);
 	their_addr.sin_family = AF_INET;    // host byte order
 	their_addr.sin_port = htons(p_port);  // short, network byte order
 	their_addr.sin_addr = *((struct in_addr*)&p_host.host);
@@ -169,7 +172,9 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 		//perror("socket");
 		return FAILED;
 	};
-#ifndef PSP
+#if !defined(__3DS__) && ! defined(PSP)
+
+
 #ifndef NO_FCNTL
 	fcntl(sockfd, F_SETFL, O_NONBLOCK);
 #else
@@ -177,6 +182,38 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 	ioctl(sockfd, FIONBIO, &bval);
 #endif
 #endif
+
+#ifdef __3DS__
+	#define atoa(x) #x
+	struct addrinfo hints;
+	struct addrinfo *resaddr = NULL, *resaddr_cur;
+	memset(&hints, 0, sizeof(struct addrinfo));
+	
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	//TODO: Do not embed this
+	if(getaddrinfo("google.com", "80", &hints, &resaddr)!=0)
+	{
+		printf("getaddrinfo() failed.\n");
+		closesocket(sockfd);
+		// return;
+	}
+
+	for(resaddr_cur = resaddr; resaddr_cur!=NULL; resaddr_cur = resaddr_cur->ai_next)
+	{
+		if(::connect(sockfd, resaddr_cur->ai_addr, resaddr_cur->ai_addrlen)==0)break;
+	}
+
+	freeaddrinfo(resaddr);
+
+	if(resaddr_cur==NULL)
+	{
+		printf("Failed to connect.\n");
+		closesocket(sockfd);
+		// return;
+	}
+#else
+
 	struct sockaddr_in their_addr;
 	set_addr_in(their_addr, p_host, p_port);
 
@@ -187,7 +224,7 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 		disconnect();
 		return FAILED;
 	};
-
+#endif
 	if (errno == EINPROGRESS) {
 		status = STATUS_CONNECTING;
 	} else {
@@ -227,8 +264,11 @@ Error StreamPeerTCPPosix::write(const uint8_t* p_data,int p_bytes, int &r_sent, 
 	int total_sent = 0;
 
 	while (data_to_send) {
-
+#ifdef JAVASCRIPT_ENABLED
+		int sent_amount = send(sockfd, offset, data_to_send, 0);
+#else
 		int sent_amount = send(sockfd, offset, data_to_send, MSG_NOSIGNAL);
+#endif
 		//printf("Sent TCP data of %d bytes, errno %d\n", sent_amount, errno);
 
 		if (sent_amount == -1) {
