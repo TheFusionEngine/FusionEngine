@@ -26,7 +26,7 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifdef GLES1_ENABLED
+#if defined(GLES1_ENABLED) || defined(__psp2__)
 
 #include "rasterizer_gles1.h"
 #include "os/os.h"
@@ -3386,7 +3386,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 
 
 	}
-
+#ifndef __psp2__
 	if(p_material->fixed_flags[VS::FIXED_MATERIAL_FLAG_USE_ENVMAP] && p_material->textures[VS::FIXED_MATERIAL_PARAM_ENVMAP].is_valid()) {
 		
 		Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_ENVMAP] );
@@ -3407,6 +3407,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		 glDisable(GL_TEXTURE_GEN_S);
 		 glDisable(GL_TEXTURE_GEN_T);
 		 glDisable(GL_TEXTURE_2D);
+#endif
 		if (p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE].is_valid()) {
 
 			Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE] );
@@ -3418,8 +3419,9 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 
 			glDisable(GL_TEXTURE_2D);
 		}
+#ifndef __psp2__
 	}
-	
+#endif
 
 
 }
@@ -4511,7 +4513,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 };
 
 void RasterizerGLES1::_process_blur(int times, float inc) {
-
+#ifndef __psp2__
 	float spost = 0.0f;
 	float alphainc = 0.9f / times;
 	float alpha = 0.2f;
@@ -4619,6 +4621,7 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+#endif
 }
 	
 
@@ -6280,9 +6283,10 @@ void RasterizerGLES1::init() {
 	
 
 	scene_pass=1;
+#ifndef __psp2__
 	if (ContextGL::get_singleton())
 		ContextGL::get_singleton()->make_current();
-
+#endif
 
 
 	Set<String> extensions;
