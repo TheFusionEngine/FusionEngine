@@ -1,0 +1,31 @@
+import shlex
+from SCons.Node import NodeList
+
+Import('env')
+
+
+common_psp=[\
+	"os_psp.cpp",\
+	"rasterizer_psp.cpp",\
+	"psp_volatile.cpp",\
+	"psp_edram.cpp",\
+	"audio_driver_psp.cpp",\
+]
+
+prog = env.Program('#bin/godot_psp',['godot_psp.cpp']+common_psp)
+
+env.Command(
+	"#bin/godot.elf", prog, shlex.join(['psp-fixup-imports', '-o', 'bin/godot.elf', str(prog if not isinstance(prog, NodeList) else prog[0])])
+)
+
+env.Command(
+	"#bin/strip.elf", "#bin/godot.elf" ,"psp-strip bin/godot.elf -o bin/strip.elf"
+)
+
+env.Command(
+	"#bin/strip2.elf", "#bin/strip.elf" ,"psp-strip bin/strip.elf -o bin/strip2.elf"
+)
+
+env.Command(
+	"#bin/EBOOT.PBP", "#bin/strip2.elf" ,"pack-pbp bin/EBOOT.PBP bin/PARAM.SFO NULL          NULL NULL NULL          NULL  bin/strip2.elf NULL"
+)
