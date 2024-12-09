@@ -28,6 +28,7 @@
 /*************************************************************************/
 #include "servers/visual/visual_server_raster.h"
 #include "drivers/gles1/rasterizer_gles1.h"
+//#include "rasterizer_gx.h"
 #include "drivers/unix/tcp_server_posix.h"
 #include "drivers/unix/stream_peer_tcp_posix.h"
 #include "drivers/unix/ip_unix.h"
@@ -45,8 +46,6 @@
 
 #include "main/main.h"
 
-#include <glad/glad.h>
-
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/errno.h>
@@ -57,7 +56,7 @@ int OS_WII::get_video_driver_count() const {
 }
 const char * OS_WII::get_video_driver_name(int p_driver) const {
 
-	return "opengx";
+	return "OpenGX";
 }
 
 OS::VideoMode OS_WII::get_default_video_mode() const {
@@ -67,17 +66,6 @@ OS::VideoMode OS_WII::get_default_video_mode() const {
 
 static MemoryPoolStaticMalloc *mempool_static=NULL;
 static MemoryPoolDynamicStatic *mempool_dynamic=NULL;
-
-extern "C" {
-	void *ogx_get_proc_address(const char *proc);
-	void ogx_initialize();
-}
-
-static void *getprocaddr(const char *proc) {
-	void *addr = ogx_get_proc_address(proc);
-	printf("%s: %s = %p\n", __FUNCTION__, proc, addr);
-	return addr;
-}
 
 void OS_WII::initialize_core() {
 	SYS_STDIO_Report(true);
@@ -142,10 +130,9 @@ void OS_WII::initialize_core() {
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
 	surface = SDL_SetVideoMode(640, 480, 32, videoFlags);
-	ogx_initialize();
 
-	gladLoadGLLoader(getprocaddr);
-	printf("glEnableClientState => %p\n", glad_glEnableClientState);
+	//gladLoadGLLoader(getprocaddr);
+	//printf("glEnableClientState => %p\n", glad_glEnableClientState);
 }
 
 void OS_WII::finalize_core() {

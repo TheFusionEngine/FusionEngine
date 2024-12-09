@@ -38,6 +38,11 @@
 #include "gl_context/context_gl.h"
 #include <string.h>
 
+#ifdef __WII__
+#undef glClearDepthf
+#define glClearDepthf glClearDepth
+#endif
+
 _FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
@@ -156,7 +161,7 @@ RasterizerGLES1::FX::FX() {
 
 static const GLenum prim_type[]={GL_POINTS,GL_LINES,GL_TRIANGLES,GL_TRIANGLE_FAN};
 
-static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1) {
+static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector2 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1) {
 
 	ERR_FAIL_COND(!p_vertices);
 	ERR_FAIL_COND(p_points <1 || p_points>4);
@@ -183,11 +188,11 @@ static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vecto
 	};
 
 	if (p_uvs) {
-#if !defined(PSP) && !defined(__WII__)
+#if !defined(PSP)
 			glClientActiveTexture(GL_TEXTURE0);
 #endif
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glTexCoordPointer(3, GL_FLOAT, 0, p_uvs);
+			glTexCoordPointer(2, GL_FLOAT, 0, p_uvs);
 	};
 
 	glDrawArrays( type, 0, p_points);
@@ -568,13 +573,11 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 		int size,ofs;
 		img.get_mipmap_offset_and_size(i,ofs,size);
 
-#if !defined(__WII__)
 		if (texture->compressed) {
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 			glCompressedTexImage2D( blit_target, i, format,w,h,0,size,&read[ofs] );
 		}
 		else
-#endif
 		{
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 //			glTexImage2D(blit_target, i, format==GL_RGB?GL_RGB8:format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
@@ -4310,11 +4313,11 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 					Vector3(1.0,-1.0,0),
 					Vector3(-1.0,-1.0,0)
 				};
-				static const Vector3 uvs[4]={
-					Vector3(0.0,0.0,0.0),
-					Vector3(1.0,0.0,0.0),
-					Vector3(1.0,1.0,0.0),
-					Vector3(0,1.0,0.0)
+				static const Vector2 uvs[4]={
+					Vector2(0.0,0.0),
+					Vector2(1.0,0.0),
+					Vector2(1.0,1.0),
+					Vector2(0,1.0)
 				};
 				static const Vector3 normals[4]={
 					Vector3(0,0,1),
@@ -4705,10 +4708,6 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	glPopMatrix();
 #endif
 }
-#ifdef __WII__
-#define glClearDepthf glClearDepth
-#endif
-
 void RasterizerGLES1::end_scene() {
 
 	glEnable(GL_BLEND);
@@ -5057,11 +5056,11 @@ void RasterizerGLES1::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
 		p_rect.pos.y+p_rect.size.height, 0 )
 	};
 
-	Vector3 texcoords[4]={
-		Vector3( 0.0f,0.0f, 0),
-		Vector3( 1.0f,0.0f, 0),
-		Vector3( 1.0f, 1.0f, 0),
-		Vector3( 0.0f, 1.0f, 0),
+	Vector2 texcoords[4]={
+		Vector2( 0.0f,0.0f),
+		Vector2( 1.0f,0.0f),
+		Vector2( 1.0f, 1.0f),
+		Vector2( 0.0f, 1.0f),
 	};
 
 	_draw_primitive(4,coords,0,0,texcoords);
@@ -5302,18 +5301,18 @@ void RasterizerGLES1::canvas_draw_line(const Point2& p_from, const Point2& p_to,
 static void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h=false,bool p_flip_v=false ) {
 
 
-	Vector3 texcoords[4]= {
-		Vector3( p_src_region.pos.x/p_tex_size.width,
-		p_src_region.pos.y/p_tex_size.height, 0),
+	Vector2 texcoords[4]= {
+		Vector2( p_src_region.pos.x/p_tex_size.width,
+		p_src_region.pos.y/p_tex_size.height),
 
-		Vector3((p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
-		p_src_region.pos.y/p_tex_size.height, 0),
+		Vector2((p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
+		p_src_region.pos.y/p_tex_size.height),
 
-		Vector3( (p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
-		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0),
+		Vector2( (p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
+		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height),
 
-		Vector3( p_src_region.pos.x/p_tex_size.width,
-		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0)
+		Vector2( p_src_region.pos.x/p_tex_size.width,
+		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height)
 	};
 
 
@@ -5456,18 +5455,18 @@ void RasterizerGLES1::canvas_draw_primitive(const Vector<Point2>& p_points, cons
 
 	ERR_FAIL_COND(p_points.size()<1);
 	Vector3 verts[4];
-	Vector3 uvs[4];
+	Vector2 uvs[4];
 
 	_set_glcoloro( Color(1,1,1),canvas_opacity );
 
 	for(int i=0;i<p_points.size();i++) {
 
-		verts[i]=Vector3(p_points[i].x,p_points[i].y,0);
+		verts[i]=Vector3(p_points[i].x,p_points[i].y,0.0);
 	}
 
 	for(int i=0;i<p_uvs.size();i++) {
 
-		uvs[i]=Vector3(p_uvs[i].x,p_uvs[i].y,0);
+		uvs[i]=Vector2(p_uvs[i].x,p_uvs[i].y);
 	}
 
 	if (p_texture.is_valid()) {
@@ -6367,7 +6366,7 @@ void RasterizerGLES1::_update_framebuffer() {
 
 void RasterizerGLES1::init() {
 
-#ifdef GLES_OVER_GL
+#if defined(__wii__) || defined(GLES_OVER_GL)
 	glewInit();
 #endif
 
@@ -6431,7 +6430,7 @@ void RasterizerGLES1::init() {
 	glBindTexture(GL_TEXTURE_2D,white_tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 8, 8, 0, GL_RGB, GL_UNSIGNED_BYTE,whitetexdata);
 
-	npo2_textures_available=false;
+	npo2_textures_available=true;
 	pvr_supported=extensions.has("GL_IMG_texture_compression_pvrtc");
 	etc_supported=true;
 	s3tc_supported=false;

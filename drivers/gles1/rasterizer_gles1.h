@@ -42,12 +42,8 @@
 #include "sort.h"
 // #include "tools/editor/scene_tree_editor.h"
 #include "platform_config.h"
-#if defined(GLAD_ENABLED)
- #include <glad/glad.h>
-#elif defined(GLES1_INCLUDE_H)
+#if defined(GLES1_INCLUDE_H)
  #include GLES1_INCLUDE_H
-#elif defined(__WII__)
- #include <GL/gl.h>
 #else
  #include <GLES/gl.h>
 #endif
