@@ -33,8 +33,8 @@
 
 #include <stdlib.h>
 #include "core/io/file_access_pack.h"
-#include "unzip.h"
-#include "map.h"
+#include "core/io/unzip.h"
+#include "core/map.h"
 
 class ZipArchive : public PackSource {
 

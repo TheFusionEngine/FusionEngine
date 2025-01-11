@@ -34,10 +34,20 @@
 #define PACK_VERSION 0
 
 Error PackedData::add_pack(const String& p_path) {
-
 	for (int i=0; i<sources.size(); i++) {
-
 		if (sources[i]->try_open_pack(p_path)) {
+			return OK;
+		};
+	};
+
+	return ERR_FILE_UNRECOGNIZED;
+};
+
+Error PackedData::add_pack(const String& p_path, bool p_replace_files) {
+	for (int i=0; i<sources.size(); i++) {
+		if (sources[i]->try_open_pack(p_path, p_replace_files)) {
+			packs_loaded++;
+			sources[i].load_presedence = packs_loaded;
 
 			return OK;
 		};
@@ -110,7 +120,7 @@ PackedData::PackedData() {
 
 //////////////////////////////////////////////////////////////////
 
-bool PackedSourcePCK::try_open_pack(const String& p_path) {
+bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) {
 
 	FileAccess *f = FileAccess::open(p_path,FileAccess::READ);
 	if (!f)
@@ -155,7 +165,7 @@ bool PackedSourcePCK::try_open_pack(const String& p_path) {
 	ERR_EXPLAIN("Pack created with a newer version of the engine: "+itos(ver_major)+"."+itos(ver_minor)+"."+itos(ver_rev));
 	ERR_FAIL_COND_V( ver_major > VERSION_MAJOR || (ver_major == VERSION_MAJOR && ver_minor > VERSION_MINOR), ERR_INVALID_DATA);
 
-	for(int i=0;i<16;i++) {
+	for(int i = 0; i < 16; i++) {
 		//reserved
 		f->get_32();
 	}
