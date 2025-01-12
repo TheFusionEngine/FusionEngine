@@ -198,7 +198,7 @@ bool ZipArchive::try_open_pack(const String& p_name) {
 		files[fname] = f;
 
 		uint8_t md5[16]={0,0,0,0,0,0,0,0 , 0,0,0,0,0,0,0,0};
-		PackedData::get_singleton()->add_path(p_name, fname, 0, 0, md5, this);
+		//PackedData::get_singleton()->add_path(p_name, fname, 0, 0, md5, this);
 
 		if ((i+1)<gi.number_entry) {
 			unzGoToNextFile(zfile);
@@ -354,7 +354,7 @@ bool FileAccessZip::file_exists(const String& p_name) {
 };
 
 
-FileAccessZip::FileAccessZip(const String& p_path, const PackedData::PackedFile& p_file) {
+FileAccessZip::FileAccessZip(const String& p_path) {
 
 	zfile = NULL;
 	_open(p_path, FileAccess::READ);

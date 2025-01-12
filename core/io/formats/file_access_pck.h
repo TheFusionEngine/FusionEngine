@@ -1,50 +1,51 @@
 #ifndef FILE_ACCESS_PCK_H
 #define FILE_ACCESS_PCK_H
 
-
 #include "core/io/file_access_pack.h"
 
-class PackedSourcePCK : public PackSource {
-	struct PathMD5 {
-		uint64_t a;
-		uint64_t b;
-		bool operator < (const PathMD5& p_md5) const {
-
-			if (p_md5.a == a) {
-				return b < p_md5.b;
-			} else {
-				return a < p_md5.a;
-			}
-		}
-
-		bool operator == (const PathMD5& p_md5) const {
-			return a == p_md5.a && b == p_md5.b;
-		};
-
-		PathMD5() {
-			a = b = 0;
-		};
-
-		PathMD5(const Vector<uint8_t> p_buf) {
-			a = *((uint64_t*)&p_buf[0]);
-			b = *((uint64_t*)&p_buf[8]);
-		};
-	};
-
-
-	Map<PathMD5,PackedData::PackedFile> files;
-
-public:
-
-	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true);
-	virtual FileAccess* get_file(const String& p_path, PackedData::PackedFile* p_file);
-	virtual PackedData::FileStatus has_file(const String& p_path);
-
+struct PackedFile {
+	String pack;
+	uint64_t offset; //if offset is ZERO, the file was ERASED
+	uint64_t size;
+	uint8_t md5[16];
+	PackSource* src;
 };
 
-class FileAccessPack : public FileAccess {
+struct PackedDir {
+	PackedDir *parent;
+	String name;
+	Map<String,PackedDir*> subdirs;
+	Set<String> files;
+};
 
-	PackedData::PackedFile pf;
+struct PathMD5 {
+	uint64_t a;
+	uint64_t b;
+	bool operator < (const PathMD5& p_md5) const {
+		if (p_md5.a == a) {
+			return b < p_md5.b;
+		} else {
+			return a < p_md5.a;
+		}
+	}
+
+	bool operator == (const PathMD5& p_md5) const {
+		return a == p_md5.a && b == p_md5.b;
+	};
+
+	PathMD5() {
+		a = b = 0;
+	};
+
+	PathMD5(const Vector<uint8_t> p_buf) {
+		a = *((uint64_t*)&p_buf[0]);
+		b = *((uint64_t*)&p_buf[8]);
+	};
+};
+
+class FileAccessPCK : public FileAccess {
+
+	PackedFile pf;
 
 	mutable size_t pos;
 	mutable bool eof;
@@ -80,63 +81,12 @@ public:
 	virtual bool file_exists(const String& p_name);
 
 
-	FileAccessPack(const String& p_path, const PackedData::PackedFile& p_file);
-	~FileAccessPack();
+	FileAccessPCK(const String& p_path, const PackedFile& p_file);
+	~FileAccessPCK();
 };
 
-FileAccess *PackedData::try_open_path(const String& p_path) {
-
-	//print_line("try open path " + p_path);
-// 	PathMD5 pmd5(p_path.md5_buffer());
-// 	Map<PathMD5,PackedFile>::Element *E=files.find(pmd5);
-// 	if (!E)
-// 		return NULL; //not found
-// 	if (E->get().offset==0)
-// 		return NULL; //was erased
-//
-// 	return E->get().src->get_file(p_path, &E->get());
-
-#ifdef SINGLE_PACK_SOURCE
-	return sources[0]->get_file(p_path);
-#else
-	//This ensures that it only fetches the most recent file.
-	PackSource *ret_source = NULL;
-	uint16_t load_presedence = 0;
-
-	for (int i = 0; i < sources.size(); i++) {
-		FileStatus status = sources[i]->has_file(p_path);
-		if (status == NOT_HAS_FILE){
-			continue;
-		} else {
-			if (status == HAS_FILE){
-				if (sources[i]->load_presedence > load_presedence) {ret_source = sources[i];}
-			} else { //file removed
-				//The file could be re-introduced later, but if it's not, ret_source will be null
-				ret_source = NULL;
-			}
-			load_presedence = sources[i]->load_presedence;
-		}
-	};
-
-	return ret_source not_eq NULL ? ret_source->get_file(p_path) : NULL;
-#endif
-}
-
-bool PackedData::has_path(const String& p_path) {
-	//return files.has(PathMD5(p_path.md5_buffer()));
-	for (int i = 0; i < sources.size(); i++) {
-		if (sources[i]->has_file(p_path)) {
-			return true;
-		};
-	};
-	return false;
-}
-
-
-class DirAccessPack : public DirAccess {
-
-
-	PackedData::PackedDir *current;
+class DirAccessPCK : public DirAccess {
+	PackedDir *current;
 
 	List<String> list_dirs;
 	List<String> list_files;
@@ -166,8 +116,26 @@ public:
 
 	size_t get_space_left();
 
-	DirAccessPack();
-	~DirAccessPack();
+	DirAccessPCK();
+	~DirAccessPCK();
+};
+
+class PackedSourcePCK : public PackSource {
+private:
+	static PackedSourcePCK *singleton;
+
+	Map<PathMD5, PackedFile> files;
+
+public:
+	PackedDir *root;
+
+	static PackedSourcePCK *get_singleton();
+
+	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true);
+	virtual FileAccess* get_file(const String& p_path);
+	virtual FileStatus has_file(const String& p_path);
+
+	PackedSourcePCK();
 
 };
 
