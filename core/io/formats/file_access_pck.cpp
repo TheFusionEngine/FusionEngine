@@ -65,18 +65,18 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 
 	for(int i=0; i < file_count; i++) {
 
-		uint32_t sl = f->get_32();
+		uint32_t string_length = f->get_32();
 		CharString cs;
-		cs.resize(sl+1);
-		f->get_buffer((uint8_t*)cs.ptr(),sl);
-		cs[sl]=0;
+		cs.resize(string_length+1);
+		f->get_buffer((uint8_t*)cs.ptr(), string_length);
+		cs[string_length]=0;
 
         PackedFile pf;
 
 		String path;
 		path.parse_utf8(cs.ptr());
-        pf.pack=path;
 
+        pf.pack=p_path;
 		pf.offset = f->get_64();
 		pf.size = f->get_64();
         f->get_buffer(pf.md5,16);
@@ -116,6 +116,8 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
         }
         pf.src = this;
     };
+
+	DirAccess::make_default<DirAccessPCK>(DirAccess::ACCESS_RESOURCES);
 
 	return true;
 };

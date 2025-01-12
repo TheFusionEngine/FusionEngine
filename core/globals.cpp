@@ -228,90 +228,90 @@ void Globals::_get_property_list(List<PropertyInfo> *p_list) const {
 
 
 
-bool Globals::_load_resource_pack(const String& p_pack) {
+bool Globals::_load_resource_pack(const String& p_pack, bool p_replace_files) {
 
 	if (PackedData::get_singleton()->is_disabled())
 		return false;
 
-	bool ok = PackedData::get_singleton()->add_pack(p_pack)==OK;
+	bool ok = PackedData::get_singleton()->add_pack(p_pack, p_replace_files)==OK;
 
 	if (!ok)
 		return false;
 
 	//if data.pck is found, all directory access will be from here
-	DirAccess::make_default<DirAccessPack>(DirAccess::ACCESS_RESOURCES);
 	using_datapack=true;
 
 	return true;
 }
 
+/*
+Where this function will check for packs, in order
+	1. p_main_pack
+	2. The executable's path
+	3. FileAccessNetworkClient singleton
+	4. The resource dir (as in the plain directory)
+	5. Recursively through root folders from p_path
+*/
+
 Error Globals::setup(const String& p_path,const String & p_main_pack) {
 
-	//an absolute mess of a function, must be cleaned up and reorganized somehow at some point
-	
-	//_load_settings(p_path+"/override.cfg");
-
 	if (p_main_pack!="") {
-		
-		bool ok = _load_resource_pack(p_main_pack);
+		bool ok = _load_resource_pack(p_main_pack, true);
 		ERR_FAIL_COND_V(!ok,ERR_CANT_OPEN);
 
 		if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
 
 			_load_settings("res://override.cfg");
-
 		}
-
 		return OK;
-
 	}
 
 	if (OS::get_singleton()->get_executable_path()!="") {
-
-		if (_load_resource_pack(OS::get_singleton()->get_executable_path())) {
-
+		if (_load_resource_pack(OS::get_singleton()->get_executable_path(), true)) {
 			if (p_path!="") {
 				resource_path=p_path;
 			} else {
 				DirAccess *d = DirAccess::create(DirAccess::ACCESS_FILESYSTEM);
 				resource_path=d->get_current_dir();
 				memdelete(d);
-
 			}
-			if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
-
+			if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK){
 				_load_settings("res://override.cfg");
-
 			}
-
-
 
 			return OK;
 		}
-
 	}
-	
 
 	if (FileAccessNetworkClient::get_singleton()) {
-
-		if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
-
+		if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK){
 			_load_settings("res://override.cfg");
-
 		}
 
 		return OK;
 	}
+
 	if (OS::get_singleton()->get_resource_dir()!="") {
         //OS will call Globals->get_resource_path which will be empty if not overriden!
 		//if the OS would rather use somewhere else, then it will not be empty.
 		resource_path=OS::get_singleton()->get_resource_dir().replace("\\","/");
+
 		if (resource_path.length() && resource_path[ resource_path.length()-1]=='/')
 			resource_path=resource_path.substr(0,resource_path.length()-1); // chop end
 
 		print_line("has res dir: "+resource_path);
-		if (!_load_resource_pack("res://data.pck"))
-			_load_resource_pack("res://data.pcz");
+
+		if (not PackedData::get_singleton()->is_disabled()){
+#ifdef USE_SINGLE_PACK_SOURCE
+			_load_resource_pack(String("res://data.") + PackedData::get_singleton()->get_extension(), true);
+#else
+			Vector<String> extensions = PackedData::get_singleton()->get_extensions();
+			for (int i = 0; i < extensions.size(); i++){
+				if (_load_resource_pack(String("res://data.") + String(extensions[i]), true))
+					break;
+			}
+#endif
+		}
 		// make sure this is load from the resource path
 		print_line("exists engine cfg? "+itos(FileAccess::exists("/engine.cfg")));
 		if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
@@ -325,33 +325,35 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 
 	DirAccess *d = DirAccess::create(DirAccess::ACCESS_FILESYSTEM);
 	if (!d) {
-
 		resource_path = p_path;
-
 	} else {
-	
 		d->change_dir(p_path);
 
 		String candidate = d->get_current_dir();
 		String current_dir = d->get_current_dir();
 		bool found = false;
-		bool first_time=true;
 
-		while(true) {
-			//try to load settings in ascending through dirs shape!
+		//first, try to open pack (TODO: is this redundant?)
 
-			//tries to open pack, but only first time
-			if (first_time && _load_resource_pack(current_dir+"/data.pck")) {
-				if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
-
-					_load_settings("res://override.cfg");
-					found=true;
-
-
-				}
+#ifdef USE_SINGLE_PACK_SOURCE
+		pack_found = _load_resource_pack(String("res://data.") + PackedData::get_singleton()->get_extension(), true);
+#else
+		Vector<String> extensions = PackedData::get_singleton()->get_extensions();
+		for (int i = 0; i < extensions.size(); i++){
+			if (_load_resource_pack(String("res://data.") + String(extensions[i]), true)){
+				found = true;
 				break;
-			} else if (_load_settings(current_dir+"/engine.cfg")==OK || _load_settings_binary(current_dir+"/engine.cfb")==OK) {
-
+			}
+		}
+#endif
+		if (found){
+			if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
+				_load_settings("res://override.cfg");
+			}
+		} else {
+			//try to load settings in ascending through dirs shape!
+			while(true) {
+			if (_load_settings(current_dir+"/engine.cfg")==OK || _load_settings_binary(current_dir+"/engine.cfb")==OK) {
 				_load_settings(current_dir+"/override.cfg");
 				candidate=current_dir;
 				found=true;
@@ -362,9 +364,8 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 			if (d->get_current_dir()==current_dir)
 				break; //not doing anything useful
 			current_dir=d->get_current_dir();
-			first_time=false;
+			}
 		}
-
 
 		resource_path=candidate;
 		resource_path = resource_path.replace("\\","/"); // windows path to unix path just in case
@@ -373,7 +374,6 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 		if (!found)
 			return ERR_FILE_NOT_FOUND;
 	};
-
 
 	if (resource_path.length() && resource_path[ resource_path.length()-1]=='/')
 		resource_path=resource_path.substr(0,resource_path.length()-1); // chop end

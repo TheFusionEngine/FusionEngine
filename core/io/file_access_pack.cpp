@@ -56,11 +56,13 @@ Error PackedData::add_pack(const String& p_path, bool p_replace_files) {
 #endif
 };
 
-void PackedData::add_pack_source(PackSource *p_source) {
+void PackedData::add_pack_source(PackSource *p_source, String file_extension) {
 #ifdef USE_SINGLE_PACK_SOURCE
 	source = p_source;
+	extension = file_extension;
 #else
 	sources.push_back(p_source);
+	extensions.push_back(file_extension);
 #endif
 };
 

@@ -148,7 +148,7 @@ unzFile ZipArchive::get_file_handle(String p_file) const {
 	return pkg;
 };
 
-bool ZipArchive::try_open_pack(const String& p_name) {
+bool ZipArchive::try_open_pack(const String& p_name, bool p_replace_files) {
 
 	printf("opening pack %ls, %i, %i\n", p_name.c_str(), p_name.extension().nocasecmp_to("zip"), p_name.extension().nocasecmp_to("pcz"));
 	if (p_name.extension().nocasecmp_to("zip") != 0 && p_name.extension().nocasecmp_to("pcz") != 0)
@@ -197,7 +197,7 @@ bool ZipArchive::try_open_pack(const String& p_name) {
 		String fname = String("res://") + filename_inzip;
 		files[fname] = f;
 
-		uint8_t md5[16]={0,0,0,0,0,0,0,0 , 0,0,0,0,0,0,0,0};
+		//uint8_t md5[16]={0,0,0,0,0,0,0,0 , 0,0,0,0,0,0,0,0};
 		//PackedData::get_singleton()->add_path(p_name, fname, 0, 0, md5, this);
 
 		if ((i+1)<gi.number_entry) {
@@ -209,13 +209,12 @@ bool ZipArchive::try_open_pack(const String& p_name) {
 };
 
 bool ZipArchive::file_exists(String p_name) const {
-
 	return files.has(p_name);
 };
 
-FileAccess* ZipArchive::get_file(const String& p_path, PackedData::PackedFile* p_file) {
+FileAccess* ZipArchive::get_file(const String& p_path) {
 
-	return memnew(FileAccessZip(p_path, *p_file));
+	return memnew(FileAccessZip(p_path));
 };
 
 
@@ -304,21 +303,18 @@ size_t FileAccessZip::get_len() const {
 };
 
 bool FileAccessZip::eof_reached() const {
-
 	ERR_FAIL_COND_V(!zfile, true);
 
 	return at_eof;
 };
 
 uint8_t FileAccessZip::get_8() const {
-
 	uint8_t ret = 0;
 	get_buffer(&ret, 1);
 	return ret;
 };
 
 int FileAccessZip::get_buffer(uint8_t *p_dst,int p_length) const {
-
 	ERR_FAIL_COND_V(!zfile, -1);
 	at_eof = unzeof(zfile);
 	if (at_eof)
@@ -331,7 +327,6 @@ int FileAccessZip::get_buffer(uint8_t *p_dst,int p_length) const {
 };
 
 Error FileAccessZip::get_error() const {
-
 	if (!zfile) {
 
 		return ERR_UNCONFIGURED;
@@ -344,24 +339,20 @@ Error FileAccessZip::get_error() const {
 };
 
 void FileAccessZip::store_8(uint8_t p_dest) {
-
 	ERR_FAIL();
 };
 
 bool FileAccessZip::file_exists(const String& p_name) {
-
 	return false;
 };
 
 
 FileAccessZip::FileAccessZip(const String& p_path) {
-
 	zfile = NULL;
 	_open(p_path, FileAccess::READ);
 };
 
 FileAccessZip::~FileAccessZip() {
-
 	close();
 };
 

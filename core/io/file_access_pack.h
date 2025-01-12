@@ -45,6 +45,9 @@ public:
 
 	uint16_t load_presedence;
 
+	virtual FileAccess *make_file_access();
+	virtual DirAccess *make_dir_access();
+
 	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true){return false;};
 	//virtual FileAccess* get_file(const String& p_path, PackedData::PackedFile* p_file)=0;
 	virtual FileAccess* get_file(const String& p_path){return NULL;};
@@ -57,17 +60,26 @@ class PackedData {
 	friend class DirAccessPack;
 	friend class PackSource;
 private:
+	static PackedData *singleton;
 
 #ifdef USE_SINGLE_PACK_SOURCE
 	PackSource *source;
+	String extension;
 #else
 	Vector<PackSource*> sources;
+	Vector<String> extensions;
 #endif
-	static PackedData *singleton;
+
 	uint16_t packs_loaded;
 	bool disabled;
 public:
-	void add_pack_source(PackSource* p_source);
+	void add_pack_source(PackSource* p_source, String file_extension);
+
+#ifdef USE_SINGLE_PACK_SOURCE
+	String get_extension(){return extension;}
+#else
+	Vector<String> get_extensions(){return extensions;}
+#endif
 
 	void set_disabled(bool p_disabled) { disabled=p_disabled; }
 	_FORCE_INLINE_ bool is_disabled() const { return disabled; }

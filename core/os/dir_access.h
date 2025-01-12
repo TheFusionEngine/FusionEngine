@@ -48,13 +48,9 @@ public:
 		ACCESS_MAX
 	};
 
-
-
-	typedef DirAccess*(*CreateFunc)();
+	typedef DirAccess *(*CreateFunc)();
 
 private:
-
-
 	AccessType _access_type;
 	static CreateFunc create_func[ACCESS_MAX]; ///< set this to instance a filesystem object
 protected:
@@ -66,9 +62,9 @@ protected:
 
 	template<class T>
 	static DirAccess* _create_builtin() {
-
 		return memnew( T );
 	}
+
 
 public:
 

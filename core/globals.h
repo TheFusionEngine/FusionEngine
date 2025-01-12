@@ -87,7 +87,7 @@ protected:
 	List<Singleton> singletons;
 
 
-	bool _load_resource_pack(const String& p_pack);
+	bool _load_resource_pack(const String& p_pack, bool p_replace_files);
 
 protected:
 
