@@ -6,6 +6,8 @@
 
 #define PCK_MAGIC 0x43504447
 
+PackedSourcePCK *PackedSourcePCK::singleton = NULL;
+
 PackedSourcePCK *PackedSourcePCK::get_singleton(){
 	if (singleton == NULL) {
 		singleton = memnew(PackedSourcePCK);
@@ -165,6 +167,13 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 // 		cd->files.insert(path.get_file());
 // 	}
 // }
+
+PackSource::FileStatus PackedSourcePCK::has_file(const String &p_path){
+	if (files.has(PathMD5(p_path.md5_buffer()))){
+		return PackSource::FileStatus::HAS_FILE;
+	}
+	return PackSource::FileStatus::NOT_HAS_FILE;
+}
 
 FileAccess* PackedSourcePCK::get_file(const String &p_path) {
     PackedFile* p_file = &files.find(PathMD5(p_path.md5_buffer()))->value();

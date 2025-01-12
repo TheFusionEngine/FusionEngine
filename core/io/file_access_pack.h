@@ -45,8 +45,8 @@ public:
 
 	uint16_t load_presedence;
 
-	virtual FileAccess *make_file_access();
-	virtual DirAccess *make_dir_access();
+	//virtual FileAccess *make_file_access();
+	//virtual DirAccess *make_dir_access();
 
 	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true){return false;};
 	//virtual FileAccess* get_file(const String& p_path, PackedData::PackedFile* p_file)=0;
@@ -87,8 +87,10 @@ public:
 	static PackedData *get_singleton() { return singleton; }
 	Error add_pack(const String& p_path, bool p_replace_files);
 
-	_FORCE_INLINE_ FileAccess *try_open_path(const String& p_path);
-	_FORCE_INLINE_ bool has_path(const String& p_path);
+	//_FORCE_INLINE_ FileAccess *try_open_path(const String& p_path);
+	FileAccess *try_open_path(const String& p_path);
+	//_FORCE_INLINE_ bool has_path(const String& p_path);
+	bool has_path(const String& p_path);
 
 	PackedData();
 };

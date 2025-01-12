@@ -65,7 +65,6 @@ protected:
 		return memnew( T );
 	}
 
-
 public:
 
 	static String normalize_path(const String& p_path);
