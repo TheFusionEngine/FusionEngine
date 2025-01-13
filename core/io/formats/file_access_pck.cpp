@@ -1,8 +1,9 @@
 #include "file_access_pck.h"
 
+#include "core/io/md5.h"
 #include "version.h"
 
-#define PACK_VERSION 0
+#define PCK_VERSION 0
 
 #define PCK_MAGIC 0x43504447
 
@@ -54,7 +55,7 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 	uint32_t ver_rev = f->get_32();
 
 	ERR_EXPLAIN("Pack version newer than supported by engine: "+itos(version));
-	ERR_FAIL_COND_V( version > PACK_VERSION, ERR_INVALID_DATA);
+	ERR_FAIL_COND_V( version > PCK_VERSION, ERR_INVALID_DATA);
 	ERR_EXPLAIN("Pack created with a newer version of the engine: "+itos(ver_major)+"."+itos(ver_minor)+"."+itos(ver_rev));
 	ERR_FAIL_COND_V( ver_major > VERSION_MAJOR || (ver_major == VERSION_MAJOR && ver_minor > VERSION_MINOR), ERR_INVALID_DATA);
 
@@ -185,7 +186,109 @@ FileAccess* PackedSourcePCK::get_file(const String &p_path) {
 	return memnew( FileAccessPCK(p_path, *p_file));
 };
 
+#ifdef TOOLS_ENABLED
+
+Error PackedSourcePCK::export_add_file(const String& p_file, const String& p_src){
+	FileAccess* f = FileAccess::open(p_src, FileAccess::READ);
+	if (!f) {
+		return ERR_FILE_CANT_OPEN;
+	};
+
+	PackedFile pck_file;
+	pck_file.file_path = p_file;
+	pck_file.pack = p_src;
+	pck_file.size = f->get_len();
+	pck_file.offset = 0;
+
+	export_files.push_back(pck_file);
+
+	f->close();
+	memdelete(f);
+
+	return OK;
+}
+
+void PackedSourcePCK::export_remove_file(const String& p_file, const String& p_src){
+
+}
+
+void PackedSourcePCK::export_clear_files(){
+	export_files.clear();
+}
+
+Error PackedSourcePCK::export_pack(const String& p_destination, uint64_t p_offset){
+	file = FileAccess::open(p_destination, FileAccess::WRITE);
+	if (file == NULL) {
+
+		return ERR_CANT_CREATE;
+	};
+
+	alignment = p_offset;
+	file->seek(p_offset);
+
+	file->store_32(PCK_MAGIC); // MAGIC
+	file->store_32(PCK_VERSION); // # version
+	file->store_32(VERSION_MAJOR); // # major
+	file->store_32(VERSION_MINOR); // # minor
+	file->store_32(0); // # revision
+
+	for (int i=0; i<16; i++) {
+		file->store_32(0); // reserved
+	};
+
+	file->store_32(export_files.size());
+
+	for (int i = 0; i < export_files.size(); i++){
+		PackedFile current_file = export_files[i];
+
+		Vector<uint8_t> file_bytes = FileAccess::get_file_as_array(current_file.file_path);
+
+		if (not file_bytes.empty()){
+			CharString utf8_path = current_file.file_path.utf8();
+			file->store_32(utf8_path.size());
+			file->store_buffer((uint8_t *)utf8_path.get_data(), utf8_path.length());
+
+			uint64_t current_position = file->get_pos();
+			file->store_64(current_position);
+			file->store_64(current_file.size);
+
+			{
+				MD5_CTX ctx;
+				MD5Init(&ctx);
+				MD5Update(&ctx, (unsigned char*)file_bytes.ptr(), file_bytes.size());
+				MD5Final(&ctx);
+				file->store_buffer(ctx.digest, 16);
+			}
+			//TODO: Editor update callback here
+			//pack_data->editor_progress->step("Storing File: " + p_path, 2 + p_file * 100 / p_total);
+
+			file->store_buffer(file_bytes.ptr(), file_bytes.size());
+		} else {
+			WARN_PRINT("File failed to open!");
+			const String null_str = String("null");
+			file->store_32(0);
+			file->store_64(0);
+			file->store_64(0);
+			uint8_t empty_md5[16];
+			file->store_buffer(empty_md5, 16);
+		}
+	}
+
+
+
+	export_files.clear();
+
+	return OK;
+}
+
+#endif
+
+
 PackedSourcePCK::PackedSourcePCK(){
+#ifdef TOOLS_ENABLED
+	file = NULL;
+#endif
+
 	root=memnew(PackedDir);
 	root->parent=NULL;
 

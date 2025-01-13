@@ -88,17 +88,23 @@ protected:
 
 	struct TempData {
 
-		uint64_t pos;
-		uint64_t ofs;
+		uint64_t file_pos;
+		uint64_t pck_offset;
 		uint64_t size;
 	};
 
 	struct PackData {
+		//Screw these dumb names
+// 		FileAccess *ftmp;
+// 		FileAccess *f;
+// 		Vector<TempData> file_ofs;
+// 		EditorProgress *ep;
+// 		int count;
 
-		FileAccess *ftmp;
-		FileAccess *f;
-		Vector<TempData> file_ofs;
-		EditorProgress *ep;
+		FileAccess *fileaccess_temp;
+		FileAccess *file;
+		Vector<TempData> file_offsets;
+		EditorProgress *editor_progress;
 		int count;
 
 	};

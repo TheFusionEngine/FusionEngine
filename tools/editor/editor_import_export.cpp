@@ -497,16 +497,10 @@ Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func
 
 	if (false) {
 		for(int i=0;i<files.size();i++) {
-
 			_exp_add_dep(deps,files[i]);
-
 		}
 	}
-
-
-
-/* GROUP ATLAS */
-
+	/* GROUP ATLAS */
 
 	List<StringName> groups;
 
@@ -626,7 +620,6 @@ Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func
 
 			if (!atlas_valid)
 				print_line("JSON INVALID");
-
 		}
 
 
@@ -825,7 +818,7 @@ Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func
 
 		ERR_CONTINUE( saved.has(src) );
 
-		Error err = p_func(p_udata,src,buf,counter++,files.size());
+		Error err = p_func(p_udata,src, buf, counter++, files.size());
 		if (err)
 			return err;
 
@@ -900,38 +893,38 @@ Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func
 Error EditorExportPlatform::save_pack_file(void *p_userdata,const String& p_path, const Vector<uint8_t>& p_data,int p_file,int p_total) {
 
 
-	PackData *pd = (PackData*)p_userdata;
+	PackData *pack_data = (PackData*)p_userdata;
 
-	CharString cs=p_path.utf8();
-	pd->f->store_32(cs.length());
-	pd->f->store_buffer((uint8_t*)cs.get_data(),cs.length());
-	TempData td;
-	td.pos=pd->f->get_pos();;
-	td.ofs=pd->ftmp->get_pos();
-	td.size=p_data.size();
-	pd->file_ofs.push_back(td);
-	pd->f->store_64(0); //ofs
-	pd->f->store_64(0); //size
+	CharString utf8_path = p_path.utf8();
+	pack_data->file->store_32(utf8_path.length());
+	pack_data->file->store_buffer((uint8_t*)utf8_path.get_data(),utf8_path.length());
+	TempData temp_data;
+	temp_data.file_pos=pack_data->file->get_pos();
+	temp_data.pck_offset=pack_data->fileaccess_temp->get_pos();
+	temp_data.size=p_data.size();
+	pack_data->file_offsets.push_back(temp_data);
+	pack_data->file->store_64(0); //ofs
+	pack_data->file->store_64(0); //size
 	{
 		MD5_CTX ctx;
 		MD5Init(&ctx);
-		MD5Update(&ctx,(unsigned char*)p_data.ptr(),p_data.size());
+		MD5Update(&ctx, (unsigned char*)p_data.ptr(), p_data.size());
 		MD5Final(&ctx);
-		pd->f->store_buffer(ctx.digest,16);
+		pack_data->file->store_buffer(ctx.digest,16);
 	}
-	pd->ep->step("Storing File: "+p_path,2+p_file*100/p_total);
-	pd->count++;
-	pd->ftmp->store_buffer(p_data.ptr(),p_data.size());
+	pack_data->editor_progress->step("Storing File: " + p_path, 2 + p_file * 100 / p_total);
+	pack_data->count++;
+	pack_data->fileaccess_temp->store_buffer(p_data.ptr(),p_data.size());
 	return OK;
 
 }
 
 Error EditorExportPlatform::save_pack(FileAccess *dst,bool p_make_bundles) {
 
-	EditorProgress ep("savepack","Packing",102);
+	EditorProgress editor_progress("savepack","Packing",102);
 
-	String tmppath = EditorSettings::get_singleton()->get_settings_path()+"/tmp/packtmp";
-	FileAccess *tmp = FileAccess::open(tmppath,FileAccess::WRITE);
+	String temp_pck_path = EditorSettings::get_singleton()->get_settings_path()+"/tmp/packtmp";
+	FileAccess *temp_pck_access = FileAccess::open(temp_pck_path,FileAccess::WRITE);
 	uint64_t ofs_begin = dst->get_pos();
 
 	dst->store_32(0x43504447); //GDPK
@@ -948,47 +941,46 @@ Error EditorExportPlatform::save_pack(FileAccess *dst,bool p_make_bundles) {
 	size_t fcountpos = dst->get_pos();
 	dst->store_32(0);
 
-	PackData pd;
-	pd.ep=&ep;
-	pd.f=dst;
-	pd.ftmp=tmp;
-	pd.count=0;
-	Error err = export_project_files(save_pack_file,&pd,p_make_bundles);
-	memdelete(tmp);
+	PackData pack_data;
+	pack_data.editor_progress= &editor_progress;
+	pack_data.file=dst;
+	pack_data.fileaccess_temp=temp_pck_access;
+	pack_data.count=0;
+	Error err = export_project_files(save_pack_file, &pack_data, p_make_bundles);
+	memdelete(temp_pck_access);
 	if (err)
 		return err;
 
 	size_t ofsplus = dst->get_pos();
 	//append file
 
-	tmp = FileAccess::open(tmppath,FileAccess::READ);
+	temp_pck_access = FileAccess::open(temp_pck_path,FileAccess::READ);
 
-	ERR_FAIL_COND_V(!tmp,ERR_CANT_OPEN;)
+	ERR_FAIL_COND_V(!temp_pck_access,ERR_CANT_OPEN;)
 	const int bufsize=16384;
 	uint8_t buf[bufsize];
 
 	while(true) {
 
-		int got = tmp->get_buffer(buf,bufsize);
+		int got = temp_pck_access->get_buffer(buf,bufsize);
 		if (got<=0)
 			break;
 		dst->store_buffer(buf,got);
 	}
 
-	memdelete(tmp);
+	memdelete(temp_pck_access);
 
-	dst->store_64(dst->get_pos()-ofs_begin);
+	dst->store_64(dst->get_pos() - ofs_begin);
 	dst->store_32(0x43504447); //GDPK
 
 	//fix offsets
 
 	dst->seek(fcountpos);
-	dst->store_32(pd.count);
-	for(int i=0;i<pd.file_ofs.size();i++) {
-
-		dst->seek(pd.file_ofs[i].pos);
-		dst->store_64(pd.file_ofs[i].ofs+ofsplus);
-		dst->store_64(pd.file_ofs[i].size);
+	dst->store_32(pack_data.count);
+	for(int i=0; i < pack_data.file_offsets.size(); i++) {
+		dst->seek(pack_data.file_offsets[i].file_pos);
+		dst->store_64(pack_data.file_offsets[i].pck_offset+ofsplus);
+		dst->store_64(pack_data.file_offsets[i].size);
 	}
 
 	return OK;
@@ -996,13 +988,9 @@ Error EditorExportPlatform::save_pack(FileAccess *dst,bool p_make_bundles) {
 
 Error EditorExportPlatformPC::export_project(const String& p_path, bool p_debug, bool p_dumb) {
 
-
-
 	EditorProgress ep("export","Exporting for "+get_name(),102);
 
 	const int BUFSIZE = 32768;
-
-
 
 	ep.step("Setting Up..",0);
 

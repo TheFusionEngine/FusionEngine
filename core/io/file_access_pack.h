@@ -45,13 +45,16 @@ public:
 
 	uint16_t load_presedence;
 
-	//virtual FileAccess *make_file_access();
-	//virtual DirAccess *make_dir_access();
+	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true)=0;
+	virtual FileAccess* get_file(const String& p_path)=0;
+	virtual FileStatus has_file(const String& p_path)=0;
 
-	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true){return false;};
-	//virtual FileAccess* get_file(const String& p_path, PackedData::PackedFile* p_file)=0;
-	virtual FileAccess* get_file(const String& p_path){return NULL;};
-	virtual FileStatus has_file(const String& p_path){return NOT_HAS_FILE;}
+#ifdef TOOLS_ENABLED
+	virtual Error export_add_file(const String& p_file, const String& p_src)=0;
+	virtual void export_remove_file(const String& p_file, const String& p_src)=0;
+	virtual void export_clear_files()=0;
+	virtual Error export_pack(const String& p_destination, uint64_t p_offset)=0;
+#endif
 };
 
 

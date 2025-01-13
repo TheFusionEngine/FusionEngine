@@ -5,6 +5,9 @@
 
 struct PackedFile {
 	String pack;
+#ifdef TOOLS_ENABLED
+	String file_path;
+#endif
 	uint64_t offset; //if offset is ZERO, the file was ERASED
 	uint64_t size;
 	uint8_t md5[16];
@@ -124,6 +127,11 @@ class PackedSourcePCK : public PackSource {
 private:
 	static PackedSourcePCK *singleton;
 
+#ifdef TOOLS_ENABLED
+	Vector<PackedFile> export_files;
+	FileAccess *file;
+	uint64_t alignment;
+#endif
 	Map<PathMD5, PackedFile> files;
 
 public:
@@ -134,6 +142,13 @@ public:
 	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true);
 	virtual FileAccess* get_file(const String& p_path);
 	virtual FileStatus has_file(const String& p_path);
+
+#ifdef TOOLS_ENABLED
+	virtual Error export_add_file(const String& p_file, const String& p_src);
+	virtual void export_remove_file(const String& p_file, const String& p_src);
+	virtual void export_clear_files();
+	virtual Error export_pack(const String& p_destination, uint64_t p_offset);
+#endif
 
 	PackedSourcePCK();
 
