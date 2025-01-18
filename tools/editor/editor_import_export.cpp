@@ -538,7 +538,7 @@ Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_l
 		}
 		//ok see if cached
 		String md5;
-		bool atlas_valid=true;
+		bool atlas_valid = true;
 		String atlas_name;
 
 		{
@@ -550,77 +550,74 @@ Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_l
 			md5 = String::md5(ctx.digest);
 		}
 
-
 		Vector<Rect2> rects;
 		bool resave_deps=false;
+		Dictionary options;
 
 		if (!FileAccess::exists(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5)) {
 			print_line("NO MD5 INVALID");
-			atlas_valid=false;
-			//goto ATLAS_NOT_VALID;
+			atlas_valid = false;
+			goto ATLAS_NOT_VALID;
 		}
 
-		//TODO: Speed up this section with goto jumps
+		temp_file = FileAccess::open(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5,FileAccess::READ);
 
-		if (atlas_valid) {
-			temp_file = FileAccess::open(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5,FileAccess::READ);
+		//compare options
 
-			//compare options
-			Dictionary options;
-			options.parse_json(temp_file->get_line());
-			if (not options.has("lossy_quality") or float(options["lossy_quality"]) != group_lossy_quality){
-				atlas_valid=false;
-			} else if (not options.has("shrink") or int(options["shrink"]) != group_shrink){
-				atlas_valid=false;
-			} else if (not options.has("image_format") or int(options["image_format"]) != group_format){
-				atlas_valid=false;
-			}
-			if (not atlas_valid){
-				print_line("JSON INVALID");
-			}
+		options.parse_json(temp_file->get_line());
+		if (not options.has("lossy_quality") or float(options["lossy_quality"]) != group_lossy_quality){
+			atlas_valid = false;
+		} else if (not options.has("shrink") or int(options["shrink"]) != group_shrink){
+			atlas_valid = false;
+		} else if (not options.has("image_format") or int(options["image_format"]) != group_format){
+			atlas_valid = false;
 		}
 
-		if (atlas_valid) {
-			//check md5 of list of image /names/
-			if (temp_file->get_line().strip_edges() != image_list_md5) {
-				atlas_valid=false;
-				print_line("IMAGE MD5 INVALID!");
-			}
+		if (not atlas_valid){
+			print_line("JSON INVALID");
+			goto ATLAS_NOT_VALID;
 		}
 
-		if (atlas_valid) {
-			//check if images were not modified
-			for (List<StringName>::Element *F = atlas_images.front(); F; F=F->next()) {
-				Vector<String> slices = temp_file->get_line().strip_edges().split("::");
 
-				if (slices.size() != 10) {
-					atlas_valid=false;
-					print_line("CANT SLICE IN 10");
+		//check md5 of list of image /names/
+		if (temp_file->get_line().strip_edges() != image_list_md5) {
+			print_line("IMAGE MD5 INVALID!");
+			atlas_valid = false;
+			goto ATLAS_NOT_VALID;
+		}
+
+
+		//check if images were not modified
+		for (List<StringName>::Element *F = atlas_images.front(); F; F=F->next()) {
+			Vector<String> slices = temp_file->get_line().strip_edges().split("::");
+
+			if (slices.size() != 10) {
+				print_line("CANT SLICE IN 10");
+				atlas_valid = false;
+				goto ATLAS_NOT_VALID;
+				break;
+			}
+
+			uint64_t mod_time = slices[0].to_int64();
+			uint64_t file_mod_time = FileAccess::get_modified_time(F->get());
+
+			if (mod_time != file_mod_time) {
+				String image_md5 = slices[1];
+				String file_md5 = FileAccess::get_md5(F->get());
+
+				if (image_md5 != file_md5) {
+					print_line("IMAGE INVALID "+slices[0]);
+					atlas_valid = false;
+					goto ATLAS_NOT_VALID;
 					break;
-				}
-
-				uint64_t mod_time = slices[0].to_int64();
-				uint64_t file_mod_time = FileAccess::get_modified_time(F->get());
-
-				if (mod_time != file_mod_time) {
-					String image_md5 = slices[1];
-					String file_md5 = FileAccess::get_md5(F->get());
-
-					if (image_md5 != file_md5) {
-						atlas_valid=false;
-						print_line("IMAGE INVALID "+slices[0]);
-						break;
-					} else {
-						resave_deps=true;
-					}
-				}
-
-				if (atlas_valid) {
-					//push back region and margin
-					rects.push_back(Rect2(slices[2].to_float(),slices[3].to_float(),slices[4].to_float(),slices[5].to_float()));
-					rects.push_back(Rect2(slices[6].to_float(),slices[7].to_float(),slices[8].to_float(),slices[9].to_float()));
+				} else {
+					resave_deps=true;
 				}
 			}
+
+			//push back region and margin
+			rects.push_back(Rect2(slices[2].to_float(),slices[3].to_float(),slices[4].to_float(),slices[5].to_float()));
+			rects.push_back(Rect2(slices[6].to_float(),slices[7].to_float(),slices[8].to_float(),slices[9].to_float()));
 		}
 
 		if (temp_file) {
@@ -628,10 +625,10 @@ Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_l
 			temp_file=NULL;
 		}
 
+		ATLAS_NOT_VALID:
+
 		print_line("ATLAS VALID? "+itos(atlas_valid)+" RESAVE DEPS? "+itos(resave_deps));
 		if (not atlas_valid) {
-			//ATLAS_NOT_VALID:
-
 			rects.clear();
 			//oh well, atlas is not valid. need to make new one....
 
