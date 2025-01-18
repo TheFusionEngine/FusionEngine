@@ -97,7 +97,8 @@ opts.Add('p','Platform (same as platform=).',"")
 opts.Add('tools','Build Tools (Including Editor): (yes/no)','yes')
 opts.Add('gdscript','Build GDSCript support: (yes/no)','yes')
 opts.Add('vorbis','Build Ogg Vorbis Support: (yes/no)','yes')
-opts.Add('minizip','Build Minizip Archive Support: (yes/no)','yes')
+opts.Add('minizip','Build Minizip Archive pack Support: (yes/no)','yes')
+opts.Add('single_pack_source', 'Build the engine to only use one pack source: (yes/no)', 'no')
 opts.Add('squish','Squish BC Texture Compression in editor (yes/no)','yes')
 opts.Add('theora','Theora Video (yes/no)','yes')
 opts.Add('use_theoraplayer_binary', "Use precompiled binaries from libtheoraplayer for ogg/theora/vorbis (yes/no)", "no")
@@ -297,6 +298,11 @@ if selected_platform in platform_list:
 
 	if (env['minizip'] == 'yes'):
 		env.Append(CPPFLAGS=['-DMINIZIP_ENABLED'])
+	if (env['single_pack_source'] == 'yes'):
+		if (env['tools'] = 'yes'):
+			print("You cannot have single pack source on for compiling the editor!")
+		else:
+			env.Append(CPPFLAGS=['-DUSE_SINGLE_PACK_SOURCE'])
 
 	if (env['xml']=='yes'):
 		env.Append(CPPFLAGS=['-DXML_ENABLED'])
