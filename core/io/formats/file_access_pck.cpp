@@ -29,17 +29,17 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 	if (magic != PCK_MAGIC) {
 		//maybe at the end.... self contained exe
 		f->seek_end();
-		f->seek( f->get_pos() -4 );
+		f->seek( f->get_pos() - 4);
 		magic = f->get_32();
 
 		if (magic != PCK_MAGIC) {
 			memdelete(f);
 			return false;
 		}
-		f->seek( f->get_pos() -12 );
+		f->seek( f->get_pos() - 12);
 
 		uint64_t ds = f->get_64();
-		f->seek( f->get_pos() -ds-8 );
+		f->seek( f->get_pos() - ds - 8);
 
 		magic = f->get_32();
 		if (magic != PCK_MAGIC) {
@@ -57,7 +57,7 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 	ERR_EXPLAIN("Pack version newer than supported by engine: "+itos(version));
 	ERR_FAIL_COND_V( version > PCK_VERSION, ERR_INVALID_DATA);
 	ERR_EXPLAIN("Pack created with a newer version of the engine: "+itos(ver_major)+"."+itos(ver_minor)+"."+itos(ver_rev));
-	ERR_FAIL_COND_V( ver_major > VERSION_MAJOR || (ver_major == VERSION_MAJOR && ver_minor > VERSION_MINOR), ERR_INVALID_DATA);
+	ERR_FAIL_COND_V( ver_major > VERSION_MAJOR or (ver_major == VERSION_MAJOR and ver_minor > VERSION_MINOR), ERR_INVALID_DATA);
 
 	for(int i = 0; i < 16; i++) {
 		//reserved
@@ -67,7 +67,6 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 	int file_count = f->get_32();
 
 	for(int i=0; i < file_count; i++) {
-
 		uint32_t string_length = f->get_32();
 		CharString cs;
 		cs.resize(string_length+1);
@@ -83,8 +82,6 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 		pf.offset = f->get_64();
 		pf.size = f->get_64();
         f->get_buffer(pf.md5,16);
-
-		//PackedData::get_singleton()->add_path(p_path, path, ofs, size, md5,this);
 
         PathMD5 pmd5(path.md5_buffer());
 
@@ -125,158 +122,100 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 	return true;
 };
 
-// void PackedData::add_path(const String& pkg_path, const String& path, uint64_t ofs, uint64_t size,const uint8_t* p_md5, PackSource* p_src) {
-//
-// 	PathMD5 pmd5(path.md5_buffer());
-// 	//printf("adding path %ls, %lli, %lli\n", path.c_str(), pmd5.a, pmd5.b);
-//
-//
-//
-// 	PackedFile pf;
-// 	pf.pack=pkg_path;
-// 	pf.offset=ofs;
-// 	pf.size=size;
-// 	for(int i=0;i<16;i++)
-// 		pf.md5[i]=p_md5[i];
-// 	pf.src = p_src;
-//
-// 	files[pmd5]=pf;
-//
-// 	if (!exists) {
-// 		//search for dir
-// 		String p = path.replace_first("res://","");
-// 		PackedDir *cd=root;
-//
-// 		if (p.find("/")!=-1) { //in a subdir
-//
-// 			Vector<String> ds=p.get_base_dir().split("/");
-//
-// 			for(int j=0;j<ds.size();j++) {
-//
-// 				if (!cd->subdirs.has(ds[j])) {
-//
-// 					PackedDir *pd = memnew( PackedDir );
-// 					pd->name=ds[j];
-// 					pd->parent=cd;
-// 					cd->subdirs[pd->name]=pd;
-// 					cd=pd;
-// 				} else {
-// 					cd=cd->subdirs[ds[j]];
-// 				}
-// 			}
-// 		}
-// 		cd->files.insert(path.get_file());
-// 	}
-// }
-
-PackSource::FileStatus PackedSourcePCK::has_file(const String &p_path){
+PackSource::FileStatus PackedSourcePCK::has_file(const String &p_path) const {
 	if (files.has(PathMD5(p_path.md5_buffer()))){
-		return PackSource::FileStatus::HAS_FILE;
+		return FileStatus::HAS_FILE;
 	}
-	return PackSource::FileStatus::NOT_HAS_FILE;
+	return FileStatus::NOT_HAS_FILE;
 }
 
-FileAccess* PackedSourcePCK::get_file(const String &p_path) {
-    PackedFile* p_file = &files.find(PathMD5(p_path.md5_buffer()))->value();
+FileAccess* PackedSourcePCK::get_file(const String &p_path) const {
+    const PackedFile* p_file = &files.find(PathMD5(p_path.md5_buffer()))->value();
 
-    if (!p_file){
+    if (not p_file){
         return NULL;
     }
 
 	return memnew( FileAccessPCK(p_path, *p_file));
 };
 
+String PackedSourcePCK::get_pack_extension() const{
+	return "pck";
+}
+
 #ifdef TOOLS_ENABLED
-
-Error PackedSourcePCK::export_add_file(const String& p_file, const String& p_src){
-	FileAccess* f = FileAccess::open(p_src, FileAccess::READ);
-	if (!f) {
-		return ERR_FILE_CANT_OPEN;
-	};
-
-	PackedFile pck_file;
-	pck_file.file_path = p_file;
-	pck_file.pack = p_src;
-	pck_file.size = f->get_len();
-	pck_file.offset = 0;
-
-	export_files.push_back(pck_file);
-
-	f->close();
-	memdelete(f);
-
-	return OK;
+String PackedSourcePCK::get_pack_name() const{
+	return "Data Pack";
 }
 
-void PackedSourcePCK::export_remove_file(const String& p_file, const String& p_src){
+Error PackedSourcePCK::export_pack(FileAccess *p_destination, Vector<FileExportData> p_files, PackingProgressCallback p_progress){
 
-}
-
-void PackedSourcePCK::export_clear_files(){
-	export_files.clear();
-}
-
-Error PackedSourcePCK::export_pack(const String& p_destination, uint64_t p_offset){
-	file = FileAccess::open(p_destination, FileAccess::WRITE);
-	if (file == NULL) {
-
-		return ERR_CANT_CREATE;
-	};
-
-	alignment = p_offset;
-	file->seek(p_offset);
-
-	file->store_32(PCK_MAGIC); // MAGIC
-	file->store_32(PCK_VERSION); // # version
-	file->store_32(VERSION_MAJOR); // # major
-	file->store_32(VERSION_MINOR); // # minor
-	file->store_32(0); // # revision
+	p_destination->store_32(PCK_MAGIC);
+	p_destination->store_32(PCK_VERSION);
+	p_destination->store_32(VERSION_MAJOR);
+	p_destination->store_32(VERSION_MINOR);
+	p_destination->store_32(0); // # revision
 
 	for (int i=0; i<16; i++) {
-		file->store_32(0); // reserved
+		p_destination->store_32(0); // reserved
 	};
 
-	file->store_32(export_files.size());
+	p_destination->store_32(p_files.size());
 
-	for (int i = 0; i < export_files.size(); i++){
-		PackedFile current_file = export_files[i];
+	uint64_t file_info_size = 0;
+	//calculate sizes of all the file info
+	for (int i = 0; i < p_files.size(); i++){
+		file_info_size += 4 + p_files[i].export_path.utf8().length() + 8 + 8 + 16;
+	}
+	uint64_t file_start_pos = p_destination->get_pos() + file_info_size;
 
-		Vector<uint8_t> file_bytes = FileAccess::get_file_as_array(current_file.file_path);
+	for (int i = 0; i < p_files.size(); i++){
+		String current_file = p_files[i].export_path;
+		Vector<uint8_t> file_bytes = FileAccess::get_file_as_array(p_files[i].internal_path);
 
 		if (not file_bytes.empty()){
-			CharString utf8_path = current_file.file_path.utf8();
-			file->store_32(utf8_path.size());
-			file->store_buffer((uint8_t *)utf8_path.get_data(), utf8_path.length());
+			CharString utf8_path = current_file.utf8();
+			p_destination->store_32(utf8_path.length());
+			p_destination->store_buffer((uint8_t *) utf8_path.ptr(), utf8_path.length());
 
-			uint64_t current_position = file->get_pos();
-			file->store_64(current_position);
-			file->store_64(current_file.size);
+			p_destination->store_64(file_start_pos); //the position of the file data
+			p_destination->store_64(file_bytes.size());
 
 			{
 				MD5_CTX ctx;
 				MD5Init(&ctx);
 				MD5Update(&ctx, (unsigned char*)file_bytes.ptr(), file_bytes.size());
 				MD5Final(&ctx);
-				file->store_buffer(ctx.digest, 16);
+				p_destination->store_buffer(ctx.digest, 16);
 			}
-			//TODO: Editor update callback here
-			//pack_data->editor_progress->step("Storing File: " + p_path, 2 + p_file * 100 / p_total);
 
-			file->store_buffer(file_bytes.ptr(), file_bytes.size());
+			uint64_t file_info_pos = p_destination->get_pos(); //store this temporarily
+
+			//Store the file data
+			p_destination->seek(file_start_pos);
+
+			p_progress("Storing File: " + current_file, 2 + i * 100 / p_files.size());
+
+			p_destination->store_buffer(file_bytes.ptr(), file_bytes.size());
+			file_start_pos += file_bytes.size();
+
+			//back to storing info
+			p_destination->seek(file_info_pos);
+
 		} else {
-			WARN_PRINT("File failed to open!");
-			const String null_str = String("null");
-			file->store_32(0);
-			file->store_64(0);
-			file->store_64(0);
+			WARN_PRINT(("File " + current_file + " failed to open!").utf8().ptr());
+			p_destination->store_32(0); //file string length, 4
+			p_destination->store_64(0); //file position, 8
+			p_destination->store_64(0); //file size, 8
 			uint8_t empty_md5[16];
-			file->store_buffer(empty_md5, 16);
+			p_destination->store_buffer(empty_md5, 16);
 		}
 	}
 
-
-
-	export_files.clear();
+	//write the footer, so that the pck can be used bound into the exec
+	p_destination->seek_end();
+	p_destination->store_64(p_destination->get_pos());
+	p_destination->store_32(PCK_MAGIC);
 
 	return OK;
 }
@@ -285,10 +224,6 @@ Error PackedSourcePCK::export_pack(const String& p_destination, uint64_t p_offse
 
 
 PackedSourcePCK::PackedSourcePCK(){
-#ifdef TOOLS_ENABLED
-	file = NULL;
-#endif
-
 	root=memnew(PackedDir);
 	root->parent=NULL;
 
@@ -301,7 +236,6 @@ PackedSourcePCK::PackedSourcePCK(){
 
 Error FileAccessPCK::_open(const String& p_path, int p_mode_flags) {
 	ERR_FAIL_V(ERR_UNAVAILABLE);
-	return ERR_UNAVAILABLE;
 }
 
 void FileAccessPCK::close() {

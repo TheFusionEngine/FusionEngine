@@ -35,6 +35,27 @@
 #include "list.h"
 #include "print_string.h"
 
+#ifdef TOOLS_ENABLED
+typedef void (*PackingProgressCallback)(const String& p_state, int p_step);
+
+struct FileExportData {
+	String export_path;
+	String internal_path;
+
+	explicit FileExportData(String p_export, String p_internal){
+		export_path = p_export;
+		internal_path = p_internal;
+	}
+	explicit FileExportData(){
+		export_path = "";
+		internal_path = "";
+	}
+
+};
+
+#endif
+
+
 class PackSource {
 public:
 	enum FileStatus {
@@ -46,14 +67,13 @@ public:
 	uint16_t load_presedence;
 
 	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true)=0;
-	virtual FileAccess* get_file(const String& p_path)=0;
-	virtual FileStatus has_file(const String& p_path)=0;
+	virtual FileAccess* get_file(const String& p_path) const=0;
+	virtual FileStatus has_file(const String& p_path) const=0;
 
+	virtual String get_pack_extension() const=0;
 #ifdef TOOLS_ENABLED
-	virtual Error export_add_file(const String& p_file, const String& p_src)=0;
-	virtual void export_remove_file(const String& p_file, const String& p_src)=0;
-	virtual void export_clear_files()=0;
-	virtual Error export_pack(const String& p_destination, uint64_t p_offset)=0;
+	virtual String get_pack_name() const=0;
+	virtual Error export_pack(FileAccess *p_destination, Vector<FileExportData> p_files, PackingProgressCallback p_progress)=0;
 #endif
 };
 
@@ -76,12 +96,12 @@ private:
 	uint16_t packs_loaded;
 	bool disabled;
 public:
-	void add_pack_source(PackSource* p_source, String file_extension);
+	void add_pack_source(PackSource* p_source);
 
 #ifdef USE_SINGLE_PACK_SOURCE
-	String get_extension(){return extension;}
+	PackSource *get_source(){return source;}
 #else
-	Vector<String> get_extensions(){return extensions;}
+	Vector<PackSource*> get_sources(){return sources;}
 #endif
 
 	void set_disabled(bool p_disabled) { disabled=p_disabled; }

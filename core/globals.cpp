@@ -305,9 +305,9 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 #ifdef USE_SINGLE_PACK_SOURCE
 			_load_resource_pack(String("res://data.") + PackedData::get_singleton()->get_extension(), true);
 #else
-			Vector<String> extensions = PackedData::get_singleton()->get_extensions();
-			for (int i = 0; i < extensions.size(); i++){
-				if (_load_resource_pack(String("res://data.") + String(extensions[i]), true))
+			Vector<PackSource*> sources = PackedData::get_singleton()->get_sources();
+			for (int i = 0; i < sources.size(); i++){
+				if (_load_resource_pack(String("res://data.") + sources[i]->get_pack_extension(), true))
 					break;
 			}
 #endif
@@ -338,9 +338,9 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 #ifdef USE_SINGLE_PACK_SOURCE
 		pack_found = _load_resource_pack(String("res://data.") + PackedData::get_singleton()->get_extension(), true);
 #else
-		Vector<String> extensions = PackedData::get_singleton()->get_extensions();
-		for (int i = 0; i < extensions.size(); i++){
-			if (_load_resource_pack(String("res://data.") + String(extensions[i]), true)){
+		Vector<PackSource*> sources = PackedData::get_singleton()->get_sources();
+		for (int i = 0; i < sources.size(); i++){
+			if (_load_resource_pack(String("res://data.") + sources[i]->get_pack_extension(), true)){
 				found = true;
 				break;
 			}

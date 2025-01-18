@@ -35,6 +35,7 @@
 #include "io/marshalls.h"
 #include "globals.h"
 #include "os/file_access.h"
+#include "io/formats/file_access_pck.h"
 #include "os/os.h"
 #include "platform/javascript/logo.h"
 #include "string.h"
@@ -79,7 +80,7 @@ public:
 	virtual String get_device_info(int p_device) const { return "Run exported HTML in the system's default browser."; }
 	virtual Error run(int p_device,bool p_dumb=false);
 
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const { return "html"; }
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 
@@ -225,7 +226,7 @@ Error EditorExportPlatformJavaScript::export_project(const String& p_path, bool 
 		EditorNode::add_io_error("Could not create file for writing:\n"+p_path.basename()+"_files.js");
 		return ERR_FILE_CANT_WRITE;
 	}
-	Error err = save_pack(f);
+	Error err = save_pack(f, PackedSourcePCK::get_singleton(), false);
 	size_t len = f->get_len();
 	memdelete(f);
 	if (err)

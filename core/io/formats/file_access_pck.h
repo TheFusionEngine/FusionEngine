@@ -127,11 +127,6 @@ class PackedSourcePCK : public PackSource {
 private:
 	static PackedSourcePCK *singleton;
 
-#ifdef TOOLS_ENABLED
-	Vector<PackedFile> export_files;
-	FileAccess *file;
-	uint64_t alignment;
-#endif
 	Map<PathMD5, PackedFile> files;
 
 public:
@@ -140,14 +135,13 @@ public:
 	static PackedSourcePCK *get_singleton();
 
 	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true);
-	virtual FileAccess* get_file(const String& p_path);
-	virtual FileStatus has_file(const String& p_path);
+	virtual FileAccess* get_file(const String& p_path) const;
+	virtual FileStatus has_file(const String& p_path) const;
 
+	virtual String get_pack_extension() const;
 #ifdef TOOLS_ENABLED
-	virtual Error export_add_file(const String& p_file, const String& p_src);
-	virtual void export_remove_file(const String& p_file, const String& p_src);
-	virtual void export_clear_files();
-	virtual Error export_pack(const String& p_destination, uint64_t p_offset);
+	virtual String get_pack_name() const;
+	virtual Error export_pack(FileAccess *p_destination, Vector<FileExportData> p_files, PackingProgressCallback p_progress);
 #endif
 
 	PackedSourcePCK();

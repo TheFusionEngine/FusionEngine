@@ -34,79 +34,6 @@
 
 ZipArchive* ZipArchive::instance = NULL;
 
-extern "C" {
-
-static void* godot_open(void* data, const char* p_fname, int mode) {
-
-	if (mode & ZLIB_FILEFUNC_MODE_WRITE) {
-		return NULL;
-	};
-
-	FileAccess* f = (FileAccess*)data;
-	f->open(p_fname, FileAccess::READ);
-
-	return f->is_open()?data:NULL;
-
-};
-
-static uLong godot_read(void* data, void* fdata, void* buf, uLong size) {
-
-	FileAccess* f = (FileAccess*)data;
-	f->get_buffer((uint8_t*)buf, size);
-	return size;
-};
-
-static uLong godot_write(voidpf opaque, voidpf stream, const void* buf, uLong size) {
-
-	return 0;
-};
-
-
-static long godot_tell (voidpf opaque, voidpf stream) {
-
-	FileAccess* f = (FileAccess*)opaque;
-	return f->get_pos();
-};
-
-static long godot_seek(voidpf opaque, voidpf stream, uLong offset, int origin) {
-
-	FileAccess* f = (FileAccess*)opaque;
-
-	int pos = offset;
-	switch (origin) {
-
-	case ZLIB_FILEFUNC_SEEK_CUR:
-		pos = f->get_pos() + offset;
-		break;
-	case ZLIB_FILEFUNC_SEEK_END:
-		pos = f->get_len() + offset;
-		break;
-	default:
-		break;
-	};
-
-	f->seek(pos);
-	return 0;
-};
-
-
-static int godot_close(voidpf opaque, voidpf stream) {
-
-	FileAccess* f = (FileAccess*)opaque;
-	f->close();
-	return 0;
-};
-
-static int godot_testerror(voidpf opaque, voidpf stream) {
-
-	FileAccess* f = (FileAccess*)opaque;
-	return f->get_error()!=OK?1:0;
-};
-
-
-};
-
-
 void ZipArchive::close_handle(unzFile p_file) const {
 
 	ERR_FAIL_COND(!p_file);
@@ -118,7 +45,7 @@ void ZipArchive::close_handle(unzFile p_file) const {
 
 unzFile ZipArchive::get_file_handle(String p_file) const {
 
-	ERR_FAIL_COND_V(!file_exists(p_file), NULL);
+	ERR_FAIL_COND_V(!has_file(p_file), NULL);
 	File file = files[p_file];
 
 	FileAccess* f = FileAccess::open(packages[file.package].filename, FileAccess::READ);
@@ -127,14 +54,14 @@ unzFile ZipArchive::get_file_handle(String p_file) const {
 	zlib_filefunc_def io;
 
 	io.opaque = f;
-	io.zopen_file = godot_open;
-	io.zread_file = godot_read;
-	io.zwrite_file = godot_write;
+	io.zopen_file = zipio_open;
+	io.zread_file = zipio_read;
+	io.zwrite_file = zipio_write;
 
-	io.ztell_file = godot_tell;
-	io.zseek_file = godot_seek;
-	io.zclose_file = godot_close;
-	io.zerror_file = godot_testerror;
+	io.ztell_file = zipio_tell;
+	io.zseek_file = zipio_seek;
+	io.zclose_file = zipio_close;
+	io.zerror_file = zipio_testerror;
 
 	unzFile pkg = unzOpen2(packages[file.package].filename.utf8().get_data(), &io);
 	ERR_FAIL_COND_V(!pkg, NULL);
@@ -148,10 +75,27 @@ unzFile ZipArchive::get_file_handle(String p_file) const {
 	return pkg;
 };
 
+String ZipArchive::get_pack_extension() const{
+	return "zip";
+}
+
+#ifdef TOOLS_ENABLED
+
+String ZipArchive::get_pack_name() const{
+	return "Zip Archive";
+}
+
+Error ZipArchive::export_pack(FileAccess *p_destination, Vector<FileExportData> p_files, PackingProgressCallback p_progress){
+
+	return ERR_CANT_OPEN;
+}
+
+#endif
+
 bool ZipArchive::try_open_pack(const String& p_name, bool p_replace_files) {
 
 	printf("opening pack %ls, %i, %i\n", p_name.c_str(), p_name.extension().nocasecmp_to("zip"), p_name.extension().nocasecmp_to("pcz"));
-	if (p_name.extension().nocasecmp_to("zip") != 0 && p_name.extension().nocasecmp_to("pcz") != 0)
+	if (p_name.extension().nocasecmp_to("zip") != 0 and p_name.extension().nocasecmp_to("pcz") != 0)
 		return false;
 
 	zlib_filefunc_def io;
@@ -160,14 +104,14 @@ bool ZipArchive::try_open_pack(const String& p_name, bool p_replace_files) {
 	if (!f)
 		return false;
 	io.opaque = f;
-	io.zopen_file = godot_open;
-	io.zread_file = godot_read;
-	io.zwrite_file = godot_write;
+	io.zopen_file = zipio_open;
+	io.zread_file = zipio_read;
+ 	io.zwrite_file = zipio_write;
 
-	io.ztell_file = godot_tell;
-	io.zseek_file = godot_seek;
-	io.zclose_file = godot_close;
-	io.zerror_file = godot_testerror;
+	io.ztell_file = zipio_tell;
+	io.zseek_file = zipio_seek;
+	io.zclose_file = zipio_close;
+	io.zerror_file = zipio_testerror;
 
 	unzFile zfile = unzOpen2(p_name.utf8().get_data(), &io);
 	ERR_FAIL_COND_V(!zfile, false);
@@ -208,15 +152,13 @@ bool ZipArchive::try_open_pack(const String& p_name, bool p_replace_files) {
 	return true;
 };
 
-bool ZipArchive::file_exists(String p_name) const {
-	return files.has(p_name);
-};
+PackSource::FileStatus ZipArchive::has_file(const String& p_path) const {
+	return files.has(p_path) ? FileStatus::HAS_FILE : FileStatus::NOT_HAS_FILE;
+}
 
-FileAccess* ZipArchive::get_file(const String& p_path) {
-
+FileAccess* ZipArchive::get_file(const String& p_path) const {
 	return memnew(FileAccessZip(p_path));
 };
-
 
 ZipArchive* ZipArchive::get_singleton() {
 
@@ -228,13 +170,11 @@ ZipArchive* ZipArchive::get_singleton() {
 };
 
 ZipArchive::ZipArchive() {
-
 	instance = this;
 	//fa_create_func = FileAccess::get_create_func();
 };
 
 ZipArchive::~ZipArchive() {
-
 	for (int i=0; i<packages.size(); i++) {
 
 		FileAccess* f = (FileAccess*)unzGetOpaque(packages[i].zfile);
@@ -245,9 +185,7 @@ ZipArchive::~ZipArchive() {
 	packages.clear();
 };
 
-
 Error FileAccessZip::_open(const String& p_path, int p_mode_flags) {
-
 	close();
 
 	ERR_FAIL_COND_V(p_mode_flags & FileAccess::WRITE, FAILED);
@@ -263,7 +201,6 @@ Error FileAccessZip::_open(const String& p_path, int p_mode_flags) {
 };
 
 void FileAccessZip::close() {
-
 	if (!zfile)
 		return;
 
@@ -274,30 +211,25 @@ void FileAccessZip::close() {
 };
 
 bool FileAccessZip::is_open() const {
-
 	return zfile != NULL;
 };
 
 void FileAccessZip::seek(size_t p_position) {
-
 	ERR_FAIL_COND(!zfile);
 	unzSeekCurrentFile(zfile, p_position);
 };
 
 void FileAccessZip::seek_end(int64_t p_position) {
-
 	ERR_FAIL_COND(!zfile);
 	unzSeekCurrentFile(zfile, get_len() + p_position);
 };
 
 size_t FileAccessZip::get_pos() const {
-
 	ERR_FAIL_COND_V(!zfile, 0);
 	return unztell(zfile);
 };
 
 size_t FileAccessZip::get_len() const {
-
 	ERR_FAIL_COND_V(!zfile, 0);
 	return file_info.uncompressed_size;
 };
@@ -345,7 +277,6 @@ void FileAccessZip::store_8(uint8_t p_dest) {
 bool FileAccessZip::file_exists(const String& p_name) {
 	return false;
 };
-
 
 FileAccessZip::FileAccessZip(const String& p_path) {
 	zfile = NULL;

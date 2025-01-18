@@ -31,9 +31,8 @@
 #ifndef FILE_ACCESS_Zip_H
 #define FILE_ACCESS_Zip_H
 
-#include <stdlib.h>
 #include "core/io/file_access_pack.h"
-#include "core/io/unzip.h"
+#include "io/zip_io.h"
 #include "core/map.h"
 
 class ZipArchive : public PackSource {
@@ -63,10 +62,15 @@ public:
 
 	Error add_package(String p_name);
 
-	bool file_exists(String p_name) const;
+	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true);
+	virtual FileAccess* get_file(const String& p_path) const;
+	virtual FileStatus has_file(const String& p_path) const;
 
-	virtual bool try_open_pack(const String& p_path, bool p_replace_files);
-	FileAccess* get_file(const String& p_path);
+	virtual String get_pack_extension() const;
+#ifdef TOOLS_ENABLED
+	virtual String get_pack_name() const;
+	virtual Error export_pack(FileAccess *p_destination, Vector<FileExportData> p_files, PackingProgressCallback p_progress);
+#endif
 
 	static ZipArchive* get_singleton();
 

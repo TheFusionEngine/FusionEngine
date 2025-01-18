@@ -249,10 +249,10 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 		packed_data = memnew(PackedData);
 
 	//TODO: Put this line under ifdefs like the zip archive under it
-	packed_data->add_pack_source(PackedSourcePCK::get_singleton(), "pck");
+	packed_data->add_pack_source(PackedSourcePCK::get_singleton());
 
 #ifdef MINIZIP_ENABLED
-	packed_data->add_pack_source(ZipArchive::get_singleton(), "zip"); //might actually be pcz, not zip?
+	packed_data->add_pack_source(ZipArchive::get_singleton());
 #endif
 
 	bool editor=false;

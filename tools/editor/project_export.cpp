@@ -30,6 +30,7 @@
 
 #include "os/dir_access.h"
 #include "os/file_access.h"
+#include "core/io/file_access_pack.h"
 #include "globals.h"
 
 #include "io/resource_loader.h"
@@ -447,17 +448,34 @@ void ProjectExportDialog::_export_action_pck(const String& p_file) {
 
 	Ref<EditorExportPlatform> exporter = EditorImportExport::get_singleton()->get_export_platform(selected->get_metadata(0));
 	if (exporter.is_null()) {
-		ERR_PRINT("Invalid platform for export of PCK");
+		ERR_PRINT("Invalid platform for export of pack");
 		return;
 	}
+
 	FileAccess *f = FileAccess::open(p_file,FileAccess::WRITE);
 	if (!f) {
-		error->set_text("Error exporting project PCK! Can't write");
+		error->set_text("Error exporting project pack! Can't write");
 		error->popup_centered(Size2(300,70));;
 	}
 	ERR_FAIL_COND(!f);
 
-	Error err = exporter->save_pack(f,false);
+#ifdef USE_SINGLE_PACK_SOURCE
+	PackedData::get_singleton()->get_source()->export_pack(p_file, 0, NULL);
+#else
+	Vector<PackSource*> sources = PackedData::get_singleton()->get_sources();
+	String pack_extension = p_file.extension();
+	PackSource *source = NULL;
+
+	for (int i = 0; i < sources.size(); i++){
+		if (sources[i]->get_pack_extension() == pack_extension){
+			source = sources[i];
+			break;
+		}
+	}
+#endif
+
+	Error err = exporter->save_pack(f, source, false);
+
 	memdelete(f);
 
 	if (err!=OK) {
@@ -513,7 +531,7 @@ void ProjectExportDialog::custom_action(const String&) {
 
 	String extension = exporter->get_binary_extension();
 
-	file_export_password->set_editable( exporter->requieres_password(file_export_check->is_pressed()));
+	file_export_password->set_editable( exporter->requires_password(file_export_check->is_pressed()));
 
 	file_export->clear_filters();
 	if (extension!="") {
@@ -1094,8 +1112,6 @@ ProjectExportDialog::ProjectExportDialog(EditorNode *p_editor) {
 	vb->add_margin_child("Options",platform_options,true);
 	platform_options->connect("property_edited",this,"_prop_edited");
 
-
-
 	//////////////////
 
 	vb = memnew( VBoxContainer );
@@ -1332,7 +1348,7 @@ ProjectExportDialog::ProjectExportDialog(EditorNode *p_editor) {
 	add_child(confirm);
 	confirm->connect("confirmed",this,"_confirmed");
 
-	get_ok()->set_text("Export PCK");
+	get_ok()->set_text("Export Pack File");
 
 
 	expopt="--,Export,Bundle";
@@ -1361,12 +1377,19 @@ ProjectExportDialog::ProjectExportDialog(EditorNode *p_editor) {
 	pck_export->set_current_dir( EditorSettings::get_singleton()->get("global/default_project_export_path") );
 	pck_export->set_title("Export Project PCK");
 	pck_export->connect("file_selected", this,"_export_action_pck");
-	pck_export->add_filter("*.pck ; Data Pack");
+
+#ifdef USE_SINGLE_PACK_SOURCE
+	pck_export->add_filter("*." + PackedData::get_singleton()->get_source()->get_pack_extension() + " ; " + source->get_pack_name());
+#else
+	Vector<PackSource*> sources = PackedData::get_singleton()->get_sources();
+	for (int i = 0; i < sources.size(); i++){
+		pck_export->add_filter("*." + sources[i]->get_pack_extension() + " ; " + sources[i]->get_pack_name());
+	}
+#endif
 	add_child(pck_export);
 
 	button_export = add_button("Export..",!OS::get_singleton()->get_swap_ok_cancel(),"export_pck");
 	updating_script=false;
-
 
 }
 
