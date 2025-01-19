@@ -459,16 +459,15 @@ void ProjectExportDialog::_export_action_pck(const String& p_file) {
 	}
 	ERR_FAIL_COND(!f);
 
-#ifdef USE_SINGLE_PACK_SOURCE
+#ifdef SINGLE_PACK_SOURCE_ENABLED
 	PackedData::get_singleton()->get_source()->export_pack(p_file, 0, NULL);
 #else
-	Vector<PackSource*> sources = PackedData::get_singleton()->get_sources();
-	String pack_extension = p_file.extension();
+	const String pack_extension = p_file.extension();
 	PackSource *source = NULL;
 
-	for (int i = 0; i < sources.size(); i++){
-		if (sources[i]->get_pack_extension() == pack_extension){
-			source = sources[i];
+	for (int i = 0; i < PackedData::get_singleton()->get_source_count(); i++){
+		source = PackedData::get_singleton()->get_source(i);
+		if (source->get_pack_extension() == pack_extension){
 			break;
 		}
 	}
@@ -1378,12 +1377,12 @@ ProjectExportDialog::ProjectExportDialog(EditorNode *p_editor) {
 	pck_export->set_title("Export Project PCK");
 	pck_export->connect("file_selected", this,"_export_action_pck");
 
-#ifdef USE_SINGLE_PACK_SOURCE
-	pck_export->add_filter("*." + PackedData::get_singleton()->get_source()->get_pack_extension() + " ; " + source->get_pack_name());
+#ifdef SINGLE_PACK_SOURCE_ENABLED
+	pck_export->add_filter("*." + PackedData::get_singleton()->get_source(0)->get_pack_extension() + " ; " + source->get_pack_name());
 #else
-	Vector<PackSource*> sources = PackedData::get_singleton()->get_sources();
-	for (int i = 0; i < sources.size(); i++){
-		pck_export->add_filter("*." + sources[i]->get_pack_extension() + " ; " + sources[i]->get_pack_name());
+	for (int i = 0; i < PackedData::get_singleton()->get_source_count(); i++){
+		PackSource *source = PackedData::get_singleton()->get_source(i);
+		pck_export->add_filter("*." + source->get_pack_extension() + " ; " + source->get_pack_name());
 	}
 #endif
 	add_child(pck_export);

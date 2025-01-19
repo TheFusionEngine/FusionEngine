@@ -36,13 +36,14 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
-
 class Globals : public Object {
 	
 	OBJ_TYPE( Globals, Object );
 	_THREAD_SAFE_CLASS_
 
 public:
+	static const char* engine_config_path;
+	static const char* engine_remap_path;
 
 	typedef Map<String,Variant> CustomMap;
 

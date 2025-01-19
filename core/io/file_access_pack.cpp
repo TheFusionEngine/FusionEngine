@@ -30,16 +30,13 @@
 
 #include <stdio.h>
 
-//this gets filled in with PackedSourcePCK, ZipArchive, etc. by SCons
-#define SINGULAR_PACK_SOURCE PackSource
-
-PackedData *PackedData::singleton=NULL;
+PackedData *PackedData::singleton = NULL;
 
 Error PackedData::add_pack(const String& p_path, bool p_replace_files) {
-#ifdef USE_SINGLE_PACK_SOURCE
+#ifdef SINGLE_PACK_SOURCE_ENABLED
 	if (source->try_open_pack(p_path, p_replace_files)){
 		packs_loaded++;
-		source->load_presedence = pack_loaded;
+		source->load_presedence = packs_loaded;
 		return OK;
 	}
 	return ERR_FILE_UNRECOGNIZED;
@@ -57,12 +54,28 @@ Error PackedData::add_pack(const String& p_path, bool p_replace_files) {
 };
 
 void PackedData::add_pack_source(PackSource *p_source) {
-#ifdef USE_SINGLE_PACK_SOURCE
+#ifdef SINGLE_PACK_SOURCE_ENABLED
 	source = p_source;
 #else
 	sources.push_back(p_source);
 #endif
 };
+
+PackSource *PackedData::get_source(int index){
+#ifdef SINGLE_PACK_SOURCE_ENABLED
+	return source;
+#else
+	return sources.get(index);
+#endif
+}
+
+int PackedData::get_source_count(){
+#ifdef SINGLE_PACK_SOURCE_ENABLED
+	return 1;
+#else
+	return sources.size();
+#endif
+}
 
 PackedData::PackedData() {
 	singleton=this;
@@ -70,7 +83,7 @@ PackedData::PackedData() {
 }
 
 FileAccess *PackedData::try_open_path(const String& p_path) {
-#ifdef USE_SINGLE_PACK_SOURCE
+#ifdef SINGLE_PACK_SOURCE_ENABLED
 	return source->get_file(p_path);
 #else
 	//This ensures that it only fetches the most recent file.
@@ -97,7 +110,7 @@ FileAccess *PackedData::try_open_path(const String& p_path) {
 }
 
 bool PackedData::has_path(const String& p_path) {
-#ifdef USE_SINGLE_PACK_SOURCE
+#ifdef SINGLE_PACK_SOURCE_ENABLED
 	return source != NULL ? source->has_file(p_path) : false;
 #else
 	for (int i = 0; i < sources.size(); i++) {

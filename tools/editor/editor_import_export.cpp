@@ -276,8 +276,8 @@ Vector<uint8_t> EditorExportPlatform::get_exported_file(String& p_fname) const {
 Vector<StringName> EditorExportPlatform::get_dependencies(bool p_bundles) const {
 	Set<StringName> exported;
 
-	if (FileAccess::exists("res://engine.cfg")){
-		exported.insert("res://engine.cfg");
+	if (FileAccess::exists(Globals::engine_config_path)){
+		exported.insert(Globals::engine_config_path);
 	}
 
 	if (EditorImportExport::get_singleton()->get_export_filter() != EditorImportExport::EXPORT_SELECTED) {
@@ -554,13 +554,15 @@ Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_l
 		bool resave_deps=false;
 		Dictionary options;
 
-		if (!FileAccess::exists(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5)) {
+		String temp_atlas_path = EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5;
+
+		if (!FileAccess::exists(temp_atlas_path)){
 			print_line("NO MD5 INVALID");
 			atlas_valid = false;
 			goto ATLAS_NOT_VALID;
 		}
 
-		temp_file = FileAccess::open(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5,FileAccess::READ);
+		temp_file = FileAccess::open(temp_atlas_path, FileAccess::READ);
 
 		//compare options
 
@@ -632,7 +634,7 @@ Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_l
 			rects.clear();
 			//oh well, atlas is not valid. need to make new one....
 
-			String dst_file = EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5+".tex";
+			String dst_file = temp_atlas_path + ".tex";
 			Ref<ResourceImportMetadata> imd = memnew( ResourceImportMetadata );
 			//imd->set_editor();
 
@@ -684,7 +686,7 @@ Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_l
 		//atlas is valid (or it was just saved i guess), create the atex files and save them
 
 		if (resave_deps) {
-			temp_file = FileAccess::open(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5,FileAccess::WRITE);
+			temp_file = FileAccess::open(temp_atlas_path, FileAccess::WRITE);
 			Dictionary options;
 			options["lossy_quality"] = group_lossy_quality;
 			options["shrink"] = EditorImportExport::get_singleton()->image_export_group_get_shrink(E->get());
@@ -744,7 +746,7 @@ Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_l
 		}
 	}
 
-	const StringName engine_cfg = "res://engine.cfg";
+	const StringName engine_cfg = Globals::engine_config_path;
 
 	for(int i = 0; i < files.size(); i++) {
 		StringName current_file = files[i];
@@ -807,12 +809,11 @@ Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_l
 			custom["deps/"+key.md5_text()]=prop;
 		}
 
-		const String remap_file = "engine.cfb";
-		String engine_cfb =EditorSettings::get_singleton()->get_settings_path()+"/tmp/tmp"+remap_file;
+		String engine_cfb =EditorSettings::get_singleton()->get_settings_path()+"/tmp/tmpengine.cfb";
 		Globals::get_singleton()->save_custom(engine_cfb,custom);
 		Vector<uint8_t> data = FileAccess::get_file_as_array(engine_cfb);
 
-		FileExportData remap_file_paths("res://"+remap_file, engine_cfb);
+		FileExportData remap_file_paths(Globals::engine_remap_path, engine_cfb);
 		ret_file_list.push_back(remap_file_paths);
 	}
 
@@ -954,11 +955,7 @@ Error EditorExportPlatformPC::export_project(const String& p_path, bool p_debug,
 		}
 	}
 
-#ifdef USE_SINGLE_PACK_SOURCE
-	PackSource *source = PackedData::get_singleton()->get_source();
-#else
-	PackSource *source = PackedData::get_singleton()->get_sources()[0];
-#endif
+	PackSource *source = PackedData::get_singleton()->get_source(0);
 
 	if (export_mode != EXPORT_EXE) {
 		String dstfile=p_path.replace_first("res://","").replace("\\","/");

@@ -50,9 +50,7 @@ struct FileExportData {
 		export_path = "";
 		internal_path = "";
 	}
-
 };
-
 #endif
 
 
@@ -85,24 +83,19 @@ class PackedData {
 private:
 	static PackedData *singleton;
 
-#ifdef USE_SINGLE_PACK_SOURCE
+#ifdef SINGLE_PACK_SOURCE_ENABLED
 	PackSource *source;
-	String extension;
 #else
 	Vector<PackSource*> sources;
-	Vector<String> extensions;
 #endif
-
 	uint16_t packs_loaded;
 	bool disabled;
+
 public:
 	void add_pack_source(PackSource* p_source);
 
-#ifdef USE_SINGLE_PACK_SOURCE
-	PackSource *get_source(){return source;}
-#else
-	Vector<PackSource*> get_sources(){return sources;}
-#endif
+	PackSource *get_source(int index);
+	int get_source_count();
 
 	void set_disabled(bool p_disabled) { disabled=p_disabled; }
 	_FORCE_INLINE_ bool is_disabled() const { return disabled; }

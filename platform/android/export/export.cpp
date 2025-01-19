@@ -7,7 +7,6 @@
 #include "io/marshalls.h"
 #include "globals.h"
 #include "core/io/file_access_pack.h"
-#include "io/formats/file_access_zip.h"
 #include "os/os.h"
 #include "platform/android/logo.h"
 
@@ -1143,8 +1142,7 @@ Error EditorExportPlatformAndroid::export_project(const String& p_path, bool p_d
 				return OK;
 			}
 
-			//This originally used pck, because of the pidgeonholing of the previous pack system
-			err = save_pack(pf, ZipArchive::get_singleton(), false);
+			err = save_pack(pf, PackedData::get_singleton()->get_source(0), false);
 			memdelete(pf);
 
 			cl.push_back("-use_apk_expansion");
@@ -1166,7 +1164,7 @@ Error EditorExportPlatformAndroid::export_project(const String& p_path, bool p_d
 			}
 			FileAccess *zip_pack = FileAccess::open(p_path, FileAccess::ModeFlags::WRITE);
 
-			ZipArchive::get_singleton()->export_pack(zip_pack, files, NULL);
+			PackedData::get_singleton()->get_source(0)->export_pack(zip_pack, files, NULL);
 		}
 	}
 

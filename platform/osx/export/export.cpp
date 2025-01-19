@@ -7,7 +7,7 @@
 #include "io/marshalls.h"
 #include "io/resource_saver.h"
 #include "globals.h"
-#include "io/formats/file_access_zip.h"
+#include "core/io/file_access_pack.h"
 #include "os/os.h"
 #include "platform/osx/logo.h"
 #include "string.h"
@@ -382,8 +382,7 @@ Error EditorExportPlatformOSX::export_project(const String& p_path, bool p_debug
 
 	String pack_path = EditorSettings::get_singleton()->get_settings_path()+"/tmp/data.pck";
 	FileAccess *pfs = FileAccess::open(pack_path, FileAccess::WRITE);
-	//Note: Maybe switch this with PackedSourcePCK
-	Error err = save_pack(pfs, ZipArchive::get_singleton(), false);
+	Error err = save_pack(pfs, PackedData::get_singleton()->get_source(0), false);
 	memdelete(pfs);
 
 	if (err) {

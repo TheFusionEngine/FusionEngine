@@ -72,9 +72,6 @@
 #include "core/io/stream_peer_tcp.h"
 #include "core/os/thread.h"
 #include "core/io/file_access_pack.h"
-#include "core/io/formats/file_access_zip.h"
-#include "core/io/formats/file_access_pck.h"
-#include "core/io/formats/file_access_hpck.h"
 #include "translation.h"
 #include "version.h"
 
@@ -181,6 +178,12 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 	MAIN_PRINT("Main: Initialize CORE");
 
 	register_core_types();
+
+	//we initialize this here because core drivers includes pack types
+	packed_data = PackedData::get_singleton();
+	if (!packed_data)
+		packed_data = memnew(PackedData);
+
 	register_core_driver_types();
 
 	MAIN_PRINT("Main: Initialize Globals");
@@ -243,17 +246,6 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 	bool force_res=false;
 
 	I=args.front();
-
-	packed_data = PackedData::get_singleton();
-	if (!packed_data)
-		packed_data = memnew(PackedData);
-
-	//TODO: Put this line under ifdefs like the zip archive under it
-	packed_data->add_pack_source(PackedSourcePCK::get_singleton());
-
-#ifdef MINIZIP_ENABLED
-	packed_data->add_pack_source(ZipArchive::get_singleton());
-#endif
 
 	bool editor=false;
 

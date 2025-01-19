@@ -41,6 +41,10 @@
 
 Globals *Globals::singleton=NULL;
 
+const char* Globals::engine_config_path = "res://engine.cfg";
+const char* Globals::engine_remap_path = "res://engine.cfb";
+
+
 Globals *Globals::get_singleton() {
 	
 	return singleton;
@@ -259,7 +263,7 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 		bool ok = _load_resource_pack(p_main_pack, true);
 		ERR_FAIL_COND_V(!ok,ERR_CANT_OPEN);
 
-		if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
+		if (_load_settings(engine_config_path)==OK || _load_settings_binary(engine_remap_path)==OK) {
 
 			_load_settings("res://override.cfg");
 		}
@@ -275,7 +279,7 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 				resource_path=d->get_current_dir();
 				memdelete(d);
 			}
-			if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK){
+			if (_load_settings(engine_config_path)==OK || _load_settings_binary(engine_remap_path)==OK){
 				_load_settings("res://override.cfg");
 			}
 
@@ -284,12 +288,13 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 	}
 
 	if (FileAccessNetworkClient::get_singleton()) {
-		if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK){
+		if (_load_settings(engine_config_path)==OK || _load_settings_binary(engine_remap_path)==OK){
 			_load_settings("res://override.cfg");
 		}
 
 		return OK;
 	}
+	const String base_pack("res://data.");
 
 	if (OS::get_singleton()->get_resource_dir()!="") {
         //OS will call Globals->get_resource_path which will be empty if not overriden!
@@ -302,19 +307,24 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 		print_line("has res dir: "+resource_path);
 
 		if (not PackedData::get_singleton()->is_disabled()){
-#ifdef USE_SINGLE_PACK_SOURCE
-			_load_resource_pack(String("res://data.") + PackedData::get_singleton()->get_extension(), true);
+#ifdef SINGLE_PACK_SOURCE_ENABLED
+			_load_resource_pack(base_pack + PackedData::get_singleton()->get_source(0)->get_pack_extension(), true);
 #else
-			Vector<PackSource*> sources = PackedData::get_singleton()->get_sources();
-			for (int i = 0; i < sources.size(); i++){
-				if (_load_resource_pack(String("res://data.") + sources[i]->get_pack_extension(), true))
+			PackedData *singleton = PackedData::get_singleton();
+			int source_count = singleton->get_source_count();
+
+			for (int i = 0; i < source_count; i++){
+				if (_load_resource_pack(base_pack + singleton->get_source(i)->get_pack_extension(), true)){
 					break;
+				}
 			}
+
+
 #endif
 		}
 		// make sure this is load from the resource path
 		print_line("exists engine cfg? "+itos(FileAccess::exists("/engine.cfg")));
-		if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
+ 		if (_load_settings(engine_config_path)==OK || _load_settings_binary(engine_remap_path)==OK) {
 			print_line("loaded engine.cfg");
 			_load_settings("res://override.cfg");
 
@@ -335,19 +345,18 @@ Error Globals::setup(const String& p_path,const String & p_main_pack) {
 
 		//first, try to open pack (TODO: is this redundant?)
 
-#ifdef USE_SINGLE_PACK_SOURCE
-		pack_found = _load_resource_pack(String("res://data.") + PackedData::get_singleton()->get_extension(), true);
+#ifdef SINGLE_PACK_SOURCE_ENABLED
+		found = _load_resource_pack(base_pack + PackedData::get_singleton()->get_source(0)->get_pack_extension(), true);
 #else
-		Vector<PackSource*> sources = PackedData::get_singleton()->get_sources();
-		for (int i = 0; i < sources.size(); i++){
-			if (_load_resource_pack(String("res://data.") + sources[i]->get_pack_extension(), true)){
+		for (int i = 0; i < PackedData::get_singleton()->get_source_count(); i++){
+			if (_load_resource_pack(base_pack + PackedData::get_singleton()->get_source(i)->get_pack_extension(), true)){
 				found = true;
 				break;
 			}
 		}
 #endif
 		if (found){
-			if (_load_settings("res://engine.cfg")==OK || _load_settings_binary("res://engine.cfb")==OK) {
+			if (_load_settings(engine_config_path)==OK || _load_settings_binary(engine_remap_path)==OK) {
 				_load_settings("res://override.cfg");
 			}
 		} else {

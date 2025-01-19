@@ -8,6 +8,7 @@ Export('env')
 SConscript('unix/SCsub');
 SConscript('alsa/SCsub');
 SConscript('windows/SCsub');
+
 if env["platform"] in ("x11", "vita"):
 	SConscript('gles2/SCsub');
 if env["platform"] in ("x11soft", "windows"):
@@ -15,7 +16,16 @@ if env["platform"] in ("x11soft", "windows"):
 elif env["platform"] != "vita":
 	SConscript('gles1/SCsub');
 SConscript('gl_context/SCsub');
+
 SConscript('openssl/SCsub');
+
+if (env['pck'] == 'yes'):
+    env.add_source_files(env.core_sources,"pck/pack_pck.cpp")
+    SConscript('pck/SCsub');
+if (env['minizip'] == 'yes'):
+    SConscript('zip_pack/SCsub');
+if (env['small_pck'] == 'yes'):
+    SConscript('s_pck/SCsub');
 
 if (env["png"]=="yes"):
 	SConscript("png/SCsub");

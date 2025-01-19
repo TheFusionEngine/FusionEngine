@@ -1,4 +1,5 @@
-#include "file_access_pck.h"
+#ifdef PCK_ENABLED
+#include "pack_pck.h"
 
 #include "core/io/md5.h"
 #include "version.h"
@@ -488,3 +489,4 @@ DirAccessPCK::DirAccessPCK() {
 
 DirAccessPCK::~DirAccessPCK() {
 }
+#endif

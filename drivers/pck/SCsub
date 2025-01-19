@@ -1,0 +1,11 @@
+Import('env')
+
+pck_sources = [
+	"pck/pack_pck.cpp"
+	]
+
+env.drivers_sources+=pck_sources
+
+#env.add_source_files(env.drivers_sources, pck_sources)
+
+Export('env')

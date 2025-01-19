@@ -28,7 +28,7 @@
 /*************************************************************************/
 #ifdef MINIZIP_ENABLED
 
-#include "file_access_zip.h"
+#include "zip_archive.h"
 
 #include "core/os/file_access.h"
 
@@ -161,7 +161,6 @@ FileAccess* ZipArchive::get_file(const String& p_path) const {
 };
 
 ZipArchive* ZipArchive::get_singleton() {
-
 	if (instance == NULL) {
 		instance = memnew(ZipArchive);
 	};

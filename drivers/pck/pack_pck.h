@@ -1,3 +1,5 @@
+#ifdef PCK_ENABLED
+
 #ifndef FILE_ACCESS_PCK_H
 #define FILE_ACCESS_PCK_H
 
@@ -147,5 +149,7 @@ public:
 	PackedSourcePCK();
 
 };
+
+#endif
 
 #endif
