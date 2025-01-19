@@ -50,7 +50,7 @@ struct PathMD5 {
 
 class FileAccessPCK : public FileAccess {
 
-	PackedFile pf;
+	const PackedFile *pf;
 
 	mutable size_t pos;
 	mutable bool eof;
@@ -86,7 +86,7 @@ public:
 	virtual bool file_exists(const String& p_name);
 
 
-	FileAccessPCK(const String& p_path, const PackedFile& p_file);
+	FileAccessPCK(const String& p_path, const PackedFile *p_file);
 	~FileAccessPCK();
 };
 

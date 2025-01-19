@@ -131,13 +131,13 @@ PackSource::FileStatus PackedSourcePCK::has_file(const String &p_path) const {
 }
 
 FileAccess* PackedSourcePCK::get_file(const String &p_path) const {
-    const PackedFile* p_file = &files.find(PathMD5(p_path.md5_buffer()))->value();
+	if (not has_file(p_path)){
+		return NULL;
+	}
 
-    if (not p_file){
-        return NULL;
-    }
+    const PackedFile *p_file = &files.find(PathMD5(p_path.md5_buffer()))->value();
 
-	return memnew( FileAccessPCK(p_path, *p_file));
+	return memnew( FileAccessPCK(p_path, p_file));
 };
 
 String PackedSourcePCK::get_pack_extension() const{
@@ -248,18 +248,18 @@ bool FileAccessPCK::is_open() const{
 }
 
 void FileAccessPCK::seek(size_t p_position){
-	if (p_position>pf.size) {
+	if (p_position>pf->size) {
 		eof=true;
 	} else {
 		eof=false;
 	}
 
-	f->seek(pf.offset+p_position);
+	f->seek(pf->offset+p_position);
 	pos=p_position;
 }
 
 void FileAccessPCK::seek_end(int64_t p_position){
-	seek(pf.size+p_position);
+	seek(pf->size+p_position);
 }
 
 size_t FileAccessPCK::get_pos() const {
@@ -267,7 +267,7 @@ size_t FileAccessPCK::get_pos() const {
 }
 
 size_t FileAccessPCK::get_len() const{
-	return pf.size;
+	return pf->size;
 }
 
 bool FileAccessPCK::eof_reached() const{
@@ -275,7 +275,7 @@ bool FileAccessPCK::eof_reached() const{
 }
 
 uint8_t FileAccessPCK::get_8() const {
-	if (pos>=pf.size) {
+	if (pos>=pf->size) {
 		eof=true;
 		return 0;
 	}
@@ -289,9 +289,9 @@ int FileAccessPCK::get_buffer(uint8_t *p_dst,int p_length) const {
 		return 0;
 
 	int64_t to_read=p_length;
-	if (to_read+pos > pf.size) {
+	if (to_read+pos > pf->size) {
 		eof=true;
-		to_read=int64_t(pf.size)-int64_t(pos);
+		to_read=int64_t(pf->size)-int64_t(pos);
 	}
 
 	pos+=p_length;
@@ -326,14 +326,14 @@ bool FileAccessPCK::file_exists(const String& p_name) {
 	return false;
 }
 
-FileAccessPCK::FileAccessPCK(const String& p_path, const PackedFile& p_file) {
-	pf=p_file;
-	f=FileAccess::open(pf.pack, FileAccess::READ);
+FileAccessPCK::FileAccessPCK(const String& p_path, const PackedFile *p_file) {
+	pf = p_file;
+	f=FileAccess::open(pf->pack, FileAccess::READ);
 	if (!f) {
-		ERR_EXPLAIN("Can't open pack-referenced file: "+String(pf.pack));
+		ERR_EXPLAIN("Can't open pack-referenced file: "+String(pf->pack));
 		ERR_FAIL_COND(!f);
 	}
-	f->seek(pf.offset);
+	f->seek(pf->offset);
 	pos=0;
 	eof=false;
 }
