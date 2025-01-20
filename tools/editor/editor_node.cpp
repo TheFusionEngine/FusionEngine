@@ -96,6 +96,7 @@
 #include "tools/editor/io_plugins/editor_translation_import_plugin.h"
 #include "tools/editor/io_plugins/editor_mesh_import_plugin.h"
 
+#include "tools/pck/pck_packer.h"
 
 
 EditorNode *EditorNode::singleton=NULL;
@@ -3039,6 +3040,7 @@ void EditorNode::register_editor_types() {
 
 	//ObjectTypeDB::register_type<EditorImporter>();
 //	ObjectTypeDB::register_type<EditorPostImport>();
+	ObjectTypeDB::register_type<PCKPacker>();
 }
 
 void EditorNode::unregister_editor_types() {
