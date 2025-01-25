@@ -1225,7 +1225,7 @@ void Rasterizer3DS::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 	ERR_FAIL_COND(!multimesh);
 	multimesh->aabb=p_aabb;
 }
-void Rasterizer3DS::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void Rasterizer3DS::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -1707,7 +1707,7 @@ int Rasterizer3DS::skeleton_get_bone_count(RID p_skeleton) const {
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void Rasterizer3DS::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void Rasterizer3DS::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
 	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
@@ -1901,7 +1901,7 @@ RID Rasterizer3DS::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void Rasterizer3DS::light_instance_set_transform(RID p_light_instance,const Transform& p_transform) {
+void Rasterizer3DS::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1941,7 +1941,7 @@ Rasterizer::ShadowType Rasterizer3DS::light_instance_get_shadow_type(RID p_light
 
 	return SHADOW_NONE;
 }
-void Rasterizer3DS::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void Rasterizer3DS::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 
 }
@@ -1957,7 +1957,7 @@ bool Rasterizer3DS::light_instance_get_pssm_shadow_overlap(RID p_light_instance)
 }
 
 
-void Rasterizer3DS::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+void Rasterizer3DS::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1995,7 +1995,7 @@ RID Rasterizer3DS::particles_instance_create(RID p_particles) {
 	return particles_instance_owner.make_rid(particles_instance);
 }
 
-void Rasterizer3DS::particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform) {
+void Rasterizer3DS::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 	ParticlesInstance *particles_instance=particles_instance_owner.get(p_particles_instance);
 	ERR_FAIL_COND(!particles_instance);
@@ -2154,7 +2154,7 @@ void Rasterizer3DS::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) 
 
 }
 
-void Rasterizer3DS::set_camera(const Transform& p_world, const CameraMatrix& p_projection)
+void Rasterizer3DS::set_camera(const Transform3D& p_world, const CameraMatrix& p_projection)
 {
 
 	
@@ -2781,9 +2781,9 @@ void Rasterizer3DS::_set_uniform(int uniform_location, const Matrix32& p_transfo
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uniform_location, &mtx);
 }
 
-void Rasterizer3DS::_set_uniform(int uniform_location, const Transform& p_transform)
+void Rasterizer3DS::_set_uniform(int uniform_location, const Transform3D& p_transform)
 {
-	const Transform& tr = p_transform;
+	const Transform3D& tr = p_transform;
 	
 	C3D_Mtx mtx;
 // 	float matrix[16]={ /* build a 16x16 matrix */
@@ -3439,7 +3439,7 @@ void Rasterizer3DS::custom_shade_model_get_param_info(int p_model, List<Property
 
 
 
-void Rasterizer3DS::_render_list_forward(RenderList *p_render_list,const Transform& p_view_transform, const Transform& p_view_transform_inverse,const CameraMatrix& p_projection,bool p_reverse_cull,bool p_fragment_light,bool p_alpha_pass)
+void Rasterizer3DS::_render_list_forward(RenderList *p_render_list,const Transform3D& p_view_transform, const Transform3D& p_view_transform_inverse,const CameraMatrix& p_projection,bool p_reverse_cull,bool p_fragment_light,bool p_alpha_pass)
 {
 	print("_render_list_forward\n");
 	
@@ -4324,7 +4324,7 @@ static const GPU_Primitive_t gl_primitive[]={
 	GPU_TRIANGLE_FAN
 };
 
-void Rasterizer3DS::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner,const Transform& p_xform)
+void Rasterizer3DS::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner,const Transform3D& p_xform)
 {
 	_rinfo.object_count++;
 	

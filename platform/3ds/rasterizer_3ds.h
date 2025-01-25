@@ -863,10 +863,10 @@ class Rasterizer3DS : public Rasterizer {
 	
 	
 	Error _setup_geometry(const Geometry *p_geometry, const Material* p_material,const Skeleton *p_skeleton, const float *p_morphs);
-	void _render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner,const Transform& p_xform);
+	void _render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner,const Transform3D& p_xform);
 
 	void _set_uniform(int uniform_location, const Matrix32& p_transform);
-	void _set_uniform(int uniform_location, const Transform& p_transform);
+	void _set_uniform(int uniform_location, const Transform3D& p_transform);
 	void _set_uniform(int uniform_location, const CameraMatrix& p_matrix);
 	void _set_uniform(int uniform_location, const Color& p_color);
 	
@@ -875,7 +875,7 @@ class Rasterizer3DS : public Rasterizer {
 	
 	void _add_geometry( const Geometry* p_geometry, const InstanceData *p_instance, const Geometry *p_geometry_cmp, const GeometryOwner *p_owner,int p_material=-1);
 	
-	void _render_list_forward(RenderList *p_render_list,const Transform& p_view_transform,const Transform& p_view_transform_inverse, const CameraMatrix& p_projection,bool p_reverse_cull=false,bool p_fragment_light=false,bool p_alpha_pass=false);
+	void _render_list_forward(RenderList *p_render_list,const Transform3D& p_view_transform,const Transform3D& p_view_transform_inverse, const CameraMatrix& p_projection,bool p_reverse_cull=false,bool p_fragment_light=false,bool p_alpha_pass=false);
 	
 	void _draw_quad(const Rect2& p_rect);
 	void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_h_flip=false, bool p_v_flip=false, bool p_transpose=false);
@@ -991,7 +991,7 @@ public:
 
 	virtual void multimesh_set_mesh(RID p_multimesh,RID p_mesh);
 	virtual void multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb);
-	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform);
+	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform);
 	virtual void multimesh_instance_set_color(RID p_multimesh,int p_index,const Color& p_color);
 
 	virtual RID multimesh_get_mesh(RID p_multimesh) const;
@@ -1085,7 +1085,7 @@ public:
 	virtual RID skeleton_create();
 	virtual void skeleton_resize(RID p_skeleton,int p_bones);
 	virtual int skeleton_get_bone_count(RID p_skeleton) const;
-	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform);
+	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform);
 	virtual Transform skeleton_bone_get_transform(RID p_skeleton,int p_bone);
 
 
@@ -1125,18 +1125,18 @@ public:
 
 
 	virtual RID light_instance_create(RID p_light);
-	virtual void light_instance_set_transform(RID p_light_instance,const Transform& p_transform);
+	virtual void light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform);
 
 	virtual bool light_instance_has_shadow(RID p_light_instance) const;
 	virtual bool light_instance_assign_shadow(RID p_light_instance);
 	virtual ShadowType light_instance_get_shadow_type(RID p_light_instance) const;
 	virtual int light_instance_get_shadow_passes(RID p_light_instance) const;
 	virtual bool light_instance_get_pssm_shadow_overlap(RID p_light_instance) const;
-	virtual void light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near=0,float p_split_far=0);
+	virtual void light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near=0,float p_split_far=0);
 	virtual int light_instance_get_shadow_size(RID p_light_instance, int p_index=0) const { return 1; }
 
 	virtual ShadowType light_instance_get_shadow_type(RID p_light_instance,bool p_far=false) const;
-	virtual void light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near=0,float p_split_far=0);
+	virtual void light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near=0,float p_split_far=0);
 
 	virtual void shadow_clear_near();
 	virtual bool shadow_allocate_near(RID p_light);
@@ -1146,7 +1146,7 @@ public:
 	/* PARTICLES INSTANCE */
 
 	virtual RID particles_instance_create(RID p_particles);
-	virtual void particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform);
+	virtual void particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform);
 
 	/* VIEWPORT */
 
@@ -1172,7 +1172,7 @@ public:
 	virtual void begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug);
 	virtual void begin_shadow_map( RID p_light_instance, int p_shadow_pass );
 
-	virtual void set_camera(const Transform& p_world,const CameraMatrix& p_projection);
+	virtual void set_camera(const Transform3D& p_world,const CameraMatrix& p_projection);
 
 	virtual void add_light( RID p_light_instance ); ///< all "add_light" calls happen before add_geometry calls
 

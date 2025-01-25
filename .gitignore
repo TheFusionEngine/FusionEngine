@@ -268,3 +268,4 @@ logo.h
 __pycache__
 core/method_bind_ext.inc
 compile_commands.json
+custom.py

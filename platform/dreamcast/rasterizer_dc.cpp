@@ -38,7 +38,7 @@
 #include "gl_context/context_gl.h"
 #include <string.h>
 
-_FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
+_FORCE_INLINE_ static void _gl_load_transform(const Transform3D& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
 		tr.basis.elements[0][0],
@@ -63,7 +63,7 @@ _FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
 };
 
 
-_FORCE_INLINE_ static void _gl_mult_transform(const Transform& tr) {
+_FORCE_INLINE_ static void _gl_mult_transform(const Transform3D& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
 		tr.basis.elements[0][0],
@@ -1236,7 +1236,7 @@ VS::FixedMaterialTexCoordMode RasterizerDC::fixed_material_get_texcoord_mode(RID
 	return m->texcoord_mode[p_parameter]; // for now
 }
 
-void RasterizerDC::fixed_material_set_uv_transform(RID p_material,const Transform& p_transform) {
+void RasterizerDC::fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
@@ -3857,7 +3857,7 @@ Error RasterizerDC::_setup_geometry(const Geometry *p_geometry, const Material* 
 					const uint8_t *src_bones=&surf->array_local[surf->array[VS::ARRAY_BONES].ofs];
 					int src_stride = surf->stride;
 					int count = surf->array_len;
-					const Transform *skeleton = &p_skeleton->bones[0];
+					const Transform3D *skeleton = &p_skeleton->bones[0];
 
 					for(int i=0;i<VS::ARRAY_MAX-1;i++) {
 
