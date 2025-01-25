@@ -26,43 +26,60 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#if defined(UNIX_ENABLED) || defined(PSP)
+
+#if defined(POSIX_IP_ENABLED) || defined(UNIX_ENABLED) || defined(PSP) || defined(__3DS__)
 
 #include "stream_peer_tcp_posix.h"
+ #include <arpa/inet.h>
 
-#ifndef PSP
-#include <poll.h>
+
+#if defined(WII_ENABLED)
+ #include "../../platform/wii/network2.h"
+ using namespace gc::net;
+ #define MSG_NOSIGNAL    0
+#elif defined(PSP)
+ #include <sys/select.h>
+ #define MSG_NOSIGNAL    0
 #else
-#include <sys/select.h>
-#define MSG_NOSIGNAL    0
+ #include <poll.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#ifndef NO_FCNTL
-#include <sys/fcntl.h>
-#else
-#include <sys/ioctl.h>
-#endif
-#include <netinet/in.h>
+#if !defined(WII_ENABLED)
+ #include <netdb.h>
+ #include <sys/types.h>
+ #ifndef NO_FCNTL
+ #include <sys/fcntl.h>
+ #else
+ #include <sys/ioctl.h>
+ #endif
+ #include <netinet/in.h>
 
-#include <sys/socket.h>
+ #include <sys/socket.h>
+ #include <netinet/tcp.h>
+#endif
+
+#ifndef NET_NS
+#if defined(WII_ENABLED)
+#define NET_NS gc::net
+#else
+#define NET_NS
+#endif
+#endif
+
 #ifdef JAVASCRIPT_ENABLED
 #include <arpa/inet.h>
 #endif
-
-#include <netinet/tcp.h>
 
 #if defined(OSX_ENABLED) || defined(IPHONE_ENABLED)
 	#define MSG_NOSIGNAL    SO_NOSIGPIPE
 #endif
 
 static void set_addr_in(struct sockaddr_in& their_addr, const IP_Address& p_host, uint16_t p_port) {
-
+	// printf("%s\n", p_host.host);
 	their_addr.sin_family = AF_INET;    // host byte order
 	their_addr.sin_port = htons(p_port);  // short, network byte order
 	their_addr.sin_addr = *((struct in_addr*)&p_host.host);
@@ -78,7 +95,7 @@ void StreamPeerTCPPosix::make_default() {
 
 	StreamPeerTCP::_create = StreamPeerTCPPosix::_create;
 };
-#ifdef PSP
+#if defined(PSP) || defined(WII_ENABLED)
 Error StreamPeerTCPPosix::_block(int p_sockfd, bool p_read, bool p_write) const {
 
 	fd_set readfds, writefds;
@@ -95,7 +112,7 @@ Error StreamPeerTCPPosix::_block(int p_sockfd, bool p_read, bool p_write) const 
 	if (!p_write)
 		FD_CLR(p_sockfd, &writefds);
 
-	int ret = select(maxfd, &readfds, &writefds, NULL, NULL);
+	int ret = NET_NS::select(maxfd, &readfds, &writefds, NULL, NULL);
 	return ret < 0 ? FAILED : OK;
 };
 
@@ -169,7 +186,9 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 		//perror("socket");
 		return FAILED;
 	};
-#ifndef PSP
+#if !defined(__3DS__) && ! defined(PSP)
+
+
 #ifndef NO_FCNTL
 	fcntl(sockfd, F_SETFL, O_NONBLOCK);
 #else
@@ -177,6 +196,38 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 	ioctl(sockfd, FIONBIO, &bval);
 #endif
 #endif
+
+#ifdef __3DS__
+	#define atoa(x) #x
+	struct addrinfo hints;
+	struct addrinfo *resaddr = NULL, *resaddr_cur;
+	memset(&hints, 0, sizeof(struct addrinfo));
+	
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	//TODO: Do not embed this
+	if(getaddrinfo("google.com", "80", &hints, &resaddr)!=0)
+	{
+		printf("getaddrinfo() failed.\n");
+		closesocket(sockfd);
+		// return;
+	}
+
+	for(resaddr_cur = resaddr; resaddr_cur!=NULL; resaddr_cur = resaddr_cur->ai_next)
+	{
+		if(::connect(sockfd, resaddr_cur->ai_addr, resaddr_cur->ai_addrlen)==0)break;
+	}
+
+	freeaddrinfo(resaddr);
+
+	if(resaddr_cur==NULL)
+	{
+		printf("Failed to connect.\n");
+		closesocket(sockfd);
+		// return;
+	}
+#else
+
 	struct sockaddr_in their_addr;
 	set_addr_in(their_addr, p_host, p_port);
 
@@ -187,7 +238,7 @@ Error StreamPeerTCPPosix::connect(const IP_Address& p_host, uint16_t p_port) {
 		disconnect();
 		return FAILED;
 	};
-
+#endif
 	if (errno == EINPROGRESS) {
 		status = STATUS_CONNECTING;
 	} else {
@@ -227,8 +278,11 @@ Error StreamPeerTCPPosix::write(const uint8_t* p_data,int p_bytes, int &r_sent, 
 	int total_sent = 0;
 
 	while (data_to_send) {
-
+#ifdef JAVASCRIPT_ENABLED
+		int sent_amount = send(sockfd, offset, data_to_send, 0);
+#else
 		int sent_amount = send(sockfd, offset, data_to_send, MSG_NOSIGNAL);
+#endif
 		//printf("Sent TCP data of %d bytes, errno %d\n", sent_amount, errno);
 
 		if (sent_amount == -1) {
@@ -358,7 +412,7 @@ StreamPeerTCP::Status StreamPeerTCPPosix::get_status() const {
 void StreamPeerTCPPosix::disconnect() {
 
 	if (sockfd != -1)
-		close(sockfd);
+		NET_NS::close(sockfd);
 	sockfd=-1;
 
 	status = STATUS_NONE;

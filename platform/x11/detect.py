@@ -54,7 +54,7 @@ def get_flags():
 	return [
 	('builtin_zlib', 'no'),
 	("builtin_openssl", "yes"),
-	("theora","no"),
+	("theora","yes"),
         ]
 			
 
@@ -93,7 +93,7 @@ def configure(env):
 
 	if (env["target"]=="release"):
 		
-		env.Append(CCFLAGS=['-O2','-ffast-math','-fomit-frame-pointer'])
+		env.Append(CCFLAGS=['-O2','-Os','-ffast-math','-fomit-frame-pointer'])
 
 	elif (env["target"]=="release_debug"):
 
@@ -114,6 +114,7 @@ def configure(env):
 	
 	env.Append(CPPFLAGS=['-DOPENGL_ENABLED','-DGLEW_ENABLED'])
 	env.Append(CPPFLAGS=["-DALSA_ENABLED"])
+	#env.Append(CPPFLAGS=['-DX11_ENABLED','-DUNIX_ENABLED','-DGLES2_ENABLED','-DGLES1_ENABLED','-DGLES_OVER_GL', '-DULTRA'])
 	env.Append(CPPFLAGS=['-DX11_ENABLED','-DUNIX_ENABLED','-DGLES2_ENABLED','-DGLES1_ENABLED','-DGLES_OVER_GL','-DRESOURCE_FORMAT_TEXT'])
 	env.Append(LIBS=['GL', 'GLU', 'pthread','asound','z']) #TODO detect linux/BSD!
 	#env.Append(CPPFLAGS=['-DMPC_FIXED_POINT'])

@@ -9,11 +9,14 @@ SConscript('unix/SCsub');
 SConscript('alsa/SCsub');
 SConscript('windows/SCsub');
 
-if env["platform"] in ("x11", "vita"):
+if env["platform"] in ("x11", "vita", "javascript"):
 	SConscript('gles2/SCsub');
-if env["platform"] in ("x11soft", "windows"):
+if env["platform"] not in ("x11soft", "windows", "psp"):
+	SConscript('gles1/SCsub');
+elif env["platform"] not in ("psp", "wii"):
 	SConscript('gl11/SCsub');
 elif env["platform"] != "vita":
+
 	SConscript('gles1/SCsub');
 SConscript('gl_context/SCsub');
 

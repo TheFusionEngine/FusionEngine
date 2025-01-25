@@ -31,7 +31,8 @@
 */
 
 #include "drivers/gl_context/glew.h"
-#if defined(_WIN32)
+#if defined(__wii__)
+#elif defined(_WIN32)
 #  include "drivers/gl_context/wglew.h"
 #elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
 #  include "drivers/gl_context/glxew.h"
@@ -135,27 +136,31 @@ void* dlGetProcAddress (const GLubyte* name)
 #endif /* __sgi || __sun */
 
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 /*
  * Define glewInternalGetProcAddress.
  */
 #if defined(_WIN32)
 #  define glewInternalGetProcAddress(name) wglGetProcAddress((LPCSTR)name)
-#else
-#  if defined(__APPLE__)
-#    define glewInternalGetProcAddress(name) NSGLGetProcAddress(name)
-#  else
-#    if defined(__sgi) || defined(__sun)
-#      define glewInternalGetProcAddress(name) dlGetProcAddress(name)
-#    else /* __linux */
-#      define glewInternalGetProcAddress(name) (*glXGetProcAddressARB)(name)
-#    endif
-#  endif
+#elif defined(__APPLE__)
+#  define glewInternalGetProcAddress(name) NSGLGetProcAddress(name)
+#elif defined(__sgi) || defined(__sun)
+#  define glewInternalGetProcAddress(name) dlGetProcAddress(name)
+#elif defined(__wii__)
+extern void *ogx_get_proc_address(const char *proc);
+__inline__ void *my_ogx_get_proc_address(const char *proc) {
+  void *addr = ogx_get_proc_address(proc);
+  fprintf(stderr, "%s -> %p\n", proc, addr);
+  return addr;
+}
+#  define glewInternalGetProcAddress(name) my_ogx_get_proc_address(name)
+#else /* __linux */
+#  define glewInternalGetProcAddress(name) (*glXGetProcAddressARB)(name)
 #endif
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 typedef void (*glewFuncAddr)();
 
@@ -7977,6 +7982,7 @@ GLenum glewContextInit (GLEW_CONTEXT_ARG_DEF_LIST)
   GLuint dot;
   GLint major, minor;
   /* query opengl version */
+#ifndef __wii__
   s = glGetString(GL_VERSION);
   dot = _glewStrCLen(s, '.');
   if (dot == 0)
@@ -7989,7 +7995,10 @@ GLenum glewContextInit (GLEW_CONTEXT_ARG_DEF_LIST)
     minor = 0;
   if (major<0 || major>9)
     return GLEW_ERROR_NO_GL_VERSION;
-  
+#else
+  major = 1;
+  minor = 5;
+#endif
 
   if (major == 1 && minor == 0)
   {
@@ -10324,7 +10333,7 @@ GLenum wglewContextInit (WGLEW_CONTEXT_ARG_DEF_LIST)
   return GLEW_OK;
 }
 
-#elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
+#elif !defined(__wii__) && !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
 
 PFNGLXGETCURRENTDISPLAYPROC __glewXGetCurrentDisplay = NULL;
 
@@ -11357,6 +11366,10 @@ GLboolean glewExperimental = GL_FALSE;
 
 #if !defined(GLEW_MX)
 
+#if defined(__wii__)
+extern void ogx_initialize (void);
+#endif
+
 #if defined(_WIN32)
 extern GLenum wglewContextInit (void);
 #elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX) /* _UNIX */
@@ -11366,10 +11379,13 @@ extern GLenum glxewContextInit (void);
 GLenum glewInit ()
 {
   GLenum r;
+#ifdef __wii__
+  ogx_initialize();
+#endif
   if ( (r = glewContextInit()) ) return r;
 #if defined(_WIN32)
   return wglewContextInit();
-#elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX) /* _UNIX */
+#elif !defined(__wii__) && (!defined(__APPLE__) || defined(GLEW_APPLE_GLX)) /* _UNIX */
   return glxewContextInit();
 #else
   return r;

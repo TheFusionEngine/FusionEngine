@@ -49,7 +49,8 @@ platform/wiiu/*
 *.d
 *.so
 *.os
-
+*.rpx
+*.3dsx
 # QT project files
 *.config
 *.creator

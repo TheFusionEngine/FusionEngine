@@ -7,8 +7,39 @@ Export('env')
 
 SConscript('main/SCsub');
 SConscript('gui/SCsub');
-SConscript('3d/SCsub');
-SConscript('2d/SCsub');
+if env["platform"] != "dreamcast" and env["platform"] != "n64":
+    SConscript('3d/SCsub');
+else: #to help
+    env.add_source_files(env.scene_sources,"3d/area.cpp")
+    env.add_source_files(env.scene_sources,"3d/body_shape.cpp")
+    env.add_source_files(env.scene_sources,"3d/camera.cpp")
+    env.add_source_files(env.scene_sources,"3d/collision_object.cpp")
+    env.add_source_files(env.scene_sources,"3d/collision_shape.cpp")
+    env.add_source_files(env.scene_sources,"3d/collision_polygon.cpp")
+    env.add_source_files(env.scene_sources,"3d/light.cpp")
+    env.add_source_files(env.scene_sources,"3d/mesh_instance.cpp")
+    env.add_source_files(env.scene_sources,"3d/visibility_notifier.cpp")
+    env.add_source_files(env.scene_sources,"3d/skeleton.cpp")
+    env.add_source_files(env.scene_sources,"3d/position_3d.cpp")
+    env.add_source_files(env.scene_sources,"3d/visual_instance.cpp")
+    env.add_source_files(env.scene_sources,"3d/physics_body.cpp")
+    env.add_source_files(env.scene_sources,"3d/particles.cpp")
+    env.add_source_files(env.scene_sources,"3d/baked_light_instance.cpp")
+    env.add_source_files(env.scene_sources,"3d/test_cube.cpp")
+    env.add_source_files(env.scene_sources,"3d/scenario_fx.cpp")
+    env.add_source_files(env.scene_sources,"3d/spatial.cpp")
+    env.add_source_files(env.scene_sources,"3d/spatial_indexer.cpp")
+    env.add_source_files(env.scene_sources,"3d/spatial_player.cpp")
+    env.add_source_files(env.scene_sources,"3d/bone_attachment.cpp")
+    env.add_source_files(env.scene_sources,"3d/room_instance.cpp")
+    env.add_source_files(env.scene_sources,"3d/interpolated_camera.cpp")
+if env["platform"] != "dreamcast" and env["platform"] != "n64":
+    SConscript('2d/SCsub');
+else:
+    env.add_source_files(env.scene_sources,"2d/canvas_item.cpp")
+    env.add_source_files(env.scene_sources,"2d/node_2d.cpp")
+    env.add_source_files(env.scene_sources,"2d/visibility_notifier_2d.cpp")
+    
 SConscript('animation/SCsub');
 SConscript('audio/SCsub');
 SConscript('resources/SCsub');

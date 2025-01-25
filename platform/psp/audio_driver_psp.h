@@ -46,7 +46,7 @@ class AudioDriverPSP : public AudioDriverSW {
 	int32_t* samples_in;
 	int16_t* samples_out;
 
-	static void thread_func(void *p_udata);
+	static void thread_func(SceSize args, void *p_udata);
 
 
 	int buffer_size;

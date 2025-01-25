@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+import shlex
+
+Import('env')
+
+
+common_symbian = [\
+    "os_symbian.cpp",\
+    "app.cpp",\
+    "document.cpp",\
+    "appui.cpp",\
+    "container.cpp",\
+    "audio_driver_symbian.cpp"\
+]
+
+prog = env.postlink('#bin/godot.exe', env.Program('#bin/godot.exe.sym', common_symbian), False, '0xa0060d07')
+
+env.rcomp('godot')
+env.rcomp('godot_reg', ['#bin/godot.rsg', '#bin/godot.rsc'])
+
+env.Command('#bin/godot_icon.mif', '#platform/symbian/sis/godot_icon.svg', shlex.join(['mifconv', 'bin/godot_icon.mif', '-c32', 'platform/symbian/sis/godot_icon.svg']))
+
+env.Command('#bin/godot.sis', ['#platform/symbian/sis/godot.pkg', '#bin/godot.exe', '#bin/godot_icon.mif', '#bin/godot.rsg', '#bin/godot.rsc', '#bin/godot_reg.rsg', '#bin/godot_reg.rsc'], shlex.join(['makesis', 'platform/symbian/sis/godot.pkg', 'bin/godot.sis']))
+
+env.Command('#bin/godot.sisx', '#bin/godot.sis', shlex.join(['signsis', '-s', 'bin/godot.sis', 'bin/godot.sisx', env['signcert'], env['signkey']]))

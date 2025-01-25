@@ -79,6 +79,10 @@ env_base.__class__.disable_module = methods.disable_module
 
 env_base.__class__.add_source_files = methods.add_source_files
 
+
+env_base.__class__.postlink = methods.postlink
+env_base.__class__.rcomp = methods.rcomp
+
 customs = ['custom.py']
 
 profile = ARGUMENTS.get("profile", False)
