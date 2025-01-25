@@ -44,7 +44,6 @@
 #include "platform_config.h"
 #ifndef GLES1_INCLUDE_H
 #include <GL/gl.h>
-
 #else
 #include GLES1_INCLUDE_H
 #endif
@@ -64,6 +63,10 @@ class RasterizerGLES1 : public Rasterizer {
 		DEFAULT_SKINNED_BUFFER_SIZE = 1024 * 1024, // 10k vertices
 		MAX_HW_LIGHTS = 1,
 	};
+	#ifdef PSP
+	void glActiveTexture(int a1) { };
+	void glClientActiveTexture(int a1) { };
+	#endif
 
 	GLuint BlurTexture;
 

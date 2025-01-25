@@ -161,38 +161,108 @@ Basis Basis::rotated(const Vector3& p_axis, real_t p_phi) const {
 
 }
 
-Vector3 Basis::get_euler() const {
+Vector3 Matrix3::get_euler_yxz() const {
 
-	// rot =  cy*cz          -cy*sz           sy
-	    //        cz*sx*sy+cx*sz  cx*cz-sx*sy*sz -cy*sx
-	    //       -cx*cz*sy+sx*sz  cz*sx+cx*sy*sz  cx*cy
-
-	Basis m = *this;
-	m.orthonormalize();
+	/* checking this is a bad idea, because obtaining from scaled transform is a valid use case
+#ifdef MATH_CHECKS
+	ERR_FAIL_COND(!is_rotation());
+#endif
+*/
+	// Euler angles in YXZ convention.
+	// See https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
+	//
+	// rot =  cy*cz+sy*sx*sz    cz*sy*sx-cy*sz        cx*sy
+	//        cx*sz             cx*cz                 -sx
+	//        cy*sx*sz-cz*sy    cy*cz*sx+sy*sz        cy*cx
 
 	Vector3 euler;
 
-	euler.y = Math::asin(m[0][2]);
-	if ( euler.y < Math_PI*0.5) {
-		if ( euler.y > -Math_PI*0.5) {
-			euler.x = Math::atan2(-m[1][2],m[2][2]);
-			euler.z = Math::atan2(-m[0][1],m[0][0]);
+	real_t m12 = elements[1][2];
 
-		} else {
-			real_t r = Math::atan2(m[1][0],m[1][1]);
-			euler.z = 0.0;
-			euler.x = euler.z - r;
-
+	if (m12 < 1) {
+		if (m12 > -1) {
+			// is this a pure X rotation?
+			if (elements[1][0] == 0 && elements[0][1] == 0 && elements[0][2] == 0 && elements[2][0] == 0 && elements[0][0] == 1) {
+				// return the simplest form (human friendlier in editor and scripts)
+				euler.x = atan2(-m12, elements[1][1]);
+				euler.y = 0;
+				euler.z = 0;
+			} else {
+				euler.x = asin(-m12);
+				euler.y = atan2(elements[0][2], elements[2][2]);
+				euler.z = atan2(elements[1][0], elements[1][1]);
+			}
+		} else { // m12 == -1
+			euler.x = Math_PI * 0.5;
+			euler.y = -atan2(-elements[0][1], elements[0][0]);
+			euler.z = 0;
 		}
-	} else {
-		real_t r = Math::atan2(m[0][1],m[1][1]);
+	} else { // m12 == 1
+		euler.x = -Math_PI * 0.5;
+		euler.y = -atan2(-elements[0][1], elements[0][0]);
 		euler.z = 0;
-		euler.x = r - euler.z;
 	}
 
 	return euler;
+}
 
+void Matrix3::set_euler_yxz(const Vector3 &p_euler) {
 
+	real_t c, s;
+
+	c = Math::cos(p_euler.x);
+	s = Math::sin(p_euler.x);
+	Matrix3 xmat(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c);
+
+	c = Math::cos(p_euler.y);
+	s = Math::sin(p_euler.y);
+	Matrix3 ymat(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c);
+
+	c = Math::cos(p_euler.z);
+	s = Math::sin(p_euler.z);
+	Matrix3 zmat(c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0);
+
+	//optimizer will optimize away all this anyway
+	*this = ymat * xmat * zmat;
+}
+
+Vector3 Matrix3::get_euler() const {
+	// Euler angles in XYZ convention.
+	// See https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
+	//
+	// rot =  cy*cz          -cy*sz           sy
+	//        cz*sx*sy+cx*sz  cx*cz-sx*sy*sz -cy*sx
+	//       -cx*cz*sy+sx*sz  cz*sx+cx*sy*sz  cx*cy
+
+	Vector3 euler;
+#ifdef MATH_CHECKS
+	ERR_FAIL_COND_V(!is_rotation(), euler);
+#endif
+	real_t sy = elements[0][2];
+	if (sy < 1.0) {
+		if (sy > -1.0) {
+			// is this a pure Y rotation?
+			if (elements[1][0] == 0.0 && elements[0][1] == 0.0 && elements[1][2] == 0 && elements[2][1] == 0 && elements[1][1] == 1) {
+				// return the simplest form (human friendlier in editor and scripts)
+				euler.x = 0;
+				euler.y = atan2(elements[0][2], elements[0][0]);
+				euler.z = 0;
+			} else {
+				euler.x = Math::atan2(-elements[1][2], elements[2][2]);
+				euler.y = Math::asin(sy);
+				euler.z = Math::atan2(-elements[0][1], elements[0][0]);
+			}
+		} else {
+			euler.x = -Math::atan2(elements[0][1], elements[1][1]);
+			euler.y = -Math_PI / 2.0;
+			euler.z = 0.0;
+		}
+	} else {
+		euler.x = Math::atan2(elements[0][1], elements[1][1]);
+		euler.y = Math_PI / 2.0;
+		euler.z = 0.0;
+	}
+	return euler;
 }
 
 void Basis::set_euler(const Vector3& p_euler) {

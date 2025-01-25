@@ -47,7 +47,6 @@
 #include "theoraplayer/video_stream_theoraplayer.h"
 #endif
 
-
 #include "drivers/trex/regex.h"
 
 #ifdef MUSEPACK_ENABLED
@@ -102,7 +101,23 @@ static ResourceFormatLoaderAudioStreamMPC * mpc_stream_loader=NULL;
 #include "openssl/register_openssl.h"
 #endif
 
+#ifdef PCK_ENABLED
+#include "pck/pack_pck.h"
+#endif
+
+#ifdef MINIZIP_ENABLED
+#include "zip_pack/zip_archive.h"
+#endif
+
 void register_core_driver_types() {
+
+#ifdef PCK_ENABLED
+	PackedData::get_singleton()->add_pack_source(PackedSourcePCK::get_singleton());
+#endif
+
+#if MINIZIP_ENABLED
+	PackedData::get_singleton()->add_pack_source(ZipArchive::get_singleton());
+#endif
 
 #ifdef PNG_ENABLED
 	image_loader_png = memnew( ImageLoaderPNG );

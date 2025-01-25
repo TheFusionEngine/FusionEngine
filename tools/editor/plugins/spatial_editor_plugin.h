@@ -148,7 +148,8 @@ private:
 		NAVIGATION_NONE,
 		NAVIGATION_PAN,
 		NAVIGATION_ZOOM,
-		NAVIGATION_ORBIT
+		NAVIGATION_ORBIT,
+		NAVIGATION_FPS,
 	};
 	enum TransformMode {
 		TRANSFORM_NONE,
@@ -186,15 +187,17 @@ private:
 		Vector3 cursor_pos;
 
 		Vector3 pos;
-		float x_rot,y_rot,distance;
+		float distance;
+		Quat q;
 		bool region_select;
 		Point2 region_begin,region_end;
 
-		Cursor() { x_rot=y_rot=0; distance=4; region_select=false; }
+		Cursor() { q=Quat(); distance=4; region_select=false; }
 	} cursor;
 
 	RID move_gizmo_instance[3], rotate_gizmo_instance[3];
 
+	NavigationMode nav_mode;
 
 	String last_message;
 	String message;

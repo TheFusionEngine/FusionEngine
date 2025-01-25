@@ -57,7 +57,6 @@
 #include "tools/editor/editor_node.h"
 #include "tools/editor/project_manager.h"
 #include "tools/editor/console.h"
-#include "tools/pck/pck_packer.h"
 #endif
 
 #include "io/file_access_network.h"
@@ -72,7 +71,6 @@
 #include "core/io/stream_peer_tcp.h"
 #include "core/os/thread.h"
 #include "core/io/file_access_pack.h"
-#include "core/io/file_access_zip.h"
 #include "translation.h"
 #include "version.h"
 
@@ -179,6 +177,12 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 	MAIN_PRINT("Main: Initialize CORE");
 
 	register_core_types();
+
+	//we initialize this here because core drivers includes pack types
+	packed_data = PackedData::get_singleton();
+	if (!packed_data)
+		packed_data = memnew(PackedData);
+
 	register_core_driver_types();
 
 	MAIN_PRINT("Main: Initialize Globals");
@@ -242,28 +246,15 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 
 	I=args.front();
 
-	packed_data = PackedData::get_singleton();
-	if (!packed_data)
-		packed_data = memnew(PackedData);
-
-#ifdef MINIZIP_ENABLED
-	packed_data->add_pack_source(ZipArchive::get_singleton());
-#endif
-
 	bool editor=false;
 
 	while(I) {
-
 		List<String>::Element *N=I->next();
 
-		if (I->get() == "-noop") {
+		if (I->get() == "-noop") { // no op
 
-			// no op
-		} else if (I->get()=="-h" || I->get()=="--help" || I->get()=="/?") { // resolution
-			
+		} else if (I->get()=="-h" || I->get()=="--help" || I->get()=="/?") { // help
 			goto error;
-			
-			
 		} else if (I->get()=="-r") { // resolution
 		
 			if (I->next()) {
@@ -281,9 +272,7 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				int h=vm.get_slice("x",1).to_int();
 				
 				if (w==0 || h==0) {
-				
 					goto error;
-					
 				}
 				
 				video_mode.width=w;
@@ -293,8 +282,6 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				N=I->next()->next();
 			} else {
 				goto error;
-				
-			
 			}
 			
 		} else if (I->get()=="-vd") { // video driver
@@ -305,7 +292,6 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				N=I->next()->next();
 			} else {
 				goto error;
-				
 			}
 		} else if (I->get()=="-lang") { // language
 
@@ -315,7 +301,6 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				N=I->next()->next();
 			} else {
 				goto error;
-
 			}
 		} else if (I->get()=="-rfs") { // language
 
@@ -335,12 +320,10 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				N=I->next()->next();
 			} else {
 				goto error;
-
 			}
-		} else if (I->get()=="-rthread") { // language
+		} else if (I->get()=="-rthread") { // thread
 
 			if (I->next()) {
-
 				if (I->next()->get()=="safe")
 					rtm=OS::RENDER_THREAD_SAFE;
 				else if (I->next()->get()=="unsafe")
@@ -348,69 +331,51 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				else if (I->next()->get()=="separate")
 					rtm=OS::RENDER_SEPARATE_THREAD;
 
-
 				N=I->next()->next();
 			} else {
 				goto error;
-
 			}
 
-		} else if (I->get()=="-ad") { // video driver
-		
+		} else if (I->get()=="-ad") { // audio driver
 			if (I->next()) {
-			
 				audio_driver=I->next()->get();
 				N=I->next()->next();
 			} else {
 				goto error;
-				
 			}
-			
 		} else if (I->get()=="-f") { // fullscreen
-		
 			video_mode.fullscreen=true;
 		} else if (I->get()=="-e" || I->get()=="-editor") { // fonud editor
-
 			editor=true;
-
-		} else if (I->get()=="-nowindow") { // fullscreen
-
+		} else if (I->get()=="-nowindow") { // no window
 			OS::get_singleton()->set_no_window_mode(true);
-		} else if (I->get()=="-quiet") { // fullscreen
-
+		} else if (I->get()=="-quiet") { // quiet std-out
 			quiet_stdout=true;
-		} else if (I->get()=="-v") { // fullscreen
+		} else if (I->get()=="-v") { // verbose std-out
 			OS::get_singleton()->_verbose_stdout=true;
 		} else if (I->get()=="-path") { // resolution
-		
 			if (I->next()) {
-			
 				String p = I->next()->get();
 				if (OS::get_singleton()->set_cwd(p)==OK) {
 					//nothing
 				} else {
 					game_path=I->next()->get(); //use game_path instead
 				}
-
 				N=I->next()->next();
 			} else {
 				goto error;
-				
 			}
 		} else if (I->get()=="-bp") { // /breakpoints
 
 			if (I->next()) {
-
 				String bplist = I->next()->get();
 				breakpoints= bplist.split(",");
 				N=I->next()->next();
 			} else {
 				goto error;
-
 			}
 
-
-		} else if (I->get()=="-fdelay") { // resolution
+		} else if (I->get()=="-fdelay") { // frame delay
 
 			if (I->next()) {
 
@@ -418,10 +383,9 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				N=I->next()->next();
 			} else {
 				goto error;
-
 			}
 
-		} else if (I->get()=="-timescale") { // resolution
+		} else if (I->get()=="-timescale") { // time scale
 
 			if (I->next()) {
 
@@ -429,18 +393,15 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				N=I->next()->next();
 			} else {
 				goto error;
-
 			}
 
 
 		} else if (I->get() == "-pack") {
 
 			if (I->next()) {
-
 				pack_list.push_back(I->next()->get());
 				N = I->next()->next();
 			} else {
-
 				goto error;
 			};
 
@@ -455,21 +416,18 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				goto error;
 			};
 
-		} else if (I->get()=="-debug" || I->get()=="-d") {
+		} else if (I->get()=="-debug" || I->get()=="-d") { //debug mode
 			debug_mode="local";
 		} else if (I->get()=="-editor_scene") {
 
 			if (I->next()) {
-
 				Globals::get_singleton()->set("editor_scene",game_path=I->next()->get());
 			} else {
 				goto error;
-
 			}
 
-		} else if (I->get()=="-rdebug") {
+		} else if (I->get()=="-rdebug") { //remote debug
 			if (I->next()) {
-
 				debug_mode="remote";
 				debug_host=I->next()->get();
 				if (debug_host.find(":")==-1) //wrong host
@@ -477,7 +435,6 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 				N=I->next()->next();
 			} else {
 				goto error;
-
 			}
 		} else {
 
@@ -501,8 +458,6 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 			
 		I=N;
 	}
-
-
 
 	if (debug_mode == "remote") {
 
@@ -561,15 +516,12 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 		}
 	}
 
-
 #ifdef TOOLS_ENABLED
 	if (editor) {
 		packed_data->set_disabled(true);
 		globals->set_disable_platform_override(true);
 	}
-
 #endif
-
 
 	if (globals->setup(game_path,main_pack)!=OK) {
 		
@@ -811,7 +763,6 @@ Error Main::setup2() {
 
 #ifdef TOOLS_ENABLED
 	EditorNode::register_editor_types();
-	ObjectTypeDB::register_type<PCKPacker>(); // todo: move somewhere else
 #endif
 
 	MAIN_PRINT("Main: Load Scripts, Modules, Drivers");

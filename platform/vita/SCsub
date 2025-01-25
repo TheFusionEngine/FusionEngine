@@ -8,7 +8,6 @@ common_vita=[\
 	"os_vita.cpp",\
 	"audio_driver_vita.cpp",\
 	#"rasterizer_vita.cpp",\
-	
 	#"immvertex.c",\
 	#
 ]

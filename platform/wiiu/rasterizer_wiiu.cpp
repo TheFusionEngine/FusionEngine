@@ -3278,7 +3278,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		last_color=diffuse_color;
 		glMaterialfv(side,GL_AMBIENT,diffuse_rgba);
 		glMaterialfv(side,GL_DIFFUSE,diffuse_rgba);
-		//specular
+		// | GU_SPECULARspecular
 
 		const Color specular_color=p_material->parameters[VS::FIXED_MATERIAL_PARAM_SPECULAR];
 		float specular_rgba[4]={
@@ -4277,7 +4277,6 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 				if (prev_baked_light!=baked_light) {
 					Texture *tex=texture_owner.get(baked_light->octree_texture);
 					if (tex) {
-
 						// glActiveTexture(GL_TEXTURE0);
 						glBindTexture(tex->target,tex->tex_id); //bind the texture
 					}
@@ -4310,7 +4309,6 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 						Texture *tex = texture_owner.get(texid);
 						if (tex) {
-
 							// glActiveTexture(GL_TEXTURE0);
 							glBindTexture(tex->target,tex->tex_id); //bind the texture
 						}
@@ -4430,13 +4428,14 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
+	//glOrthof(0, viewport.width, viewport.height, 0, -1, 1);
 	glOrtho(0, viewport.width, viewport.height, 0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
 	
 	alphainc = alpha / times;
-	
+
 	glBegin(GL_QUADS);
 	for (num = 0;num < times;num++)
 	{
@@ -4458,6 +4457,56 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 		alpha = alpha - alphainc;
 	}
 	glEnd();
+	*/
+	//attempt at porting
+	
+	GLfloat vertices[] = {
+		0, 0,
+		0, (GLfloat)viewport.height,
+		(GLfloat)viewport.width, (GLfloat)viewport.height,
+		(GLfloat)viewport.width, 0
+	};
+
+	GLubyte indices[] = {0, 1, 2, 0, 2, 3};
+	// GLubyte indices[] = {0, 1, 2, 3};
+
+
+
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	// glEnableClientState(GL_COLOR_ARRAY);
+	
+	for (num = 0; num < times; num++) {
+		glColor4f(1.0f, 1.0f, 1.0f, alpha);
+		GLfloat texCoords[] = {
+			0+spost, 1-spost,
+			0+spost, 0+spost,
+			1-spost, 0+spost,
+			1-spost, 1-spost
+		};
+/*
+		GLfloat colors[] = {
+			1.0f, 1.0f, 1.0f, alpha,
+			1.0f, 1.0f, 1.0f, alpha,
+			1.0f, 1.0f, 1.0f, alpha,
+			1.0f, 1.0f, 1.0f, alpha
+		};*/
+		
+		glVertexPointer(2, GL_FLOAT, 0, vertices);
+		glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+		// glColorPointer(4, GL_FLOAT, 0, colors);
+		
+		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		
+		spost += inc;
+		alpha = alpha - alphainc;
+	}
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+
 	glBindTexture(GL_TEXTURE_2D,0);
 	
 	glMatrixMode(GL_PROJECTION);
@@ -5671,6 +5720,7 @@ void RasterizerGLES1::sampled_light_dp_update(RID p_sampled_light, const Color *
 	SampledLight *slight = sampled_light_owner.get(p_sampled_light);
 	ERR_FAIL_COND(!slight);
 
+
 	// glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, slight->texture);
 
@@ -6085,10 +6135,6 @@ void RasterizerGLES1::_update_framebuffer() {
 #include <coreinit/debug.h>
 void RasterizerGLES1::init() {
 
-
-
-	
-
 	scene_pass=1;
 	// if (ContextGL::get_singleton())
 		// ContextGL::get_singleton()->make_current();
@@ -6167,7 +6213,10 @@ void RasterizerGLES1::init() {
 
 void RasterizerGLES1::finish() {
 
-	memdelete(skinned_buffer);
+	if (skinned_buffer) {
+		memdelete(skinned_buffer);
+		skinned_buffer = NULL;
+	}
 }
 
 int RasterizerGLES1::get_render_info(VS::RenderInfo p_info) {
@@ -6289,6 +6338,8 @@ bool RasterizerGLES1::has_feature(VS::Features p_feature) const {
 
 
 RasterizerGLES1::RasterizerGLES1(bool p_keep_copies,bool p_use_reload_hooks) {
+	skinned_buffer = NULL;
+
 	keep_copies=p_keep_copies;
 	pack_arrays=false;
 	use_reload_hooks=p_use_reload_hooks;

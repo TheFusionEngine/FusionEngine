@@ -1,0 +1,12 @@
+Import('env')
+
+
+zip_sources = [
+	"zip_pack/zip_archive.cpp"
+	]
+
+env.drivers_sources+=zip_sources
+
+#env.add_source_files(env.drivers_sources, zip_sources)
+
+Export('env')

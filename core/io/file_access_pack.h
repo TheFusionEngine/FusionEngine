@@ -35,202 +35,80 @@
 #include "list.h"
 #include "print_string.h"
 
-class PackSource;
+#ifdef TOOLS_ENABLED
+typedef void (*PackingProgressCallback)(const String& p_state, int p_step);
+
+struct FileExportData {
+	String export_path;
+	String internal_path;
+
+	explicit FileExportData(String p_export, String p_internal){
+		export_path = p_export;
+		internal_path = p_internal;
+	}
+	explicit FileExportData(){
+		export_path = "";
+		internal_path = "";
+	}
+};
+#endif
+
+
+class PackSource {
+public:
+	enum FileStatus {
+		NOT_HAS_FILE = 0,
+		HAS_FILE = 1,
+		REMOVED_FILE = 2
+	};
+
+	uint16_t load_presedence;
+
+	virtual bool try_open_pack(const String& p_path, bool p_replace_files = true)=0;
+	virtual FileAccess* get_file(const String& p_path) const=0;
+	virtual FileStatus has_file(const String& p_path) const=0;
+
+	virtual String get_pack_extension() const=0;
+#ifdef TOOLS_ENABLED
+	virtual String get_pack_name() const=0;
+	virtual Error export_pack(FileAccess *p_destination, Vector<FileExportData> p_files, PackingProgressCallback p_progress)=0;
+#endif
+};
+
 
 class PackedData {
-friend class FileAccessPack;
-friend class DirAccessPack;
-friend class PackSource;
-
-public:
-	struct PackedFile {
-
-		String pack;
-		uint64_t offset; //if offset is ZERO, the file was ERASED
-		uint64_t size;
-		uint8_t md5[16];
-		PackSource* src;
-	};
-
+	friend class FileAccessPack;
+	friend class DirAccessPack;
+	friend class PackSource;
 private:
-	struct PackedDir {
-		PackedDir *parent;
-		String name;
-		Map<String,PackedDir*> subdirs;
-		Set<String> files;
-	};
-
-	struct PathMD5 {
-		uint64_t a;
-		uint64_t b;
-		bool operator < (const PathMD5& p_md5) const {
-
-			if (p_md5.a == a) {
-				return b < p_md5.b;
-			} else {
-				return a < p_md5.a;
-			}
-		}
-
-		bool operator == (const PathMD5& p_md5) const {
-			return a == p_md5.a && b == p_md5.b;
-		};
-
-		PathMD5() {
-			a = b = 0;
-		};
-
-		PathMD5(const Vector<uint8_t> p_buf) {
-			a = *((uint64_t*)&p_buf[0]);
-			b = *((uint64_t*)&p_buf[8]);
-		};
-	};
-
-	Map<PathMD5,PackedFile> files;
-
-	Vector<PackSource*> sources;
-
-	PackedDir *root;
-	//Map<String,PackedDir*> dirs;
-
 	static PackedData *singleton;
+
+#ifdef SINGLE_PACK_SOURCE_ENABLED
+	PackSource *source;
+#else
+	Vector<PackSource*> sources;
+#endif
+	uint16_t packs_loaded;
 	bool disabled;
 
 public:
-
 	void add_pack_source(PackSource* p_source);
-	void add_path(const String& pkg_path, const String& path, uint64_t ofs, uint64_t size,const uint8_t* p_md5, PackSource* p_src); // for PackSource
+
+	PackSource *get_source(int index);
+	int get_source_count();
 
 	void set_disabled(bool p_disabled) { disabled=p_disabled; }
 	_FORCE_INLINE_ bool is_disabled() const { return disabled; }
 
 	static PackedData *get_singleton() { return singleton; }
-	Error add_pack(const String& p_path);
+	Error add_pack(const String& p_path, bool p_replace_files);
 
-	_FORCE_INLINE_ FileAccess *try_open_path(const String& p_path);
-	_FORCE_INLINE_ bool has_path(const String& p_path);
+	//_FORCE_INLINE_ FileAccess *try_open_path(const String& p_path);
+	FileAccess *try_open_path(const String& p_path);
+	//_FORCE_INLINE_ bool has_path(const String& p_path);
+	bool has_path(const String& p_path);
 
 	PackedData();
 };
-
-class PackSource {
-
-public:
-
-	virtual bool try_open_pack(const String& p_path)=0;
-	virtual FileAccess* get_file(const String& p_path, PackedData::PackedFile* p_file)=0;
-};
-
-class PackedSourcePCK : public PackSource {
-
-public:
-
-	virtual bool try_open_pack(const String &p_path);
-	virtual FileAccess* get_file(const String& p_path, PackedData::PackedFile* p_file);
-};
-
-
-class FileAccessPack : public FileAccess {
-
-	PackedData::PackedFile pf;
-
-	mutable size_t pos;
-	mutable bool eof;
-
-	FileAccess *f;
-	virtual Error _open(const String& p_path, int p_mode_flags);
-	virtual uint64_t _get_modified_time(const String& p_file) { return 0; }
-
-public:
-
-
-	virtual void close();
-	virtual bool is_open() const;
-
-	virtual void seek(size_t p_position);
-	virtual void seek_end(int64_t p_position=0);
-	virtual size_t get_pos() const;
-	virtual size_t get_len() const;
-
-	virtual bool eof_reached() const;
-
-	virtual uint8_t get_8() const;
-
-
-	virtual int get_buffer(uint8_t *p_dst,int p_length) const;
-
-	virtual void set_endian_swap(bool p_swap);
-
-	virtual Error get_error() const;
-
-	virtual void store_8(uint8_t p_dest);
-
-	virtual void store_buffer(const uint8_t *p_src,int p_length);
-
-	virtual bool file_exists(const String& p_name);
-
-
-	FileAccessPack(const String& p_path, const PackedData::PackedFile& p_file);
-	~FileAccessPack();
-};
-
-
-FileAccess *PackedData::try_open_path(const String& p_path) {
-
-	//print_line("try open path " + p_path);
-	PathMD5 pmd5(p_path.md5_buffer());
-	Map<PathMD5,PackedFile>::Element *E=files.find(pmd5);
-	if (!E)
-		return NULL; //not found
-	if (E->get().offset==0)
-		return NULL; //was erased
-
-	return E->get().src->get_file(p_path, &E->get());
-}
-
-bool PackedData::has_path(const String& p_path) {
-
-	return files.has(PathMD5(p_path.md5_buffer()));
-}
-
-
-class DirAccessPack : public DirAccess {
-
-
-	PackedData::PackedDir *current;
-
-	List<String> list_dirs;
-	List<String> list_files;
-	bool cdir;
-
-public:
-
-	virtual bool list_dir_begin();
-	virtual String get_next();
-	virtual bool current_is_dir() const;
-	virtual void list_dir_end();
-
-	virtual int get_drive_count();
-	virtual String get_drive(int p_drive);
-
-	virtual Error change_dir(String p_dir);
-	virtual String get_current_dir();
-
-
-	virtual bool file_exists(String p_file);
-	virtual bool dir_exists(String p_dir);
-
-	virtual Error make_dir(String p_dir);
-
-	virtual Error rename(String p_from, String p_to);
-	virtual Error remove(String p_name);
-
-	size_t get_space_left();
-
-	DirAccessPack();
-	~DirAccessPack();
-
-};
-
 
 #endif // FILE_ACCESS_PACK_H

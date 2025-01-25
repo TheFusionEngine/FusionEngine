@@ -266,4 +266,5 @@ Desktop.ini
 $RECYCLE.BIN/
 logo.h
 __pycache__
-*.inc
+core/method_bind_ext.inc
+compile_commands.json

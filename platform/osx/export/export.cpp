@@ -7,7 +7,7 @@
 #include "io/marshalls.h"
 #include "io/resource_saver.h"
 #include "globals.h"
-#include "os/file_access.h"
+#include "core/io/file_access_pack.h"
 #include "os/os.h"
 #include "platform/osx/logo.h"
 #include "string.h"
@@ -59,7 +59,7 @@ public:
 	virtual String get_device_info(int p_device) const { return String(); }
 	virtual Error run(int p_device,bool p_dumb=false);
 
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const { return "zip"; }
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 
@@ -254,23 +254,18 @@ Error EditorExportPlatformOSX::export_project(const String& p_path, bool p_debug
 	String pkg_path = EditorSettings::get_singleton()->get_settings_path()+"/templates/osx.zip";
 
 	if (p_debug) {
-
-		src_pkg=custom_debug_package!=""?custom_debug_package:pkg_path;
+		src_pkg = custom_debug_package != "" ? custom_debug_package : pkg_path;
 	} else {
-
-		src_pkg=custom_release_package!=""?custom_release_package:pkg_path;
-
+		src_pkg = custom_release_package != "" ? custom_release_package : pkg_path;
 	}
-
 
 	FileAccess *src_f=NULL;
 	zlib_filefunc_def io = zipio_create_io_from_file(&src_f);
 
-	ep.step("Creating app",0);
+	ep.step("Creating app", 0);
 
 	unzFile pkg = unzOpen2(src_pkg.utf8().get_data(), &io);
 	if (!pkg) {
-
 		EditorNode::add_io_error("Could not find template app to export:\n"+src_pkg);
 		return ERR_FILE_NOT_FOUND;
 	}
@@ -278,33 +273,33 @@ Error EditorExportPlatformOSX::export_project(const String& p_path, bool p_debug
 	ERR_FAIL_COND_V(!pkg, ERR_CANT_OPEN);
 	int ret = unzGoToFirstFile(pkg);
 
-	zlib_filefunc_def io2=io;
-	FileAccess *dst_f=NULL;
-	io2.opaque=&dst_f;
-	zipFile	dpkg=zipOpen2(p_path.utf8().get_data(),APPEND_STATUS_CREATE,NULL,&io2);
+	zlib_filefunc_def io2 = io;
+	FileAccess *dst_f = NULL;
+	io2.opaque= &dst_f;
+	zipFile dpkg = zipOpen2(p_path.utf8().get_data(), APPEND_STATUS_CREATE, NULL, &io2);
 
-	String binary_to_use="godot_osx_"+String(p_debug?"debug":"release")+"."+String(use64?"64":"32");
+	String binary_to_use="godot_osx_" + String(p_debug ? "debug" : "release") + "." + String(use64 ? "64" : "32");
 
 	print_line("binary: "+binary_to_use);
 	String pkg_name;
-	if (app_name!="")
-		pkg_name=app_name;
-	else if (String(Globals::get_singleton()->get("application/name"))!="")
+	if (app_name != ""){
+		pkg_name = app_name;
+	} else if (String(Globals::get_singleton()->get("application/name")) != ""){
 		pkg_name=String(Globals::get_singleton()->get("application/name"));
-	else
+	}else{
 		pkg_name="Unnamed";
+	}
 
-
-	while(ret==UNZ_OK) {
+	while (ret == UNZ_OK){
 
 		//get filename
 		unz_file_info info;
 		char fname[16384];
-		ret = unzGetCurrentFileInfo(pkg,&info,fname,16384,NULL,0,NULL,0);
+		ret = unzGetCurrentFileInfo(pkg, &info,fname, 16384, NULL, 0, NULL, 0);
 
-		String file=fname;
+		String file = fname;
 
-		print_line("READ: "+file);
+		print_line("READ: " + file);
 		Vector<uint8_t> data;
 		data.resize(info.uncompressed_size);
 
@@ -374,7 +369,7 @@ Error EditorExportPlatformOSX::export_project(const String& p_path, bool p_debug
 				Z_DEFAULT_COMPRESSION);
 
 			print_line("OPEN ERR: "+itos(err));
-			err = zipWriteInFileInZip(dpkg,data.ptr(),data.size());
+			err = zipWriteInFileInZip(dpkg, data.ptr(), data.size());
 			print_line("WRITE ERR: "+itos(err));
 			zipCloseFileInZip(dpkg);
 		}
@@ -385,21 +380,19 @@ Error EditorExportPlatformOSX::export_project(const String& p_path, bool p_debug
 
 	ep.step("Making PKG",1);
 
-	String pack_path=EditorSettings::get_singleton()->get_settings_path()+"/tmp/data.pck";
-	FileAccess *pfs = FileAccess::open(pack_path,FileAccess::WRITE);
-	Error err = save_pack(pfs);
+	String pack_path = EditorSettings::get_singleton()->get_settings_path()+"/tmp/data.pck";
+	FileAccess *pfs = FileAccess::open(pack_path, FileAccess::WRITE);
+	Error err = save_pack(pfs, PackedData::get_singleton()->get_source(0), false);
 	memdelete(pfs);
 
 	if (err) {
-		zipClose(dpkg,NULL);
+		zipClose(dpkg, NULL);
 		unzClose(pkg);
 		return err;
-
 	}
 
 	{
 		//write datapack
-
 		int err = zipOpenNewFileInZip(dpkg,
 			(pkg_name+".app/Contents/Resources/data.pck").utf8().get_data(),
 			NULL,
@@ -411,26 +404,22 @@ Error EditorExportPlatformOSX::export_project(const String& p_path, bool p_debug
 			Z_DEFLATED,
 			Z_DEFAULT_COMPRESSION);
 
-
 		FileAccess *pf = FileAccess::open(pack_path,FileAccess::READ);
-		ERR_FAIL_COND_V(!pf,ERR_CANT_OPEN);
+		ERR_FAIL_COND_V(!pf, ERR_CANT_OPEN);
 		const int BSIZE = 16384;
 		uint8_t buf[BSIZE];
 
 		while(true) {
-
 			int r = pf->get_buffer(buf,BSIZE);
 			if (r<=0)
 				break;
 			zipWriteInFileInZip(dpkg,buf,r);
-
 		}
 		zipCloseFileInZip(dpkg);
 		memdelete(pf);
-
 	}
 
-	zipClose(dpkg,NULL);
+	zipClose(dpkg, NULL);
 	unzClose(pkg);
 
 	return OK;

@@ -22,8 +22,8 @@ def get_opts():
 	#	gcc = "i586-gcc32msvc-"
 	#	gcc64 = "i686-w64-gcc32-"
 
-	#pdb_available = os.name == "nt"
-	pdb_available = False
+	pdb_available = os.name == "nt"
+	#pdb_available = False
 
 	if (os.getenv("GCC32_PREFIX")):
 		gcc=os.getenv("GCC32_PREFIX")
