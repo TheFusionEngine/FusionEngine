@@ -567,9 +567,10 @@ void RasterizerPSP::texture_set_data(RID p_texture,const Image& p_image,VS::Cube
 
 	texture->alloc_width = nearest_power_of_2(img.get_width());
 	texture->alloc_height = nearest_power_of_2(img.get_height());
-	if (texture->alloc_width < 16) {
+	if (texture->alloc_width > 16) {
 		texture->alloc_width = 16;
 	}
+
 	if (texture->alloc_width != img.get_width() || texture->alloc_height != img.get_height()) {
 
 		img.resize(texture->alloc_width, texture->alloc_height, Image::INTERPOLATE_BILINEAR);

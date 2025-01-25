@@ -84,6 +84,8 @@ class RasterizerGLES1 : public Rasterizer {
 
 	Image _get_gl_image_and_format(const Image& p_image, Image::Format p_format, uint32_t p_flags,GLenum& r_gl_format,int &r_gl_components,bool &r_has_alpha_cache,bool &r_compressed);
 
+	
+	class RenderTarget;
 
 	struct Texture {
 
@@ -100,6 +102,7 @@ class RasterizerGLES1 : public Rasterizer {
 		bool compressed;
 		bool disallow_mipmaps;
 		int total_data_size;
+		RenderTarget *render_target;
 
 		Image image[6];
 
@@ -110,7 +113,7 @@ class RasterizerGLES1 : public Rasterizer {
 		StringName reloader_func;
 
 		Texture() {
-
+			render_target = NULL;
 			flags=width=height=0;
 			tex_id=0;
 			data_size=0;
@@ -213,6 +216,7 @@ class RasterizerGLES1 : public Rasterizer {
 		enum Type {
 			GEOMETRY_INVALID,
 			GEOMETRY_SURFACE,
+			GEOMETRY_IMMEDIATE,
 			GEOMETRY_POLY,
 			GEOMETRY_PARTICLES,
 			GEOMETRY_MULTISURFACE,
@@ -409,10 +413,27 @@ class RasterizerGLES1 : public Rasterizer {
 	mutable RID_Owner<MultiMesh> multimesh_owner;
 	mutable SelfList<MultiMesh>::List _multimesh_dirty_list;
 
-	struct Immediate {
+	struct Immediate : public Geometry {
 
-		RID material;
-		int empty;
+		struct Chunk {
+
+			RID texture;
+			VS::PrimitiveType primitive;
+			Vector<Vector3> vertices;
+			Vector<Vector3> normals;
+			Vector<Plane> tangents;
+			Vector<Color> colors;
+			Vector<Vector2> uvs;
+			Vector<Vector2> uvs2;
+		};
+
+		List<Chunk> chunks;
+		bool building;
+		int mask;
+		AABB aabb;
+
+		Immediate() { type=GEOMETRY_IMMEDIATE; building=false;}
+
 	};
 
 	mutable RID_Owner<Immediate> immediate_owner;
@@ -451,6 +472,21 @@ class RasterizerGLES1 : public Rasterizer {
 	mutable RID_Owner<Skeleton> skeleton_owner;
 
 
+	
+	struct RenderTarget {
+
+		Texture *texture_ptr;
+		RID texture;
+		GLuint fbo;
+		GLuint color;
+		GLuint depth;
+		int width,height;
+		uint64_t last_pass;
+
+	};
+
+	mutable RID_Owner<RenderTarget> render_target_owner;
+	
 	struct Light {
 
 		VS::LightType type;
@@ -796,7 +832,14 @@ class RasterizerGLES1 : public Rasterizer {
 
 	Error _setup_geometry(const Geometry *p_geometry, const Material* p_material,const Skeleton *p_skeleton, const float *p_morphs);
 	void _render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner);
-
+	Vector3 chunk_vertex;
+	Vector3 chunk_normal;
+	Plane chunk_tangent;
+	Color chunk_color;
+	Vector2 chunk_uv;
+	Vector2 chunk_uv2;
+	GLuint tc0_id_cache;
+	GLuint tc0_idx = 0;
 
 	/***********/
 	/* SHADOWS */
@@ -1192,7 +1235,7 @@ public:
 
 	virtual void add_mesh( const RID& p_mesh, const InstanceData *p_data);
 	virtual void add_multimesh( const RID& p_multimesh, const InstanceData *p_data);
-	virtual void add_immediate( const RID& p_immediate, const InstanceData *p_data) {}
+	virtual void add_immediate( const RID& p_immediate, const InstanceData *p_data);
 	virtual void add_particles( const RID& p_particle_instance, const InstanceData *p_data);
 
 	virtual void end_scene();

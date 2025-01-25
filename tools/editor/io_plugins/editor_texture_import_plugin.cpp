@@ -1048,7 +1048,7 @@ Error EditorTextureImportPlugin::import2(const String& p_path, const Ref<Resourc
 
 
 		if (shrink>1 || (format!=IMAGE_FORMAT_UNCOMPRESSED && (image.get_width()!=orig_w || image.get_height()!=orig_h))) {
-			texture->set_size_override(Size2(orig_w,orig_h));
+			// texture->set_size_override(Size2(orig_w,orig_h));
 		}
 
 		uint32_t save_flags=ResourceSaver::FLAG_COMPRESS;

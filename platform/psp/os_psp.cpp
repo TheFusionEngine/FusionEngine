@@ -387,7 +387,7 @@ void OS_PSP::swap_buffers() {
 
 OS_PSP::OS_PSP() {
 
-	AudioDriverManagerSW::add_driver(&driver_psp);
+	AudioDriverManagerSW::add_driver(&driver_dummy);
 	//adriver here
 	grab=false;
 	_verbose_stdout=true;

@@ -120,7 +120,7 @@ void BakedLightEditor::_notification(int p_option) {
 				Image img(baker->baked_octree_texture_w,baker->baked_octree_texture_h,0,Image::FORMAT_RGBA,light_texture);
 				Ref<ImageTexture> it = memnew( ImageTexture );
 				it->create_from_image(img);
-				ResourceSaver::save("baked_octree.png",it);
+				ResourceSaver::save("res://baked_octree.png",it);
 
 
 #endif
