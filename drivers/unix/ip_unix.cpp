@@ -57,6 +57,7 @@
  #else
   #include <ifaddrs.h>
  #endif
+#endif
  #include <arpa/inet.h>
  #include <sys/socket.h>
 
