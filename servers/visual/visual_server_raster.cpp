@@ -6477,8 +6477,21 @@ void VisualServerRaster::_draw_viewport(Viewport *p_viewport,int p_ofs_x, int p_
 
 	}
 
-	/* Camera3D should always be BEFORE any other 3D */
 
+	/* Camera should always be BEFORE any other 3D */
+#ifdef __3DS__
+	if (!p_viewport->hide_scenario && camera_owner.owns(p_viewport->camera) && scenario_owner.owns(p_viewport->scenario)) {
+
+		Camera3D *camera = camera_owner.get( p_viewport->camera );
+		Scenario *scenario = scenario_owner.get( p_viewport->scenario );
+
+		_update_instances(); // check dirty instances before rendering
+
+		_render_camera(p_viewport, camera,scenario );
+
+	}
+	rasterizer->clear_viewport(clear_color);
+#else
 	if (!p_viewport->hide_scenario && camera_owner.owns(p_viewport->camera) && scenario_owner.owns(p_viewport->scenario)) {
 
 		Camera3D *camera = camera_owner.get( p_viewport->camera );
@@ -6493,7 +6506,7 @@ void VisualServerRaster::_draw_viewport(Viewport *p_viewport,int p_ofs_x, int p_
 		//clear the viewport black because of no camera? i seriously should..
 		rasterizer->clear_viewport(clear_color);
 	}
-
+#endif
 	if (!p_viewport->hide_canvas) {
 		int i=0;
 

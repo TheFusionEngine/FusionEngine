@@ -28,21 +28,54 @@
 /*************************************************************************/
 #include "main/main.h"
 #include "os_kos.h"
-#include <gl.h>
+#include <GL/glkos.h>
+#include <kos.h>
+
+unsigned char romdisk_data = 0;
 
 int main(int argc, char* argv[]) {
 	glKosInit();
 	OS_KOS os;
-	
+#if 0
+	file_t fd;
+    file_t d;
+    dirent_t *de;
+    int amt;
+
+    printf("Reading directory from CD-Rom:\r\n");
+
+    /* Read and print the root directory */
+    d = fs_open("/cd", O_RDONLY | O_DIR);
+
+    if(d < 0) {
+        printf("Can't open root!\r\n");
+
+    }
+
+    while((de = fs_readdir(d))) {
+        printf("%s  /  ", de->name);
+
+        if(de->size >= 0) {
+            printf("%d\r\n", de->size);
+        }
+        else {
+            printf("DIR\r\n");
+        }
+    }
+
+    fs_close(d);
+#endif
 	char* args[] = {"-path", "/cd/"};
 	
 	Error err  = Main::setup("kos",2, args);
 	if (err!=OK)
 		return 255;
 		
-	if (Main::start())
+	if (Main::start()) {
+        printf("Running\n");
 		os.run(); // it is actually the OS that decides how to run
+    }
 	Main::cleanup();
 	
-	return os.get_exit_code();
+	return 0;
 }

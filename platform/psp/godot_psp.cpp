@@ -125,6 +125,7 @@ int netDialog()
 }
 
 int main(int argc, char* argv[]) {
+
 	// SetupCallbacks();
     pspSdkDisableFPUExceptions();
     scePowerSetClockFrequency(333, 333, 166);

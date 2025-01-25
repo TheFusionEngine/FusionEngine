@@ -29,12 +29,13 @@
 #ifndef DIR_ACCESS_UNIX_H
 #define DIR_ACCESS_UNIX_H
 
-#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__) || defined(ULTRA) || defined(__3DS__)
+
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#ifndef DREAMCAST
+#if !defined(DREAMCAST) && !defined(ULTRA)
 #include <dirent.h>
 #endif
 
@@ -45,7 +46,7 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 class DirAccessUnix : public DirAccess {
-#ifndef DREAMCAST
+#if !defined(DREAMCAST) && !defined(ULTRA)
 	DIR *dir_stream;
 #endif
 	

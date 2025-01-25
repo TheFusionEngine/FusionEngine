@@ -38,12 +38,15 @@
 #include "scene/main/canvas_layer.h"
 #include "scene/main/viewport.h"
 #include "scene/gui/control.h"
+
 #include "scene/gui/texture_progress.h"
 #include "scene/gui/empty_control.h"
 #include "scene/gui/button.h"
 #include "scene/gui/button_array.h"
 #include "scene/gui/button_group.h"
+// #endif
 #include "scene/gui/label.h"
+#ifndef ULTRA
 #include "scene/gui/line_edit.h"
 #include "scene/gui/scroll_bar.h"
 #include "scene/gui/progress_bar.h"
@@ -104,6 +107,7 @@
 
 #include "scene/2d/position_2d.h"
 #include "scene/2d/tile_map.h"
+#endif
 //#include "scene/2d/tile_map.h"
 #include "scene/resources/tile_set.h"
 
@@ -132,6 +136,7 @@
 #include "scene/resources/convex_polygon_shape.h"
 #include "scene/resources/concave_polygon_shape.h"
 
+#ifndef ULTRA
 #include "scene/resources/shape_line_2d.h"
 #include "scene/resources/circle_shape_2d.h"
 #include "scene/resources/segment_shape_2d.h"
@@ -139,7 +144,7 @@
 #include "scene/resources/capsule_shape_2d.h"
 #include "scene/resources/convex_polygon_shape_2d.h"
 #include "scene/resources/concave_polygon_shape_2d.h"
-
+#endif
 #include "scene/resources/mesh_library.h"
 
 
@@ -185,10 +190,12 @@
 #include "scene/3d/portal.h"
 #include "scene/resources/environment.h"
 #include "scene/3d/physics_body.h"
-
+#ifndef UlTRA
 #include "scene/3d/vehicle_body.h"
+#endif
 #include "scene/3d/body_shape.h"
 #include "scene/3d/area.h"
+#ifndef ULTRA
 #include "scene/3d/physics_joint.h"
 #include "scene/3d/multimesh_instance.h"
 #include "scene/3d/baked_light_instance.h"
@@ -200,6 +207,7 @@
 #include "scene/3d/proximity_group.h"
 #include "scene/3d/navigation_mesh.h"
 #include "scene/3d/navigation.h"
+#endif
 #include "scene/3d/collision_polygon.h"
 #endif
 
@@ -271,6 +279,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<EmptyControl>();
 	ObjectTypeDB::register_type<Button>();
 	ObjectTypeDB::register_type<Label>();
+#ifndef ULTRA
 	ObjectTypeDB::register_type<HScrollBar>();
 	ObjectTypeDB::register_type<VScrollBar>();
 	ObjectTypeDB::register_type<ProgressBar>();
@@ -303,11 +312,12 @@ void register_scene_types() {
 	ObjectTypeDB::register_virtual_type<SplitContainer>();
 	ObjectTypeDB::register_type<HSplitContainer>();
 	ObjectTypeDB::register_type<VSplitContainer>();
-
+#endif
 	OS::get_singleton()->yield(); //may take time to init
 
 
 	ObjectTypeDB::register_virtual_type<ButtonArray>();
+#ifndef ULTRA
 	ObjectTypeDB::register_type<HButtonArray>();
 	ObjectTypeDB::register_type<VButtonArray>();
 	ObjectTypeDB::register_type<TextureProgress>();
@@ -338,7 +348,7 @@ void register_scene_types() {
 	OS::get_singleton()->yield(); //may take time to init
 
 #endif
-
+#endif // ultra
 	/* REGISTER 3D */
 
 	ObjectTypeDB::register_type<Node3D>();
@@ -355,22 +365,28 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<InterpolatedCamera>();
 	ObjectTypeDB::register_type<TestCube>();
 	ObjectTypeDB::register_type<MeshInstance3D>();
+#ifndef ULTRA
 	ObjectTypeDB::register_type<ImmediateGeometry3D>();
 	ObjectTypeDB::register_type<Sprite3D>();
 	ObjectTypeDB::register_type<AnimatedSprite3D>();
+#endif
 	ObjectTypeDB::register_virtual_type<Light3D>();
 	ObjectTypeDB::register_type<DirectionalLight3D>();
 	ObjectTypeDB::register_type<OmniLight3D>();
 	ObjectTypeDB::register_type<SpotLight3D>();
 	ObjectTypeDB::register_type<AnimationTreePlayer>();
+#ifndef ULTRA
 	ObjectTypeDB::register_type<Portal>();
 	ObjectTypeDB::register_type<Particles3D>();
+#endif
+
 	ObjectTypeDB::register_type<Position3D>();
+#ifndef ULTRA
 	ObjectTypeDB::register_type<Quad>();
 	ObjectTypeDB::register_type<NavigationMeshInstance>();
 	ObjectTypeDB::register_type<NavigationMesh>();
 	ObjectTypeDB::register_type<Navigation>();
-
+#endif
 	OS::get_singleton()->yield(); //may take time to init
 
 	ObjectTypeDB::register_virtual_type<CollisionObject3D>();
@@ -378,13 +394,15 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<RigidBody3D>();
 	ObjectTypeDB::register_type<CharacterBody3D>();
 
-
+#ifndef ULTRA
 	ObjectTypeDB::register_type<VehicleBody3D>();
 	ObjectTypeDB::register_type<VehicleWheel3D>();
 	ObjectTypeDB::register_type<Area3D>();
 	ObjectTypeDB::register_type<ProximityGroup>();
+#endif
 	ObjectTypeDB::register_type<CollisionShape3D>();
 	ObjectTypeDB::register_type<CollisionPolygon3D>();
+#ifndef ULTRA
 	ObjectTypeDB::register_type<RayCast3D>();
 	ObjectTypeDB::register_type<MultiMeshInstance3D>();
 	ObjectTypeDB::register_type<Room>();
@@ -395,8 +413,10 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<VisibilityEnabler3D>();
 	ObjectTypeDB::register_type<BakedLightInstance>();
 	ObjectTypeDB::register_type<BakedLightSampler>();
+#endif
 	ObjectTypeDB::register_type<WorldEnvironment>();
 
+#ifndef ULTRA
 	ObjectTypeDB::register_virtual_type<Joint3D>();
 	ObjectTypeDB::register_type<PinJoint3D>();
 	ObjectTypeDB::register_type<HingeJoint3D>();
@@ -412,11 +432,12 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<StreamPlayer3D>();
 	ObjectTypeDB::register_type<SoundRoomParams>();
 
-
+#endif
 #endif
 	ObjectTypeDB::register_type<MeshLibrary>();
+#ifndef ULTRA
 	AcceptDialog::set_swap_ok_cancel( GLOBAL_DEF("display/swap_ok_cancel",bool(OS::get_singleton()->get_swap_ok_cancel())) );
-
+#endif
 	ObjectTypeDB::register_type<SamplePlayer>();
 
 
@@ -443,7 +464,7 @@ void register_scene_types() {
 	//ObjectTypeDB::set_type_enabled("BodyVolumeCapsule",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeCylinder",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeConvexPolygon",false);
-
+#ifndef ULTRA
 	ObjectTypeDB::register_virtual_type<CanvasItem>();
 	ObjectTypeDB::register_type<Node2D>();
 	ObjectTypeDB::register_type<Particles2D>();
@@ -489,7 +510,7 @@ void register_scene_types() {
 	OS::get_singleton()->yield(); //may take time to init
 
 	/* REGISTER RESOURCES */
-
+#endif
 #ifndef _3D_DISABLED
 	ObjectTypeDB::register_type<Mesh>();
 	ObjectTypeDB::register_virtual_type<Material>();
@@ -499,7 +520,9 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<ShaderMaterial>();
 	ObjectTypeDB::register_type<RoomBounds>();
 	ObjectTypeDB::register_type<Shader>();
+#ifndef ULTRA
 	ObjectTypeDB::register_type<MultiMesh>();
+#endif
 	ObjectTypeDB::register_type<MeshLibrary>();
 
 	OS::get_singleton()->yield(); //may take time to init
@@ -514,8 +537,9 @@ void register_scene_types() {
 
 	ObjectTypeDB::register_type<SurfaceTool>();
 	ObjectTypeDB::register_type<MeshDataTool>();
+#ifndef ULTRA
 	ObjectTypeDB::register_type<BakedLight>();
-
+#endif
 	OS::get_singleton()->yield(); //may take time to init
 
 #endif
@@ -545,10 +569,12 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<SampleLibrary>();
 	ObjectTypeDB::register_virtual_type<AudioStream>();
 	ObjectTypeDB::register_type<AudioStreamGibberish>();
+#ifndef ULTRA
 	ObjectTypeDB::register_virtual_type<VideoStream>();
+#endif
 
 	OS::get_singleton()->yield(); //may take time to init
-
+#ifndef ULTRA
 	ObjectTypeDB::register_virtual_type<Shape2D>();
 	ObjectTypeDB::register_type<LineShape2D>();
 	ObjectTypeDB::register_type<SegmentShape2D>();
@@ -563,7 +589,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<PathFollow2D>();
 
 	OS::get_singleton()->yield(); //may take time to init
-
+#endif
 	ObjectTypeDB::register_type<PackedScene>();
 
 	ObjectTypeDB::register_type<SceneTree>();
