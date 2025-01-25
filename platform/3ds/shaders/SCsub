@@ -1,0 +1,13 @@
+Import('env')
+
+shaders = [
+	'simple_3d',
+	'simple_2d',
+	'2d',
+	'3d'
+]
+
+if 'PICA' in env['BUILDERS']:
+	for shader in shaders:
+		env.PICA(shader)
+		env.PICA_HEADER(shader)

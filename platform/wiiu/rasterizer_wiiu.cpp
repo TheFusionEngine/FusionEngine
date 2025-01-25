@@ -26,9 +26,9 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifdef __psp2__
+#ifdef __WIIU__
 
-#include "rasterizer_vita.h"
+#include "rasterizer_wiiu.h"
 #include "os/os.h"
 #include "globals.h"
 #include <stdio.h>
@@ -183,9 +183,6 @@ static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vecto
 	};
 
 	if (p_uvs) {
-#ifndef PSP
-			glClientActiveTexture(GL_TEXTURE0);
-#endif
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glTexCoordPointer(3, GL_FLOAT, 0, p_uvs);
 	};
@@ -475,7 +472,7 @@ void RasterizerGLES1::texture_allocate(RID p_texture,int p_width, int p_height,I
 	texture->data_size=0;
 
 
-	glActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 	glBindTexture(texture->target, texture->tex_id);
 
 
@@ -554,7 +551,7 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 	texture->data_size=img.get_data().size();
 	DVector<uint8_t>::Read read = img.get_data().read();
 
-	glActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 	glBindTexture(texture->target, texture->tex_id);
 
 	int mipmaps=(texture->flags&VS::TEXTURE_FLAG_MIPMAPS && img.get_mipmaps()>0) ? img.get_mipmaps() +1 : 1;
@@ -570,7 +567,7 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 
 		if (texture->compressed) {
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-			glCompressedTexImage2D( blit_target, i, format,w,h,0,size,&read[ofs] );
+			// glCompressedTexImage2D( blit_target, i, format,w,h,0,size,&read[ofs] );
 
 		} else {
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -773,7 +770,7 @@ void RasterizerGLES1::texture_set_flags(RID p_texture,uint32_t p_flags) {
 	Texture *texture = texture_owner.get( p_texture );
 	ERR_FAIL_COND(!texture);
 
-	glActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 	glBindTexture(texture->target, texture->tex_id);
 	uint32_t cube = texture->flags & VS::TEXTURE_FLAG_CUBEMAP;
 	texture->flags=p_flags|cube; // can't remove a cube from being a cube
@@ -855,8 +852,8 @@ void RasterizerGLES1::texture_set_size_override(RID p_texture,int p_width, int p
 
 	ERR_FAIL_COND(!texture);
 
-	ERR_FAIL_COND(p_width<=0 || p_width>4096);
-	ERR_FAIL_COND(p_height<=0 || p_height>4096);
+	ERR_FAIL_COND(p_width<=0 || p_width>256);
+	ERR_FAIL_COND(p_height<=0 || p_height>256);
 	//real texture size is in alloc width and height
 	texture->width=p_width;
 	texture->height=p_height;
@@ -1316,7 +1313,7 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 	Surface *surface = memnew( Surface );
 	ERR_FAIL_COND( !surface );
 
-	bool use_VBO=true; //glGenBuffersARB!=NULL; // TODO detect if it's in there
+	bool use_VBO=false; //glGenBuffersARB!=NULL; // TODO detect if it's in there
 	if (format&VS::ARRAY_FORMAT_WEIGHTS || mesh->morph_target_count>0) {
 
 		use_VBO=false;
@@ -1435,18 +1432,7 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 				elem_size=2;
 				datatype=GL_UNSIGNED_SHORT;
 
-/*
-				if (use_VBO) {
 
-					glGenBuffers(1,&surface->index_id);
-					ERR_FAIL_COND(surface->index_id==0);
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,surface->index_id);
-					glBufferData(GL_ELEMENT_ARRAY_BUFFER,index_array_len*elem_size,NULL,GL_STATIC_DRAW);
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
-				} else {
-					surface->index_array_local = (uint8_t*)memalloc(index_array_len*elem_size);
-				};
-*/
 				surface->index_array_len=index_array_len; // only way it can exist
 				ad.ofs=0;
 				ad.size=elem_size;
@@ -1518,24 +1504,6 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 	_surface_set_arrays(surface,array_ptr,index_array_ptr,p_arrays,true);
 
-
-	/* create buffers!! */
-	if (use_VBO) {
-		glGenBuffers(1,&surface->vertex_id);
-		ERR_FAIL_COND(surface->vertex_id==0);
-		glBindBuffer(GL_ARRAY_BUFFER,surface->vertex_id);
-		glBufferData(GL_ARRAY_BUFFER,surface->array_len*surface->stride,array_ptr,GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER,0); //unbind
-		if (surface->index_array_len) {
-
-			glGenBuffers(1,&surface->index_id);
-			ERR_FAIL_COND(surface->index_id==0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,surface->index_id);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER,index_array_len*surface->array[VS::ARRAY_INDEX].size,index_array_ptr,GL_STATIC_DRAW);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
-
-		}
-	}
 
 	mesh->surfaces.push_back(surface);
 
@@ -2035,14 +2003,12 @@ void RasterizerGLES1::multimesh_set_instance_count(RID p_multimesh,int p_count) 
 
 
 				glGenTextures(1, &multimesh->tex_id);
-				glActiveTexture(GL_TEXTURE0);
+				// glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D,multimesh->tex_id);
 
-#ifdef GLEW_ENABLED
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, multimesh->tw, multimesh->th, 0, GL_RGBA, GL_FLOAT,NULL);
-#else
+
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, multimesh->tw, multimesh->th, 0, GL_RGBA, GL_FLOAT,NULL);
-#endif
+
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -3350,7 +3316,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE] );
 		ERR_FAIL_COND(!texture);
 		glEnable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE0);
+		// glActiveTexture(GL_TEXTURE0);
 		glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 	} else {
 
@@ -3702,7 +3668,7 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 			if (!use_VBO) {
 
 				base = surf->array_local;
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				// glBindBuffer(GL_ARRAY_BUFFER, 0);
 				bool can_copy_to_local=surf->local_stride * surf->array_len <= skinned_buffer_size;
 				if (!can_copy_to_local)
 					skeleton_valid=false;
@@ -3921,7 +3887,7 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 
 			} else {
 
-				glBindBuffer(GL_ARRAY_BUFFER, surf->vertex_id);
+				// glBindBuffer(GL_ARRAY_BUFFER, surf->vertex_id);
 			};
 
 
@@ -3935,7 +3901,7 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 				if (ad.size==0 || i==VS::ARRAY_BONES || i==VS::ARRAY_WEIGHTS || gl_client_states[i]==0 ) {
 
 					if (gl_texcoord_index[i] != -1) {
-						glClientActiveTexture(GL_TEXTURE0+gl_texcoord_index[i]);
+						// glClientActiveTexture(GL_TEXTURE0+gl_texcoord_index[i]);
 					}
 
 					if (gl_client_states[i] != 0)
@@ -3948,7 +3914,7 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 				}
 
 				if (gl_texcoord_index[i] != -1) {
-					glClientActiveTexture(GL_TEXTURE0+gl_texcoord_index[i]);
+					// glClientActiveTexture(GL_TEXTURE0+gl_texcoord_index[i]);
 				}
 
 				glEnableClientState(gl_client_states[i]);
@@ -4042,7 +4008,7 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 				if (s->format&VS::ARRAY_FORMAT_TEX_UV) {
 					float uvs=(1.0/32767.0)*s->uv_scale;
 					//glActiveTexture(GL_TEXTURE0);
-					glClientActiveTexture(GL_TEXTURE0);
+					// glClientActiveTexture(GL_TEXTURE0);
 					glMatrixMode(GL_TEXTURE);
 					glPushMatrix();
 					glScalef(uvs,uvs,uvs);
@@ -4056,13 +4022,13 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 
 				if (s->index_array_local) {
 
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+					// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 					glDrawElements(gl_primitive[s->primitive], s->index_array_len, (s->array_len>(1<<16))?GL_UNSIGNED_SHORT:GL_UNSIGNED_SHORT, s->index_array_local);
 
 				} else {
 				//	print_line("indices: "+itos(s->index_array_local) );
 
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
+					// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
 					glDrawElements(gl_primitive[s->primitive],s->index_array_len, (s->array_len>(1<<16))?GL_UNSIGNED_SHORT:GL_UNSIGNED_SHORT,0);
 				}
 
@@ -4099,7 +4065,7 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			if (s->index_array_len>0) {
 
 				// glLoadMatrixf(elements[0].matrix);
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
+				// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
 				for(int i=0;i<element_count;i++) {
 					//glUniformMatrix4fv(material_shader.get_uniform_location(MaterialShaderGLES1::INSTANCE_TRANSFORM), 1, false, elements[i].matrix);
 					// glMultMatrixf(elements[i].matrix);
@@ -4152,8 +4118,8 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			pp.process(&particles->data,particles_instance->transform,td);
 			ERR_EXPLAIN("A parameter in the particle system is not correct.");
 			ERR_FAIL_COND(!pp.valid);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
-			glBindBuffer(GL_ARRAY_BUFFER,0);
+			// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
+			// glBindBuffer(GL_ARRAY_BUFFER,0);
 
 
 			Transform camera;
@@ -4299,7 +4265,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 				baked_light=NULL; //can't mix
 				// material_shader.set_conditional(MaterialShaderGLES2::ENABLE_AMBIENT_DP_SAMPLER,true);
-				glActiveTexture(GL_TEXTURE0);
+				// glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D,sl->texture); //bind the texture
 			}
 		}
@@ -4311,14 +4277,13 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 				if (prev_baked_light!=baked_light) {
 					Texture *tex=texture_owner.get(baked_light->octree_texture);
 					if (tex) {
-
-						glActiveTexture(GL_TEXTURE0);
+						// glActiveTexture(GL_TEXTURE0);
 						glBindTexture(tex->target,tex->tex_id); //bind the texture
 					}
 					if (baked_light->light_texture.is_valid()) {
 						Texture *texl=texture_owner.get(baked_light->light_texture);
 						if (texl) {
-							glActiveTexture(GL_TEXTURE0);
+							// glActiveTexture(GL_TEXTURE0);
 							glBindTexture(texl->target,texl->tex_id); //bind the light texture
 						}
 					}
@@ -4344,8 +4309,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 						Texture *tex = texture_owner.get(texid);
 						if (tex) {
-
-							glActiveTexture(GL_TEXTURE0);
+							// glActiveTexture(GL_TEXTURE0);
 							glBindTexture(tex->target,tex->tex_id); //bind the texture
 						}
 
@@ -4448,8 +4412,8 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	float alpha = 0.2f;
 	int num;
 
-	// glDisable(GL_TEXTURE_GEN_S);
-	// glDisable(GL_TEXTURE_GEN_T);
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
 	
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
@@ -4464,13 +4428,14 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrthof(0, viewport.width, viewport.height, 0, -1, 1);
+	//glOrthof(0, viewport.width, viewport.height, 0, -1, 1);
+	glOrtho(0, viewport.width, viewport.height, 0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
 	
 	alphainc = alpha / times;
-	/*
+
 	glBegin(GL_QUADS);
 	for (num = 0;num < times;num++)
 	{
@@ -4541,6 +4506,7 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+
 	glBindTexture(GL_TEXTURE_2D,0);
 	
 	glMatrixMode(GL_PROJECTION);
@@ -4579,7 +4545,7 @@ void RasterizerGLES1::end_scene() {
 					// bgcolor = _convert_color(bgcolor);
 					float a = 1.0;
 					glClearColor(bgcolor.r,bgcolor.g,bgcolor.b,a);
-					glClearDepthf(1.0);
+					// glClearDepthf(1.0);
 					glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 				} else {
 					glClear(GL_DEPTH_BUFFER_BIT);
@@ -4986,11 +4952,11 @@ void RasterizerGLES1::end_frame() {
 void RasterizerGLES1::reset_state() {
 
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
+	// glBindBuffer(GL_ARRAY_BUFFER,0);
 
-	glActiveTexture(GL_TEXTURE0);
-	glClientActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
+	// glClientActiveTexture(GL_TEXTURE0);
 	glMatrixMode(GL_TEXTURE);
 	glLoadIdentity();
 	glMatrixMode(GL_PROJECTION);
@@ -5180,7 +5146,7 @@ void RasterizerGLES1::canvas_draw_rect(const Rect2& p_rect, int p_flags, const R
 		glEnable(GL_TEXTURE_2D);
 		Texture *texture = texture_owner.get( p_texture );
 		ERR_FAIL_COND(!texture);
-		glActiveTexture(GL_TEXTURE0);
+		// // glActiveTexture(GL_TEXTURE0);
 		glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 
 		if (!(p_flags&CANVAS_RECT_REGION)) {
@@ -5212,7 +5178,7 @@ void RasterizerGLES1::canvas_draw_style_box(const Rect2& p_rect, RID p_texture,c
 	ERR_FAIL_COND(!texture);
 
 	glEnable(GL_TEXTURE_2D);
-	glActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 	glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 
 
@@ -5295,7 +5261,7 @@ void RasterizerGLES1::canvas_draw_primitive(const Vector<Point2>& p_points, cons
 		glEnable(GL_TEXTURE_2D);
 		Texture *texture = texture_owner.get( p_texture );
 		if (texture) {
-			glActiveTexture(GL_TEXTURE0);
+			// glActiveTexture(GL_TEXTURE0);
 			glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 		}
 	}
@@ -5330,7 +5296,7 @@ void RasterizerGLES1::canvas_draw_polygon(int p_vertex_count, const int* p_indic
 		glEnable(GL_TEXTURE_2D);
 		texture = texture_owner.get( p_texture );
 		if (texture) {
-			glActiveTexture(GL_TEXTURE0);
+			// glActiveTexture(GL_TEXTURE0);
 			glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 		}
 	}
@@ -5348,7 +5314,7 @@ void RasterizerGLES1::canvas_draw_polygon(int p_vertex_count, const int* p_indic
 
 	if (texture && p_uvs) {
 
-		glClientActiveTexture(GL_TEXTURE0);
+		// glClientActiveTexture(GL_TEXTURE0);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2, GL_FLOAT, 0, p_uvs);
 
@@ -5723,7 +5689,7 @@ RID RasterizerGLES1::sampled_light_dp_create(int p_width,int p_height) {
 	slight->multiplier=1.0;
 	slight->is_float=false;
 
-	glActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1,&slight->texture);
 	glBindTexture(GL_TEXTURE_2D, slight->texture);
 // for debug, but glitchy
@@ -5754,7 +5720,8 @@ void RasterizerGLES1::sampled_light_dp_update(RID p_sampled_light, const Color *
 	SampledLight *slight = sampled_light_owner.get(p_sampled_light);
 	ERR_FAIL_COND(!slight);
 
-	glActiveTexture(GL_TEXTURE0);
+
+	// glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, slight->texture);
 
 	if (slight->is_float) {
@@ -5897,11 +5864,6 @@ void RasterizerGLES1::free(const RID& p_rid) {
 				memfree(surface->morph_targets_local);
 				surface->morph_targets_local=NULL;
 			}
-
-			if (surface->vertex_id)
-				glDeleteBuffers(1,&surface->vertex_id);
-			if (surface->index_id)
-				glDeleteBuffers(1,&surface->index_id);
 
 			memdelete( surface );
 		};
@@ -6170,22 +6132,15 @@ void RasterizerGLES1::_update_framebuffer() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
 }
-
+#include <coreinit/debug.h>
 void RasterizerGLES1::init() {
-
-#ifdef GLES_OVER_GL
-	glewInit();
-#endif
-
-
-	
 
 	scene_pass=1;
 	// if (ContextGL::get_singleton())
 		// ContextGL::get_singleton()->make_current();
 
 
-
+	OSReport("gl\n");
 	Set<String> extensions;
 	Vector<String> strings = String((const char*)glGetString( GL_EXTENSIONS )).split(" ",false);
 	for(int i=0;i<strings.size();i++) {
@@ -6233,7 +6188,7 @@ void RasterizerGLES1::init() {
 	for(int i=0;i<8*8*3;i++) {
 		whitetexdata[i]=255;
 	}
-	glActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,white_tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 8, 8, 0, GL_RGB, GL_UNSIGNED_BYTE,whitetexdata);
 
@@ -6335,7 +6290,7 @@ void RasterizerGLES1::reload_vram() {
 
 */
 	glEnable(GL_TEXTURE_2D);
-	glActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 
 	List<RID> textures;
 	texture_owner.get_owned_list(&textures);

@@ -29,7 +29,7 @@
 #ifndef MUTEX_POSIX_H
 #define MUTEX_POSIX_H
 
-#if defined(UNIX_ENABLED) || defined(PTHREAD_ENABLED) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(PTHREAD_ENABLED) || defined(__psp2__) || defined(DREAMCAST) || defined(PSP)
 
 #include <pthread.h>
 #include "os/mutex.h"

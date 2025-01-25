@@ -182,7 +182,8 @@ static const char*_param_names[FixedMaterial::PARAM_MAX]={
 	"specular_exp",
 	"glow",
 	"normal",
-	"shade_param"
+	"shade_param",
+	"envmap"
 };
 
 static const char*_full_param_names[FixedMaterial::PARAM_MAX]={
@@ -193,7 +194,8 @@ static const char*_full_param_names[FixedMaterial::PARAM_MAX]={
 	"params/specular_exp",
 	"params/glow",
 	"params/normal",
-	"params/shade_param"
+	"params/shade_param",
+	"params/envmap"
 };
 
 /*
@@ -218,6 +220,7 @@ static const FixedMaterial::Parameter _param_indices[FixedMaterial::PARAM_MAX]={
 	FixedMaterial::PARAM_GLOW,
 	FixedMaterial::PARAM_NORMAL,
 	FixedMaterial::PARAM_SHADE_PARAM,
+	FixedMaterial::PARAM_ENVMAP,
 };
 
 
@@ -322,14 +325,14 @@ Transform FixedMaterial::get_uv_transform() const {
 
 
 void FixedMaterial::set_fixed_flag(FixedFlag p_flag, bool p_value) {
-	ERR_FAIL_INDEX(p_flag,5);
+	ERR_FAIL_INDEX(p_flag,FLAG_MAX);
 	fixed_flags[p_flag]=p_value;
 	VisualServer::get_singleton()->fixed_material_set_flag(material,(VS::FixedMaterialFlags)p_flag,p_value);
 
 }
 
 bool FixedMaterial::get_fixed_flag(FixedFlag p_flag) const {
-	ERR_FAIL_INDEX_V(p_flag,5,false);
+	ERR_FAIL_INDEX_V(p_flag,FLAG_MAX,false);
 	return fixed_flags[p_flag];
 }
 
@@ -378,6 +381,7 @@ void FixedMaterial::_bind_methods() {
 	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "fixed_flags/use_point_size" ), _SCS("set_fixed_flag"), _SCS("get_fixed_flag"), FLAG_USE_POINT_SIZE);
 	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "fixed_flags/discard_alpha" ), _SCS("set_fixed_flag"), _SCS("get_fixed_flag"), FLAG_DISCARD_ALPHA);
 	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "fixed_flags/use_xy_normalmap" ), _SCS("set_fixed_flag"), _SCS("get_fixed_flag"), FLAG_USE_XY_NORMALMAP);
+	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "fixed_flags/use_envmap" ), _SCS("set_fixed_flag"), _SCS("get_fixed_flag"), FLAG_USE_ENVMAP);
 	ADD_PROPERTYI( PropertyInfo( Variant::COLOR, "params/diffuse" ), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_DIFFUSE);
 	ADD_PROPERTYI( PropertyInfo( Variant::COLOR, "params/specular", PROPERTY_HINT_COLOR_NO_ALPHA ), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_SPECULAR );
 	ADD_PROPERTYI( PropertyInfo( Variant::COLOR, "params/emission", PROPERTY_HINT_COLOR_NO_ALPHA ), _SCS("set_parameter"), _SCS("get_parameter"), PARAM_EMISSION );
@@ -416,7 +420,7 @@ void FixedMaterial::_bind_methods() {
 	BIND_CONSTANT( FLAG_USE_COLOR_ARRAY );
 	BIND_CONSTANT( FLAG_USE_POINT_SIZE );
 	BIND_CONSTANT( FLAG_DISCARD_ALPHA );
-
+	BIND_CONSTANT( FLAG_USE_ENVMAP );
 }
 
 
@@ -440,7 +444,7 @@ FixedMaterial::FixedMaterial() : Material(VS::get_singleton()->fixed_material_cr
 	fixed_flags[FLAG_USE_POINT_SIZE]=false;
 	fixed_flags[FLAG_USE_XY_NORMALMAP]=false;
 	fixed_flags[FLAG_DISCARD_ALPHA]=false;
-
+	fixed_flags[FLAG_USE_ENVMAP]=false;
 
 	for(int i=0;i<PARAM_MAX;i++) {
 

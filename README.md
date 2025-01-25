@@ -1,31 +1,29 @@
-![GODOT](/logo.png)
+![Fusion](/logo.png)
 
-### The Engine
+### Engineering preview!
+### No binary builds yet - Early beta!
 
-Godot is a fully featured, open source, MIT licensed, game engine. It focuses on having great tools, and a visual oriented workflow that can export to PC, Mobile and Web platforms with no hassle.
-The editor, language and APIs are feature rich, yet simple to learn, allowing you to become productive in a matter of hours.
+### Intro
+Welcome! This is the code of Fusion Engine, a 2D and 3D engine forked from the Godot Engine. 
+The idea is to have an ultra performant game engine, capable of running on a potato. 
+Including support for many platforms. 
+Fusion Engine is based on Godot 1.0, with new features and fixed bugs.
 
-### About
+### Building
+Get scons and python, choose a platform from the platform directory and then run 
+`scons platform=name target=release tools=no -j8` (Replace "name" with the desired platform).
+Every console port uses the open source homebrew sdk.
 
-Godot has been developed by Juan Linietsky and Ariel Manzur for several years, and was born as an in-house engine, used to publish several work-for-hire titles.
-Development is sponsored by OKAM Studio (http://www.okamstudio.com).
+### Making a game
+Make a game in the editor.
+The editor is unusual if you are familiar with godot, but you'll be able to notice it's very intuitive after learning it. 
+Games can range from 3D to 2D to apps. 
+The main focus point of the engine has been the 3D part so far.
 
-### Godot is BETA. Collaborate!!
+### Running a game
+For all platforms so far, it's as simple as copying the data.pck (or project directory) into the same folder as the fusion engine binary.
 
-Having been developed as in-house means that the user experience may still not be ideal for everyone. The features needed to make a great game are there, but we really need your help to fix all the rough edges and improve usability (via feedback and/or code contributions).
-We know we are close to having an awesome, open source, game engine with nothing to envy from the best commercial offerings, but we can't do this alone. This is why Godot is now open source, so everyone can help us reach this goal.
+### Website
+[Fusion Engine](https://fusionengine.org)
+https://fusionengine.org
 
-### Documentation
-
-Documentation has been moved to the [GitHub Wiki](https://github.com/okamstudio/godot/wiki).
-
-### Binary Downloads, Community, etc.
-
-Binary downloads, community, etc. can be found in Godot homepage:
-
-http://www.godotengine.org
-
-### Compiling from Source
-
-Compilation instructions for every platform can be found in the Wiki:
-https://github.com/okamstudio/godot/wiki/advanced

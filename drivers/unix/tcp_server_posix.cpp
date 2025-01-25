@@ -29,27 +29,47 @@
 #include "tcp_server_posix.h"
 #include "stream_peer_tcp_posix.h"
 
-#ifdef UNIX_ENABLED
+#if defined(POSIX_IP_ENABLED) || defined(UNIX_ENABLED) || defined(PSP) || defined(__3DS__)
 
-#include <poll.h>
+#if defined(WII_ENABLED)
+ #include "../../platform/wii/network2.h"
+ using namespace gc::net;
+#elif defined(PSP)
+ #include <sys/select.h>
+
+#else
+ #include <poll.h>
+#include <arpa/inet.h>
+#endif
+
+#ifndef NET_NS
+#if defined(WII_ENABLED)
+#define NET_NS gc::net
+#else
+#define NET_NS
+#endif
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#ifndef NO_FCNTL
-#include <sys/fcntl.h>
-#else
-#include <sys/ioctl.h>
+#if !defined(WII_ENABLED)
+ #include <netdb.h>
+ #include <netinet/in.h>
+ #include <sys/socket.h>
+
+ #include <sys/types.h>
+ #ifndef NO_FCNTL
+  #include <sys/fcntl.h>
+ #else
+  #include <sys/ioctl.h>
+ #endif
 #endif
 #ifdef JAVASCRIPT_ENABLED
 #include <arpa/inet.h>
 #endif
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <assert.h>
 TCP_Server* TCPServerPosix::_create() {
 
@@ -90,7 +110,7 @@ Error TCPServerPosix::listen(uint16_t p_port,const List<String> *p_accepted_host
 
 		if (::listen(sockfd, 1) == -1) {
 
-			close(sockfd);
+			NET_NS::close(sockfd);
 			ERR_FAIL_V(FAILED);
 		};
 	}
@@ -116,20 +136,27 @@ bool TCPServerPosix::is_connection_available() const {
 		return false;
 	};
 
-	struct pollfd pfd;
-	pfd.fd = listen_sockfd;
-	pfd.events = POLLIN;
-	pfd.revents = 0;
+	fd_set readfds;
+	FD_ZERO(&readfds);
+	FD_SET(listen_sockfd, &readfds);
 
-	int ret = poll(&pfd, 1, 0);
-	ERR_FAIL_COND_V(ret < 0, FAILED);
+	struct timeval timeout;
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
 
-	if (ret && (pfd.revents & POLLIN)) {
+	int maxfd = listen_sockfd + 1;
+
+	int ret = NET_NS::select(maxfd, &readfds, NULL, NULL, &timeout);
+	if (ret == -1) {
+		// Handle error
+		return FAILED;
+	} else if (ret > 0 && FD_ISSET(listen_sockfd, &readfds)) {
 		printf("has connection!\n");
 		return true;
-	};
+	}
 
 	return false;
+
 };
 
 Ref<StreamPeerTCP> TCPServerPosix::take_connection() {
@@ -161,7 +188,7 @@ void TCPServerPosix::stop() {
 
 	if (listen_sockfd != -1) {
 		print_line("CLOSING CONNECTION");
-		int ret = close(listen_sockfd);
+		int ret = NET_NS::close(listen_sockfd);
 		ERR_FAIL_COND(ret!=0);
 	};
 

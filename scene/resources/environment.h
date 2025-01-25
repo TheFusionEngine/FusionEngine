@@ -48,6 +48,15 @@ public:
 		BG_CUBEMAP_RGBE=VS::ENV_BG_CUBEMAP_RGBE,
 		BG_MAX=VS::ENV_BG_MAX
 	};
+	
+	enum Group {
+		GROUP_TYPE=VS::ENV_GROUP_TYPE,
+		GROUP_SAME=VS::ENV_GROUP_SAME,
+		GROUP_NONE=VS::ENV_GROUP_NONE,
+		GROUP_HALF=VS::ENV_GROUP_HALF,
+		GROUP_COLOR=VS::ENV_GROUP_COLOR,
+		GROUP_MAX=VS::ENV_GROUP_MAX
+	};
 
 	enum BGParam {
 
@@ -119,8 +128,9 @@ public:
 		FX_PARAM_MAX=VS::ENV_FX_PARAM_MAX
 	};
 private:
-
+	Variant group_mode[GROUP_MAX];
 	BG bg_mode;
+	Group set_group_mode;
 	Variant bg_param[BG_PARAM_MAX];
 	bool fx_enabled[FX_MAX];
 	Variant fx_param[FX_PARAM_MAX];
@@ -132,9 +142,15 @@ protected:
 public:
 	void set_background(BG p_bg);
 	BG get_background() const;
+	
+	void set_group_enum(Group p_bg);
+	Group get_group_enum() const;
 
 	void set_background_param(BGParam p_param, const Variant& p_value);
 	Variant get_background_param(BGParam p_param) const;
+	
+	void set_group(Group p_param, const Variant& p_value=1);
+	Variant get_group(Group p_param) const;
 
 	void set_enable_fx(Fx p_effect,bool p_enabled);
 	bool is_fx_enabled(Fx p_effect) const;
@@ -148,6 +164,7 @@ public:
 	~Environment();
 };
 
+VARIANT_ENUM_CAST( Environment::Group );
 VARIANT_ENUM_CAST( Environment::BG );
 VARIANT_ENUM_CAST( Environment::BGParam );
 VARIANT_ENUM_CAST( Environment::Fx );

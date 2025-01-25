@@ -26,13 +26,23 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#if defined(WINDOWS_ENABLED) && !defined(WIN98_ENABLED)
+#if defined(WINDOWS_ENABLED)
 
 #include "stream_peer_winsock.h"
 
 #include <winsock2.h>
 
 int winsock_refcount = 0;
+
+static void wsperror(String text) {
+	wchar_t *s = NULL;
+	FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, 
+								 NULL, WSAGetLastError(),
+								 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+								 (LPWSTR)&s, 0, NULL);
+	fprintf(stderr, "%S: %S\n", text.t_str(), s);
+	LocalFree(s);
+}
 
 static void set_addr_in(struct sockaddr_in& their_addr, const IP_Address& p_host, uint16_t p_port) {
 
@@ -148,7 +158,7 @@ Error StreamPeerWinsock::write(const uint8_t* p_data,int p_bytes, int &r_sent, b
 
 			if (WSAGetLastError() != WSAEWOULDBLOCK) {
 
-				perror("shit?");
+				wsperror("shit?");
 				disconnect();
 				ERR_PRINT("Server disconnected!\n");
 				return FAILED;
@@ -205,7 +215,7 @@ Error StreamPeerWinsock::read(uint8_t* p_buffer, int p_bytes,int &r_received, bo
 
 			if (WSAGetLastError() != WSAEWOULDBLOCK) {
 
-				perror("shit?");
+				wsperror("shit?");
 				disconnect();
 				ERR_PRINT("Server disconnected!\n");
 				return FAILED;
@@ -310,7 +320,7 @@ Error StreamPeerWinsock::connect(const IP_Address& p_host, uint16_t p_port) {
 
 	unsigned long par = 1;
 	if (ioctlsocket(sockfd, FIONBIO, &par)) {
-		perror("setting non-block mode");
+		wsperror("setting non-block mode");
 		disconnect();
 		return FAILED;
 	};

@@ -309,7 +309,7 @@ Error HTTPClient::poll(){
 						String s = responses[i].strip_edges();
 						if (s.length()==0)
 							continue;						
-						if (s.begins_with("Content-Length:")) {
+						if (s.begins_with("Content-Length:") || s.begins_with("content-length:")) {
 							body_size = s.substr(s.find(":")+1,s.length()).strip_edges().to_int();
 							body_left=body_size;
 						}

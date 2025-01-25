@@ -7,7 +7,7 @@
 #include "os/dir_access.h"
 #include "os/thread.h"
 #include "os/semaphore.h"
-
+#include "scene/resources/texture.h"
 
 class _ResourceLoader : public Object  {
 	OBJ_TYPE(_ResourceLoader,Object);
@@ -182,6 +182,10 @@ public:
 	Dictionary get_date() const;
 	Dictionary get_time() const;
 	uint64_t get_unix_time() const;
+	
+	bool get_camera_enabled();
+	Ref<ImageTexture> get_camera_image();
+	void set_camera_enabled(bool p_enabled);
 
 	int get_static_memory_usage() const;
 	int get_static_memory_peak_usage() const;

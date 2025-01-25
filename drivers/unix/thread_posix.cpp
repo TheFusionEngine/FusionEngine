@@ -28,12 +28,11 @@
 /*************************************************************************/
 #include "thread_posix.h"
 
-#if defined(UNIX_ENABLED) || defined(PTHREAD_ENABLED) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(PTHREAD_ENABLED) || defined(__psp2__) || defined(DREAMCAST) || defined(PSP)
 
 #include "os/memory.h"
 
 Thread::ID ThreadPosix::get_ID() const {
-
 	return id;	
 }
 
@@ -56,7 +55,9 @@ Thread* ThreadPosix::create_func_posix(ThreadCreateCallback p_callback,void *p_u
 	tr->callback=p_callback;
 	tr->user=p_user;
 	pthread_attr_init(&tr->pthread_attr);
+#ifndef DREAMCAST
 	pthread_attr_setdetachstate(&tr->pthread_attr, PTHREAD_CREATE_JOINABLE);
+#endif
 	pthread_attr_setstacksize(&tr->pthread_attr, 256 * 1024);
 	
 	pthread_create(&tr->pthread, &tr->pthread_attr, thread_callback, tr);

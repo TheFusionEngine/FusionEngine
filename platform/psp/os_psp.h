@@ -29,12 +29,13 @@
 #ifndef OS_PSP_H
 #define OS_PSP_H
 
-
+#include "audio_driver_psp.h"
 #include "os/input.h"
 #include "drivers/unix/os_unix.h"
 #include "servers/visual_server.h"
 #include "servers/visual/rasterizer.h"
-#include "servers/audio/audio_driver_dummy.h"
+// #include "servers/audio/audio_driver_dummy.h"
+#include "audio_driver_psp.h"
 #include "servers/physics_server.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
@@ -54,7 +55,8 @@ class OS_PSP : public OS {
 	List<String> args;
 	MainLoop *main_loop;	
 
-	AudioDriverDummy driver_dummy;
+	AudioDriverPSP driver_dummy;
+
 	bool grab;
 	uint64_t ticks_start;
 	
@@ -77,6 +79,8 @@ class OS_PSP : public OS {
 
 	InputDefault *input;
 
+
+	static int psp_callback_thread(unsigned, void *);
 
 
 protected:

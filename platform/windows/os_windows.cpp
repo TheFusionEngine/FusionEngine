@@ -31,6 +31,7 @@
 #include "os_windows.h"
 #include "drivers/nedmalloc/memory_pool_static_nedmalloc.h"
 #include "drivers/unix/memory_pool_static_malloc.h"
+#include "drivers/unix/ip_unix.h"
 #include "os/memory_pool_dynamic_static.h"
 #include "drivers/windows/thread_windows.h"
 #include "drivers/windows/semaphore_windows.h"
@@ -189,9 +190,9 @@ void OS_Windows::initialize_core() {
 	DirAccess::make_default<DirAccessWindows>(DirAccess::ACCESS_USERDATA);
 	DirAccess::make_default<DirAccessWindows>(DirAccess::ACCESS_FILESYSTEM);
 
-	//TCPServerWinsock::make_default();
-	//StreamPeerWinsock::make_default();
-	//PacketPeerUDPWinsock::make_default();
+	TCPServerWinsock::make_default();
+	StreamPeerWinsock::make_default();
+	PacketPeerUDPWinsock::make_default();
 	
 	mempool_static = new MemoryPoolStaticMalloc;
 #if 1
@@ -213,7 +214,7 @@ void OS_Windows::initialize_core() {
 
 	process_map = memnew((Map<ProcessID, ProcessInfo>));
 
-	//IP_Unix::make_default();
+	IP_Unix::make_default();
 
 	cursor_shape=CURSOR_ARROW;
 
@@ -1301,8 +1302,8 @@ void OS_Windows::finalize_core() {
 		delete mempool_static;
 
 
-	//TCPServerWinsock::cleanup();
-	//StreamPeerWinsock::cleanup();
+	TCPServerWinsock::cleanup();
+	StreamPeerWinsock::cleanup();
 }
 
 void OS_Windows::vprint(const char* p_format, va_list p_list, bool p_stderr) {

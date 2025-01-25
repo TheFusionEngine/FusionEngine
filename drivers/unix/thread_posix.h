@@ -33,7 +33,7 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
-#if defined(UNIX_ENABLED) || defined(PTHREAD_ENABLED) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(PTHREAD_ENABLED) || defined(__psp2__) || defined(DREAMCAST) || defined(PSP)
 
 #include <sys/types.h>
 #include <pthread.h>

@@ -39,10 +39,15 @@
 #include "drivers/unix/file_access_unix.h"
 #include "os/memory_pool_dynamic_static.h"
 #include "core/os/thread_dummy.h"
+#include "drivers/unix/thread_posix.h"
 #include "main/main.h"
 #include <sys/time.h>
 #include <unistd.h>
 #include <pspaudio.h>
+#include <pspkernel.h>
+#include "drivers/unix/tcp_server_posix.h"
+#include "drivers/unix/stream_peer_tcp_posix.h"
+#include "drivers/unix/ip_unix.h"
 
 // #include <GL/glut.h>
 int OS_PSP::get_video_driver_count() const {
@@ -55,7 +60,9 @@ const char * OS_PSP::get_video_driver_name(int p_driver) const {
 }
 OS::VideoMode OS_PSP::get_default_video_mode() const {
 
+
 	return OS::VideoMode(480,272,true);
+
 }
 
 static MemoryPoolStaticMalloc *mempool_static=NULL;
@@ -83,13 +90,11 @@ void OS_PSP::initialize_core() {
 	ticks_start = 0;
 	ticks_start = get_ticks_usec();
 
-	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_RESOURCES);
-	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_USERDATA);
-	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_FILESYSTEM);
-	//FileAccessBufferedFA<FileAccessUnix>::make_default();
-	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_RESOURCES);
-	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_USERDATA);
-	DirAccess::make_default<DirAccessUnix>(DirAccess::ACCESS_FILESYSTEM);
+#ifdef PSP_NET
+	TCPServerPosix::make_default();
+	StreamPeerTCPPosix::make_default();
+	IP_Unix::make_default();
+#endif
 }
 
 void OS_PSP::finalize_core() {
@@ -106,9 +111,6 @@ void OS_PSP::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 
 	sceCtrlSetSamplingCycle(0);
 	sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
-	sceAudioOutput2Reserve(1024);
-	samples_in = memnew_arr(int32_t, 2048);
-	samples_out = memnew_arr(int16_t, 2048);
 	
 	rasterizer = memnew( RasterizerPSP );
 
@@ -174,9 +176,6 @@ void OS_PSP::finalize() {
 	memdelete(input);
 
 	args.clear();
-	
-	memdelete_arr(samples_in);
-	memdelete_arr(samples_out);
 }
 
 void OS_PSP::set_mouse_show(bool p_show) {
@@ -341,15 +340,19 @@ void OS_PSP::set_cursor_shape(CursorShape p_shape) {
 }
 
 void OS_PSP::process_audio() {
-	audio_server->driver_process(1024, samples_in);
-	for(int i = 0; i < 2048; ++i) {
-		samples_out[i] = samples_in[i] >> 16;
-	}
-	
-	printf("%d\n", samples_out[1]);
-	
-	sceAudioOutput2OutputBlocking(0x8000, samples_out);
 	// sceAudioOutput
+}
+
+int OS_PSP::psp_callback_thread(unsigned sz, void *thiz) {
+	sceKernelRegisterExitCallback(
+			sceKernelCreateCallback("Confirm Exit Callback", [](int, int, void *up) {
+				reinterpret_cast<OS_PSP *>(up)->force_quit = true;
+				return 0;
+			}, *reinterpret_cast<void **>(thiz)));
+	sceKernelSleepThreadCB();
+	sceKernelExitThread(0);
+
+	return 0;
 }
 
 void OS_PSP::run() {
@@ -360,15 +363,21 @@ void OS_PSP::run() {
 		return;
 		
 	main_loop->init();
-		
+
+	auto thiz = this;
+	sceKernelStartThread(
+			sceKernelCreateThread("Exit Callback Thread", psp_callback_thread, 0x11, 0x200, 0, nullptr),
+			sizeof(this),
+			&thiz);
+
 	while (!force_quit) {
-		process_audio();
+		// process_audio();
 		process_keys();
 		
 		if (Main::iteration()==true)
 			break;
 	};
-	
+
 	main_loop->finish();
 }
 
@@ -378,7 +387,7 @@ void OS_PSP::swap_buffers() {
 
 OS_PSP::OS_PSP() {
 
-	AudioDriverManagerSW::add_driver(&driver_dummy);
+	AudioDriverManagerSW::add_driver(&driver_psp);
 	//adriver here
 	grab=false;
 	_verbose_stdout=true;

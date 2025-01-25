@@ -28,9 +28,10 @@
 /*************************************************************************/
 #include "dir_access_unix.h"
 
-#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__) || defined(ULTRA) || defined(__3DS__)
 
-#if !defined(PSP) && !defined(__psp2__)
+#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST) && !defined(ULTRA) && !defined(__3DS__)
+
 #include <sys/statvfs.h>
 #endif
 
@@ -47,7 +48,9 @@ DirAccess *DirAccessUnix::create_fs() {
 bool DirAccessUnix::list_dir_begin() {
 	
 	list_dir_end(); //close any previous dir opening!
-	
+#if defined(DREAMCAST) || defined(ULTRA)
+	return true;
+#else
 
 //	char real_current_dir_name[2048]; //is this enough?!
 	//getcwd(real_current_dir_name,2048);
@@ -58,6 +61,7 @@ bool DirAccessUnix::list_dir_begin() {
 		return true; //error!
 
 	return false;
+#endif
 }
 
 bool DirAccessUnix::file_exists(String p_file) {
@@ -122,7 +126,9 @@ uint64_t DirAccessUnix::get_modified_time(String p_file) {
 
 
 String DirAccessUnix::get_next() { 
-
+#if defined(DREAMCAST) || defined(ULTRA)
+	return "";
+#else
 	if (!dir_stream)
 		return "";
 	dirent *entry;
@@ -165,7 +171,7 @@ String DirAccessUnix::get_next() {
 
 
 	return fname;
-
+#endif
 }
 
 bool DirAccessUnix::current_is_dir() const {
@@ -175,10 +181,11 @@ bool DirAccessUnix::current_is_dir() const {
 
 
 void DirAccessUnix::list_dir_end() {
-
+#if !defined(DREAMCAST) && !defined(ULTRA)
 	if (dir_stream)
 		closedir(dir_stream);
 	dir_stream=0;
+#endif
 	_cisdir=false;
 }
 
@@ -196,7 +203,7 @@ Error DirAccessUnix::make_dir(String p_dir) {
 	GLOBAL_LOCK_FUNCTION
 
 	p_dir=fix_path(p_dir);
-	
+#if !defined(ULTRA)
 	char real_current_dir_name[2048];
 	getcwd(real_current_dir_name,2048);
 	chdir(current_dir.utf8().get_data()); //ascii since this may be unicode or wathever the host os wants
@@ -213,7 +220,7 @@ Error DirAccessUnix::make_dir(String p_dir) {
 	if (err == EEXIST) {
 		return ERR_ALREADY_EXISTS;
 	};
-
+#endif
 	return ERR_CANT_CREATE;
 }
 
@@ -221,9 +228,10 @@ Error DirAccessUnix::make_dir(String p_dir) {
 Error DirAccessUnix::change_dir(String p_dir) {
 
 	GLOBAL_LOCK_FUNCTION
-	p_dir=fix_path(p_dir);
-
-
+	p_dir=fix_path(p_dir); //TODO: Ultra and dreamcast
+// #if !defined(DREAMCAST)
+// #if !defined(ULTRA)
+// #endif
 	char real_current_dir_name[2048];
 	getcwd(real_current_dir_name,2048);
 	String prev_dir;
@@ -252,7 +260,11 @@ Error DirAccessUnix::change_dir(String p_dir) {
 
 	chdir(prev_dir.utf8().get_data());
 	return worked?OK:ERR_INVALID_PARAMETER;
-
+// #ifndef DREAMCAST
+// #else
+	return ERR_INVALID_PARAMETER;
+// #endif
+// #endif
 }
 
 String DirAccessUnix::get_current_dir() {
@@ -280,7 +292,7 @@ Error DirAccessUnix::rename(String p_path,String p_new_path) {
 Error DirAccessUnix::remove(String p_path)  {
 
 	p_path=fix_path(p_path);
-	
+#if !defined(ULTRA)
 	struct stat flags;
 	if ((stat(p_path.utf8().get_data(),&flags)!=0))
 		return FAILED;
@@ -289,12 +301,16 @@ Error DirAccessUnix::remove(String p_path)  {
 		return ::rmdir(p_path.utf8().get_data())==0?OK:FAILED;
 	else
 		return ::unlink(p_path.utf8().get_data())==0?OK:FAILED;
+#else
+	return FAILED;
+#endif
 }
 
 
 size_t DirAccessUnix::get_space_left() {
 
-#if !defined(PSP) && !defined(__psp2__)
+#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST) && !defined(ULTRA) && !defined(__3DS__)
+
 	struct statvfs vfs;
 	if (statvfs(current_dir.utf8().get_data(), &vfs) != 0) {
 
@@ -311,8 +327,9 @@ size_t DirAccessUnix::get_space_left() {
 
 
 DirAccessUnix::DirAccessUnix() {
-
+#if !defined(DREAMCAST) && !defined(ULTRA)
 	dir_stream=0;
+#endif
 	current_dir=".";
 	_cisdir=false;
 

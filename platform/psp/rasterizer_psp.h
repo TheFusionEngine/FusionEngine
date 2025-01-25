@@ -213,39 +213,37 @@ private:
 			constexpr auto sign_mask = 1 << u_bits_num; // sign bit
 
 			const float s = coord == 1 ? uvbb.size.y : uvbb.size.x;
-			const float p = coord == 1 ? uvbb.pos.y : uvbb.pos.x;
-			const float cv = value + p;
-			const float intgf = Math::abs(cv / s);
+			if (s != .0f) {
+				const float p = coord == 1 ? uvbb.pos.y : uvbb.pos.x;
+				const float cv = value + p;
+				const float intgf = Math::abs(cv / s);
 
-			unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
-			//if (intg > intg_mask) {
-			//	printf("out of bounds uv: %f; %f @ %d\n", intgf, s, coord);
+				unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
 
-			//	intg = intg_mask;
-			//}
-
-			val = intg & ~sign_mask;
-			if (cv < 0)
-				val = -val;
+				val = intg & ~sign_mask;
+				if (cv < 0)
+					val = -val;
+			} else {
+				val = 0;
+			}
 		} else if constexpr (Dims == 3) {
 			constexpr auto intg_mask = (1 << u_bits_num) - 1;
 			constexpr auto sign_mask = 1 << u_bits_num; // sign bit
 
 			const float s = aabb.size.coord[coord];
-			const float p = aabb.pos.coord[coord];
-			const float cv = value - p;
-			const float intgf = Math::abs(cv / s);
+			if (s != .0f) {
+				const float p = aabb.pos.coord[coord];
+				const float cv = value - p;
+				const float intgf = Math::abs(cv / s);
 
-			unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
-			//if (intg > intg_mask) {
-			//	printf("out of bounds vertex: %f; %f @ %d\n", intgf, s, coord);
+				unsigned int intg = static_cast<unsigned int>(intgf * intg_mask);
 
-			//	intg = intg_mask;
-			//}
-
-			val = intg & ~sign_mask;
-			if (cv < 0)
-				val = -val;
+				val = intg & ~sign_mask;
+				if (cv < 0)
+					val = -val;
+			} else {
+				val = 0;
+			}
 		} else if constexpr (sizeof(T) != sizeof(U)) {
 			val = value * ((1 << u_bits_num) - 1);
 		}
@@ -737,7 +735,8 @@ class RasterizerPSP : public Rasterizer {
 		Variant bg_param[VS::ENV_BG_PARAM_MAX];
 		bool fx_enabled[VS::ENV_FX_MAX];
 		Variant fx_param[VS::ENV_FX_PARAM_MAX];
-
+		Variant group[VS::ENV_GROUP_MAX];
+		
 		Environment() {
 
 			bg_mode=VS::ENV_BG_DEFAULT_COLOR;
@@ -1483,6 +1482,9 @@ public:
 	virtual void environment_set_background_param(RID p_env,VS::EnvironmentBGParam p_param, const Variant& p_value);
 	virtual Variant environment_get_background_param(RID p_env,VS::EnvironmentBGParam p_param) const;
 
+	virtual void environment_set_group(RID p_env,VS::Group p_group, const Variant& p_param);
+	virtual Variant environment_get_group(RID p_env, VS::Group p_param) const;
+	
 	virtual void environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled);
 	virtual bool environment_is_fx_enabled(RID p_env,VS::EnvironmentFx p_effect) const;
 

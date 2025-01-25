@@ -40,6 +40,33 @@ Environment::BG Environment::get_background() const{
 	return bg_mode;
 }
 
+void Environment::set_group_enum(Group p_group) {
+
+	ERR_FAIL_INDEX(p_group,GROUP_MAX);
+	set_group_mode=p_group;
+	VS::get_singleton()->environment_set_group(environment, VS::Group(0), p_group);
+	// VS::get_singleton()->environment_set_background(environment,VS::EnvironmentBG(p_bg));
+}
+
+Environment::Group Environment::get_group_enum() const{
+
+	return set_group_mode;
+}
+
+
+void Environment::set_group(Group p_group, const Variant& p_value) {
+
+	ERR_FAIL_INDEX(p_group, GROUP_MAX);
+	group_mode[GROUP_COLOR] = p_value;
+	VS::get_singleton()->environment_set_group(environment, VS::Group(GROUP_COLOR), p_value);
+}
+
+Variant Environment::get_group(Group p_param) const{
+
+	ERR_FAIL_INDEX_V(p_param, GROUP_MAX,Variant());
+	return group_mode[GROUP_COLOR];
+}
+
 void Environment::set_background_param(BGParam p_param, const Variant& p_value){
 
 	ERR_FAIL_INDEX(p_param,BG_PARAM_MAX);
@@ -94,6 +121,12 @@ void Environment::_bind_methods() {
 
 	ObjectTypeDB::bind_method(_MD("set_background_param","param","value"),&Environment::set_background_param);
 	ObjectTypeDB::bind_method(_MD("get_background_param","param"),&Environment::get_background_param);
+	
+	ObjectTypeDB::bind_method(_MD("set_group","param","value"),&Environment::set_group);
+	ObjectTypeDB::bind_method(_MD("get_group","param"),&Environment::get_group);
+	
+	ObjectTypeDB::bind_method(_MD("set_group_enum","mode"),&Environment::set_group_enum);
+	ObjectTypeDB::bind_method(_MD("get_group_enum"),&Environment::get_group_enum);
 
 	ObjectTypeDB::bind_method(_MD("set_enable_fx","effect","enabled"),&Environment::set_enable_fx);
 	ObjectTypeDB::bind_method(_MD("is_fx_enabled","effect"),&Environment::is_fx_enabled);
@@ -104,7 +137,8 @@ void Environment::_bind_methods() {
 	ADD_PROPERTYI( PropertyInfo(Variant::BOOL,"ambient_light/enabled"),_SCS("set_enable_fx"),_SCS("is_fx_enabled"), FX_AMBIENT_LIGHT);
 	ADD_PROPERTYI( PropertyInfo(Variant::COLOR,"ambient_light/color",PROPERTY_HINT_COLOR_NO_ALPHA),_SCS("fx_set_param"),_SCS("fx_get_param"), FX_PARAM_AMBIENT_LIGHT_COLOR);
 	ADD_PROPERTYI( PropertyInfo(Variant::REAL,"ambient_light/energy",PROPERTY_HINT_RANGE,"0,64,0.01"),_SCS("fx_set_param"),_SCS("fx_get_param"), FX_PARAM_AMBIENT_LIGHT_ENERGY);
-
+	ADD_PROPERTY( PropertyInfo(Variant::INT,"ambient_light/group_mode",PROPERTY_HINT_ENUM,"Unused option,Same as Diffuse,None,Half Diffuse,Custom"),_SCS("set_group_enum"),_SCS("get_group_enum"));
+	ADD_PROPERTYI( PropertyInfo(Variant::COLOR,"ambient_light/group_color"),_SCS("set_group"),_SCS("get_group"),GROUP_COLOR);
 
 	ADD_PROPERTYI( PropertyInfo(Variant::BOOL,"fxaa/enabled"),_SCS("set_enable_fx"),_SCS("is_fx_enabled"), FX_FXAA);
 
@@ -190,6 +224,14 @@ void Environment::_bind_methods() {
 	BIND_CONSTANT( BG_CUBEMAP_RGBE );
 	BIND_CONSTANT( BG_MAX );
 
+	BIND_CONSTANT( GROUP_TYPE );
+	BIND_CONSTANT( GROUP_SAME );
+	BIND_CONSTANT( GROUP_NONE );
+	BIND_CONSTANT( GROUP_HALF );
+	BIND_CONSTANT( GROUP_COLOR );
+	BIND_CONSTANT( GROUP_MAX );
+
+
 	BIND_CONSTANT( BG_PARAM_COLOR );
 	BIND_CONSTANT( BG_PARAM_TEXTURE );
 	BIND_CONSTANT( BG_PARAM_CUBEMAP );
@@ -260,6 +302,10 @@ Environment::Environment() {
 	set_background_param(BG_PARAM_ENERGY,1.0);
 	set_background_param(BG_PARAM_SCALE,1.0);
 	set_background_param(BG_PARAM_GLOW,0.0);
+	
+	set_group(GROUP_TYPE, GROUP_SAME);
+	set_group(GROUP_COLOR, Color(0,0,0,1));
+
 
 	for(int i=0;i<FX_MAX;i++)
 		set_enable_fx(Fx(i),false);

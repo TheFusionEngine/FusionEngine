@@ -26,7 +26,7 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifdef GLES1_ENABLED
+#if defined(GLES1_ENABLED) || defined(__psp2__) || defined(__WII__)
 
 #include "rasterizer_gles1.h"
 #include "os/os.h"
@@ -37,6 +37,11 @@
 #include "servers/visual/particle_system_sw.h"
 #include "gl_context/context_gl.h"
 #include <string.h>
+
+#ifdef __WII__
+#undef glClearDepthf
+#define glClearDepthf glClearDepth
+#endif
 
 _FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
 
@@ -156,7 +161,7 @@ RasterizerGLES1::FX::FX() {
 
 static const GLenum prim_type[]={GL_POINTS,GL_LINES,GL_TRIANGLES,GL_TRIANGLE_FAN};
 
-static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1) {
+static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector2 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1) {
 
 	ERR_FAIL_COND(!p_vertices);
 	ERR_FAIL_COND(p_points <1 || p_points>4);
@@ -183,11 +188,11 @@ static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vecto
 	};
 
 	if (p_uvs) {
-#ifndef PSP
+#if !defined(PSP)
 			glClientActiveTexture(GL_TEXTURE0);
 #endif
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glTexCoordPointer(3, GL_FLOAT, 0, p_uvs);
+			glTexCoordPointer(2, GL_FLOAT, 0, p_uvs);
 	};
 
 	glDrawArrays( type, 0, p_points);
@@ -571,8 +576,9 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 		if (texture->compressed) {
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 			glCompressedTexImage2D( blit_target, i, format,w,h,0,size,&read[ofs] );
-
-		} else {
+		}
+		else
+		{
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 //			glTexImage2D(blit_target, i, format==GL_RGB?GL_RGB8:format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
 			glTexImage2D(blit_target, i, format, w, h, 0, format, GL_UNSIGNED_BYTE,&read[ofs]);
@@ -1168,7 +1174,7 @@ void RasterizerGLES1::fixed_material_set_flag(RID p_material, VS::FixedMaterialF
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
-	ERR_FAIL_INDEX(p_flag, 3);
+	ERR_FAIL_INDEX(p_flag, VS::FIXED_MATERIAL_FLAG_MAX);
 	m->fixed_flags[p_flag]=p_enabled;
 }
 
@@ -1315,8 +1321,13 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 	Surface *surface = memnew( Surface );
 	ERR_FAIL_COND( !surface );
-
-	bool use_VBO=true; //glGenBuffersARB!=NULL; // TODO detect if it's in there
+	bool use_VBO;
+#if defined(GLAD_ENABLED)
+	use_VBO = glGenBuffers!=NULL;
+#else
+	use_VBO = true;
+#endif
+	use_VBO= false;
 	if (format&VS::ARRAY_FORMAT_WEIGHTS || mesh->morph_target_count>0) {
 
 		use_VBO=false;
@@ -1518,7 +1529,6 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 	_surface_set_arrays(surface,array_ptr,index_array_ptr,p_arrays,true);
 
-
 	/* create buffers!! */
 	if (use_VBO) {
 		glGenBuffers(1,&surface->vertex_id);
@@ -1536,7 +1546,6 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 		}
 	}
-
 	mesh->surfaces.push_back(surface);
 
 }
@@ -2809,9 +2818,11 @@ void RasterizerGLES1::light_instance_set_transform(RID p_light_instance,const Tr
 }
 
 bool RasterizerGLES1::light_instance_has_shadow(RID p_light_instance) const {
-
+#ifdef GLES1_SHADOWS
+	return true;
+#else
 	return false;
-
+#endif
 	/*
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND_V(!lighti, false);
@@ -2846,7 +2857,6 @@ Rasterizer::ShadowType RasterizerGLES1::light_instance_get_shadow_type(RID p_lig
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND_V(!lighti,Rasterizer::SHADOW_NONE);
-
 	switch(lighti->base->type) {
 
 		case VS::LIGHT_DIRECTIONAL: return SHADOW_PSM; break;
@@ -2856,19 +2866,45 @@ Rasterizer::ShadowType RasterizerGLES1::light_instance_get_shadow_type(RID p_lig
 
 	return Rasterizer::SHADOW_NONE;
 }
-
+// #define GLES1_SHADOWS
 Rasterizer::ShadowType RasterizerGLES1::light_instance_get_shadow_type(RID p_light_instance,bool p_far) const {
+	printf("light_instance_get_shadow_type2\n");
+#ifdef GLES1_SHADOWS
+	LightInstance *lighti = light_instance_owner.get( p_light_instance );
+	ERR_FAIL_COND_V(!lighti,Rasterizer::SHADOW_NONE);
+	switch(lighti->base->type) {
 
+		case VS::LIGHT_DIRECTIONAL: return SHADOW_PSM; break;
+		case VS::LIGHT_OMNI: return SHADOW_DUAL_PARABOLOID; break;
+		case VS::LIGHT_SPOT: return SHADOW_SIMPLE; break;
+	}
+
+	return Rasterizer::SHADOW_NONE;
+#else
 	return SHADOW_NONE;
+#endif
 }
 void RasterizerGLES1::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near,float p_split_far) {
+#ifdef GLES1_SHADOWS
+	LightInstance *lighti = light_instance_owner.get( p_light_instance );
+	ERR_FAIL_COND(!lighti);
 
+	ERR_FAIL_COND(lighti->base->type!=VS::LIGHT_DIRECTIONAL);
+//	ERR_FAIL_INDEX(p_index,1);
+
+	lighti->custom_projection=p_camera;
+	lighti->custom_transform=p_transform;
+	// lighti->shadow_split=1.0/p_split_far;
+#endif
 
 }
 
 int RasterizerGLES1::light_instance_get_shadow_passes(RID p_light_instance) const {
-
+#ifdef GLES1_SHADOWS
+	return 1;
+#else
 	return 0;
+#endif
 }
 
 bool RasterizerGLES1::light_instance_get_pssm_shadow_overlap(RID p_light_instance) const {
@@ -2894,8 +2930,25 @@ void RasterizerGLES1::shadow_clear_near() {
 }
 
 bool RasterizerGLES1::shadow_allocate_near(RID p_light) {
+#ifdef GLES1_SHADOWS
+	// shadow_buffers
+	LightInstance *li = light_instance_owner.get(p_light);
+	ERR_FAIL_COND_V(!li,false);
+	// ERR_FAIL_COND_V( li->shadow_buffer, false);
+	
+	for(int i=0;i<near_shadow_buffers.size();i++) {
 
+		if (near_shadow_buffers[i].owner!=NULL)
+			continue;
+
+		near_shadow_buffers[i].owner=li;
+		li->shadow_buffer=&near_shadow_buffers[i];
+		return true;
+	}
+	return true;
+#else
 	return false;
+#endif
 }
 
 bool RasterizerGLES1::shadow_allocate_far(RID p_light) {
@@ -3028,7 +3081,20 @@ void RasterizerGLES1::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebu
 };
 
 void RasterizerGLES1::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) {
+#ifdef GLES1_SHADOWS
+	// ERR_FAIL_COND(shadow);
+	shadow = light_instance_owner.get(p_light_instance);
+	shadow_pass=p_shadow_pass;
+	ERR_FAIL_COND(!shadow);
 
+	opaque_render_list.clear();
+	alpha_render_list.clear();
+//	pre_zpass_render_list.clear();
+	light_instance_count=0;
+
+	glCullFace(GL_FRONT);
+	cull_front=true;
+#endif
 }
 
 void RasterizerGLES1::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
@@ -3164,7 +3230,7 @@ void RasterizerGLES1::_add_geometry( const Geometry* p_geometry, const InstanceD
 	RenderList::Element *e = render_list->add_element();
 
 	e->geometry=p_geometry;
-//	e->geometry_cmp=p_geometry_cmp;
+	e->geometry_cmp=p_geometry_cmp;
 	e->material=m;
 	e->instance=p_instance;
 	//e->depth=camera_plane.distance_to(p_world->origin);
@@ -3292,7 +3358,6 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 
 	if (!shadow) {
 
-		///ambient @TODO offer global ambient group option
 
 		//GLenum side = use_shaders?GL_FRONT:GL_FRONT_AND_BACK;
 		GLenum side = GL_FRONT_AND_BACK;
@@ -3306,11 +3371,55 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 			  diffuse_color.b,
 			   diffuse_color.a
 		};
-
-		//color array overrides this
 		glColor4f( diffuse_rgba[0],diffuse_rgba[1],diffuse_rgba[2],diffuse_rgba[3]);
 		last_color=diffuse_color;
-		glMaterialfv(side,GL_AMBIENT,diffuse_rgba);
+		// Color diffuse_color=p_material->parameters[VS::FIXED_MATERIAL_PARAM_DIFFUSE];
+		// printf("%d\n", (int)current_env->group[0]);
+		if(current_env) {
+			switch((int)current_env->group[0]) {
+				case VS::ENV_GROUP_SAME: {
+					glMaterialfv(side,GL_AMBIENT, diffuse_rgba);
+					break;
+				}
+				case VS::ENV_GROUP_NONE: {
+					break;
+				}
+				case VS::ENV_GROUP_HALF: {
+					float ambient_rgba[4]={
+						diffuse_color.r / 2,
+						diffuse_color.g / 2,
+						diffuse_color.b / 2,
+						1.0 
+					};
+					glMaterialfv(side,GL_AMBIENT, ambient_rgba);
+					break;
+				}
+				case VS::ENV_GROUP_COLOR: {
+					Color c = current_env->group[VS::ENV_GROUP_COLOR];
+					float ambient_rgba2[4] = {
+						c.r,
+						c.g,
+						c.b,
+						c.a
+					};
+					glMaterialfv(side,GL_AMBIENT, ambient_rgba2);
+					break;
+				}
+				case 0: {
+					glMaterialfv(side,GL_AMBIENT, diffuse_rgba);
+					break;
+				}
+				default: {
+					break;
+				}
+			}
+		} else {
+			glMaterialfv(side,GL_AMBIENT, diffuse_rgba);
+		}
+		// GLfloat ambient[] = {0.2f, 0.2f, 0.2f, 1.0f};
+		//color array overrides this
+
+		// glMaterialfv(side,GL_AMBIENT,ambient);
 		glMaterialfv(side,GL_DIFFUSE,diffuse_rgba);
 		// | GU_SPECULARspecular
 
@@ -3343,19 +3452,43 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 
 
 	}
-
-
-	if (p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE].is_valid()) {
-
-		Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE] );
+#ifndef __psp2__
+	if(p_material->fixed_flags[VS::FIXED_MATERIAL_FLAG_USE_ENVMAP] && p_material->textures[VS::FIXED_MATERIAL_PARAM_ENVMAP].is_valid()) {
+		
+		Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_ENVMAP] );
 		ERR_FAIL_COND(!texture);
 		glEnable(GL_TEXTURE_2D);
+
+		glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+		glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+		glEnable(GL_TEXTURE_GEN_S);
+		glEnable(GL_TEXTURE_GEN_T);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture( GL_TEXTURE_2D,texture->tex_id );
-	} else {
 
-		glDisable(GL_TEXTURE_2D);
+
+		// glDisable(GL_TEXTURE_GEN_S);
+		// glDisable(GL_TEXTURE_GEN_T);
+	} else {
+		 glDisable(GL_TEXTURE_GEN_S);
+		 glDisable(GL_TEXTURE_GEN_T);
+		 glDisable(GL_TEXTURE_2D);
+#endif
+		if (p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE].is_valid()) {
+
+			Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE] );
+			ERR_FAIL_COND(!texture);
+			glEnable(GL_TEXTURE_2D);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture( GL_TEXTURE_2D,texture->tex_id );
+		} else {
+
+			glDisable(GL_TEXTURE_2D);
+		}
+#ifndef __psp2__
 	}
+#endif
+
 
 }
 
@@ -3627,11 +3760,12 @@ void RasterizerGLES1::_setup_lights(const uint16_t * p_lights,int p_light_count)
 
 
 			glEnable(GL_LIGHT0 + i);
+			// printf("enable %d\n", i);
 			_setup_light(light_instances[p_lights[i]], i);
 
 		} else {
 			glDisable(GL_LIGHT0 + i);
-
+			// printf("diable %d\n", i);
 		}
 	}
 
@@ -3702,7 +3836,9 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 			if (!use_VBO) {
 
 				base = surf->array_local;
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				if (glBindBuffer!=NULL) {
+					glBindBuffer(GL_ARRAY_BUFFER, 0);
+				}
 				bool can_copy_to_local=surf->local_stride * surf->array_len <= skinned_buffer_size;
 				if (!can_copy_to_local)
 					skeleton_valid=false;
@@ -3920,7 +4056,6 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 				}
 
 			} else {
-
 				glBindBuffer(GL_ARRAY_BUFFER, surf->vertex_id);
 			};
 
@@ -4055,14 +4190,16 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			if (s->index_array_len>0) {
 
 				if (s->index_array_local) {
-
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+					if (glBindBuffer!=NULL) {
+						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+					}
 					glDrawElements(gl_primitive[s->primitive], s->index_array_len, (s->array_len>(1<<16))?GL_UNSIGNED_SHORT:GL_UNSIGNED_SHORT, s->index_array_local);
 
 				} else {
 				//	print_line("indices: "+itos(s->index_array_local) );
-
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
+					if (glBindBuffer!=NULL) {
+						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
+					}
 					glDrawElements(gl_primitive[s->primitive],s->index_array_len, (s->array_len>(1<<16))?GL_UNSIGNED_SHORT:GL_UNSIGNED_SHORT,0);
 				}
 
@@ -4099,7 +4236,9 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			if (s->index_array_len>0) {
 
 				// glLoadMatrixf(elements[0].matrix);
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
+				if (glBindBuffer!=NULL) {
+					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
+				}
 				for(int i=0;i<element_count;i++) {
 					//glUniformMatrix4fv(material_shader.get_uniform_location(MaterialShaderGLES1::INSTANCE_TRANSFORM), 1, false, elements[i].matrix);
 					// glMultMatrixf(elements[i].matrix);
@@ -4152,9 +4291,10 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			pp.process(&particles->data,particles_instance->transform,td);
 			ERR_EXPLAIN("A parameter in the particle system is not correct.");
 			ERR_FAIL_COND(!pp.valid);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
-			glBindBuffer(GL_ARRAY_BUFFER,0);
-
+			if (glBindBuffer!=NULL) {
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
+				glBindBuffer(GL_ARRAY_BUFFER,0);
+			}
 
 			Transform camera;
 			if (shadow)
@@ -4173,11 +4313,11 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 					Vector3(1.0,-1.0,0),
 					Vector3(-1.0,-1.0,0)
 				};
-				static const Vector3 uvs[4]={
-					Vector3(0.0,0.0,0.0),
-					Vector3(1.0,0.0,0.0),
-					Vector3(1.0,1.0,0.0),
-					Vector3(0,1.0,0.0)
+				static const Vector2 uvs[4]={
+					Vector2(0.0,0.0),
+					Vector2(1.0,0.0),
+					Vector2(1.0,1.0),
+					Vector2(0,1.0)
 				};
 				static const Vector3 normals[4]={
 					Vector3(0,0,1),
@@ -4274,11 +4414,11 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 	const Material *prev_material=NULL;
 	uint64_t prev_light_key=0;
 	const Skeleton *prev_skeleton=NULL;
-	const Geometry *prev_geometry=NULL;
+	const Geometry *prev_geometry_cmp=NULL;
 	const BakedLightData *prev_baked_light=NULL;
 	RID prev_baked_light_texture;
 
-	Geometry::Type prev_geometry_type=Geometry::GEOMETRY_INVALID;
+	// Geometry::Type prev_geometry_type=Geometry::GEOMETRY_INVALID;
 
 	for (int i=0;i<p_render_list->element_count;i++) {
 
@@ -4286,7 +4426,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		const Material *material = e->material;
 		uint64_t light_key = e->light_key;
 		const Skeleton *skeleton = e->skeleton;
-		const Geometry *geometry = e->geometry;
+		const Geometry *geometry_cmp = e->geometry_cmp;
 		const BakedLightData *baked_light = e->instance->baked_light;
 		
 		bool bind_baked_light_octree=false;
@@ -4297,18 +4437,18 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 			SampledLight *sl = sampled_light_owner.get(e->instance->sampled_light);
 			if (sl) {
 
-				baked_light=NULL; //can't mix
+				// baked_light=NULL; //can't mix
 				// material_shader.set_conditional(MaterialShaderGLES2::ENABLE_AMBIENT_DP_SAMPLER,true);
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D,sl->texture); //bind the texture
 			}
 		}
 		if (baked_light) {
-
 			if (baked_light->mode==VS::BAKED_LIGHT_OCTREE && baked_light->octree_texture.is_valid() && e->instance->baked_light_octree_xform) {
 				// material_shader.set_conditional(MaterialShaderGLES2::ENABLE_AMBIENT_OCTREE,true);
 				bind_baked_light_octree=true;
 				if (prev_baked_light!=baked_light) {
+					
 					Texture *tex=texture_owner.get(baked_light->octree_texture);
 					if (tex) {
 
@@ -4344,9 +4484,20 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 						Texture *tex = texture_owner.get(texid);
 						if (tex) {
+							
+
+			
 
 							glActiveTexture(GL_TEXTURE0);
 							glBindTexture(tex->target,tex->tex_id); //bind the texture
+#ifdef GLES1_BAKED
+			printf("lightm\n");
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE1);
+
+#endif
 						}
 
 						prev_baked_light_texture=texid;
@@ -4360,8 +4511,10 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 			}
 		}
 		
-		if (material!=prev_material || geometry->type!=prev_geometry_type) {
+		if (material!=prev_material || geometry_cmp!=prev_geometry_cmp) {
+			// if(!bind_baked_lightmap)
 			_setup_material(e->geometry,material);
+
 			_rinfo.mat_change_count++;
 			//_setup_material_overrides(e->material,NULL,material_overrides);
 			//_setup_material_skeleton(material,skeleton);
@@ -4373,13 +4526,15 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		}
 
 
-		if (geometry!=prev_geometry || geometry->type!=prev_geometry_type  || prev_skeleton!=skeleton) {
+		if (geometry_cmp!=prev_geometry_cmp  || prev_skeleton!=skeleton) {
 
-			_setup_geometry(geometry, material,e->skeleton,e->instance->morph_values.ptr());
+			_setup_geometry(e->geometry, material,e->skeleton,e->instance->morph_values.ptr());
 		};
 
-		if (i==0 || light_key!=prev_light_key)
-			_setup_lights(e->lights,e->light_count);
+		// if (i==0 || light_key!=prev_light_key) {
+			// printf("setup\n");
+			_setup_lights(e->lights,e->light_count); //dunno how inefficent is but it fixes lights
+		// }
 
 		_set_cull(e->mirror,p_reverse_cull);
 
@@ -4425,16 +4580,17 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		//if ( changed_shader && material->shader_cache && !material->shader_cache->params.empty())
 		//	_setup_shader_params(material);
 
-		_render(geometry, material, skeleton,e->owner);
+		_render(e->geometry, material, skeleton,e->owner);
 
 
 
 		prev_material=material;
 		prev_skeleton=skeleton;
-		prev_geometry=geometry;
+		// prev_geometry=geometry;
+		prev_geometry_cmp=geometry_cmp;
 		prev_light_key=e->light_key;
 		prev_baked_light=baked_light;
-		prev_geometry_type=geometry->type;
+		// prev_geometry_type=geometry->type;
 	}
 
 
@@ -4442,7 +4598,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 };
 
 void RasterizerGLES1::_process_blur(int times, float inc) {
-
+#ifndef __psp2__
 	float spost = 0.0f;
 	float alphainc = 0.9f / times;
 	float alpha = 0.2f;
@@ -4550,9 +4706,8 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+#endif
 }
-	
-
 void RasterizerGLES1::end_scene() {
 
 	glEnable(GL_BLEND);
@@ -4592,9 +4747,9 @@ void RasterizerGLES1::end_scene() {
 			case VS::ENV_BG_CUBEMAP:
 			case VS::ENV_BG_TEXTURE_RGBE:
 			case VS::ENV_BG_CUBEMAP_RGBE: {
-				//a bit broken for now
-
 				glClear(GL_DEPTH_BUFFER_BIT);
+				
+			// 
 			} break;
 
 		}
@@ -4612,25 +4767,35 @@ void RasterizerGLES1::end_scene() {
 
 	// glClear(GL_DEPTH_BUFFER_BIT);
 
-	if (scene_fx && scene_fx->fog_active) {
+	if(current_env->fx_enabled[VS::ENV_FX_FOG] && !is_editor) {
 
-		/*
+		Color col_begin = current_env->fx_param[VS::ENV_FX_PARAM_FOG_BEGIN_COLOR];
+		Color col_end = current_env->fx_param[VS::ENV_FX_PARAM_FOG_END_COLOR];
+
+		GLfloat begin[4]={
+			col_begin.r,
+			col_begin.g,
+			col_begin.b,
+			1.0
+		};
+		GLfloat end[4]={
+			col_end.r,
+			col_end.g,
+			col_end.b,
+			1.0
+		};
 		glEnable(GL_FOG);
 		glFogf(GL_FOG_MODE,GL_LINEAR);
-		glFogf(GL_FOG_DENSITY,scene_fx->fog_attenuation);
-		glFogf(GL_FOG_START,scene_fx->fog_near);
-		glFogf(GL_FOG_END,scene_fx->fog_far);
-		glFogfv(GL_FOG_COLOR,scene_fx->fog_color_far.components);
-		glLightfv(GL_LIGHT5,GL_DIFFUSE,scene_fx->fog_color_near.components);
-
-		material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,true);
-		*/
+		glFogf(GL_FOG_DENSITY, current_env->fx_param[VS::ENV_FX_PARAM_FOG_ATTENUATION]);
+		glFogf(GL_FOG_START,current_env->fx_param[VS::ENV_FX_PARAM_FOG_BEGIN]);
+		glFogf(GL_FOG_END, camera_z_far);
+		glFogfv(GL_FOG_COLOR, end);
+		glLightfv(GL_LIGHT5,GL_DIFFUSE, begin);
+		// material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,true);
 	}
 
 
-
 	for(int i=0;i<directional_light_count;i++) {
-
 		glEnable(GL_LIGHT0+i);
 		_setup_light(directional_lights[i],i);
 	}
@@ -4667,7 +4832,7 @@ void RasterizerGLES1::end_scene() {
 	lighting=true;
 	glEnable(GL_LIGHTING);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	
+#ifndef __WII__
 	if(current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor) {
 		glViewport(0,0,256,256);
 		
@@ -4678,7 +4843,7 @@ void RasterizerGLES1::end_scene() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
 	}
-	
+#endif
 	_render_list_forward(&opaque_render_list);
 
 	alpha_render_list.sort_z();
@@ -4724,28 +4889,29 @@ void RasterizerGLES1::end_scene() {
 	
 	// _debug_shadows();
 }
-void RasterizerGLES1::end_shadow_map() {
-#if 0
-	ERR_FAIL_COND(!shadow);
-	ERR_FAIL_INDEX(shadow_pass,shadow->shadow_buffers.size());
 
+void RasterizerGLES1::end_shadow_map() {
+#ifdef GLES1_SHADOWS
+	ERR_FAIL_COND(!shadow);
+	// ERR_FAIL_INDEX(shadow_pass,shadow->shadow_buffers.size());
+	
 	glDisable(GL_BLEND);
 	glDisable(GL_SCISSOR_TEST);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(true);
 
 
-	ShadowBuffer *sb = shadow->shadow_buffers[shadow_pass];
+	ShadowBuffer *sb = shadow->shadow_buffer;
 
 	ERR_FAIL_COND(!sb);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, sb->fbo);
+	// glBindFramebuffer(GL_FRAMEBUFFER, sb->fbo);
 	glViewport(0, 0, sb->size, sb->size);
-
+	printf("map %d\n",sb->size);
 	glColorMask(0, 0, 0, 0);
 
 	glEnable(GL_POLYGON_OFFSET_FILL);
-	//glPolygonOffset(4,8);
+	glPolygonOffset(4,8);
 	glPolygonOffset( 4.0f, 4096.0f);
 	glPolygonOffset( 8.0f, 16.0f);
 
@@ -4770,22 +4936,22 @@ void RasterizerGLES1::end_shadow_map() {
 		} break;
 		case VS::LIGHT_OMNI: {
 
-			material_shader.set_conditional(MaterialShaderGLES1::USE_DUAL_PARABOLOID,true);
+			// material_shader.set_conditional(MaterialShaderGLES1::USE_DUAL_PARABOLOID,true);
 			dp_direction = shadow_pass?1.0:0.0;
 			flip_facing = (shadow_pass == 1);
 			light_transform=shadow->transform;
 			z_near=0;
-			z_far=shadow->base->vars[ VS::LIGHT_VAR_RADIUS ];
+			z_far=shadow->base->vars[ VS::LIGHT_PARAM_RADIUS ];
 		} break;
 		case VS::LIGHT_SPOT: {
 
-			float far = shadow->base->vars[ VS::LIGHT_VAR_RADIUS ];
+			float far = shadow->base->vars[ VS::LIGHT_PARAM_RADIUS ];
 			ERR_FAIL_COND( far<=0 );
 			float near= far/200.0;
 			if (near<0.05)
 			 near=0.05;
 
-			float angle = shadow->base->vars[ VS::LIGHT_VAR_SPOT_ANGLE ];
+			float angle = shadow->base->vars[ VS::LIGHT_PARAM_SPOT_ANGLE ];
 
 			cm.set_perspective( angle*2.0, 1.0, near, far );
 			shadow->projection=cm; // cache
@@ -4810,27 +4976,35 @@ void RasterizerGLES1::end_shadow_map() {
 	_gl_load_transform(light_transform_inverse);
 	glPushMatrix();
 
-	for(int i=0;i<4;i++) {
-		for(int j=0;j<3;j++) {
+	// for(int i=0;i<4;i++) {
+		// for(int j=0;j<3;j++) {
 
-			material_shader.set_conditional(_gl_light_version[i][j],false); //start false by default
-		}
-		material_shader.set_conditional(_gl_light_shadow[i],false);
-	}
-
+			// material_shader.set_conditional(_gl_light_version[i][j],false); //start false by default
+		// }
+		// material_shader.set_conditional(_gl_light_shadow[i],false);
+	// }
+	
+	// _debug_draw_shadow(sb->depth, Rect2( 0,0, 512,512 ));
 	_render_list_forward(&opaque_render_list,flip_facing);
-
-	material_shader.set_conditional(MaterialShaderGLES1::USE_DUAL_PARABOLOID,false);
+	// glBindTexture(GL_TEXTURE_2D, sb->depth);
+	// Rect2 vp_rect = Rect2(0, 0, 256, 256);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, sb->depth);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, 256, 256, 0);
 	glViewport( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
-	if (framebuffer.active)
-		glBindFramebufferEXT(GL_FRAMEBUFFER,framebuffer.fbo);
-	else
-		glBindFramebufferEXT(GL_FRAMEBUFFER,0);
+	
+	// material_shader.set_conditional(MaterialShaderGLES1::USE_DUAL_PARABOLOID,false);
+	
+	// if (framebuffer.active)
+		// glBindFramebufferEXT(GL_FRAMEBUFFER,framebuffer.fbo);
+	// else
+		// glBindFramebufferEXT(GL_FRAMEBUFFER,0);
 
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
 	glColorMask(1, 1, 1, 1);
 	shadow=NULL;
+	
 #endif
 }
 
@@ -4882,11 +5056,11 @@ void RasterizerGLES1::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
 		p_rect.pos.y+p_rect.size.height, 0 )
 	};
 
-	Vector3 texcoords[4]={
-		Vector3( 0.0f,0.0f, 0),
-		Vector3( 1.0f,0.0f, 0),
-		Vector3( 1.0f, 1.0f, 0),
-		Vector3( 0.0f, 1.0f, 0),
+	Vector2 texcoords[4]={
+		Vector2( 0.0f,0.0f),
+		Vector2( 1.0f,0.0f),
+		Vector2( 1.0f, 1.0f),
+		Vector2( 0.0f, 1.0f),
 	};
 
 	_draw_primitive(4,coords,0,0,texcoords);
@@ -4988,9 +5162,10 @@ void RasterizerGLES1::end_frame() {
 
 void RasterizerGLES1::reset_state() {
 
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	if (glBindBuffer!=NULL) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+	}
 
 	glActiveTexture(GL_TEXTURE0);
 	glClientActiveTexture(GL_TEXTURE0);
@@ -5126,18 +5301,18 @@ void RasterizerGLES1::canvas_draw_line(const Point2& p_from, const Point2& p_to,
 static void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h=false,bool p_flip_v=false ) {
 
 
-	Vector3 texcoords[4]= {
-		Vector3( p_src_region.pos.x/p_tex_size.width,
-		p_src_region.pos.y/p_tex_size.height, 0),
+	Vector2 texcoords[4]= {
+		Vector2( p_src_region.pos.x/p_tex_size.width,
+		p_src_region.pos.y/p_tex_size.height),
 
-		Vector3((p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
-		p_src_region.pos.y/p_tex_size.height, 0),
+		Vector2((p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
+		p_src_region.pos.y/p_tex_size.height),
 
-		Vector3( (p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
-		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0),
+		Vector2( (p_src_region.pos.x+p_src_region.size.width)/p_tex_size.width,
+		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height),
 
-		Vector3( p_src_region.pos.x/p_tex_size.width,
-		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height, 0)
+		Vector2( p_src_region.pos.x/p_tex_size.width,
+		(p_src_region.pos.y+p_src_region.size.height)/p_tex_size.height)
 	};
 
 
@@ -5280,18 +5455,18 @@ void RasterizerGLES1::canvas_draw_primitive(const Vector<Point2>& p_points, cons
 
 	ERR_FAIL_COND(p_points.size()<1);
 	Vector3 verts[4];
-	Vector3 uvs[4];
+	Vector2 uvs[4];
 
 	_set_glcoloro( Color(1,1,1),canvas_opacity );
 
 	for(int i=0;i<p_points.size();i++) {
 
-		verts[i]=Vector3(p_points[i].x,p_points[i].y,0);
+		verts[i]=Vector3(p_points[i].x,p_points[i].y,0.0);
 	}
 
 	for(int i=0;i<p_uvs.size();i++) {
 
-		uvs[i]=Vector3(p_uvs[i].x,p_uvs[i].y,0);
+		uvs[i]=Vector2(p_uvs[i].x,p_uvs[i].y);
 	}
 
 	if (p_texture.is_valid()) {
@@ -5684,6 +5859,23 @@ Variant RasterizerGLES1::environment_get_background_param(RID p_env,VS::Environm
 
 }
 
+void RasterizerGLES1::environment_set_group(RID p_env,VS::Group p_param, const Variant& p_value){
+
+	ERR_FAIL_INDEX(p_param,VS::ENV_GROUP_MAX);
+	Environment * env = environment_owner.get(p_env);
+	ERR_FAIL_COND(!env);
+	env->group[p_param]=p_value;
+
+}
+Variant RasterizerGLES1::environment_get_group(RID p_env,VS::Group p_param) const{
+
+	ERR_FAIL_INDEX_V(p_param,VS::ENV_GROUP_MAX,Variant());
+	const Environment * env = environment_owner.get(p_env);
+	ERR_FAIL_COND_V(!env,Variant());
+	return env->group[p_param];
+
+}
+
 void RasterizerGLES1::environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled){
 
 	ERR_FAIL_INDEX(p_effect,VS::ENV_FX_MAX);
@@ -5900,12 +6092,10 @@ void RasterizerGLES1::free(const RID& p_rid) {
 				memfree(surface->morph_targets_local);
 				surface->morph_targets_local=NULL;
 			}
-
 			if (surface->vertex_id)
 				glDeleteBuffers(1,&surface->vertex_id);
 			if (surface->index_id)
 				glDeleteBuffers(1,&surface->index_id);
-
 			memdelete( surface );
 		};
 
@@ -6025,7 +6215,7 @@ void RasterizerGLES1::custom_shade_model_get_param_info(int p_model, List<Proper
 void RasterizerGLES1::ShadowBuffer::init(int p_size) {
 
 
-#if 0
+#ifdef GLES1_SHADOWS
 	size=p_size;
 
 	glActiveTexture(GL_TEXTURE0);
@@ -6044,8 +6234,8 @@ void RasterizerGLES1::ShadowBuffer::init(int p_size) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	float border_color[]={1.0f, 1.0f, 1.0f, 1.0f};
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
+/*
 
-	/* Create FBO */
 	glGenFramebuffers(1, &fbo);
 
 	ERR_FAIL_COND( fbo==0 );
@@ -6055,12 +6245,12 @@ void RasterizerGLES1::ShadowBuffer::init(int p_size) {
 	glDrawBuffer(GL_FALSE);
 	glReadBuffer(GL_FALSE);
 
-	/* Check FBO creation */
+
 	GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
 
 	ERR_FAIL_COND( status==GL_FRAMEBUFFER_UNSUPPORTED );
 
-	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);*/
 #endif
 
 }
@@ -6176,17 +6366,17 @@ void RasterizerGLES1::_update_framebuffer() {
 
 void RasterizerGLES1::init() {
 
-#ifdef GLES_OVER_GL
+#if defined(__wii__) || defined(GLES_OVER_GL)
 	glewInit();
 #endif
 
-
-	
+	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
 	scene_pass=1;
+#if !defined(__psp2__) && !defined(__WII__)
 	if (ContextGL::get_singleton())
 		ContextGL::get_singleton()->make_current();
-
+#endif
 
 
 	Set<String> extensions;
@@ -6240,7 +6430,7 @@ void RasterizerGLES1::init() {
 	glBindTexture(GL_TEXTURE_2D,white_tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 8, 8, 0, GL_RGB, GL_UNSIGNED_BYTE,whitetexdata);
 
-	npo2_textures_available=false;
+	npo2_textures_available=true;
 	pvr_supported=extensions.has("GL_IMG_texture_compression_pvrtc");
 	etc_supported=true;
 	s3tc_supported=false;
@@ -6257,6 +6447,11 @@ void RasterizerGLES1::init() {
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	// free(data); TODO
+#ifdef GLES1_SHADOWS
+	ShadowBuffer sb;
+	sb.init(256);
+	near_shadow_buffers.push_back(sb);
+#endif
 }
 
 void RasterizerGLES1::finish() {

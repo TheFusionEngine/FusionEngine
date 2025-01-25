@@ -1880,6 +1880,14 @@ Variant VisualServerRaster::environment_get_background_param(RID p_env,Environme
 	return rasterizer->environment_get_background_param(p_env,p_param);
 }
 
+void VisualServerRaster::environment_set_group(RID p_env,Group p_param, const Variant& p_value){
+	rasterizer->environment_set_group(p_env, p_param, p_value);
+}
+Variant VisualServerRaster::environment_get_group(RID p_env,Group p_param) const{
+
+	return rasterizer->environment_get_group(p_env, p_param);
+}
+
 void VisualServerRaster::environment_set_enable_fx(RID p_env,EnvironmentFx p_effect,bool p_enabled){
 
 	rasterizer->environment_set_enable_fx(p_env,p_effect,p_enabled);
@@ -6470,7 +6478,19 @@ void VisualServerRaster::_draw_viewport(Viewport *p_viewport,int p_ofs_x, int p_
 	}
 
 	/* Camera should always be BEFORE any other 3D */
+#ifdef __3DS__
+	if (!p_viewport->hide_scenario && camera_owner.owns(p_viewport->camera) && scenario_owner.owns(p_viewport->scenario)) {
 
+		Camera *camera = camera_owner.get( p_viewport->camera );
+		Scenario *scenario = scenario_owner.get( p_viewport->scenario );
+
+		_update_instances(); // check dirty instances before rendering
+
+		_render_camera(p_viewport, camera,scenario );
+
+	}
+	rasterizer->clear_viewport(clear_color);
+#else
 	if (!p_viewport->hide_scenario && camera_owner.owns(p_viewport->camera) && scenario_owner.owns(p_viewport->scenario)) {
 
 		Camera *camera = camera_owner.get( p_viewport->camera );
@@ -6485,7 +6505,7 @@ void VisualServerRaster::_draw_viewport(Viewport *p_viewport,int p_ofs_x, int p_
 		//clear the viewport black because of no camera? i seriously should..
 		rasterizer->clear_viewport(clear_color);
 	}
-
+#endif
 	if (!p_viewport->hide_canvas) {
 		int i=0;
 

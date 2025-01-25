@@ -64,6 +64,12 @@ SceneStringNames::SceneStringNames() {
 	body_exit = StaticCString::create("body_exit");
 
 
+	_area_enter_tree = StaticCString::create("_area_enter_tree");
+	_area_exit_tree = StaticCString::create("_area_exit_tree");
+	
+	area_enter_shape = StaticCString::create("area_enter_shape");
+	area_exit_shape = StaticCString::create("area_exit_shape");
+	
 	idle=StaticCString::create("idle");
 	iteration=StaticCString::create("iteration");
 	update=StaticCString::create("update");

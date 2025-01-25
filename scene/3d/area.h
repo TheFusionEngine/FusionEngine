@@ -53,7 +53,7 @@ private:
 	int priority;
 	bool monitoring;
 	bool locked;
-
+	bool monitorable;
 
 	void _body_inout(int p_status,const RID& p_body, int p_instance, int p_body_shape,int p_area_shape);
 
@@ -85,7 +85,35 @@ private:
 	Map<ObjectID,BodyState> body_map;
 	void _clear_monitoring();
 
+	
+	void _area_inout(int p_status,const RID& p_area, int p_instance, int p_area_shape,int p_self_shape);
 
+	void _area_enter_tree(ObjectID p_id);
+	void _area_exit_tree(ObjectID p_id);
+
+	struct AreaShapePair {
+
+		int area_shape;
+		int self_shape;
+		bool operator<(const AreaShapePair& p_sp) const {
+			if (area_shape==p_sp.area_shape)
+				return self_shape < p_sp.self_shape;
+			else
+				return area_shape < p_sp.area_shape;
+		}
+
+		AreaShapePair() {}
+		AreaShapePair(int p_bs, int p_as) { area_shape=p_bs; self_shape=p_as; }
+	};
+
+	struct AreaState {
+
+		int rc;
+		bool in_tree;
+		VSet<AreaShapePair> shapes;
+	};
+
+	Map<ObjectID,AreaState> area_map;
 protected:
 
 	void _notification(int p_what);
@@ -101,6 +129,9 @@ public:
 	void set_gravity_vector(const Vector3& p_vec);
 	Vector3 get_gravity_vector() const;
 
+	void set_monitorable(bool p_enable);
+	bool is_monitorable() const;
+	
 	void set_gravity(real_t p_gravity);
 	real_t get_gravity() const;
 
@@ -114,7 +145,10 @@ public:
 	bool is_monitoring_enabled() const;
 
 	Array get_overlapping_bodies() const;
+	Array get_overlapping_areas() const; //function for script
 
+	bool overlaps_area(Node* p_area) const;
+	bool overlaps_body(Node* p_body) const;
 
 	Area();
 	~Area();

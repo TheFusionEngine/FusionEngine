@@ -217,7 +217,8 @@ public:
 		FIXED_MATERIAL_PARAM_SPECULAR_EXP,
 		FIXED_MATERIAL_PARAM_GLOW,
 		FIXED_MATERIAL_PARAM_NORMAL,
-		FIXED_MATERIAL_PARAM_SHADE_PARAM,		
+		FIXED_MATERIAL_PARAM_SHADE_PARAM,
+		FIXED_MATERIAL_PARAM_ENVMAP,
 		FIXED_MATERIAL_PARAM_MAX
 	};
 
@@ -236,6 +237,7 @@ public:
 		FIXED_MATERIAL_FLAG_USE_POINT_SIZE,
 		FIXED_MATERIAL_FLAG_DISCARD_ALPHA,
 		FIXED_MATERIAL_FLAG_USE_XY_NORMALMAP,
+		FIXED_MATERIAL_FLAG_USE_ENVMAP,
 		FIXED_MATERIAL_FLAG_MAX,
 	};
 
@@ -733,6 +735,19 @@ public:
 
 	virtual void environment_set_background(RID p_env,EnvironmentBG p_bg)=0;
 	virtual EnvironmentBG environment_get_background(RID p_env) const=0;
+	
+	
+	enum Group {
+		ENV_GROUP_TYPE,
+		ENV_GROUP_SAME,
+		ENV_GROUP_NONE,
+		ENV_GROUP_HALF,
+		ENV_GROUP_COLOR,
+		ENV_GROUP_MAX
+	};
+
+	virtual void environment_set_group(RID p_env,Group p_group, const Variant& p_param)=0;
+	virtual Variant environment_get_group(RID p_env, Group p_group) const=0;
 
 	enum EnvironmentBGParam {
 

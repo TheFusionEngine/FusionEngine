@@ -23,6 +23,7 @@ def get_opts():
 	#	gcc64 = "i686-w64-gcc32-"
 
 	pdb_available = os.name == "nt"
+	#pdb_available = False
 
 	if (os.getenv("GCC32_PREFIX")):
 		gcc=os.getenv("GCC32_PREFIX")
@@ -160,7 +161,10 @@ def configure(env):
 
 		elif (env["target"]=="release_debug"):
 
-			env.Append(CCFLAGS=['-O2','-ffast-math','-DDEBUG_ENABLED'])
+			env.Append(CCFLAGS=['-O2', '-g','-ffast-math','-DDEBUG_ENABLED'])
+
+			if env["tools"]!="no":
+				env.Append(CCFLAGS=['-fno-omit-frame-pointer', '-fno-tree-vectorize'])
 
 		elif (env["target"]=="debug"):
 					

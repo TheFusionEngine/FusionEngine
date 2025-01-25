@@ -6,7 +6,8 @@
 
 #include "buddy_alloc.h"
 
-#define BUFFER_SIZE (2)
+// #define BUFFER_SIZE (2) //for half
+#define BUFFER_SIZE (4)
 
 #define FBP0_OFFSET (0)
 #define FBP1_OFFSET (FBP0_OFFSET + (512 * 272 * BUFFER_SIZE))

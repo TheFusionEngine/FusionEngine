@@ -3054,7 +3054,47 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		//color array overrides this
 		glColor4f( diffuse_rgba[0],diffuse_rgba[1],diffuse_rgba[2],diffuse_rgba[3]);
 		last_color=diffuse_color;
-		glMaterialfv(side,GL_AMBIENT,diffuse_rgba);
+		if(current_env) {
+			switch((int)current_env->group[0]) {
+				case VS::ENV_GROUP_SAME: {
+					glMaterialfv(side,GL_AMBIENT, diffuse_rgba);
+					break;
+				}
+				case VS::ENV_GROUP_NONE: {
+					break;
+				}
+				case VS::ENV_GROUP_HALF: {
+					float ambient_rgba[4]={
+						diffuse_color.r / 2,
+						diffuse_color.g / 2,
+						diffuse_color.b / 2,
+						1.0 
+					};
+					glMaterialfv(side,GL_AMBIENT, ambient_rgba);
+					break;
+				}
+				case VS::ENV_GROUP_COLOR: {
+					Color c = current_env->group[VS::ENV_GROUP_COLOR];
+					float ambient_rgba2[4] = {
+						c.r,
+						c.g,
+						c.b,
+						c.a
+					};
+					glMaterialfv(side,GL_AMBIENT, ambient_rgba2);
+					break;
+				}
+				case 0: {
+					glMaterialfv(side,GL_AMBIENT, diffuse_rgba);
+					break;
+				}
+				default: {
+					break;
+				}
+			}
+		} else {
+			glMaterialfv(side,GL_AMBIENT, diffuse_rgba);
+		}
 		glMaterialfv(side,GL_DIFFUSE,diffuse_rgba);
 		//specular
 
@@ -4014,8 +4054,8 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 			_setup_geometry(geometry, material,e->skeleton,e->instance->morph_values.ptr());
 		};
 
-		if (i==0 || light_key!=prev_light_key)
-			_setup_lights(e->lights,e->light_count);
+		// if (i==0 || light_key!=prev_light_key)
+		_setup_lights(e->lights,e->light_count);
 
 		_set_cull(e->mirror,p_reverse_cull);
 
@@ -4196,19 +4236,32 @@ void RasterizerGLES1::end_scene() {
 
 	// glClear(GL_DEPTH_BUFFER_BIT);
 
-	if (scene_fx && scene_fx->fog_active) {
+	if(current_env && current_env->fx_enabled[VS::ENV_FX_FOG] && !is_editor) {
 
-		/*
+		Color col_begin = current_env->fx_param[VS::ENV_FX_PARAM_FOG_BEGIN_COLOR];
+		Color col_end = current_env->fx_param[VS::ENV_FX_PARAM_FOG_END_COLOR];
+
+		GLfloat begin[4]={
+			col_begin.r,
+			col_begin.g,
+			col_begin.b,
+			1.0
+		};
+		GLfloat end[4]={
+			col_end.r,
+			col_end.g,
+			col_end.b,
+			1.0
+		};
 		glEnable(GL_FOG);
 		glFogf(GL_FOG_MODE,GL_LINEAR);
-		glFogf(GL_FOG_DENSITY,scene_fx->fog_attenuation);
-		glFogf(GL_FOG_START,scene_fx->fog_near);
-		glFogf(GL_FOG_END,scene_fx->fog_far);
-		glFogfv(GL_FOG_COLOR,scene_fx->fog_color_far.components);
-		glLightfv(GL_LIGHT5,GL_DIFFUSE,scene_fx->fog_color_near.components);
+		glFogf(GL_FOG_DENSITY, current_env->fx_param[VS::ENV_FX_PARAM_FOG_ATTENUATION]);
+		glFogf(GL_FOG_START,current_env->fx_param[VS::ENV_FX_PARAM_FOG_BEGIN]);
+		glFogf(GL_FOG_END, camera_z_far);
+		glFogfv(GL_FOG_COLOR, end);
+		glLightfv(GL_LIGHT5,GL_DIFFUSE, begin);
 
-		material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,true);
-		*/
+		// material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,true);
 	}
 
 
@@ -4252,7 +4305,7 @@ void RasterizerGLES1::end_scene() {
 	glEnable(GL_LIGHTING);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	
-	if(current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor) {
+	if(current_env && current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor) {
 		glViewport(0,0,256,256);
 		
 		_render_list_forward(&opaque_render_list);
@@ -4301,7 +4354,7 @@ void RasterizerGLES1::end_scene() {
 	}*/
 
 //	material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,false);
-	if(current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor)
+	if(current_env && current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor)
 		_process_blur(current_env->fx_param[VS::ENV_FX_PARAM_ES1_BLUR_TIMES], current_env->fx_param[VS::ENV_FX_PARAM_ES1_BLUR_ALPHA]);
 	
 	
@@ -5265,6 +5318,23 @@ Variant RasterizerGLES1::environment_get_background_param(RID p_env,VS::Environm
 	const Environment * env = environment_owner.get(p_env);
 	ERR_FAIL_COND_V(!env,Variant());
 	return env->bg_param[p_param];
+
+}
+
+void RasterizerGLES1::environment_set_group(RID p_env,VS::Group p_param, const Variant& p_value){
+
+	ERR_FAIL_INDEX(p_param,VS::ENV_GROUP_MAX);
+	Environment * env = environment_owner.get(p_env);
+	ERR_FAIL_COND(!env);
+	env->group[p_param]=p_value;
+
+}
+Variant RasterizerGLES1::environment_get_group(RID p_env,VS::Group p_param) const{
+
+	ERR_FAIL_INDEX_V(p_param,VS::ENV_GROUP_MAX,Variant());
+	const Environment * env = environment_owner.get(p_env);
+	ERR_FAIL_COND_V(!env,Variant());
+	return env->group[p_param];
 
 }
 

@@ -714,7 +714,7 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 	return OK;
 
 	error:
-	
+
 	video_driver="";	
 	audio_driver="";
 	game_path="";
@@ -1425,8 +1425,10 @@ void Main::cleanup() {
 
 	ERR_FAIL_COND(!_start_success);
 
-	if (script_debugger)
-		memdelete(script_debugger);
+	printf("es\n");
+
+	//if (script_debugger)
+	//	memdelete(script_debugger);
 
 	OS::get_singleton()->delete_main_loop();
 
@@ -1444,7 +1446,9 @@ void Main::cleanup() {
 	unregister_server_types();
 
 	OS::get_singleton()->finalize();
-				
+
+	printf("fin\n");
+
 	if (packed_data)
 		memdelete(packed_data);
 	if (file_access_network_client)
@@ -1472,6 +1476,7 @@ void Main::cleanup() {
 	OS::get_singleton()->clear_last_error();
 	OS::get_singleton()->finalize_core();
 
+	printf("ee\n");
 
 }
 

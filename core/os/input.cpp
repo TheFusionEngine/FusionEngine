@@ -55,6 +55,9 @@ void Input::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("get_joy_axis","device","axis"),&Input::get_joy_axis);
 	ObjectTypeDB::bind_method(_MD("get_joy_name","device"),&Input::get_joy_name);
 	ObjectTypeDB::bind_method(_MD("get_accelerometer"),&Input::get_accelerometer);
+	ObjectTypeDB::bind_method(_MD("get_gyroscope"),&Input::get_gyroscope);
+	ObjectTypeDB::bind_method(_MD("get_magnetometer"),&Input::get_magnetometer);
+	ObjectTypeDB::bind_method(_MD("get_gravity"),&Input::get_gravity);
 	ObjectTypeDB::bind_method(_MD("get_mouse_pos"),&Input::get_mouse_pos);
 	ObjectTypeDB::bind_method(_MD("get_mouse_speed"),&Input::get_mouse_speed);
 	ObjectTypeDB::bind_method(_MD("get_mouse_button_mask"),&Input::get_mouse_button_mask);
@@ -278,6 +281,48 @@ void InputDefault::set_accelerometer(const Vector3& p_accel) {
 
 	accelerometer=p_accel;
 
+}
+
+void InputDefault::set_magnetometer(const Vector3& p_magnet) {
+
+	_THREAD_SAFE_METHOD_
+
+	magnetometer=p_magnet;
+
+}
+
+void InputDefault::set_gyroscope(const Vector3& p_gyro) {
+
+	_THREAD_SAFE_METHOD_
+
+	gyroscope=p_gyro;
+
+}
+
+void InputDefault::set_gravity(const Vector3& p_gravity) {
+
+	_THREAD_SAFE_METHOD_
+
+	gravity=p_gravity;
+
+}
+
+Vector3 InputDefault::get_gyroscope() {
+
+	_THREAD_SAFE_METHOD_
+	return gyroscope;
+}
+
+Vector3 InputDefault::get_gravity() {
+
+	_THREAD_SAFE_METHOD_
+	return gravity;
+}
+
+Vector3 InputDefault::get_magnetometer() {
+
+	_THREAD_SAFE_METHOD_
+	return magnetometer;
 }
 
 void InputDefault::set_main_loop(MainLoop *p_main_loop) {

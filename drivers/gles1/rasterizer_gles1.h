@@ -31,7 +31,7 @@
 
 #include "servers/visual/rasterizer.h"
 
-#ifdef GLES1_ENABLED
+#if defined(GLES1_ENABLED) || defined(__psp2__) || defined(__WII__)
 
 #include "image.h"
 #include "rid.h"
@@ -42,13 +42,11 @@
 #include "sort.h"
 // #include "tools/editor/scene_tree_editor.h"
 #include "platform_config.h"
-#ifndef GLES1_INCLUDE_H
-#include <GLES/gl.h>
-
+#if defined(GLES1_INCLUDE_H)
+ #include GLES1_INCLUDE_H
 #else
-#include GLES1_INCLUDE_H
+ #include <GLES/gl.h>
 #endif
-
 
 #include "servers/visual/particle_system_sw.h"
 
@@ -62,9 +60,13 @@ class RasterizerGLES1 : public Rasterizer {
 		MAX_SCENE_LIGHTS=2048,
 		LIGHT_SPOT_BIT=0x80,
 		DEFAULT_SKINNED_BUFFER_SIZE = 1024 * 1024, // 10k vertices
-		MAX_HW_LIGHTS = 1,
+#ifdef __psp2__
+		MAX_HW_LIGHTS = 8, //Yay! 8 Lights :blush:
+#else
+		MAX_HW_LIGHTS = 4,
+#endif
 	};
-	#ifdef PSP
+	#if defined(PSP) || defined(__WII__)
 	void glActiveTexture(int a1) { };
 	void glClientActiveTexture(int a1) { };
 	#endif
@@ -486,7 +488,8 @@ class RasterizerGLES1 : public Rasterizer {
 		Variant bg_param[VS::ENV_BG_PARAM_MAX];
 		bool fx_enabled[VS::ENV_FX_MAX];
 		Variant fx_param[VS::ENV_FX_PARAM_MAX];
-
+		Variant group[VS::ENV_GROUP_MAX];
+		
 		Environment() {
 
 			bg_mode=VS::ENV_BG_DEFAULT_COLOR;
@@ -565,22 +568,23 @@ class RasterizerGLES1 : public Rasterizer {
 		uint64_t last_pass;
 		uint16_t sort_key;
 
-		Vector<ShadowBuffer*> shadow_buffers;
+		ShadowBuffer* shadow_buffer;
 
-		void clear_shadow_buffers() {
+		void clear_shadow_buffers() {/*
 
-			for (int i=0;i<shadow_buffers.size();i++) {
+			for (int i=0;i<shadow_buffer.size();i++) {
 
-				ShadowBuffer *sb=shadow_buffers[i];
+				ShadowBuffer *sb=shadow_buffer[i];
 				ERR_CONTINUE( sb->owner != this );
 
 				sb->owner=NULL;
 			}
-
-			shadow_buffers.clear();
+			
+			shadow_buffers.clear();*/
+			shadow_buffer = NULL;
 		}
 
-		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; }
+		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; shadow_buffer=NULL; }
 
 	};
 	mutable RID_Owner<Light> light_owner;
@@ -598,7 +602,7 @@ class RasterizerGLES1 : public Rasterizer {
 
 		enum {
 			MAX_ELEMENTS=4096,
-			MAX_LIGHTS=4
+			MAX_LIGHTS=8192
 		};
 
 		struct Element {
@@ -613,6 +617,7 @@ class RasterizerGLES1 : public Rasterizer {
 			};
 
 			const Geometry *geometry;
+			const Geometry *geometry_cmp;
 			const Material *material;
 			const GeometryOwner *owner;
 			uint16_t light_count;
@@ -1234,6 +1239,9 @@ public:
 	virtual void environment_set_background_param(RID p_env,VS::EnvironmentBGParam p_param, const Variant& p_value);
 	virtual Variant environment_get_background_param(RID p_env,VS::EnvironmentBGParam p_param) const;
 
+	virtual void environment_set_group(RID p_env,VS::Group p_group, const Variant& p_param);
+	virtual Variant environment_get_group(RID p_env, VS::Group p_param) const;
+	
 	virtual void environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled);
 	virtual bool environment_is_fx_enabled(RID p_env,VS::EnvironmentFx p_effect) const;
 

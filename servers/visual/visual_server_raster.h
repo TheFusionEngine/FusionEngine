@@ -1087,6 +1087,10 @@ public:
 	virtual void environment_set_background_param(RID p_env,EnvironmentBGParam p_param, const Variant& p_value);
 	virtual Variant environment_get_background_param(RID p_env,EnvironmentBGParam p_param) const;
 
+	
+	virtual void environment_set_group(RID p_env,VS::Group p_group, const Variant& p_param);
+	virtual Variant environment_get_group(RID p_env, VS::Group p_param) const;
+	
 	virtual void environment_set_enable_fx(RID p_env,EnvironmentFx p_effect,bool p_enabled);
 	virtual bool environment_is_fx_enabled(RID p_env,EnvironmentFx p_effect) const;
 

@@ -29,7 +29,7 @@
 #include "mutex_posix.h"
 #include "os/memory.h"
 
-#if defined(UNIX_ENABLED) || defined(PTHREAD_ENABLED) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(PTHREAD_ENABLED) || defined(__psp2__) || defined(DREAMCAST) || defined(PSP)
 
 void MutexPosix::lock() {
 
@@ -58,8 +58,10 @@ void MutexPosix::make_default() {
 MutexPosix::MutexPosix(bool p_recursive) {
 	
 	pthread_mutexattr_init(&attr);
+#ifndef DREAMCAST //DREAMCAST needs to make a recurisve thread by default
 	if (p_recursive)
 		pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
+#endif
 	pthread_mutex_init(&mutex,&attr);
 }
 

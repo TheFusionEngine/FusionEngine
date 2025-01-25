@@ -26,9 +26,22 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
+#ifdef GLES2_ENABLED
+#define PSP2_GLES2
+#endif
+
 #include "servers/visual/visual_server_raster.h"
-#include "servers/visual/rasterizer_dummy.h"
-#include "rasterizer_vita.h"
+// #include "servers/visual/rasterizer_dummy.h"
+#ifdef PSP2_GLES2
+
+extern "C" {
+	// extern void glInitAngle(void* a, void* b, void* c);
+}
+
+#include "drivers/gles2/rasterizer_gles2.h"
+#else
+#include "drivers/gles1/rasterizer_gles1.h"
+#endif
 #include "os_vita.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,7 +77,7 @@ const char * OS_VITA::get_video_driver_name(int p_driver) const {
 }
 OS::VideoMode OS_VITA::get_default_video_mode() const {
 
-	return OS::VideoMode(960,540,true);
+	return OS::VideoMode(960,544,true);
 }
 static EGLDisplay Display;
 static EGLConfig Config;
@@ -113,6 +126,10 @@ void OS_VITA::initialize_core() {
 	snprintf(hint.szGLES1, 256, "%s/%s", "app0:module", "libGLESv1_CM.suprx");
     snprintf(hint.szWindowSystem, 256, "%s/%s", "app0:module", "libpvrPSP2_WSEGL.suprx");
     hint.ui32SwTexOpCleanupDelay = 16000;
+	// hint.bEnableStaticMTECopy = 0;
+    // hint.bEnableStaticPDSVertex = 0;
+	// hint.bDisableUSEASMOPT = 1;
+	hint.bDisableStaticPDSPixelSAProgram = 1;
   	PVRSRVCreateVirtualAppHint(&hint);
 	
 	printf("created\n");
@@ -125,10 +142,16 @@ void OS_VITA::initialize_core() {
         EGL_ALPHA_SIZE, 8,
         EGL_DEPTH_SIZE, 8,
         EGL_STENCIL_SIZE, 8,
+#ifdef PSP2_GLES2
+		EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+#endif
         EGL_NONE
     };
 	EGLint ContextAttributeList[] = 
 	{
+#ifdef PSP2_GLES2
+		EGL_CONTEXT_CLIENT_VERSION, 2,
+#endif
 		EGL_NONE
 	};
 	EGLBoolean Res;
@@ -173,6 +196,9 @@ void OS_VITA::initialize_core() {
 
 	eglMakeCurrent(Display, Surface, Surface, Context);
 	printf("done egl\n");
+#ifdef PSP2_GLES2
+	// glInitAngle(0, 0, 0);
+#endif
 }
 
 void OS_VITA::finalize_core() {
@@ -187,13 +213,20 @@ void OS_VITA::initialize(const VideoMode& p_desired,int p_video_driver,int p_aud
 	current_videomode=p_desired;
 	main_loop=NULL;
 	
-	sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG_WIDE);
+	sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG);
+	
+	sceMotionStartSampling();
+	sceMotionSetAngleThreshold(45);
 	
 	samples_in = memnew_arr(int32_t, 2048);
 	samples_out = memnew_arr(int16_t, 2048);
-	
+#ifndef PSP2_GLES2
 	rasterizer = memnew( RasterizerGLES1 );
-
+#else
+	RasterizerGLES2 *rasterizer_gles2 = memnew( RasterizerGLES2(false,false,false,false) );
+	rasterizer_gles2->set_use_framebuffers(false);
+	rasterizer = rasterizer_gles2;
+#endif
 	visual_server = memnew( VisualServerRaster(rasterizer) );
 
 	AudioDriverManagerSW::get_driver(p_audio_driver)->set_singleton();
@@ -273,7 +306,7 @@ SceCtrlButtons buttons[] = {
 	SCE_CTRL_L3, SCE_CTRL_R3, SCE_CTRL_SELECT, SCE_CTRL_START,
 	SCE_CTRL_UP, SCE_CTRL_DOWN, SCE_CTRL_LEFT, SCE_CTRL_RIGHT
 };
-
+#define MAX_JOY_AXIS 32768
 void OS_VITA::process_keys() {
 	sceCtrlReadBufferPositive(0, &pad, 1);
 
@@ -298,16 +331,38 @@ void OS_VITA::process_keys() {
 			input->parse_input_event(event);
 		}
 	}
-
+	/*
 	uint8_t lx = ((pad.lx) / 255.0f) * 2.0 - 1.0;
 	uint8_t ly = ((pad.ly) / 255.0f) * 2.0 - 1.0;
 	uint8_t rx = ((pad.rx) / 255.0f) * 2.0 - 1.0;
 	uint8_t ry = ((pad.ry) / 255.0f) * 2.0 - 1.0;
-
+	
 	input->set_joy_axis(0, 0, lx);
 	input->set_joy_axis(0, 1, ly);
 	input->set_joy_axis(0, 2, rx);
 	input->set_joy_axis(0, 3, ry);
+	*/
+	uint8_t values[4] = {pad.lx, pad.ly, pad.rx, pad.ry};
+	for(int i = 0; i < 4; i++) {
+		InputEvent ievent;
+		
+		ievent.type = InputEvent::JOYSTICK_MOTION;
+		ievent.ID = ++last;
+		ievent.joy_motion.axis = i;
+		if(i == 2)
+			ievent.joy_motion.axis = 3;
+		if(i == 3)
+			ievent.joy_motion.axis = 4;
+		
+		ievent.joy_motion.axis_value = (float)(((values[i] - 127.5) / 127.5));
+
+		input->parse_input_event( ievent );
+	}
+	
+	sceMotionGetState(&motion_state);
+	input->set_accelerometer(Vector3(motion_state.acceleration.x, motion_state.acceleration.y, motion_state.acceleration.z));
+	input->set_gravity(Vector3(motion_state.basicOrientation.x, motion_state.basicOrientation.y, motion_state.basicOrientation.z));
+	input->set_gyroscope(Vector3(motion_state.angularVelocity.x, motion_state.angularVelocity.y, motion_state.angularVelocity.z));
 }
 
 void OS_VITA::set_mouse_grab(bool p_grab) {
@@ -414,6 +469,84 @@ void OS_VITA::set_cursor_shape(CursorShape p_shape) {
 
 
 }
+void OS_VITA::init_camera() {
+	memblock = sceKernelAllocMemBlock("camera", SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_RW, 0x40000, NULL);
+	sceKernelGetMemBlockBase(memblock, &camera_tex);
+	camera_image = Ref<ImageTexture>(memnew(ImageTexture));
+
+	
+	memset(reinterpret_cast<void *>(&cameraInfo), 0, sizeof(cameraInfo));
+	
+	cameraInfo.size = sizeof(SceCameraInfo);
+
+	cameraInfo.format = SCE_CAMERA_FORMAT_ABGR;
+	cameraInfo.resolution = SCE_CAMERA_RESOLUTION_160_120;
+	cameraInfo.framerate = SCE_CAMERA_FRAMERATE_60_FPS;
+
+	int _cameraWidth = 160;
+	int _cameraHeight = 120;
+
+    cameraInfo.pIBase = camera_tex;
+
+    cameraInfo.sizeIBase = _cameraWidth * _cameraHeight * 4;
+	
+	cameraInfo.pitch = 0;
+	printf("sceCameraOpen\n");
+	int ret = sceCameraOpen(SCE_CAMERA_DEVICE_BACK, &cameraInfo);
+	if (ret < 0)
+		printf("sceCameraOpen():SCE_CAMERA_DEVICE_FRONT 0x%X\n", ret);
+	else
+		camera_init = true;
+	memset(reinterpret_cast<void *>(&cameraInfoRead), 0, sizeof(cameraInfoRead));
+	cameraInfoRead.size = sizeof(SceCameraRead);
+	cameraInfoRead.mode = 1;
+	
+	ret = sceCameraStart(SCE_CAMERA_DEVICE_BACK);
+	if (ret < 0)
+		printf("sceCameraStart() 0x%X\n", ret);
+	else
+		camera_init = true;
+	
+	sceCameraSetNightmode(SCE_CAMERA_DEVICE_BACK, SCE_CAMERA_NIGHTMODE_LESS10);
+	
+	set_camera_image(camera_image);
+}
+
+void OS_VITA::process_camera() {
+	if(!camera_init)
+		init_camera();
+	
+	sceCameraRead(SCE_CAMERA_DEVICE_BACK, &cameraInfoRead);
+	// printf("sceCameraRead() 0x%X\n", ret);
+	
+	
+	DVector<uint8_t> dstbuff;
+	dstbuff.resize( 160 * 120 * 4 );
+	
+	DVector<uint8_t>::Write dstbuff_write = dstbuff.write();
+
+	uint8_t* data = dstbuff_write.ptr();
+
+	memcpy(data, camera_tex, 160*120*4);
+	size_t total_pixels = 160 * 120;
+
+    for (size_t i = 0; i < total_pixels; i++) {
+        uint32_t abgr = data[i];
+        data[i] = (abgr & 0xFF00FF00)
+                  | ((abgr & 0x000000FF) << 16) 
+                  | ((abgr & 0x00FF0000) >> 16);
+    }
+
+	Image frame = Image();
+	frame.create(160, 120, 0, Image::FORMAT_RGBA, dstbuff);
+
+	if (camera_image->get_width() == 0) {
+		camera_image->create(frame.get_width(),frame.get_height(),frame.get_format(),Texture::FLAG_VIDEO_SURFACE|Texture::FLAG_FILTER);
+		camera_image->set_data(frame);
+	} else {
+		camera_image->set_data(frame);
+	}
+}
 
 void OS_VITA::process_audio() {
 	audio_server->driver_process(1024, samples_in);
@@ -440,6 +573,8 @@ void OS_VITA::run() {
 	while (!force_quit) {
 		// process_audio();
 		process_keys();
+		if(get_camera_enabled())
+			process_camera();
 		
 		if (Main::iteration()==true)
 			break;

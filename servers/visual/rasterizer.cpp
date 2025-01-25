@@ -609,7 +609,9 @@ Rasterizer::Rasterizer() {
 	"specular_exp",
 	"glow",
 	"normal",
-	"shade_param"};
+	"shade_param",
+	"envmap"
+	};
 
 	for(int i=0;i<VS::FIXED_MATERIAL_PARAM_MAX;i++) {
 

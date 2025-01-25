@@ -28,14 +28,15 @@
 /*************************************************************************/
 #include "file_access_unix.h"
 
-#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__)
+#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__) || defined(ULTRA) || defined(__3DS__)
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "print_string.h"
 #include "core/os/os.h"
 
-#if !defined(PSP) && !defined(__psp2__)
+#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST) && !defined(ULTRA) && !defined(__3DS__)
+
 #include <sys/statvfs.h>
 #endif
 
