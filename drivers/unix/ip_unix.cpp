@@ -28,6 +28,7 @@
 /*************************************************************************/
 #include "ip_unix.h"
 
+
 #if defined(POSIX_IP_ENABLED) || defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WINRT_ENABLED) && !defined(WIN98_ENABLED) || defined(PSP) || defined(__3DS__)
 
 
@@ -51,13 +52,12 @@
 #else
  #include <netdb.h>
 #if !defined(__3DS__) && !defined(PSP)
-  #ifdef ANDROID_ENABLED
-   #include "platform/android/ifaddrs_android.h"
-  #else
-   #include <ifaddrs.h>
-  #endif
-
+ #ifdef ANDROID_ENABLED
+  #include "platform/android/ifaddrs_android.h"
+ #else
+  #include <ifaddrs.h>
  #endif
+#endif
  #include <arpa/inet.h>
  #include <sys/socket.h>
 
@@ -77,6 +77,7 @@ IP_Address IP_Unix::_resolve_hostname(const String& p_hostname) {
 	return ip;
 
 }
+
 
 #if defined(PSP) || defined(WII_ENABLED) || defined(__3DS__)
 

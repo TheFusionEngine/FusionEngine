@@ -71,13 +71,16 @@ Error AudioDriverPSP::init() {
 	// sceKernelStartThread(thid, sizeof(this), this);*/
 	// audio_server_process_ptr = audio_server_process;
 
+
 	return OK;
 };
 
 void AudioDriverPSP::thread_func(SceSize args, void* p_udata) {
 	int buffer_index = 0;
- 	AudioDriverPSP *ad = (AudioDriverPSP *)self;
-	
+
+ 	AudioDriverPSP *ad = (AudioDriverPSP *)p_udata;
+	//AudioDriverPSP *ad = (AudioDriverPSP *)self;
+
 	int sample_count = ad->buffer_size;
 	uint64_t usdelay = (ad->buffer_size / float(ad->mix_rate)) / 1000;
 	printf("SampleCount %d\n", sample_count);
@@ -85,6 +88,8 @@ void AudioDriverPSP::thread_func(SceSize args, void* p_udata) {
 
  	while (!ad->exit_thread) {
 
+		if (ad->exit_thread)
+ 			break;
 
 		if (ad->active) {
 			// ad->lock();
@@ -107,6 +112,7 @@ void AudioDriverPSP::thread_func(SceSize args, void* p_udata) {
 			}
 		}
 		
+
 		sceAudioOutput2OutputBlocking(0xc000, ad->samples_out);
 		//sceAudioOutput2OutputBlocking(0x8000*3, ad->samples_out);
         
@@ -146,6 +152,7 @@ void AudioDriverPSP::unlock() {
 
 void AudioDriverPSP::finish() {
 	exit_thread = true;
+
  	// Thread::wait_to_finish(thread);
 
 	if (thread) {

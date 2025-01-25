@@ -31,6 +31,7 @@
 
 #include "io/ip.h"
 
+
 #if defined(POSIX_IP_ENABLED) || defined(UNIX_ENABLED) || defined(WINDOWS_ENABLED) && !defined(WIN98_ENABLED) || defined(PSP) || defined(__3DS__)
 
 

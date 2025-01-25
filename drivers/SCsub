@@ -8,6 +8,7 @@ Export('env')
 SConscript('unix/SCsub');
 SConscript('alsa/SCsub');
 SConscript('windows/SCsub');
+
 if env["platform"] in ("x11", "vita", "javascript"):
 	SConscript('gles2/SCsub');
 if env["platform"] not in ("x11soft", "windows", "psp"):

@@ -28,6 +28,7 @@
 /*************************************************************************/
 #include "dir_access_unix.h"
 
+
 #if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__) || defined(ULTRA) || defined(__3DS__)
 
 #if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST) && !defined(ULTRA) && !defined(__3DS__)
@@ -308,6 +309,7 @@ Error DirAccessUnix::remove(String p_path)  {
 
 
 size_t DirAccessUnix::get_space_left() {
+
 
 #if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST) && !defined(ULTRA) && !defined(__3DS__)
 
