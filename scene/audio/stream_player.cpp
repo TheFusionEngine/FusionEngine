@@ -74,7 +74,7 @@ Ref<AudioStream> StreamPlayer::get_stream() const {
 
 
 void StreamPlayer::play() {
-
+	
 	ERR_FAIL_COND(!is_inside_tree());
 	if (stream.is_null())
 		return;
@@ -82,6 +82,7 @@ void StreamPlayer::play() {
 		stop();
 
 	stream->play();
+
 	AudioServer::get_singleton()->stream_set_active(stream_rid,true);
 	AudioServer::get_singleton()->stream_set_volume_scale(stream_rid,volume);
 //	if (stream->get_update_mode()!=AudioStream::UPDATE_NONE)

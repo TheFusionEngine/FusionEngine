@@ -581,7 +581,17 @@ Error _OS::native_video_play(String p_path, float p_volume, String p_audio_track
 
 	return OS::get_singleton()->native_video_play(p_path, p_volume, p_audio_track, p_subtitle_track);
 };
+bool _OS::get_camera_enabled() {
+	return OS::get_singleton()->get_camera_enabled();
+};
+void _OS::set_camera_enabled(bool p_enabled) {
+	return OS::get_singleton()->set_camera_enabled(p_enabled);
+};
 
+Ref<ImageTexture> _OS::get_camera_image() {
+	return OS::get_singleton()->get_camera_image();
+	
+};
 bool _OS::native_video_is_playing() {
 
 	return OS::get_singleton()->native_video_is_playing();
@@ -642,7 +652,9 @@ void _OS::_bind_methods() {
 
 	ObjectTypeDB::bind_method(_MD("has_touchscreen_ui_hint"),&_OS::has_touchscreen_ui_hint);
 
-
+	ObjectTypeDB::bind_method(_MD("set_camera_enabled"),&_OS::set_camera_enabled);
+	ObjectTypeDB::bind_method(_MD("get_camera_enabled"),&_OS::get_camera_enabled);
+	ObjectTypeDB::bind_method(_MD("get_camera_image"),&_OS::get_camera_image);
 
 	ObjectTypeDB::bind_method(_MD("set_low_processor_usage_mode","enable"),&_OS::set_low_processor_usage_mode);
 	ObjectTypeDB::bind_method(_MD("is_in_low_processor_usage_mode"),&_OS::is_in_low_processor_usage_mode);

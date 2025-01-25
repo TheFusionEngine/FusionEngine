@@ -434,6 +434,14 @@ void OS::swap_buffers() {
 
 }
 
+void OS::set_camera_enabled(bool p_enable) {
+	camera_enabled = p_enable;
+}
+
+void OS::set_camera_image(Ref<ImageTexture> data) {
+	p_camera_image = data;
+}
+
 String OS::get_unique_ID() const {
 
 	ERR_FAIL_V("");

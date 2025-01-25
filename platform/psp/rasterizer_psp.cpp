@@ -3018,8 +3018,6 @@ void RasterizerPSP::set_render_target(RID p_render_target, bool p_transparent_bg
 
 
 void RasterizerPSP::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug) {
-
-
 	opaque_render_list.clear();
 	alpha_render_list.clear();
 	light_instance_count=0;
@@ -3814,7 +3812,6 @@ void RasterizerPSP::_render(const Geometry *p_geometry,const Material *p_materia
 
 	switch(p_geometry->type) {
 		case Geometry::GEOMETRY_SURFACE: {
-
 			Surface *s = (Surface*)p_geometry;
 
 			_rinfo.vertex_count+=s->array_len;
@@ -3944,7 +3941,6 @@ void RasterizerPSP::_setup_shader_params(const Material *p_material) {
 }
 
 void RasterizerPSP::_render_list_forward(RenderList *p_render_list,bool p_reverse_cull) {
-
 	const Material *prev_material=NULL;
 	uint64_t prev_light_key=0;
 	const Skeleton *prev_skeleton=NULL;
@@ -3959,7 +3955,7 @@ void RasterizerPSP::_render_list_forward(RenderList *p_render_list,bool p_revers
 		uint64_t light_key = e->light_key;
 		const Skeleton *skeleton = e->skeleton;
 		const Geometry *geometry = e->geometry;
-
+		
 		if (material!=prev_material || geometry->type!=prev_geometry_type) {
 			_setup_material(e->geometry,material);
 			_rinfo.mat_change_count++;
@@ -4036,9 +4032,9 @@ void RasterizerPSP::_render_list_forward(RenderList *p_render_list,bool p_revers
 
 
 void RasterizerPSP::end_scene() {
-
 	sceGuEnable(GU_BLEND);
 	sceGuDepthMask(GU_FALSE);
+	// sceGuDepthRange(0,20000);
 	sceGuEnable(GU_DEPTH_TEST);
 	sceGuDepthFunc(GU_LEQUAL);
 	sceGuDisable(GU_SCISSOR_TEST);
@@ -4999,7 +4995,7 @@ Variant RasterizerPSP::environment_get_background_param(RID p_env,VS::Environmen
 	return env->bg_param[p_param];
 
 }
-void RasterizerDC::environment_set_group(RID p_env,VS::Group p_param, const Variant& p_value){
+void RasterizerPSP::environment_set_group(RID p_env,VS::Group p_param, const Variant& p_value){
 
 	ERR_FAIL_INDEX(p_param,VS::ENV_GROUP_MAX);
 	Environment * env = environment_owner.get(p_env);
@@ -5007,7 +5003,7 @@ void RasterizerDC::environment_set_group(RID p_env,VS::Group p_param, const Vari
 	env->group[p_param]=p_value;
 
 }
-Variant RasterizerDC::environment_get_group(RID p_env,VS::Group p_param) const{
+Variant RasterizerPSP::environment_get_group(RID p_env,VS::Group p_param) const{
 
 	ERR_FAIL_INDEX_V(p_param,VS::ENV_GROUP_MAX,Variant());
 	const Environment * env = environment_owner.get(p_env);
@@ -5473,7 +5469,7 @@ void RasterizerPSP::init() {
 	sceGuDepthBuffer(zbp,BUF_WIDTH);
 	sceGuOffset(2048 - (SCR_WIDTH/2),2048 - (SCR_HEIGHT/2));
 	sceGuViewport(2048,2048,SCR_WIDTH,SCR_HEIGHT);
-	sceGuDepthRange(0x0000,0xFFFF);
+	sceGuDepthRange(0,0xffff);
 	sceGuScissor(0,0,SCR_WIDTH,SCR_HEIGHT);
 	sceGuEnable(GU_SCISSOR_TEST);
 	sceGuFrontFace(GU_CW);
@@ -5552,7 +5548,7 @@ void RasterizerPSP::init() {
 
 void RasterizerPSP::finish() {
 	sceGuTerm();
-	memdelete(skinned_buffer);
+	//memdelete(skinned_buffer);
 }
 
 int RasterizerPSP::get_render_info(VS::RenderInfo p_info) {

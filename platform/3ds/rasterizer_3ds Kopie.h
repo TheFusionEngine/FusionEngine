@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  rasterizer_gles1.h                                                   */
+/*  rasterizer_3ds.h                                                     */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -26,12 +26,24 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef RASTERIZER_GLES1_H
-#define RASTERIZER_GLES1_H
+#ifndef RASTERIZER_3DS_H
+#define RASTERIZER_3DS_H
+
+#ifdef __3DS__
+extern "C" {
+#include <3ds/types.h>
+#include <3ds/gpu/gpu.h>
+#include <3ds/gfx.h>
+#include <3ds/gpu/gx.h>
+#include <3ds/gpu/shaderProgram.h>
+#include <3ds/allocator/linear.h>
+}
+#undef __3DS__
+#include <citro3d.h>
+#define __3DS__
+#endif
 
 #include "servers/visual/rasterizer.h"
-
-#ifdef __psp2__
 
 #include "image.h"
 #include "rid.h"
@@ -40,100 +52,67 @@
 #include "map.h"
 #include "camera_matrix.h"
 #include "sort.h"
-// #include "tools/editor/scene_tree_editor.h"
-#include "platform_config.h"
-#ifndef GLES1_INCLUDE_H
-#include <GLES/gl.h>
-// #include "immvertex.h"
-#else
-#include GLES1_INCLUDE_H
-#endif
 
 
 #include "servers/visual/particle_system_sw.h"
 
-/**
-        @author Juan Linietsky <reduzio@gmail.com>
-*/
-class RasterizerGLES1 : public Rasterizer {
+static uint32_t convert_color(const Color* ic) {
 
-	enum {
+	uint32_t c=(uint8_t)(ic->r*255);
+	c<<=8;
+	c|=(uint8_t)(ic->g*255);
+	c<<=8;
+	c|=(uint8_t)(ic->b*255);
+	c<<=8;
+	c|=(uint8_t)(ic->a*255);
 
-		MAX_SCENE_LIGHTS=2048,
-		LIGHT_SPOT_BIT=0x80,
-		DEFAULT_SKINNED_BUFFER_SIZE = 1024 * 1024, // 10k vertices
-		MAX_HW_LIGHTS = 8, //yay! pvrpsp2 supports 8 hw lights
-	};
-	#ifdef PSP
-	void glActiveTexture(int a1) { };
-	void glClientActiveTexture(int a1) { };
-	#endif
+	return c;
+}
+typedef struct { float position[3]; float texcoord[2]; float normal[3]; } vertex3ds;
 
-	GLuint BlurTexture;
+typedef struct {
+	Vector3 position;
+	Vector2 texcoord;
+} VertexArray;
 
-	uint8_t *skinned_buffer;
-	int skinned_buffer_size;
-	bool pvr_supported;
-	bool s3tc_supported;
-	bool etc_supported;
-	bool npo2_textures_available;
-	bool pack_arrays;
-	bool use_reload_hooks;
-	bool is_editor;
+class Rasterizer3DS : public Rasterizer {
 	
-
-	Image _get_gl_image_and_format(const Image& p_image, Image::Format p_format, uint32_t p_flags,GLenum& r_gl_format,int &r_gl_components,bool &r_has_alpha_cache,bool &r_compressed);
-
-
+	
+	void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h,bool p_flip_v );
+	DVLB_s* simple_3ds;
+	DVLB_s* simple_2ds;
+	shaderProgram_s program;
+	
+	C3D_Mtx projection;
+	C3D_Mtx modelView;
+	int uLoc_projection, uLoc_modelView;
+	
 	struct Texture {
 
 		uint32_t flags;
 		int width,height;
-		int alloc_width, alloc_height;
 		Image::Format format;
-
-		GLenum target;
-		GLenum gl_format_cache;
-		int gl_components_cache;
-		int data_size; //original data size, useful for retrieving back
-		bool format_has_alpha;
-		bool compressed;
-		bool disallow_mipmaps;
-		int total_data_size;
-
 		Image image[6];
-
-		bool active;
-		GLuint tex_id;
-
-		ObjectID reloader;
-		StringName reloader_func;
-
+		C3D_Tex texture;
 		Texture() {
 
 			flags=width=height=0;
-			tex_id=0;
-			data_size=0;
 			format=Image::FORMAT_GRAYSCALE;
-			gl_components_cache=0;
-			format_has_alpha=false;
-			active=false;
-			disallow_mipmaps=false;
-//			gen_mipmap=true;
-			compressed=false;
-			total_data_size=0;
 		}
 
 		~Texture() {
 
-			if (tex_id!=0) {
-
-				glDeleteTextures(1,&tex_id);
-			}
 		}
 	};
 
 	mutable RID_Owner<Texture> texture_owner;
+	
+	struct RenderTarget {
+		C3D_RenderTarget* target;
+	};
+	
+	mutable RID_Owner<RenderTarget> render_target_owner;
+	uint32_t clear_color_top;
 
 	struct Shader {
 
@@ -156,24 +135,16 @@ class RasterizerGLES1 : public Rasterizer {
 
 	struct Material {
 
-		bool fixed_flags[VS::FIXED_MATERIAL_FLAG_MAX];
 		bool flags[VS::MATERIAL_FLAG_MAX];
-		Variant parameters[VisualServer::FIXED_MATERIAL_PARAM_MAX];
-		RID textures[VisualServer::FIXED_MATERIAL_PARAM_MAX];
 
 		VS::MaterialDepthDrawMode depth_draw_mode;
-
-		Transform uv_transform;
-		VS::FixedMaterialTexCoordMode texcoord_mode[VisualServer::FIXED_MATERIAL_PARAM_MAX];
 
 		VS::MaterialBlendMode blend_mode;
 
 		float line_width;
 		float point_size;
-		bool has_alpha;
 
 		RID shader; // shader material
-		uint64_t last_pass;
 
 		Map<StringName,Variant> shader_params;
 
@@ -181,24 +152,13 @@ class RasterizerGLES1 : public Rasterizer {
 		Material() {
 
 
-			for(int i=0;i<VS::FIXED_MATERIAL_FLAG_MAX;i++)
-				flags[i]=false;
-
 			for(int i=0;i<VS::MATERIAL_FLAG_MAX;i++)
 				flags[i]=false;
 			flags[VS::MATERIAL_FLAG_VISIBLE]=true;
 
-			parameters[VS::FIXED_MATERIAL_PARAM_DIFFUSE] = Color(0.8, 0.8, 0.8);
-			parameters[VS::FIXED_MATERIAL_PARAM_SPECULAR_EXP] = 12;
-
-			for (int i=0; i<VisualServer::FIXED_MATERIAL_PARAM_MAX; i++) {
-				texcoord_mode[i] = VS::FIXED_MATERIAL_TEXCOORD_UV;
-			};
 			depth_draw_mode=VS::MATERIAL_DEPTH_DRAW_OPAQUE_ONLY;
 			line_width=1;
-			has_alpha=false;
 			blend_mode=VS::MATERIAL_BLEND_MODE_MIX;
-			last_pass = 0;
 			point_size = 1.0;
 
 		}
@@ -236,85 +196,32 @@ class RasterizerGLES1 : public Rasterizer {
 
 	struct Surface : public Geometry {
 
-		struct ArrayData {
-
-			uint32_t ofs,size,datatype,count;
-			bool normalize;
-			bool bind;
-
-			ArrayData() { ofs=0; size=0; count=0; datatype=0; normalize=0; bind=false;}
-		};
-
-		Mesh *mesh;
-
 		Array data;
 		Array morph_data;
-		ArrayData array[VS::ARRAY_MAX];
-		// support for vertex array objects
-		GLuint array_object_id;
-		// support for vertex buffer object
-		GLuint vertex_id; // 0 means, unconfigured
-		GLuint index_id; // 0 means, unconfigured
-		// no support for the above, array in localmem.
-		uint8_t *array_local;
-		uint8_t *index_array_local;
 
 		bool packed;
-
-		struct MorphTarget {
-			uint32_t configured_format;
-			uint8_t *array;
-		};
-
-		MorphTarget* morph_targets_local;
+		bool alpha_sort;
 		int morph_target_count;
 		AABB aabb;
-
-		int array_len;
-		int index_array_len;
-		int max_bone;
-
-		float vertex_scale;
-		float uv_scale;
-		float uv2_scale;
 
 		VS::PrimitiveType primitive;
 
 		uint32_t format;
-		uint32_t configured_format;
-
-		int stride;
-		int local_stride;
 		uint32_t morph_format;
 
-		bool active;
+		RID material;
+		bool material_owned;
 
-		Point2 uv_min;
-		Point2 uv_max;
 
 		Surface() {
 
-
-			array_len=0;
-			local_stride=0;
-			morph_format=0;
-			type=GEOMETRY_SURFACE;
-			primitive=VS::PRIMITIVE_POINTS;
-			index_array_len=0;
-			vertex_scale=1.0;
-			uv_scale=1.0;
-			uv2_scale=1.0;
-
-			format=0;
-			stride=0;
-			morph_targets_local=0;
-			morph_target_count=0;
-
-			array_local = index_array_local = 0;
-			vertex_id = index_id = 0;
-
-			active=false;
 			packed=false;
+			morph_target_count=0;
+			material_owned=false;
+			format=0;
+			morph_format=0;
+
+			primitive=VS::PRIMITIVE_POINTS;
 		}
 
 		~Surface() {
@@ -341,8 +248,6 @@ class RasterizerGLES1 : public Rasterizer {
 	};
 	mutable RID_Owner<Mesh> mesh_owner;
 
-	Error _surface_set_arrays(Surface *p_surface, uint8_t *p_mem,uint8_t *p_index_mem,const Array& p_arrays,bool p_main);
-
 	struct MultiMesh;
 
 	struct MultiMeshSurface : public Geometry {
@@ -355,31 +260,8 @@ class RasterizerGLES1 : public Rasterizer {
 
 		struct Element {
 
-			float matrix[16];
-			uint8_t color[4];
-			Element() {
-				matrix[0]=1;
-				matrix[1]=0;
-				matrix[2]=0;
-				matrix[3]=0;
-
-				matrix[4]=0;
-				matrix[5]=1;
-				matrix[6]=0;
-				matrix[7]=0;
-
-				matrix[8]=0;
-				matrix[9]=0;
-				matrix[10]=1;
-				matrix[11]=0;
-
-				matrix[12]=0;
-				matrix[13]=0;
-				matrix[14]=0;
-				matrix[15]=1;
-			};
-
-
+			Transform xform;
+			Color color;
 		};
 
 		AABB aabb;
@@ -388,28 +270,19 @@ class RasterizerGLES1 : public Rasterizer {
 
 		//IDirect3DVertexBuffer9* instance_buffer;
 		Vector<Element> elements;
-		Vector<MultiMeshSurface> cache_surfaces;
-		mutable uint64_t last_pass;
-		GLuint tex_id;
-		int tw;
-		int th;
 
-		SelfList<MultiMesh> dirty_list;
-
-		MultiMesh() : dirty_list(this) {
-
-			tw=1;
-			th=1;
-			tex_id=0;
-			last_pass=0;
-			visible = -1;
+		MultiMesh() {
+			visible=-1;
 		}
+
+
 	};
 
+
 	mutable RID_Owner<MultiMesh> multimesh_owner;
-	mutable SelfList<MultiMesh>::List _multimesh_dirty_list;
 
 	struct Immediate {
+
 
 		RID material;
 		int empty;
@@ -428,6 +301,7 @@ class RasterizerGLES1 : public Rasterizer {
 	};
 
 	mutable RID_Owner<Particles> particles_owner;
+	
 
 	struct ParticlesInstance : public GeometryOwner {
 
@@ -486,8 +360,7 @@ class RasterizerGLES1 : public Rasterizer {
 		Variant bg_param[VS::ENV_BG_PARAM_MAX];
 		bool fx_enabled[VS::ENV_FX_MAX];
 		Variant fx_param[VS::ENV_FX_PARAM_MAX];
-		Variant group[VS::ENV_GROUP_MAX];
-		
+
 		Environment() {
 
 			bg_mode=VS::ENV_BG_DEFAULT_COLOR;
@@ -521,19 +394,16 @@ class RasterizerGLES1 : public Rasterizer {
 			fx_param[VS::ENV_FX_PARAM_BCS_CONTRAST]=1.0;
 			fx_param[VS::ENV_FX_PARAM_BCS_SATURATION]=1.0;
 
+
 		}
 
 	};
 
 	mutable RID_Owner<Environment> environment_owner;
-	Environment *current_env;
-	
+
 	struct SampledLight {
 
 		int w,h;
-		GLuint texture;
-		float multiplier;
-		bool is_float;
 	};
 
 	mutable RID_Owner<SampledLight> sampled_light_owner;
@@ -562,331 +432,19 @@ class RasterizerGLES1 : public Rasterizer {
 		Vector3 spot_vector;
 		float linear_att;
 
-		uint64_t shadow_pass;
-		uint64_t last_pass;
-		uint16_t sort_key;
 
-		Vector<ShadowBuffer*> shadow_buffers;
-
-		void clear_shadow_buffers() {
-
-			for (int i=0;i<shadow_buffers.size();i++) {
-
-				ShadowBuffer *sb=shadow_buffers[i];
-				ERR_CONTINUE( sb->owner != this );
-
-				sb->owner=NULL;
-			}
-
-			shadow_buffers.clear();
-		}
-
-		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; }
+		LightInstance() { linear_att=1.0; }
 
 	};
+
 	mutable RID_Owner<Light> light_owner;
 	mutable RID_Owner<LightInstance> light_instance_owner;
 
-	LightInstance *light_instances[MAX_SCENE_LIGHTS];
-	LightInstance *directional_lights[4];
-//	LightInstance *directional_light_instances[MAX_SCENE_LIGHTS];
-	int light_instance_count;
-	int directional_light_count;
-	int last_light_id;
-
-
-	struct RenderList {
-
-		enum {
-			MAX_ELEMENTS=4096,
-			MAX_LIGHTS=8192
-		};
-
-		struct Element {
-
-
-			float depth;
-			const InstanceData *instance;
-			const Skeleton *skeleton;
-			union {
-				uint16_t lights[MAX_HW_LIGHTS];
-				uint64_t light_key;
-			};
-
-			const Geometry *geometry;
-			const Material *material;
-			const GeometryOwner *owner;
-			uint16_t light_count;
-			bool mirror;
-
-
-		};
-
-
-		Element _elements[MAX_ELEMENTS];
-		Element *elements[MAX_ELEMENTS];
-		int element_count;
-
-		void clear() {
-
-			element_count=0;
-		}
-
-		struct SortZ {
-
-			_FORCE_INLINE_ bool operator()(const Element* A,  const Element* B ) const {
-
-				return A->depth > B->depth;
-			}
-		};
-
-		void sort_z() {
-
-			SortArray<Element*,SortZ> sorter;
-			sorter.sort(elements,element_count);
-		}
-
-
-		struct SortMat {
-
-			_FORCE_INLINE_ bool operator()(const Element* A,  const Element* B ) const {
-				// TODO move to a single uint64 (one comparison)
-				if (A->material == B->material) {
-
-					return A->light_key < B->light_key;
-				} else {
-
-					return (A->material < B->material);
-				}
-			}
-		};
-
-		void sort_mat() {
-
-			SortArray<Element*,SortMat> sorter;
-			sorter.sort(elements,element_count);
-		}
-
-		struct SortMatLight {
-
-			_FORCE_INLINE_ bool operator()(const Element* A,  const Element* B ) const {
-
-				if (A->material->flags[VS::MATERIAL_FLAG_UNSHADED] == B->material->flags[VS::MATERIAL_FLAG_UNSHADED]) {
-
-					if (A->material == B->material) {
-
-						if (A->geometry == B->geometry) {
-
-							return A->light_key<B->light_key;
-						} else
-							return (A->geometry < B->geometry);
-					} else {
-
-						return (A->material < B->material);
-					}
-				} else {
-
-					return (int(A->material->flags[VS::MATERIAL_FLAG_UNSHADED]) < int(B->material->flags[VS::MATERIAL_FLAG_UNSHADED]));
-				}
-			}
-		};
-
-		void sort_mat_light() {
-
-			SortArray<Element*,SortMatLight> sorter;
-			sorter.sort(elements,element_count);
-		}
-
-		_FORCE_INLINE_ Element* add_element() {
-
-			if (element_count>MAX_ELEMENTS)
-				return NULL;
-			elements[element_count]=&_elements[element_count];
-			return elements[element_count++];
-		}
-
-		RenderList() {
-
-			element_count = 0;
-			for (int i=0;i<MAX_ELEMENTS;i++)
-				elements[i]=&_elements[i]; // assign elements
-		}
-	};
-
-	RenderList opaque_render_list;
-	RenderList alpha_render_list;
 
 	RID default_material;
 
-	struct FX {
+	RenderTarget* top_rt;
 
-		bool bgcolor_active;
-		Color bgcolor;
-
-		bool skybox_active;
-		RID skybox_cubemap;
-
-		bool antialias_active;
-		float antialias_tolerance;
-
-		bool glow_active;
-		int glow_passes;
-		float glow_attenuation;
-		float glow_bloom;
-
-		bool ssao_active;
-		float ssao_attenuation;
-		float ssao_radius;
-		float ssao_max_distance;
-		float ssao_range_max;
-		float ssao_range_min;
-		bool ssao_only;
-
-		bool fog_active;
-		float fog_near;
-		float fog_far;
-		float fog_attenuation;
-		Color fog_color_near;
-		Color fog_color_far;
-		bool fog_bg;
-
-		bool toon_active;
-		float toon_treshold;
-		float toon_soft;
-
-		bool edge_active;
-		Color edge_color;
-		float edge_size;
-
-		FX();
-
-	};
-	mutable RID_Owner<FX> fx_owner;
-
-
-	FX *scene_fx;
-	CameraMatrix camera_projection;
-	Transform camera_transform;
-	Transform camera_transform_inverse;
-	float camera_z_near;
-	float camera_z_far;
-	Size2 camera_vp_size;
-	Color last_color;
-
-	Plane camera_plane;
-
-	bool keep_copies;
-
-	bool depth_write;
-	bool depth_test;
-	int blend_mode;
-	bool lighting;
-
-	_FORCE_INLINE_ void _add_geometry( const Geometry* p_geometry, const InstanceData *p_instance, const Geometry *p_geometry_cmp, const GeometryOwner *p_owner);
-
-	void _render_list_forward(RenderList *p_render_list,bool p_reverse_cull=false);
-
-	void _setup_light(LightInstance* p_instance, int p_idx);
-	void _setup_lights(const uint16_t * p_lights,int p_light_count);
-
-	_FORCE_INLINE_ void _setup_shader_params(const Material *p_material);
-	void _setup_fixed_material(const Geometry *p_geometry,const Material *p_material);
-	void _setup_material(const Geometry *p_geometry,const Material *p_material);
-
-	Error _setup_geometry(const Geometry *p_geometry, const Material* p_material,const Skeleton *p_skeleton, const float *p_morphs);
-	void _render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner);
-
-
-	/***********/
-	/* SHADOWS */
-	/***********/
-
-	struct ShadowBuffer {
-
-		int size;
-		GLuint fbo;
-		GLuint depth;
-		LightInstance *owner;
-		void init(int p_size);
-		ShadowBuffer() { size=0; depth=0; owner=NULL; }
-	};
-
-	Vector<ShadowBuffer> near_shadow_buffers;
-	Vector<ShadowBuffer> far_shadow_buffers;
-
-	LightInstance *shadow;
-	int shadow_pass;
-	void _init_shadow_buffers();
-
-	float shadow_near_far_split_size_ratio;
-	bool _allocate_shadow_buffers(LightInstance *p_instance, Vector<ShadowBuffer>& p_buffers);
-	void _debug_draw_shadow(GLuint tex, const Rect2& p_rect);
-	void _debug_draw_shadows_type(Vector<ShadowBuffer>& p_shadows,Point2& ofs);
-	void _debug_shadows();
-	void reset_state();
-
-	/***********/
-	/*  FBOs   */
-	/***********/
-
-
-	struct FrameBuffer {
-
-		GLuint fbo;
-		GLuint color;
-		GLuint depth;
-		int width,height;
-		bool buff16;
-		bool active;
-
-		struct Blur {
-
-			GLuint fbo;
-			GLuint color;
-		} blur[2];
-
-	} framebuffer;
-
-	void _update_framebuffer();
-	void _process_glow_and_bloom();
-
-	/*********/
-	/* FRAME */
-	/*********/
-
-	struct _Rinfo {
-
-		int texture_mem;
-		int vertex_count;
-		int object_count;
-		int mat_change_count;
-		int shader_change_count;
-
-	} _rinfo;
-
-	GLuint white_tex;
-	RID canvas_tex;
-	float canvas_opacity;
-	VS::MaterialBlendMode canvas_blend;
-	_FORCE_INLINE_ Texture* _bind_canvas_texture(const RID& p_texture);
-
-
-	int _setup_geometry_vinfo;
-
-	bool cull_front;
-	_FORCE_INLINE_ void _set_cull(bool p_front,bool p_reverse_cull=false);
-
-	Size2 window_size;
-	VS::ViewportRect viewport;
-	double last_time;
-	double time_delta;
-	uint64_t frame;
-	uint64_t scene_pass;
-
-	//void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1);
-	//void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_h_flip=false, bool p_v_flip=false );
-	//void _draw_quad(const Rect2& p_rect);
-	void _process_blur(int times, float inc);
 
 public:
 
@@ -941,28 +499,6 @@ public:
 	virtual void material_set_line_width(RID p_material,float p_line_width);
 	virtual float material_get_line_width(RID p_material) const;
 
-	/* FIXED MATERIAL */
-
-	virtual RID fixed_material_create();
-
-	virtual void fixed_material_set_flag(RID p_material, VS::FixedMaterialFlags p_flag, bool p_enabled);
-	virtual bool fixed_material_get_flag(RID p_material, VS::FixedMaterialFlags p_flag) const;
-
-	virtual void fixed_material_set_parameter(RID p_material, VS::FixedMaterialParam p_parameter, const Variant& p_value);
-	virtual Variant fixed_material_get_parameter(RID p_material,VS::FixedMaterialParam p_parameter) const;
-
-	virtual void fixed_material_set_texture(RID p_material,VS::FixedMaterialParam p_parameter, RID p_texture);
-	virtual RID fixed_material_get_texture(RID p_material,VS::FixedMaterialParam p_parameter) const;
-
-	virtual void fixed_material_set_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter, VS::FixedMaterialTexCoordMode p_mode);
-	virtual VS::FixedMaterialTexCoordMode fixed_material_get_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter) const;
-
-	virtual void fixed_material_set_uv_transform(RID p_material,const Transform& p_transform);
-	virtual Transform fixed_material_get_uv_transform(RID p_material) const;
-
-	virtual void fixed_material_set_point_size(RID p_material,float p_size);
-	virtual float fixed_material_get_point_size(RID p_material) const;
-
 	/* MESH API */
 
 
@@ -994,6 +530,7 @@ public:
 
 	virtual void mesh_set_custom_aabb(RID p_mesh,const AABB& p_aabb);
 	virtual AABB mesh_get_custom_aabb(RID p_mesh) const;
+
 
 	/* MULTIMESH API */
 
@@ -1028,10 +565,10 @@ public:
 	virtual void immediate_uv2(RID p_immediate,const Vector2& tex_uv);
 	virtual void immediate_end(RID p_immediate);
 	virtual void immediate_clear(RID p_immediate);
-	virtual AABB immediate_get_aabb(RID p_immediate) const;
 	virtual void immediate_set_material(RID p_immediate,RID p_material);
 	virtual RID immediate_get_material(RID p_immediate) const;
 
+	virtual AABB immediate_get_aabb(RID p_mesh) const;
 
 	/* PARTICLES API */
 
@@ -1215,16 +752,6 @@ public:
 	virtual void canvas_draw_polygon(int p_vertex_count, const int* p_indices, const Vector2* p_vertices, const Vector2* p_uvs, const Color* p_colors,const RID& p_texture,bool p_singlecolor);
 	virtual void canvas_set_transform(const Matrix32& p_transform);
 
-	/* FX */
-
-	virtual RID fx_create();
-	virtual void fx_get_effects(RID p_fx,List<String> *p_effects) const;
-	virtual void fx_set_active(RID p_fx,const String& p_effect, bool p_active);
-	virtual bool fx_is_active(RID p_fx,const String& p_effect) const;
-	virtual void fx_get_effect_params(RID p_fx,const String& p_effect,List<PropertyInfo> *p_params) const;
-	virtual Variant fx_get_effect_param(RID p_fx,const String& p_effect,const String& p_param) const;
-	virtual void fx_set_effect_param(RID p_fx,const String& p_effect, const String& p_param, const Variant& p_pvalue);
-
 	/* ENVIRONMENT */
 
 	virtual RID environment_create();
@@ -1235,9 +762,6 @@ public:
 	virtual void environment_set_background_param(RID p_env,VS::EnvironmentBGParam p_param, const Variant& p_value);
 	virtual Variant environment_get_background_param(RID p_env,VS::EnvironmentBGParam p_param) const;
 
-	virtual void environment_set_group(RID p_env,VS::Group p_group, const Variant& p_param);
-	virtual Variant environment_get_group(RID p_env, VS::Group p_param) const;
-	
 	virtual void environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled);
 	virtual bool environment_is_fx_enabled(RID p_env,VS::EnvironmentFx p_effect) const;
 
@@ -1254,8 +778,8 @@ public:
 	virtual bool is_texture(const RID& p_rid) const;
 	virtual bool is_material(const RID& p_rid) const;
 	virtual bool is_mesh(const RID& p_rid) const;
-	virtual bool is_multimesh(const RID& p_rid) const;
 	virtual bool is_immediate(const RID& p_rid) const;
+	virtual bool is_multimesh(const RID& p_rid) const;
 	virtual bool is_particles(const RID &p_beam) const;
 
 	virtual bool is_light(const RID& p_rid) const;
@@ -1263,7 +787,7 @@ public:
 	virtual bool is_particles_instance(const RID& p_rid) const;
 	virtual bool is_skeleton(const RID& p_rid) const;
 	virtual bool is_environment(const RID& p_rid) const;
-	virtual bool is_fx(const RID& p_rid) const;
+
 	virtual bool is_shader(const RID& p_rid) const;
 
 	virtual void free(const RID& p_rid);
@@ -1281,20 +805,14 @@ public:
 
 	virtual int get_render_info(VS::RenderInfo p_info);
 
-	void reload_vram();
-
 	virtual bool needs_to_draw_next_frame() const;
 
 	virtual bool has_feature(VS::Features p_feature) const;
 
 
-#ifdef TOOLS_ENABLED
-	RasterizerGLES1(bool p_keep_copies=true,bool p_use_reload_hooks=false);
-#else
-	RasterizerGLES1(bool p_keep_copies=false,bool p_use_reload_hooks=false);
-#endif
-	virtual ~RasterizerGLES1();
+	Rasterizer3DS();
+	virtual ~Rasterizer3DS();
 };
 
-#endif
-#endif
+
+#endif // RASTERIZER_DUMMY_H

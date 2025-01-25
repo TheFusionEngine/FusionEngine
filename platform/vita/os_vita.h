@@ -31,7 +31,9 @@
 
 #include <psp2/ctrl.h>
 #include <psp2/touch.h>
-
+#include <psp2/motion.h> 
+#include <psp2/camera.h> 
+#include <psp2/kernel/sysmem.h>
 
 #include "os/input.h"
 #include "drivers/unix/os_unix.h"
@@ -45,7 +47,7 @@
 #include "servers/spatial_sound_2d/spatial_sound_2d_server_sw.h"
 #include "drivers/rtaudio/audio_driver_rtaudio.h"
 #include "servers/physics_2d/physics_2d_server_sw.h"
-
+#include "scene/resources/texture.h"
 
 #undef CursorShape
 
@@ -72,12 +74,20 @@ class OS_VITA : public OS {
 	SpatialSoundServerSW *spatial_sound_server;
 	SpatialSound2DServerSW *spatial_sound_2d_server;
 	SceCtrlData pad;
-
+	SceMotionState motion_state;
+	SceCameraInfo cameraInfo;
+	SceCameraRead cameraInfoRead;
+	Ref<ImageTexture> camera_image;
+	SceUID memblock;
+	void* camera_tex;
+	
+	unsigned char _discard[160 * 120 / 2];
 	int32_t* samples_in;
 	int16_t* samples_out;
 	int last;
 
 	bool force_quit;
+	bool camera_init = false;
 
 	InputDefault *input;
 
@@ -94,9 +104,11 @@ protected:
 
 	virtual void set_main_loop( MainLoop * p_main_loop );    
 	
+	virtual void init_camera();
+	
 	virtual void process_keys();
 	virtual void process_audio();
-
+	virtual void process_camera();
 public:
 	virtual void initialize_core();
 	virtual void finalize_core();

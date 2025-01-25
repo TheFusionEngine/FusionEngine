@@ -30,7 +30,7 @@
 
 #include "stream_peer_winsock.h"
 
-#if defined(WINDOWS_ENABLED) && !defined(WIN98_ENABLED)
+#if defined(WINDOWS_ENABLED)
 
 #include <winsock2.h>
 

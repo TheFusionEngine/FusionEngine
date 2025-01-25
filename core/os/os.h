@@ -33,6 +33,7 @@
 #include "list.h"
 #include "vector.h"
 #include "os/main_loop.h"
+#include "scene/resources/texture.h"
 #include <stdarg.h>
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
@@ -52,6 +53,8 @@ class OS {
 	bool _no_window;
 	int _exit_code;
 	int _orientation;
+	bool camera_enabled = false;
+
 	float _fps;
 	int _target_fps;
 	float _time_scale;
@@ -103,7 +106,7 @@ friend class Main;
 	void _ensure_data_dir();
 	
 public:
-	
+	Ref<ImageTexture> p_camera_image;
 	typedef int64_t ProcessID;
 
 	static OS* get_singleton();
@@ -125,6 +128,7 @@ public:
 	virtual void set_last_error(const char* p_error);
 	virtual const char *get_last_error() const;
 	virtual void clear_last_error();
+
 
 
 
@@ -327,7 +331,10 @@ public:
 	virtual void release_rendering_thread();
 	virtual void make_rendering_thread();
 	virtual void swap_buffers();
-
+	virtual void set_camera_enabled(bool p_enable);
+	virtual bool get_camera_enabled() {return camera_enabled;};
+	virtual void set_camera_image(Ref<ImageTexture> data);
+	virtual Ref<ImageTexture> get_camera_image() {return p_camera_image;};
 
 	virtual void set_icon(const Image& p_icon);
 
