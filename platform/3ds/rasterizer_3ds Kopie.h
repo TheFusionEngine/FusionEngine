@@ -415,17 +415,17 @@ class Rasterizer3DS : public Rasterizer {
 		struct SplitInfo {
 
 			CameraMatrix camera;
-			Transform transform;
+			Transform3D transform;
 			float near;
 			float far;
 		};
 
 		RID light;
 		Light *base;
-		Transform transform;
+		Transform3D transform;
 		CameraMatrix projection;
 
-		Transform custom_transform;
+		Transform3D custom_transform;
 		CameraMatrix custom_projection;
 
 		Vector3 light_vector;
@@ -742,7 +742,7 @@ public:
 	virtual void canvas_disable_blending();
 	virtual void canvas_set_opacity(float p_opacity);
 	virtual void canvas_set_blend_mode(VS::MaterialBlendMode p_mode);
-	virtual void canvas_begin_rect(const Matrix32& p_transform);
+	virtual void canvas_begin_rect(const Transform2D& p_transform);
 	virtual void canvas_set_clip(bool p_clip, const Rect2& p_rect);
 	virtual void canvas_end_rect();
 	virtual void canvas_draw_line(const Point2& p_from, const Point2& p_to,const Color& p_color,float p_width);
@@ -750,7 +750,7 @@ public:
 	virtual void canvas_draw_style_box(const Rect2& p_rect, RID p_texture,const float *p_margins, bool p_draw_center=true,const Color& p_modulate=Color(1,1,1));
 	virtual void canvas_draw_primitive(const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs, RID p_texture,float p_width);
 	virtual void canvas_draw_polygon(int p_vertex_count, const int* p_indices, const Vector2* p_vertices, const Vector2* p_uvs, const Color* p_colors,const RID& p_texture,bool p_singlecolor);
-	virtual void canvas_set_transform(const Matrix32& p_transform);
+	virtual void canvas_set_transform(const Transform2D& p_transform);
 
 	/* ENVIRONMENT */
 

@@ -156,7 +156,7 @@ class RasterizerDC : public Rasterizer {
 
 		VS::MaterialDepthDrawMode depth_draw_mode;
 
-		Transform uv_transform;
+		Transform3D uv_transform;
 		VS::FixedMaterialTexCoordMode texcoord_mode[VisualServer::FIXED_MATERIAL_PARAM_MAX];
 
 		VS::MaterialBlendMode blend_mode;
@@ -756,8 +756,8 @@ class RasterizerDC : public Rasterizer {
 
 	FX *scene_fx;
 	CameraMatrix camera_projection;
-	Transform camera_transform;
-	Transform camera_transform_inverse;
+	Transform3D camera_transform;
+	Transform3D camera_transform_inverse;
 	float camera_z_near;
 	float camera_z_far;
 	Size2 camera_vp_size;

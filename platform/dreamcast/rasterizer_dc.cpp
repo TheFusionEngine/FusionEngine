@@ -87,7 +87,7 @@ _FORCE_INLINE_ static void _gl_mult_transform(const Transform3D& tr) {
 	glMultMatrixf(matrix);
 };
 
-_FORCE_INLINE_ static void _gl_mult_transform(const Matrix32& tr) {
+_FORCE_INLINE_ static void _gl_mult_transform(const Transform2D& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
 		tr.elements[0][0],
@@ -1244,7 +1244,7 @@ void RasterizerDC::fixed_material_set_uv_transform(RID p_material,const Transfor
 	m->uv_transform = p_transform;
 }
 
-Transform RasterizerDC::fixed_material_get_uv_transform(RID p_material) const {
+Transform3D RasterizerDC::fixed_material_get_uv_transform(RID p_material) const {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND_V(!m, Transform());
@@ -2109,7 +2109,7 @@ Transform3D RasterizerDC::multimesh_instance_get_transform(RID p_multimesh,int p
 	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform3D());
 	MultiMesh::Element &e=multimesh->elements[p_index];
 
-	Transform tr;
+	Transform3D tr;
 
 	tr.basis.elements[0][0]=e.matrix[0];
 	tr.basis.elements[1][0]=e.matrix[1];
@@ -3074,7 +3074,7 @@ void RasterizerDC::add_light( RID p_light_instance ) {
 				//CameraMatrix proj;
 				//proj.set_perspective( angle*2.0, 1.0, near, far );
 
-				//Transform modelview=Transform(camera_transform_inverse * li->transform).inverse();
+				//Transform3D modelview=Transform(camera_transform_inverse * li->transform).inverse();
 				//li->projector_mtx= proj * modelview;
 
 			}*/
@@ -4165,7 +4165,7 @@ void RasterizerDC::_render(const Geometry *p_geometry,const Material *p_material
 			// glBindBuffer(GL_ARRAY_BUFFER,0);
 
 
-			Transform camera;
+			Transform3D camera;
 			if (shadow)
 				camera=shadow->transform;
 			else
@@ -4399,7 +4399,7 @@ void RasterizerDC::_render_list_forward(RenderList *p_render_list,bool p_reverse
 
 		if (e->instance->billboard || e->instance->depth_scale) {
 
-			Transform xf=e->instance->transform;
+			Transform3D xf=e->instance->transform;
 			if (e->instance->depth_scale) {
 
 				if (camera_projection.matrix[3][3]) {
@@ -4723,7 +4723,7 @@ void RasterizerDC::end_shadow_map() {
 	glClear(GL_DEPTH_BUFFER_BIT);
 	CameraMatrix cm;
 	float z_near,z_far;
-	Transform light_transform;
+	Transform3D light_transform;
 
 	float dp_direction=0.0;
 	bool flip_facing=false;
@@ -4766,7 +4766,7 @@ void RasterizerDC::end_shadow_map() {
 		} break;
 	}
 
-	Transform light_transform_inverse = light_transform.inverse();
+	Transform3D light_transform_inverse = light_transform.inverse();
 
 	opaque_render_list.sort_mat();
 
@@ -4808,7 +4808,7 @@ void RasterizerDC::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
 
 
 /*
-	Transform modelview;
+	Transform3D modelview;
 	modelview.translate(-(viewport.width / 2.0f), -(viewport.height / 2.0f), 0.0f);
 	modelview.scale( Vector3( 2.0f / viewport.width, -2.0f / viewport.height, 1.0f ) );
 	modelview.translate(p_rect.pos.x, p_rect.pos.y, 0);

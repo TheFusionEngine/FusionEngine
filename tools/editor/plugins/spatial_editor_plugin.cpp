@@ -1437,7 +1437,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 				} break;
 
 				case NAVIGATION_FPS:{
-					Transform fps_transform;
+					Transform3D fps_transform;
 
 					if (cursor.q == Quat()) {
 						cursor.q = Quat(Vector3(0,1,0),m.relative_x/80.0)*cursor.q*Quat(Vector3(1,0,0),m.relative_y/80.0);
@@ -1466,7 +1466,7 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 
 		case InputEvent::KEY: {
 
-			Transform fps_transform;
+			Transform3D fps_transform;
 			fps_transform.translate( cursor.pos );
 			fps_transform.basis *= cursor.q;
 			fps_transform.translate(0,0,cursor.distance);

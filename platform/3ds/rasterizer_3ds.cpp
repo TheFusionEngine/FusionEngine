@@ -1257,7 +1257,7 @@ AABB Rasterizer3DS::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform Rasterizer3DS::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D Rasterizer3DS::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND_V(!multimesh,Transform());
@@ -1716,7 +1716,7 @@ void Rasterizer3DS::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform Rasterizer3DS::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D Rasterizer3DS::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, Transform());
@@ -2575,7 +2575,7 @@ void Rasterizer3DS::canvas_set_blend_mode(VS::MaterialBlendMode p_mode)
 	canvas_blend_mode=p_mode;
 }
 
-void Rasterizer3DS::canvas_begin_rect(const Matrix32& p_transform)
+void Rasterizer3DS::canvas_begin_rect(const Transform2D& p_transform)
 {
 	_set_uniform(canvas_shader->location_modelview, p_transform);
 	_set_uniform(canvas_shader->location_extra, Matrix32());
@@ -2751,9 +2751,9 @@ Rasterizer3DS::Texture* Rasterizer3DS::_bind_texture(const RID& p_texture)
 	return NULL;
 }
 
-void Rasterizer3DS::_set_uniform(int uniform_location, const Matrix32& p_transform)
+void Rasterizer3DS::_set_uniform(int uniform_location, const Transform2D& p_transform)
 {
-	const Matrix32& tr = p_transform;
+	const Transform2D& tr = p_transform;
 	
 	C3D_Mtx mtx;
 // 	float matrix[16] = { /* build a 16x16 matrix */
@@ -2878,7 +2878,7 @@ void Rasterizer3DS::_set_uniform(int uniform_location, const CameraMatrix& p_mat
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uniform_location, &mtx);
 }
 
-void Rasterizer3DS::canvas_set_transform(const Matrix32& p_transform)
+void Rasterizer3DS::canvas_set_transform(const Transform2D& p_transform)
 {
 	_set_uniform(canvas_shader->location_extra, p_transform);
 }
@@ -3865,7 +3865,7 @@ void Rasterizer3DS::_render_list_forward(RenderList *p_render_list,const Transfo
 // 		if (e->instance->billboard || e->instance->billboard_y || e->instance->depth_scale) {
 		if (false) {
 			print("billboard\n");
-			Transform xf=e->instance->transform;
+			Transform3D xf=e->instance->transform;
 			if (e->instance->depth_scale) {
 
 				if (p_projection.matrix[3][3]) {
@@ -3912,7 +3912,7 @@ void Rasterizer3DS::_render_list_forward(RenderList *p_render_list,const Transfo
 // 			material_shader.set_uniform(MaterialShaderGLES2::WORLD_TRANSFORM, xf);
 
 		} else {
-// 			Transform tr = camera_transform_inverse * e->instance->transform;
+// 			Transform3D tr = camera_transform_inverse * e->instance->transform;
 			_set_uniform(scene_shader->location_modelview, e->instance->transform);
 // 			material_shader.set_uniform(MaterialShaderGLES2::WORLD_TRANSFORM, e->instance->transform);
 		}
@@ -4613,7 +4613,7 @@ void Rasterizer3DS::_render(const Geometry *p_geometry,const Material *p_materia
 			ERR_FAIL_COND(!pp.valid);
 
 
-			Transform camera;
+			Transform3D camera;
 // 			if (shadow)
 // 				camera=shadow->transform;
 // 			else

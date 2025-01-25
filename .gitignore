@@ -8,10 +8,12 @@ platform/nacl/logo.h
 platform/osx/logo.h
 platform/windows/logo.h
 platform/x11/logo.h
+logo.h
 drivers/gles2/shaders/*.h
 modules/register_module_types.cpp
 core/version.h
 core/method_bind.inc
+core/method_bind_ext.inc
 core/script_encryption_key.cpp
 core/global_defaults.cpp
 tools/editor/register_exporters.cpp
@@ -34,12 +36,14 @@ platform/android/libs/google_play_services/gen/*
 platform/android/libs/play_licensing/bin/*
 platform/android/libs/play_licensing/gen/*
 
-platform/wiiu/*
-*.rpx
 *fscache
+
+# Compiled binary files
 *.iso
 *.cdi
+*.rpx
 *.3dsx
+
 # General c++ generated files
 *.lib
 *.o
@@ -49,8 +53,6 @@ platform/wiiu/*
 *.d
 *.so
 *.os
-*.rpx
-*.3dsx
 # QT project files
 *.config
 *.creator
@@ -63,7 +65,9 @@ platform/wiiu/*
 # for projects that use SCons for building: http://http://www.scons.org/
 .sconsign.dblite
 *.pyc
-
+__pycache__
+custom.py
+compile_commands.json
 
 # https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 ## Ignore Visual Studio temporary files, build results, and
@@ -139,6 +143,8 @@ ipch/
 *.project
 *.workspace
 .codelite/
+
+# Kate project files
 
 # TFS 2012 Local Workspace
 $tf/
@@ -264,8 +270,4 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
-logo.h
-__pycache__
-core/method_bind_ext.inc
-compile_commands.json
-custom.py
+

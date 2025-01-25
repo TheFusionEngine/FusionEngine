@@ -49,9 +49,9 @@ static const vertex3ds vertex_list[] =
 		GX_TRANSFER_OUT_FORMAT(GX_TRANSFER_FMT_RGBA8) |  GX_TRANSFER_SCALING(GX_TRANSFER_SCALE_NO))
 	
 
-void _set_uniform(int uniform_location, const Matrix32& p_transform)
+void _set_uniform(int uniform_location, const Transform2D& p_transform)
 {
-	const Matrix32& tr = p_transform;
+	const Transform2D& tr = p_transform;
 	
 	C3D_Mtx mtx;
 	
@@ -917,7 +917,7 @@ AABB Rasterizer3DS::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform Rasterizer3DS::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D Rasterizer3DS::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND_V(!multimesh,Transform());
@@ -1376,7 +1376,7 @@ void Rasterizer3DS::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform Rasterizer3DS::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D Rasterizer3DS::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, Transform());
@@ -1835,7 +1835,7 @@ void Rasterizer3DS::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 }
 
 
-void Rasterizer3DS::canvas_begin_rect(const Matrix32& p_transform) {
+void Rasterizer3DS::canvas_begin_rect(const Transform2D& p_transform) {
 	// _set_uniform(uLoc_modelView, p_transform);
 }
 
@@ -1917,7 +1917,7 @@ void Rasterizer3DS::canvas_draw_polygon(int p_vertex_count, const int* p_indices
 
 }
 
-void Rasterizer3DS::canvas_set_transform(const Matrix32& p_transform) {
+void Rasterizer3DS::canvas_set_transform(const Transform2D& p_transform) {
 
 
 }

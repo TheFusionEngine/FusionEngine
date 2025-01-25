@@ -161,7 +161,7 @@ Basis Basis::rotated(const Vector3& p_axis, real_t p_phi) const {
 
 }
 
-Vector3 Matrix3::get_euler_yxz() const {
+Vector3 Basis::get_euler_yxz() const {
 
 	/* checking this is a bad idea, because obtaining from scaled transform is a valid use case
 #ifdef MATH_CHECKS
@@ -206,27 +206,27 @@ Vector3 Matrix3::get_euler_yxz() const {
 	return euler;
 }
 
-void Matrix3::set_euler_yxz(const Vector3 &p_euler) {
+void Basis::set_euler_yxz(const Vector3 &p_euler) {
 
 	real_t c, s;
 
 	c = Math::cos(p_euler.x);
 	s = Math::sin(p_euler.x);
-	Matrix3 xmat(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c);
+	Basis xmat(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c);
 
 	c = Math::cos(p_euler.y);
 	s = Math::sin(p_euler.y);
-	Matrix3 ymat(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c);
+	Basis ymat(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c);
 
 	c = Math::cos(p_euler.z);
 	s = Math::sin(p_euler.z);
-	Matrix3 zmat(c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0);
+	Basis zmat(c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0);
 
 	//optimizer will optimize away all this anyway
 	*this = ymat * xmat * zmat;
 }
 
-Vector3 Matrix3::get_euler() const {
+Vector3 Basis::get_euler() const {
 	// Euler angles in XYZ convention.
 	// See https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
 	//
