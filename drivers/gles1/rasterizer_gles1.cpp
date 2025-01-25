@@ -6457,7 +6457,7 @@ void RasterizerGLES1::init() {
 void RasterizerGLES1::finish() {
 
 	if (skinned_buffer) {
-		memdelete(skinned_buffer);
+		memdelete_arr(skinned_buffer);
 		skinned_buffer = NULL;
 	}
 }

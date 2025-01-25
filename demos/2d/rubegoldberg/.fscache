@@ -1,0 +1,16 @@
+::res://::1705781638
+ball.xml::PackedScene::1705781638::
+box.xml::PackedScene::1705781638::
+domino.xml::PackedScene::1705781638::
+icon.png::ImageTexture::1705781638::
+pendulum.xml::PackedScene::1705781638::
+platform.xml::PackedScene::1705781638::
+rubegoldberg.xml::PackedScene::1705781638::
+seesaw.xml::PackedScene::1705781638::
+::res://art::1705781638
+bowling_ball.png::ImageTexture::1705781638::
+box.png::ImageTexture::1705781638::
+domino.png::ImageTexture::1705781638::
+platform.png::ImageTexture::1705781638::
+seesaw_base.png::ImageTexture::1705781638::
+seesaw_top.png::ImageTexture::1705781638::

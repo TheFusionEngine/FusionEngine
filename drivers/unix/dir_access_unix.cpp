@@ -28,9 +28,11 @@
 /*************************************************************************/
 #include "dir_access_unix.h"
 
-#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__)
 
-#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST)
+#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__) || defined(__3DS__)
+
+#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST) && !defined(__3DS__)
+
 #include <sys/statvfs.h>
 #endif
 
@@ -300,7 +302,8 @@ Error DirAccessUnix::remove(String p_path)  {
 
 size_t DirAccessUnix::get_space_left() {
 
-#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST)
+
+#if !defined(PSP) && !defined(__psp2__) && !defined(DREAMCAST) && !defined(__3DS__)
 	struct statvfs vfs;
 	if (statvfs(current_dir.utf8().get_data(), &vfs) != 0) {
 

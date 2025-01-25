@@ -26,11 +26,12 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#include "drivers/gles1/rasterizer_gles1.h"
+#include "drivers/gl11/rasterizer_gl11.h"
 //#include "drivers/gles2/rasterizer_gles2.h"
 #include "os_windows.h"
 #include "drivers/nedmalloc/memory_pool_static_nedmalloc.h"
 #include "drivers/unix/memory_pool_static_malloc.h"
+#include "drivers/unix/ip_unix.h"
 #include "os/memory_pool_dynamic_static.h"
 #include "drivers/windows/thread_windows.h"
 #include "drivers/windows/semaphore_windows.h"
@@ -189,9 +190,9 @@ void OS_Windows::initialize_core() {
 	DirAccess::make_default<DirAccessWindows>(DirAccess::ACCESS_USERDATA);
 	DirAccess::make_default<DirAccessWindows>(DirAccess::ACCESS_FILESYSTEM);
 
-	//TCPServerWinsock::make_default();
-	//StreamPeerWinsock::make_default();
-	//PacketPeerUDPWinsock::make_default();
+	TCPServerWinsock::make_default();
+	StreamPeerWinsock::make_default();
+	PacketPeerUDPWinsock::make_default();
 	
 	mempool_static = new MemoryPoolStaticMalloc;
 #if 1
@@ -213,7 +214,7 @@ void OS_Windows::initialize_core() {
 
 	process_map = memnew((Map<ProcessID, ProcessInfo>));
 
-	//IP_Unix::make_default();
+	IP_Unix::make_default();
 
 	cursor_shape=CURSOR_ARROW;
 
@@ -1094,10 +1095,12 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 	//}
 
 	visual_server = memnew( VisualServerRaster(rasterizer) );
+#if 0
 	if (get_render_thread_mode()!=RENDER_THREAD_UNSAFE) {
 
 		visual_server =memnew(VisualServerWrapMT(visual_server,get_render_thread_mode()==RENDER_SEPARATE_THREAD));
 	}
+#endif
 
 	//
 	physics_server = memnew( PhysicsServerSW );
@@ -1299,8 +1302,8 @@ void OS_Windows::finalize_core() {
 		delete mempool_static;
 
 
-	//TCPServerWinsock::cleanup();
-	//StreamPeerWinsock::cleanup();
+	TCPServerWinsock::cleanup();
+	StreamPeerWinsock::cleanup();
 }
 
 void OS_Windows::vprint(const char* p_format, va_list p_list, bool p_stderr) {
@@ -1898,6 +1901,7 @@ MainLoop *OS_Windows::get_main_loop() const {
 
 #ifndef UNICODE
 #define _TFUNC(S) S // "A"
+#error "not unicode yet?"
 #else
 #define _TFUNC(S) S "W"
 #endif
@@ -1936,31 +1940,30 @@ String OS_Windows::get_system_dir(SystemDir p_dir) const {
 			} break;
 		}
 
-		WCHAR szPath[MAX_PATH];
-		HRESULT res = _SHGetFolderPathT(NULL,id,NULL,0,szPath);
-		ERR_FAIL_COND_V(res!=S_OK,String());
-		return String(szPath);
-	} else {
-		int id;
-
-		switch(p_dir) {
-			case SYSTEM_DIR_DESKTOP: {
-				id=CSIDL_DESKTOPDIRECTORY;
-			} break;
-			default: {
-				id=CSIDL_PERSONAL;
-			} break;
-		}
-
 		TCHAR szPath[MAX_PATH];
-		LPITEMIDLIST pidl;
-		HRESULT res = SHGetSpecialFolderLocation(NULL,id,&pidl);
-		ERR_FAIL_COND_V(res!=S_OK,String());
-		SHGetPathFromIDList(pidl,szPath);
-		CoTaskMemFree(pidl);
-		return String(szPath);
+		HRESULT res = _SHGetFolderPathT(NULL,id,NULL,0,szPath);
+		if (res==S_OK)
+			return String(szPath);
 	}
 
+	int id;
+
+	switch(p_dir) {
+		case SYSTEM_DIR_DESKTOP: {
+			id=CSIDL_DESKTOPDIRECTORY;
+		} break;
+		default: {
+			id=CSIDL_PERSONAL;
+		} break;
+	}
+
+	TCHAR szPath[MAX_PATH];
+	LPITEMIDLIST pidl;
+	HRESULT res = SHGetSpecialFolderLocation(NULL,id,&pidl);
+	ERR_FAIL_COND_V(res!=S_OK,String());
+	SHGetPathFromIDList(pidl,szPath);
+	CoTaskMemFree(pidl);
+	return String(szPath);
 }
 String OS_Windows::get_data_dir() const {
 

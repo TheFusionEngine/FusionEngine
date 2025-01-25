@@ -125,6 +125,7 @@ int netDialog()
 }
 
 int main(int argc, char* argv[]) {
+
 	// SetupCallbacks();
     pspSdkDisableFPUExceptions();
     scePowerSetClockFrequency(333, 333, 166);
@@ -151,11 +152,12 @@ int main(int argc, char* argv[]) {
 #endif	
 	
 	if (Main::start()) {
-		
+
 		printf("game running\n");
 		os.run(); // it is actually the OS that decides how to run
 	}
 	Main::cleanup();
-	
+
+	sceKernelExitGame();
 	return 0;
 }

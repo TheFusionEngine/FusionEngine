@@ -60,7 +60,9 @@ const char * OS_PSP::get_video_driver_name(int p_driver) const {
 }
 OS::VideoMode OS_PSP::get_default_video_mode() const {
 
+
 	return OS::VideoMode(480,272,true);
+
 }
 
 static MemoryPoolStaticMalloc *mempool_static=NULL;
@@ -109,9 +111,6 @@ void OS_PSP::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 
 	sceCtrlSetSamplingCycle(0);
 	sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
-	// sceAudioOutput2Reserve(1024);
-	samples_in = memnew_arr(int32_t, 2048);
-	samples_out = memnew_arr(int16_t, 2048);
 	
 	rasterizer = memnew( RasterizerPSP );
 
@@ -177,9 +176,6 @@ void OS_PSP::finalize() {
 	memdelete(input);
 
 	args.clear();
-	
-	memdelete_arr(samples_in);
-	memdelete_arr(samples_out);
 }
 
 void OS_PSP::set_mouse_show(bool p_show) {
@@ -236,9 +232,6 @@ void OS_PSP::process_keys() {
 
 	input->set_joy_axis(0, 0, lx);
 	input->set_joy_axis(0, 1, ly);
-	
-	if(pad.Buttons & PSP_CTRL_HOME)
-		sceKernelExitGame();
 }
 
 void OS_PSP::set_mouse_grab(bool p_grab) {
@@ -347,15 +340,19 @@ void OS_PSP::set_cursor_shape(CursorShape p_shape) {
 }
 
 void OS_PSP::process_audio() {
-	audio_server->driver_process(1024, samples_in);
-	for(int i = 0; i < 2048; ++i) {
-		samples_out[i] = samples_in[i] >> 16;
-	}
-	
-	printf("%d\n", samples_out[1]);
-	
-	sceAudioOutput2OutputBlocking(0x8000, samples_out);
 	// sceAudioOutput
+}
+
+int OS_PSP::psp_callback_thread(unsigned sz, void *thiz) {
+	sceKernelRegisterExitCallback(
+			sceKernelCreateCallback("Confirm Exit Callback", [](int, int, void *up) {
+				reinterpret_cast<OS_PSP *>(up)->force_quit = true;
+				return 0;
+			}, *reinterpret_cast<void **>(thiz)));
+	sceKernelSleepThreadCB();
+	sceKernelExitThread(0);
+
+	return 0;
 }
 
 void OS_PSP::run() {
@@ -366,7 +363,13 @@ void OS_PSP::run() {
 		return;
 		
 	main_loop->init();
-		
+
+	auto thiz = this;
+	sceKernelStartThread(
+			sceKernelCreateThread("Exit Callback Thread", psp_callback_thread, 0x11, 0x200, 0, nullptr),
+			sizeof(this),
+			&thiz);
+
 	while (!force_quit) {
 		// process_audio();
 		process_keys();
@@ -374,7 +377,7 @@ void OS_PSP::run() {
 		if (Main::iteration()==true)
 			break;
 	};
-	
+
 	main_loop->finish();
 }
 
@@ -384,7 +387,7 @@ void OS_PSP::swap_buffers() {
 
 OS_PSP::OS_PSP() {
 
-	AudioDriverManagerSW::add_driver(&driver_dummy);
+	AudioDriverManagerSW::add_driver(&driver_psp);
 	//adriver here
 	grab=false;
 	_verbose_stdout=true;

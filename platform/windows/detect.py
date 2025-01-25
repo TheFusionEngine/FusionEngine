@@ -22,21 +22,23 @@ def get_opts():
 	#	gcc = "i586-gcc32msvc-"
 	#	gcc64 = "i686-w64-gcc32-"
 
+	#pdb_available = os.name == "nt"
+	pdb_available = False
+
 	if (os.getenv("GCC32_PREFIX")):
 		gcc=os.getenv("GCC32_PREFIX")
 	if (os.getenv("GCC64_PREFIX")):
 		gcc64=os.getenv("GCC64_PREFIX")
 
-	watcom = os.getenv("WATCOM") or ""
-
 	return [
 		('gcc_prefix','GCC Prefix',gcc),
 		('gcc_prefix_64','GCC Prefix 64 bits',gcc64),
 		('gcc64_for_32','Use GCC 64 for 32 Bits Build','no'),
-		('watcom', 'Open Watcom Prefix', watcom),
-		('compiler', 'Compiler to use (watcom, gcc, msvc)', 'gcc'),
+		('compiler', 'Compiler to use (gcc, msvc)', 'gcc'),
+		('pdb', 'Generate PDB', 'yes' if pdb_available else 'no'),
 	]
-  
+
+
 def get_flags():
 
 	return [
@@ -44,7 +46,6 @@ def get_flags():
 		('openssl','no'), #use builtin openssl
 		('theora','no'),
 	]
-			
 
 
 def configure(env):
@@ -160,7 +161,10 @@ def configure(env):
 
 		elif (env["target"]=="release_debug"):
 
-			env.Append(CCFLAGS=['-O2','-ffast-math','-DDEBUG_ENABLED'])
+			env.Append(CCFLAGS=['-O2', '-g','-ffast-math','-DDEBUG_ENABLED'])
+
+			if env["tools"]!="no":
+				env.Append(CCFLAGS=['-fno-omit-frame-pointer', '-fno-tree-vectorize'])
 
 		elif (env["target"]=="debug"):
 					
@@ -188,48 +192,6 @@ def configure(env):
 		env.Append(CCFLAGS=['-march=pentium','-mtune=generic'])
 		env.Append(CPPFLAGS=['-march=pentium','-mtune=generic'])
 		env.Append(LINKFLAGS=['-march=pentium','-mtune=generic'])
-	elif env['compiler'] == 'watcom':
-		if (os.name=="nt"):
-			env['ENV']['TMP'] = os.environ['TMP']
-		else:
-			env["PROGSUFFIX"] = env["PROGSUFFIX"] + ".exe"
-
-		wath = os.path.join(env["watcom"], "h")
-		wbin = os.path.join(env["watcom"], "binl")
-
-		env['ENV']['PATH'] += os.pathsep + wbin
-		env['ENV']['WATCOM'] = env["watcom"]
-		env['ENV']['EDPATH'] = os.path.join(env["watcom"], "eddat")
-		env['ENV']['WIPFC'] = os.path.join(env["watcom"], "wipfc")
-		env['ENV']['INCLUDE'] = wath + os.pathsep + os.path.join(wath, "nt")
-
-		if (env["target"]=="release"):
-			env.Append(CCFLAGS=['-O3', '-funsafe-math-optimizations'])
-			env.Append(LINKFLAGS=['-mwindows'])
-		elif (env["target"]=="release_debug"):
-			env.Append(CCFLAGS=['-O2', '-DDEBUG_ENABLED'])
-		elif (env["target"]=="debug"):
-			env.Append(CCFLAGS=['-g2', '-gcodeview', '-Wall', '-DDEBUG_ENABLED', '-DDEBUG_MEMORY_ENABLED'])
-
-		if (env["freetype"]!="no"):
-			env.Append(CCFLAGS=['-DFREETYPE_ENABLED'])
-			env.Append(CPPPATH=['#tools/freetype'])
-			env.Append(CPPPATH=['#tools/freetype/freetype/include'])
-
-		env["CC"] = os.path.join(wbin, "owcc")
-		env['AS'] = os.path.join(wbin, "wasm")
-		env['CXX'] = os.path.join(wbin, "owcc")
-		env['AR'] = os.path.join(wbin, "wlib")
-		env['RANLIB'] = "echo"
-		env['STRIP'] = os.path.join(wbin, "wstrip")
-		env['LD'] = os.path.join(wbin, "owcc")
-
-		env.Append(ARFLAGS=['-q'])
-		env.Append(CCFLAGS=['-DWINDOWS_ENABLED', '-D_UNICODE', '-DUNICODE', '-std=ow', '-Wc,-zastd=c++0x', '-bnt'])
-		env.Append(CPPFLAGS=['-DRTAUDIO_ENABLED', '-D_UNICODE', '-DUNICODE', '-std=ow', '-bnt'])
-		env.Append(CCFLAGS=['-DGLES2_ENABLED', '-DGLES1_ENABLED', '-DGLEW_ENABLED'])
-		env.Append(LINKFLAGS=['-bnt'])
-		env.Append(LIBS=['opengl32', 'dsound', 'ole32', 'd3d9', 'winmm', 'gdi32', 'iphlpapi', 'wsock32', 'unicows', 'kernel32', 'comctl32'])
 		
 	# import methods
 	# env.Append( BUILDERS = { 'GLSL120' : env.Builder(action = methods.build_legacygl_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
