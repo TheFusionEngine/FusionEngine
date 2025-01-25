@@ -27,38 +27,53 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#if defined(UNIX_ENABLED)  || defined(__3DS__) || defined(PSP)
+
+#if defined(POSIX_IP_ENABLED) || defined(UNIX_ENABLED) || defined(PSP) || defined(__3DS__)
 
 #include "stream_peer_tcp_posix.h"
  #include <arpa/inet.h>
 
 
-#ifndef PSP
-#include <poll.h>
+#if defined(WII_ENABLED)
+ #include "../../platform/wii/network2.h"
+ using namespace gc::net;
+ #define MSG_NOSIGNAL    0
+#elif defined(PSP)
+ #include <sys/select.h>
+ #define MSG_NOSIGNAL    0
 #else
-#include <sys/select.h>
-#define MSG_NOSIGNAL    0
+ #include <poll.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#ifndef NO_FCNTL
-#include <sys/fcntl.h>
-#else
-#include <sys/ioctl.h>
-#endif
-#include <netinet/in.h>
+#if !defined(WII_ENABLED)
+ #include <netdb.h>
+ #include <sys/types.h>
+ #ifndef NO_FCNTL
+ #include <sys/fcntl.h>
+ #else
+ #include <sys/ioctl.h>
+ #endif
+ #include <netinet/in.h>
 
-#include <sys/socket.h>
+ #include <sys/socket.h>
+ #include <netinet/tcp.h>
+#endif
+
+#ifndef NET_NS
+#if defined(WII_ENABLED)
+#define NET_NS gc::net
+#else
+#define NET_NS
+#endif
+#endif
+
 #ifdef JAVASCRIPT_ENABLED
 #include <arpa/inet.h>
 #endif
-
-#include <netinet/tcp.h>
 
 #if defined(OSX_ENABLED) || defined(IPHONE_ENABLED)
 	#define MSG_NOSIGNAL    SO_NOSIGPIPE
@@ -81,7 +96,7 @@ void StreamPeerTCPPosix::make_default() {
 
 	StreamPeerTCP::_create = StreamPeerTCPPosix::_create;
 };
-#ifdef PSP
+#if defined(PSP) || defined(WII_ENABLED)
 Error StreamPeerTCPPosix::_block(int p_sockfd, bool p_read, bool p_write) const {
 
 	fd_set readfds, writefds;
@@ -98,7 +113,7 @@ Error StreamPeerTCPPosix::_block(int p_sockfd, bool p_read, bool p_write) const 
 	if (!p_write)
 		FD_CLR(p_sockfd, &writefds);
 
-	int ret = select(maxfd, &readfds, &writefds, NULL, NULL);
+	int ret = NET_NS::select(maxfd, &readfds, &writefds, NULL, NULL);
 	return ret < 0 ? FAILED : OK;
 };
 
@@ -398,7 +413,7 @@ StreamPeerTCP::Status StreamPeerTCPPosix::get_status() const {
 void StreamPeerTCPPosix::disconnect() {
 
 	if (sockfd != -1)
-		close(sockfd);
+		NET_NS::close(sockfd);
 	sockfd=-1;
 
 	status = STATUS_NONE;

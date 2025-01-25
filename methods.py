@@ -1,5 +1,32 @@
 import os
 from compat import iteritems
+import shlex
+from SCons.Node import NodeList
+
+def postlink(env, target, deps, dll, uid3=None, linkas=None):
+    import struct
+
+    tname = str(target if not isinstance(target, NodeList) else target[0])
+    name = tname.lstrip('#')
+
+    prog = str(deps if not isinstance(deps, NodeList) else deps[0])
+    if linkas is None:
+        linkas = os.path.splitext(os.path.split(name)[-1])[0]
+    if uid3 is None:
+        uid3 = '0xa' + struct.pack('n', hash(str(name))).hex()[1:8]
+    return env.Command(tname, deps, shlex.join([os.path.join(os.getenv('EPOCROOT'), 'epoc32/tools/elf2e32'),
+        '--capability=LocalServices+ReadUserData+UserEnvironment+WriteUserData+NetworkServices',
+        '--elfinput=' + prog, '--output=' + name, '--libpath=' + env['libroot'], '--linkas=' + linkas,
+        '--fpu=softvfp', '--uid1=' + ('0x10000079' if dll else '0x1000007a'), ('0x1000008d' if dll else '--uid2=0x100039ce'),
+        '--uid3=' + uid3, '--sid=' + uid3, '--vid=0x00000000', '--targettype=' + ('DLL' if dll else 'EXE'),
+        '--dlldata', '--ignorenoncallable', '--heap=0x800000,0xd000000', '--stack=0x40000'] + (['--smpsafe']) +  (['--debuggable'] if env['target'] != 'release' else [])))
+
+
+def rcomp(env, target, dep=[]):
+    name = str(target if not isinstance(target, NodeList) else target[0]).lstrip('#')
+    env.Command('#bin/' + name + '.pprss', ['#platform/symbian/sis/' + name + '.rss', *dep], shlex.join([env['CXX'], *env['symbiandef'], *env['symbianinc'], '-Iplatform/symbian/sis', '-Iplatform/symbian', '-Ibin', '-x', 'c++', '-E', '-P', '-o', 'bin/' + name + '.pprss', 'platform/symbian/sis/' + name + '.rss']))
+    return env.Command(['#bin/' + name + '.rsg', '#bin/' + name + '.rsc'], '#bin/' + name + '.pprss', shlex.join(['rcomp', '-sbin/' + name + '.pprss', '-hbin/' + name + '.rsg', '-obin/' + name + '.rsc', '-u']))
+
 
 def add_source_files(self, sources, filetype, lib_env = None, shared = False):
 	import glob;

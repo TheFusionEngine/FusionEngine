@@ -33,7 +33,8 @@
 #include "os/memory.h"
 #include <stdio.h>
 
-#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__) || defined(__3DS__)
+
+#if defined(UNIX_ENABLED) || defined(LIBC_FILEIO_ENABLED) || defined(PSP) || defined(__psp2__) || defined(ULTRA) || defined(__3DS__)
 
 
 /**

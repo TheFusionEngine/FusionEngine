@@ -58,7 +58,7 @@ def configure(env):
 
 	if (env["target"]=="release"):
 
-		env.Append(CCFLAGS=['-O2','-ffast-math','-fomit-frame-pointer'])
+		env.Append(CCFLAGS=['-O2','-Os','-ffast-math','-fomit-frame-pointer'])
 
 	elif (env["target"]=="release_debug"):
 
@@ -68,7 +68,7 @@ def configure(env):
 
 		env.Append(CCFLAGS=['-g2', '-Wall','-DDEBUG_ENABLED','-DDEBUG_MEMORY_ENABLED'])
 
-	env.Append(CPPFLAGS=['-DSERVER_ENABLED','-DUNIX_ENABLED'])
+	env.Append(CPPFLAGS=['-DSERVER_ENABLED','-DUNIX_ENABLED','-DULTRA'])
 	env.Append(LIBS=['pthread','z']) #TODO detect linux/BSD!
 
 	if (env["CXX"]=="clang++"):
