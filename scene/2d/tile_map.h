@@ -58,7 +58,7 @@ private:
 	int quadrant_size;
 	bool center_x,center_y;
 	Mode mode;
-	Matrix32 custom_transform;
+	Transform2D custom_transform;
 	HalfOffset half_offset;
 
 
@@ -189,10 +189,10 @@ public:
 	void set_half_offset(HalfOffset p_half_offset);
 	HalfOffset get_half_offset() const;
 
-	void set_custom_transform(const Matrix32& p_xform);
-	Matrix32 get_custom_transform() const;
+	void set_custom_transform(const Transform2D& p_xform);
+	Transform2D get_custom_transform() const;
 
-	Matrix32 get_cell_transform() const;
+	Transform2D get_cell_transform() const;
 	Vector2 get_cell_draw_offset() const;
 
 	Vector2 map_to_world(const Vector2& p_pos, bool p_ignore_ofs=false) const;

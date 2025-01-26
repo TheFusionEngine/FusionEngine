@@ -33,7 +33,7 @@
 
 void register_gridmap_types() {
 
-	ObjectTypeDB::register_type<GridMap>();
+	REGISTER_OBJECT(GridMap);
 #ifdef TOOLS_ENABLED
 	EditorPlugins::add_by_type<GridMapEditorPlugin>();
 #endif

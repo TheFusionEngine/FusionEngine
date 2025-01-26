@@ -45,7 +45,7 @@ void MultiMesh::_set_transform_array(const DVector<Vector3>& p_array) {
 
 	for(int i=0;i<len/4;i++) {
 
-		Transform t;
+		Transform3D t;
 		t.basis[0]=r[i*4+0];
 		t.basis[1]=r[i*4+1];
 		t.basis[2]=r[i*4+2];
@@ -70,7 +70,7 @@ DVector<Vector3> MultiMesh::_get_transform_array() const {
 
 	for(int i=0;i<instance_count;i++) {
 
-		Transform t=get_instance_transform(i);
+		Transform3D t=get_instance_transform(i);
 		w[i*4+0]=t.basis[0];
 		w[i*4+1]=t.basis[1];
 		w[i*4+2]=t.basis[2];
@@ -150,13 +150,13 @@ int MultiMesh::get_instance_count() const {
 
 }
 
-void MultiMesh::set_instance_transform(int p_instance, const Transform& p_transform) {
+void MultiMesh::set_instance_transform(int p_instance, const Transform3D& p_transform) {
 
 	VisualServer::get_singleton()->multimesh_instance_set_transform(multimesh,p_instance,p_transform);
 
 
 }
-Transform MultiMesh::get_instance_transform(int p_instance) const {
+Transform3D MultiMesh::get_instance_transform(int p_instance) const {
 
 	return VisualServer::get_singleton()->multimesh_instance_get_transform(multimesh,p_instance);
 
@@ -202,7 +202,7 @@ void MultiMesh::generate_aabb() {
 	for(int i=0;i<instance_count;i++) {
 
 
-		Transform xform = get_instance_transform(i);
+		Transform3D xform = get_instance_transform(i);
 		if(i==0)
 			aabb=xform.xform(base_aabb);
 		else

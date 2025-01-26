@@ -294,7 +294,7 @@ void GDScriptLanguage::get_public_constants(List<Pair<String,Variant> > *p_const
 	p_constants->push_back(pi);
 }
 
-String GDScriptLanguage::make_function(const String& p_class,const String& p_name,const StringArray& p_args) const {
+String GDScriptLanguage::make_function(const String& p_class,const String& p_name,const PackedStringArray& p_args) const {
 
 	String s="func "+p_name+"(";
 	if (p_args.size()) {
@@ -805,9 +805,9 @@ static bool _parse_completion_class(const String& p_base_path,const GDParser::Cl
 	if (p_indices && !p_indices->next()) {
 		//built-in types do not have sub-classes, try these first if no sub-indices exist.
 		static const char*_type_names[Variant::VARIANT_MAX]={
-			"null","bool","int","float","String","Vector2","Rect2","Vector3","Matrix32","Plane","Quat","AABB","Matrix3","Trasnform",
-			"Color","Image","NodePath","RID","Object","InputEvent","Dictionary","Array","RawArray","IntArray","FloatArray","StringArray",
-			"Vector2Array","Vector3Array","ColorArray"};
+			"null","bool","int","float","String","Vector2","Rect2","Vector3","Transform2D","Plane","Quat","AABB","Basis","Trasnform",
+			"Color","Image","NodePath","RID","Object","InputEvent","Dictionary","Array","PackedByteArray","PackedIntArray","FloatArray","PackedStringArray",
+			"PackedVector2Array","PackedVector3Array","PackedColorArray"};
 
 		for(int i=0;i<Variant::VARIANT_MAX;i++) {
 

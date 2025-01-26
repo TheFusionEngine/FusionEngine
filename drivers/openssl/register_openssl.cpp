@@ -5,7 +5,7 @@
 
 void register_openssl() {
 
-	ObjectTypeDB::register_type<StreamPeerOpenSSL>();
+	REGISTER_OBJECT(StreamPeerOpenSSL);
 	StreamPeerOpenSSL::initialize_ssl();
 
 }

@@ -31,9 +31,9 @@
 
 #include "scene/3d/camera.h"
 
-class InterpolatedCamera : public Camera {
+class InterpolatedCamera : public Camera3D {
 
-	OBJ_TYPE(InterpolatedCamera,Camera);
+	OBJ_TYPE(InterpolatedCamera,Camera3D);
 
 	bool enabled;
 	real_t speed;
@@ -46,7 +46,7 @@ protected:
 
 public:
 
-	void set_target(const Spatial *p_target);
+	void set_target(const Node3D *p_target);
 	void set_target_path(const NodePath& p_path);
 	NodePath get_target_path() const;
 

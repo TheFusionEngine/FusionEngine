@@ -34,17 +34,17 @@
 #include "camera.h"
 #include "scene/scene_string_names.h"
 
-void SpatialIndexer::add_camera(Camera* p_camera) {
+void SpatialIndexer::add_camera(Camera3D* p_camera) {
 
 	cameras.insert(p_camera);
 }
 
-void SpatialIndexer::remove_camera(Camera* p_camera){
+void SpatialIndexer::remove_camera(Camera3D* p_camera){
 
 	for (Set<ProximityArea*>::Element *F=proximity_areas.front();F;F=F->next()) {
 
 		ProximityArea *prox = F->get();
-		TK<Camera> k;
+		TK<Camera3D> k;
 		k.against=p_camera;
 		k.area=prox;
 		if (camera_pairs.has(k)) {
@@ -56,7 +56,7 @@ void SpatialIndexer::remove_camera(Camera* p_camera){
 
 }
 
-void SpatialIndexer::update_camera(Camera* p_camera) {
+void SpatialIndexer::update_camera(Camera3D* p_camera) {
 
 
 	_request_update();
@@ -67,9 +67,9 @@ void SpatialIndexer::_update_pairs() {
 	// brute force interseciton code, no broadphase
 	// will implement broadphase in the future
 
-	for (Set<Camera*>::Element *E=cameras.front();E;E=E->next()) {
+	for (Set<Camera3D*>::Element *E=cameras.front();E;E=E->next()) {
 
-		Camera *cam = E->get();
+		Camera3D *cam = E->get();
 		Vector<Plane> cplanes = cam->get_frustum();
 
 		for (Set<ProximityArea*>::Element *F=proximity_areas.front();F;F=F->next()) {
@@ -85,7 +85,7 @@ void SpatialIndexer::_update_pairs() {
 					inters=true;
 			}
 
-			TK<Camera> k;
+			TK<Camera3D> k;
 			k.against=cam;
 			k.area=prox;
 
@@ -124,10 +124,10 @@ void SpatialIndexer::add_proximity_area(ProximityArea* p_area) {
 
 void SpatialIndexer::remove_proximity_area(ProximityArea* p_area) {
 
-	for (Set<Camera*>::Element *E=cameras.front();E;E=E->next()) {
+	for (Set<Camera3D*>::Element *E=cameras.front();E;E=E->next()) {
 
-		Camera *cam = E->get();
-		TK<Camera> k;
+		Camera3D *cam = E->get();
+		TK<Camera3D> k;
 		k.against=cam;
 		k.area=p_area;
 		if (camera_pairs.has(k)) {

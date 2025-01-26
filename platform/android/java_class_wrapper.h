@@ -7,9 +7,9 @@
 
 class JavaObject;
 
-class JavaClass : public Reference {
+class JavaClass : public RefCounted {
 
-	OBJ_TYPE(JavaClass,Reference);
+	OBJ_TYPE(JavaClass,RefCounted);
 
 	enum ArgumentType {
 
@@ -101,9 +101,9 @@ public:
 };
 
 
-class JavaObject : public Reference {
+class JavaObject : public RefCounted {
 
-	OBJ_TYPE(JavaObject,Reference);
+	OBJ_TYPE(JavaObject,RefCounted);
 
 	Ref<JavaClass> base_class;
 friend class JavaClass;

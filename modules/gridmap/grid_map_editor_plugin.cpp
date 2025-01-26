@@ -99,7 +99,7 @@ void  GridMapEditor::_menu_option(int p_option) {
 
 		} break;
 		case MENU_OPTION_CURSOR_ROTATE_Y: {
-			Matrix3 r;
+			Basis r;
 			if (input_action==INPUT_DUPLICATE) {
 
 				r.set_orthogonal_index(selection.duplicate_rot);
@@ -114,7 +114,7 @@ void  GridMapEditor::_menu_option(int p_option) {
 			_update_cursor_transform();
 		} break;
 		case MENU_OPTION_CURSOR_ROTATE_X: {
-			Matrix3 r;
+			Basis r;
 			if (input_action==INPUT_DUPLICATE) {
 
 				r.set_orthogonal_index(selection.duplicate_rot);
@@ -130,7 +130,7 @@ void  GridMapEditor::_menu_option(int p_option) {
 			_update_cursor_transform();
 		} break;
 		case MENU_OPTION_CURSOR_ROTATE_Z: {
-			Matrix3 r;
+			Basis r;
 			if (input_action==INPUT_DUPLICATE) {
 
 				r.set_orthogonal_index(selection.duplicate_rot);
@@ -146,21 +146,21 @@ void  GridMapEditor::_menu_option(int p_option) {
 			_update_cursor_transform();
 		} break;
 		case MENU_OPTION_CURSOR_BACK_ROTATE_Y: {
-			Matrix3 r;
+			Basis r;
 			r.set_orthogonal_index(cursor_rot);
 			r.rotate(Vector3(0,1,0),-Math_PI/2.0);
 			cursor_rot=r.get_orthogonal_index();
 			_update_cursor_transform();
 		} break;
 		case MENU_OPTION_CURSOR_BACK_ROTATE_X: {
-			Matrix3 r;
+			Basis r;
 			r.set_orthogonal_index(cursor_rot);
 			r.rotate(Vector3(1,0,0),-Math_PI/2.0);
 			cursor_rot=r.get_orthogonal_index();
 			_update_cursor_transform();
 		} break;
 		case MENU_OPTION_CURSOR_BACK_ROTATE_Z: {
-			Matrix3 r;
+			Basis r;
 			r.set_orthogonal_index(cursor_rot);
 			r.rotate(Vector3(0,0,1),-Math_PI/2.0);
 			cursor_rot=r.get_orthogonal_index();
@@ -227,7 +227,7 @@ void  GridMapEditor::_menu_option(int p_option) {
 
 void GridMapEditor::_update_cursor_transform() {
 
-	cursor_transform=Transform();
+	cursor_transform=Transform3D();
 	cursor_transform.origin=cursor_origin;
 	cursor_transform.basis.set_orthogonal_index(cursor_rot);
 	cursor_transform = node->get_transform() * cursor_transform;
@@ -244,13 +244,13 @@ void GridMapEditor::_update_selection_transform() {
 
 	if (!selection.active) {
 
-		Transform xf;
+		Transform3D xf;
 		xf.basis.set_zero();
 		VisualServer::get_singleton()->instance_set_transform(selection_instance,xf);
 		return;
 	}
 
-	Transform xf;
+	Transform3D xf;
 	xf.scale(Vector3(1,1,1)*(Vector3(1,1,1)+(selection.end-selection.begin))*node->get_cell_size());
 	xf.origin=selection.begin*node->get_cell_size();
 
@@ -276,7 +276,7 @@ void GridMapEditor::_validate_selection() {
 	_update_selection_transform();
 }
 
-bool GridMapEditor::do_input_action(Camera* p_camera,const Point2& p_point,bool p_click) {
+bool GridMapEditor::do_input_action(Camera3D* p_camera,const Point2& p_point,bool p_click) {
 
 	if (!spatial_editor)
 		return false;
@@ -290,10 +290,10 @@ bool GridMapEditor::do_input_action(Camera* p_camera,const Point2& p_point,bool 
 	if (input_action!=INPUT_COPY && input_action!=INPUT_SELECT && input_action!=INPUT_DUPLICATE && !theme->has_item(selected_pallete))
 		return false;
 
-	Camera *camera = p_camera;
+	Camera3D *camera = p_camera;
 	Vector3 from = camera->project_ray_origin(p_point);
 	Vector3 normal = camera->project_ray_normal(p_point);
-	Transform local_xform = node->get_global_transform().affine_inverse();
+	Transform3D local_xform = node->get_global_transform().affine_inverse();
 	Vector<Plane> planes=camera->get_frustum();
 	from=local_xform.xform(from);
 	normal=local_xform.basis.xform(normal).normalized();
@@ -344,7 +344,7 @@ bool GridMapEditor::do_input_action(Camera* p_camera,const Point2& p_point,bool 
 	}
 
 	last_mouseover=Vector3(cell[0],cell[1],cell[2]);
-	VS::get_singleton()->instance_set_transform(grid_instance[edit_axis],Transform(Matrix3(),grid_ofs));
+	VS::get_singleton()->instance_set_transform(grid_instance[edit_axis],Transform3D(Basis(),grid_ofs));
 
 
 	if (cursor_instance.is_valid()) {
@@ -434,16 +434,16 @@ void GridMapEditor::_update_duplicate_indicator() {
 
 	if (!selection.active || input_action!=INPUT_DUPLICATE) {
 
-		Transform xf;
+		Transform3D xf;
 		xf.basis.set_zero();
 		VisualServer::get_singleton()->instance_set_transform(duplicate_instance,xf);
 		return;
 	}
 
-	Transform xf;
+	Transform3D xf;
 	xf.scale(Vector3(1,1,1)*(Vector3(1,1,1)+(selection.end-selection.begin))*node->get_cell_size());
 	xf.origin=(selection.begin+(selection.current-selection.click))*node->get_cell_size();
-	Matrix3 rot;
+	Basis rot;
 	rot.set_orthogonal_index(selection.duplicate_rot);
 	xf.basis = rot * xf.basis;
 
@@ -465,7 +465,7 @@ void GridMapEditor::_duplicate_paste() {
 
 	List< __Item > items;
 
-	Matrix3 rot;
+	Basis rot;
 	rot.set_orthogonal_index(selection.duplicate_rot);
 
 	for(int i=selection.begin.x;i<=selection.end.x;i++) {
@@ -482,7 +482,7 @@ void GridMapEditor::_duplicate_paste() {
 				Vector3 rel=Vector3(i,j,k)-selection.begin;
 				rel = rot.xform(rel);
 
-				Matrix3 orm;
+				Basis orm;
 				orm.set_orthogonal_index(orientation);
 				orm = rot * orm;
 
@@ -521,7 +521,7 @@ void GridMapEditor::_duplicate_paste() {
 
 }
 
-bool GridMapEditor::forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event) {
+bool GridMapEditor::forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event) {
 
 
 	if (edit_mode->get_selected()==0) { // regular click
@@ -652,10 +652,10 @@ bool GridMapEditor::forward_spatial_input_event(Camera* p_camera,const InputEven
 
 					Point2 point = Point2(p_event.mouse_motion.x,p_event.mouse_motion.y);
 
-					Camera *camera = p_camera;
+					Camera3D *camera = p_camera;
 					Vector3 from = camera->project_ray_origin(point);
 					Vector3 normal = camera->project_ray_normal(point);
-					Transform local_xform = node->get_global_transform().affine_inverse();
+					Transform3D local_xform = node->get_global_transform().affine_inverse();
 					from=local_xform.xform(from);
 					normal=local_xform.basis.xform(normal).normalized();
 
@@ -956,7 +956,7 @@ void GridMapEditor::update_grid() {
 	grid_ofs[edit_axis]=edit_floor[edit_axis]*node->get_cell_size();
 
 	edit_grid_xform.origin=grid_ofs;
-	edit_grid_xform.basis=Matrix3();
+	edit_grid_xform.basis=Basis();
 
 
 	for(int i=0;i<3;i++) {
@@ -1009,7 +1009,7 @@ void GridMapEditor::_notification(int p_what) {
 
 	} else if (p_what==NOTIFICATION_PROCESS) {
 
-		Transform xf = node->get_global_transform();
+		Transform3D xf = node->get_global_transform();
 
 		if (xf!=grid_xform) {
 			for(int i=0;i<3;i++) {
@@ -1098,7 +1098,7 @@ void GridMapEditor::_update_areas_display() {
 	List<int> areas;
 	node->get_area_list(&areas);
 
-	Transform global_xf = node->get_global_transform();
+	Transform3D global_xf = node->get_global_transform();
 
 	for(List<int>::Element *E=areas.front();E;E=E->next()) {
 
@@ -1131,7 +1131,7 @@ void GridMapEditor::_update_areas_display() {
 		AreaDisplay ad;
 		ad.mesh=mesh;
 		ad.instance = VisualServer::get_singleton()->instance_create2(mesh,node->get_world()->get_scenario());
-		Transform xform;
+		Transform3D xform;
 		AABB aabb = node->area_get_bounds(area);
 		xform.origin=aabb.pos * node->get_cell_size();
 		xform.basis.scale(aabb.size * node->get_cell_size());
@@ -1229,9 +1229,9 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 	options->get_popup()->add_separator();
 	options->get_popup()->add_check_item("Duplicate Selects",MENU_OPTION_DUPLICATE_SELECTS);
 	options->get_popup()->add_separator();
-	options->get_popup()->add_item("Create Area",MENU_OPTION_SELECTION_MAKE_AREA,KEY_CONTROL+KEY_C);
+	options->get_popup()->add_item("Create Area3D",MENU_OPTION_SELECTION_MAKE_AREA,KEY_CONTROL+KEY_C);
 	options->get_popup()->add_item("Create Exterior Connector",MENU_OPTION_SELECTION_MAKE_EXTERIOR_CONNECTOR);
-	options->get_popup()->add_item("Erase Area",MENU_OPTION_REMOVE_AREA);
+	options->get_popup()->add_item("Erase Area3D",MENU_OPTION_REMOVE_AREA);
 	options->get_popup()->add_separator();
 	options->get_popup()->add_item("Selection -> Clear",MENU_OPTION_SELECTION_CLEAR);
 	//options->get_popup()->add_separator();

@@ -83,7 +83,7 @@ public:
 
 	virtual bool is_concave() const { return false; }
 
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const=0;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const=0;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 	virtual void get_supports(const Vector3& p_normal,int p_max,Vector3 *r_supports,int & r_amount) const=0;
 
@@ -129,7 +129,7 @@ public:
 	Plane get_plane() const;
 
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_PLANE; }
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 	virtual void get_supports(const Vector3& p_normal,int p_max,Vector3 *r_supports,int & r_amount) const { r_amount=0; }
 
@@ -153,7 +153,7 @@ public:
 	float get_length() const;
 
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_RAY; }
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 	virtual void get_supports(const Vector3& p_normal,int p_max,Vector3 *r_supports,int & r_amount) const;
 
@@ -178,7 +178,7 @@ public:
 
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_SPHERE; }
 
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 	virtual void get_supports(const Vector3& p_normal,int p_max,Vector3 *r_supports,int & r_amount) const;
 	virtual bool intersect_segment(const Vector3& p_begin,const Vector3& p_end,Vector3 &r_result, Vector3 &r_normal) const;
@@ -201,7 +201,7 @@ public:
 
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_BOX; }
 
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 	virtual void get_supports(const Vector3& p_normal,int p_max,Vector3 *r_supports,int & r_amount) const;
 	virtual bool intersect_segment(const Vector3& p_begin,const Vector3& p_end,Vector3 &r_result, Vector3 &r_normal) const;
@@ -228,7 +228,7 @@ public:
 
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_CAPSULE; }
 
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 	virtual void get_supports(const Vector3& p_normal,int p_max,Vector3 *r_supports,int & r_amount) const;
 	virtual bool intersect_segment(const Vector3& p_begin,const Vector3& p_end,Vector3 &r_result, Vector3 &r_normal) const;
@@ -252,7 +252,7 @@ public:
 
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_CONVEX_POLYGON; }
 
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 	virtual void get_supports(const Vector3& p_normal,int p_max,Vector3 *r_supports,int & r_amount) const;
 	virtual bool intersect_segment(const Vector3& p_begin,const Vector3& p_end,Vector3 &r_result, Vector3 &r_normal) const;
@@ -333,7 +333,7 @@ public:
 
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_CONCAVE_POLYGON; }
 
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 
 	virtual bool intersect_segment(const Vector3& p_begin,const Vector3& p_end,Vector3 &r_result, Vector3 &r_normal) const;
@@ -370,7 +370,7 @@ public:
 
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_HEIGHTMAP; }
 
-	virtual void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	virtual void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	virtual Vector3 get_support(const Vector3& p_normal) const;
 	virtual bool intersect_segment(const Vector3& p_begin,const Vector3& p_end,Vector3 &r_result, Vector3 &r_normal) const;
 
@@ -395,7 +395,7 @@ struct FaceShapeSW : public ShapeSW {
 
 	const Vector3& get_vertex(int p_idx) const { return vertex[p_idx]; }
 
-	void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const;
+	void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const;
 	Vector3 get_support(const Vector3& p_normal) const;
 	virtual void get_supports(const Vector3& p_normal,int p_max,Vector3 *r_supports,int & r_amount) const;
 	bool intersect_segment(const Vector3& p_begin,const Vector3& p_end,Vector3 &r_result, Vector3 &r_normal) const;
@@ -417,12 +417,12 @@ struct MotionShapeSW : public ShapeSW {
 	virtual PhysicsServer::ShapeType get_type() const { return PhysicsServer::SHAPE_CONVEX_POLYGON; }
 
 
-	void project_range(const Vector3& p_normal, const Transform& p_transform, real_t &r_min, real_t &r_max) const {
+	void project_range(const Vector3& p_normal, const Transform3D& p_transform, real_t &r_min, real_t &r_max) const {
 
 		Vector3 cast = p_transform.basis.xform(motion);
 		real_t mina,maxa;
 		real_t minb,maxb;
-		Transform ofsb = p_transform;
+		Transform3D ofsb = p_transform;
 		ofsb.origin+=cast;
 		shape->project_range(p_normal,p_transform,mina,maxa);
 		shape->project_range(p_normal,ofsb,minb,maxb);
@@ -456,7 +456,7 @@ struct _ShapeTestConvexBSPSW {
 
 	const BSP_Tree *bsp;
 	const ShapeSW *shape;
-	Transform transform;
+	Transform3D transform;
 
 	_FORCE_INLINE_ void project_range(const Vector3& p_normal, real_t& r_min, real_t& r_max) const {
 

@@ -13,5 +13,5 @@ func _ready():
 
 
 func _on_goto_scene_pressed():
-	get_node("/root/global").goto_scene("res://scene_a.scn")
+	get_node("/root/global").goto_scene("res://scene_a.xscn")
 	pass # replace with function body

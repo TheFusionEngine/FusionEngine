@@ -476,7 +476,7 @@ bool CustomPropertyEditor::edit(Object* p_owner,const String& p_name,Variant::Ty
 			names.push_back("oy");
 			config_value_editors(6,2,16,names);
 
-			Matrix32 basis=v;
+			Transform2D basis=v;
 			for(int i=0;i<6;i++) {
 
 				value_editor[i]->set_text( String::num( basis.elements[i/2][i%2] ) );
@@ -497,7 +497,7 @@ bool CustomPropertyEditor::edit(Object* p_owner,const String& p_name,Variant::Ty
 			names.push_back("zz");
 			config_value_editors(9,3,16,names);
 			
-			Matrix3 basis=v;
+			Basis basis=v;
 			for(int i=0;i<9;i++) {
 				
 				value_editor[i]->set_text( String::num( basis.elements[i/3][i%3] ) );
@@ -522,7 +522,7 @@ bool CustomPropertyEditor::edit(Object* p_owner,const String& p_name,Variant::Ty
 			names.push_back("zo");
 			config_value_editors(12,4,16,names);
 			
-			Transform tr=v;
+			Transform3D tr=v;
 			for(int i=0;i<9;i++) {
 				
 				value_editor[(i/3)*4+i%3]->set_text( String::num( tr.basis.elements[i/3][i%3] ) );
@@ -1303,7 +1303,7 @@ void CustomPropertyEditor::_modified(String p_string) {
 		} break;
 		case Variant::MATRIX32: {
 
-			Matrix3 m;
+			Basis m;
 			for(int i=0;i<6;i++) {
 
 				m.elements[i/2][i%2]=value_editor[i]->get_text().to_double();
@@ -1315,7 +1315,7 @@ void CustomPropertyEditor::_modified(String p_string) {
 		} break;
 		case Variant::MATRIX3: {
 			
-			Matrix3 m;
+			Basis m;
 			for(int i=0;i<9;i++) {
 					
 				m.elements[i/3][i%3]=value_editor[i]->get_text().to_double();
@@ -1327,7 +1327,7 @@ void CustomPropertyEditor::_modified(String p_string) {
 		} break;
 		case Variant::TRANSFORM: {
 			
-			Matrix3 basis;
+			Basis basis;
 			for(int i=0;i<9;i++) {
 				
 				basis.elements[i/3][i%3]=value_editor[(i/3)*4+i%3]->get_text().to_double();
@@ -1338,7 +1338,7 @@ void CustomPropertyEditor::_modified(String p_string) {
 			origin.y=value_editor[7]->get_text().to_double();
 			origin.z=value_editor[11]->get_text().to_double();
 			
-			v=Transform(basis,origin);
+			v=Transform3D(basis,origin);
 			emit_signal("variant_changed");
 			
 			
@@ -2334,7 +2334,7 @@ void PropertyEditor::update_tree() {
 
 				item->set_cell_mode( 1, TreeItem::CELL_MODE_CUSTOM );
 				item->set_editable( 1, !read_only );
-				item->set_text(1,"[IntArray]");
+				item->set_text(1,"[PackedIntArray]");
 				item->set_icon( 0, get_icon("ArrayInt","EditorIcons") );
 
 
@@ -2343,7 +2343,7 @@ void PropertyEditor::update_tree() {
 
 				item->set_cell_mode( 1, TreeItem::CELL_MODE_CUSTOM );
 				item->set_editable( 1, !read_only );
-				item->set_text(1,"[RealArray]");
+				item->set_text(1,"[PackedFloatArray]");
 				item->set_icon( 0, get_icon("ArrayReal","EditorIcons") );
 
 			} break;
@@ -2351,7 +2351,7 @@ void PropertyEditor::update_tree() {
 
 				item->set_cell_mode( 1, TreeItem::CELL_MODE_CUSTOM );
 				item->set_editable( 1, !read_only );
-				item->set_text(1,"[StringArray]");
+				item->set_text(1,"[PackedStringArray]");
 				item->set_icon( 0, get_icon("ArrayString","EditorIcons") );
 
 			} break;

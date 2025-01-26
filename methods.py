@@ -1,5 +1,32 @@
 import os
 from compat import iteritems
+import shlex
+from SCons.Node import NodeList
+
+def postlink(env, target, deps, dll, uid3=None, linkas=None):
+    import struct
+
+    tname = str(target if not isinstance(target, NodeList) else target[0])
+    name = tname.lstrip('#')
+
+    prog = str(deps if not isinstance(deps, NodeList) else deps[0])
+    if linkas is None:
+        linkas = os.path.splitext(os.path.split(name)[-1])[0]
+    if uid3 is None:
+        uid3 = '0xa' + struct.pack('n', hash(str(name))).hex()[1:8]
+    return env.Command(tname, deps, shlex.join([os.path.join(os.getenv('EPOCROOT'), 'epoc32/tools/elf2e32'),
+        '--capability=LocalServices+ReadUserData+UserEnvironment+WriteUserData+NetworkServices',
+        '--elfinput=' + prog, '--output=' + name, '--libpath=' + env['libroot'], '--linkas=' + linkas,
+        '--fpu=softvfp', '--uid1=' + ('0x10000079' if dll else '0x1000007a'), ('0x1000008d' if dll else '--uid2=0x100039ce'),
+        '--uid3=' + uid3, '--sid=' + uid3, '--vid=0x00000000', '--targettype=' + ('DLL' if dll else 'EXE'),
+        '--dlldata', '--ignorenoncallable', '--heap=0x800000,0xd000000', '--stack=0x40000'] + (['--smpsafe']) +  (['--debuggable'] if env['target'] != 'release' else [])))
+
+
+def rcomp(env, target, dep=[]):
+    name = str(target if not isinstance(target, NodeList) else target[0]).lstrip('#')
+    env.Command('#bin/' + name + '.pprss', ['#platform/symbian/sis/' + name + '.rss', *dep], shlex.join([env['CXX'], *env['symbiandef'], *env['symbianinc'], '-Iplatform/symbian/sis', '-Iplatform/symbian', '-Ibin', '-x', 'c++', '-E', '-P', '-o', 'bin/' + name + '.pprss', 'platform/symbian/sis/' + name + '.rss']))
+    return env.Command(['#bin/' + name + '.rsg', '#bin/' + name + '.rsc'], '#bin/' + name + '.pprss', shlex.join(['rcomp', '-sbin/' + name + '.pprss', '-hbin/' + name + '.rsg', '-obin/' + name + '.rsc', '-u']))
+
 
 def add_source_files(self, sources, filetype, lib_env = None, shared = False):
 	import glob;
@@ -253,9 +280,9 @@ def build_glsl_header( filename ):
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c) { _FU glUniform3f(get_uniform(p_uniform),p_a,p_b,p_c); }\n\n");
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c, float p_d) { _FU glUniform4f(get_uniform(p_uniform),p_a,p_b,p_c,p_d); }\n\n");
 	
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform3D& p_transform) {  _FU
 
-		const Transform &tr = p_transform;
+		const Transform3D &tr = p_transform;
 	
 		GLfloat matrix[16]={ /* build a 16x16 matrix */
 			tr.basis.elements[0][0],
@@ -284,9 +311,9 @@ def build_glsl_header( filename ):
 	
 	""");
 
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Matrix32& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform2D& p_transform) {  _FU
 
-		const Matrix32 &tr = p_transform;
+		const Transform2D &tr = p_transform;
 
 		GLfloat matrix[16]={ /* build a 16x16 matrix */
 			tr.elements[0][0],
@@ -553,9 +580,9 @@ def build_hlsl_dx9_header( filename ):
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c) { _FU float vec3[4]={p_a,p_b,p_c,0}; set_uniformfv(p_uniform,vec3); }\n\n");
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c, float p_d) { _FU float vec4[4]={p_a,p_b,p_c,p_d}; set_uniformfv(p_uniform,vec4); }\n\n");
 
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform3D& p_transform) {  _FU
 
-		const Transform &tr = p_transform;
+		const Transform3D &tr = p_transform;
 
 		float matrix[16]={ /* build a 16x16 matrix */
 			tr.basis.elements[0][0],
@@ -857,9 +884,9 @@ def build_legacygl_header( filename, include, class_suffix, output_attribs ):
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c) { _FU glUniform3f(get_uniform(p_uniform),p_a,p_b,p_c); }\n\n");
 	fd.write("\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, float p_a, float p_b, float p_c, float p_d) { _FU glUniform4f(get_uniform(p_uniform),p_a,p_b,p_c,p_d); }\n\n");
 
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform3D& p_transform) {  _FU
 
-		const Transform &tr = p_transform;
+		const Transform3D &tr = p_transform;
 
 		GLfloat matrix[16]={ /* build a 16x16 matrix */
 			tr.basis.elements[0][0],
@@ -888,9 +915,9 @@ def build_legacygl_header( filename, include, class_suffix, output_attribs ):
 
 	""");
 
-	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Matrix32& p_transform) {  _FU
+	fd.write("""\t_FORCE_INLINE_ void set_uniform(Uniforms p_uniform, const Transform2D& p_transform) {  _FU
 
-		const Matrix32 &tr = p_transform;
+		const Transform2D &tr = p_transform;
 
 		GLfloat matrix[16]={ /* build a 16x16 matrix */
 			tr.elements[0][0],
@@ -1169,7 +1196,16 @@ def build_cg_shader(sname):
 
 	fd.write("\t};\n");
 
-		
+def write_disabled_classes(class_list):
+    f = open("core/disabled_object_types.gen.h", "w")
+    f.write("/* THIS FILE IS GENERATED DO NOT EDIT */\n")
+    f.write("#ifndef DISABLED_CLASSES_GEN_H\n")
+    f.write("#define DISABLED_CLASSES_GEN_H\n\n")
+    for c in class_list:
+        cs = c.strip()
+        if cs != "":
+            f.write("#define ObjectTypeDB_Disable_" + cs + " 1\n")
+    f.write("\n#endif\n")
 
 import glob
 def detect_modules():

@@ -32,14 +32,14 @@
 #include "reference.h"
 
 
-class ConfigFile : public Reference {
+class ConfigFile : public RefCounted {
 
-	OBJ_TYPE(ConfigFile,Reference);
+	OBJ_TYPE(ConfigFile,RefCounted);
 
 	Map< String, Map<String, Variant> > values;
 
-	StringArray _get_sections() const;
-	StringArray _get_section_keys(const String& p_section) const;
+	PackedStringArray _get_sections() const;
+	PackedStringArray _get_section_keys(const String& p_section) const;
 protected:
 
 	static void _bind_methods();

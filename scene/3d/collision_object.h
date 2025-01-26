@@ -32,16 +32,16 @@
 #include "scene/3d/spatial.h"
 #include "scene/resources/shape.h"
 
-class CollisionObject : public Spatial {
+class CollisionObject3D : public Node3D {
 
-	OBJ_TYPE( CollisionObject, Spatial );
+	OBJ_TYPE( CollisionObject3D, Node3D );
 
 	bool area;
 	RID rid;
 
 	struct ShapeData {
-		Transform xform;
-		Ref<Shape> shape;
+		Transform3D xform;
+		Ref<Shape3D> shape;
         bool trigger;
 
         ShapeData() {
@@ -57,12 +57,12 @@ class CollisionObject : public Spatial {
 	void _update_pickable();
 	void _update_shapes();
 
-friend class CollisionShape;
-friend class CollisionPolygon;
+friend class CollisionShape3D;
+friend class CollisionPolygon3D;
 	void _update_shapes_from_children();
 protected:
 
-	CollisionObject(RID p_rid, bool p_area);
+	CollisionObject3D(RID p_rid, bool p_area);
 
 	void _notification(int p_what);
 	bool _set(const StringName& p_name, const Variant& p_value);
@@ -77,12 +77,12 @@ friend class Viewport;
 public:
 
 
-	void add_shape(const Ref<Shape>& p_shape, const Transform& p_transform=Transform());
+	void add_shape(const Ref<Shape3D>& p_shape, const Transform3D& p_transform=Transform3D());
 	int get_shape_count() const;
-	void set_shape(int p_shape_idx, const Ref<Shape>& p_shape);
-	void set_shape_transform(int p_shape_idx, const Transform& p_transform);
-	Ref<Shape> get_shape(int p_shape_idx) const;
-	Transform get_shape_transform(int p_shape_idx) const;
+	void set_shape(int p_shape_idx, const Ref<Shape3D>& p_shape);
+	void set_shape_transform(int p_shape_idx, const Transform3D& p_transform);
+	Ref<Shape3D> get_shape(int p_shape_idx) const;
+	Transform3D get_shape_transform(int p_shape_idx) const;
 	void remove_shape(int p_shape_idx);
 	void clear_shapes();
 	void set_shape_as_trigger(int p_shape_idx, bool p_trigger);
@@ -97,8 +97,8 @@ public:
 
 	_FORCE_INLINE_ RID get_rid() const { return rid; }
 
-	CollisionObject();
-	~CollisionObject();
+	CollisionObject3D();
+	~CollisionObject3D();
 };
 
 #endif // COLLISION_OBJECT__H

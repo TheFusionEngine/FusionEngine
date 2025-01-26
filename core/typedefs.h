@@ -267,6 +267,11 @@ struct _GlobalLock {
 #define __STRX(m_index) #m_index
 #define __STR(m_index) __STRX(m_index)
 
+#define __OBJ_ARG_PLACEHOLDER_1 0,
+#define __obj_take_second_arg(__ignored, val, ...) val
+#define ____obj_is_defined(arg1_or_junk) __obj_take_second_arg(arg1_or_junk 1, 0)
+#define ___obj_is_defined(val) ____obj_is_defined(__OBJ_ARG_PLACEHOLDER_##val)
+#define OBJ_IS_DEFINED(x) ___obj_is_defined(x)
 
 #endif  /* typedefs.h */
 

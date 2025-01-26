@@ -61,7 +61,7 @@ func _process(delta):
 # This function calculates a rotation matrix based on a direction vector. As our arrows are cylindrical we don't
 # care about the rotation around this axis.
 func get_basis_for_arrow(p_vector):
-	var rotate = Transform()
+	var rotate = Transform3D()
 
 	# as our arrow points up, Y = our direction vector
 	rotate.basis.y = p_vector.normalized()
@@ -96,7 +96,7 @@ func calc_north(p_grav, p_mag):
 
 # This function creates an orientation matrix using the magnetometer and gravity vector as inputs.
 func orientate_by_mag_and_grav(p_mag, p_grav):
-	var rotate = Transform()
+	var rotate = Transform3D()
 
 	# as always, normalize!
 	p_mag = p_mag.normalized()
@@ -117,7 +117,7 @@ func orientate_by_mag_and_grav(p_mag, p_grav):
 # The gyro is special as this vector does not contain a direction but rather a
 # rotational velocity. This is why we multiply our values with delta.
 func rotate_by_gyro(p_gyro, p_basis, p_delta):
-	var rotate = Transform()
+	var rotate = Transform3D()
 
 	rotate = rotate.rotated(p_basis.basis.x, -p_gyro.x * p_delta)
 	rotate = rotate.rotated(p_basis.basis.y, -p_gyro.y * p_delta)
@@ -138,7 +138,7 @@ func drift_correction(p_basis, p_grav):
 	if dot < 1.0:
 		# the cross between our two vectors gives us a vector perpendicular to our two vectors
 		var axis = p_basis.basis.y.cross(real_up).normalized()
-		var correction = Transform(Matrix3(axis, acos(dot)))
+		var correction = Transform3D(Basis(axis, acos(dot)))
 		#p_basis = correction * p_basis
 
 	return p_basis

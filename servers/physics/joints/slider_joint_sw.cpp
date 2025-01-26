@@ -61,7 +61,7 @@ void SliderJointSW::initParams()
 
 //-----------------------------------------------------------------------------
 
-SliderJointSW::SliderJointSW(BodySW* rbA, BodySW* rbB, const Transform& frameInA, const Transform& frameInB)
+SliderJointSW::SliderJointSW(BodySW* rbA, BodySW* rbB, const Transform3D& frameInA, const Transform3D& frameInB)
 	:  JointSW(_arr,2)
 	, m_frameInA(frameInA)
 	, m_frameInB(frameInB)

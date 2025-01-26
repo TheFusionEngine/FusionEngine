@@ -672,7 +672,7 @@ axis vectors. Transforming a Vector by a rotated OCS Matrix results in the rotat
 being applied to the resulting vector. OCS Matrices can also be multiplied to
 accumulate their transformations.
 <!--l. 397--><p class="indent" >   Godot Engine implements OCS Matrices in the <span 
-class="ecti-1000">Matrix3 </span>class:
+class="ecti-1000">Basis </span>class:
    <!--l. 400-->
    <div class="lstlisting"><span class="label"><a 
  id="x1-14001r1"></a></span><span 
@@ -685,7 +685,7 @@ class="ecti-1000">3</span><span
 class="ecti-1000">x3</span><span 
 class="ecti-1000">&#x00A0;</span><span 
 class="ecti-1000">matrix</span>&#x00A0;<br /><span class="label"><a 
- id="x1-14002r2"></a></span>m&#x00A0;=&#x00A0;Matrix3()&#x00A0;<br /><span class="label"><a 
+ id="x1-14002r2"></a></span>m&#x00A0;=&#x00A0;Basis()&#x00A0;<br /><span class="label"><a 
  id="x1-14003r3"></a></span><span 
 class="ecti-1000">//</span><span 
 class="ecti-1000">rotate</span><span 
@@ -736,10 +736,10 @@ rotation. For this, an <span
 class="ecti-1000">origin </span>vector must be added to the OCS, thus transforming it
 into a 3x4 (or 4x3, depending on preference) matrix. Godot engine implements this
 functionality in the <span 
-class="ecti-1000">Transform </span>class:
+class="ecti-1000">Transform3D </span>class:
    <!--l. 419-->
    <div class="lstlisting"><span class="label"><a 
- id="x1-14010r1"></a></span>t&#x00A0;=&#x00A0;Transform()&#x00A0;<br /><span class="label"><a 
+ id="x1-14010r1"></a></span>t&#x00A0;=&#x00A0;Transform3D()&#x00A0;<br /><span class="label"><a 
  id="x1-14011r2"></a></span>//rotate&#x00A0;the&#x00A0;transform&#x00A0;in&#x00A0;the&#x00A0;y&#x00A0;axis,&#x00A0;by&#x00A0;45&#x00A0;degrees&#x00A0;<br /><span class="label"><a 
  id="x1-14012r3"></a></span>t.rotate(&#x00A0;Vector3(0,1,0),&#x00A0;Math.deg2rad(45)&#x00A0;)&#x00A0;<br /><span class="label"><a 
  id="x1-14013r4"></a></span>//translate&#x00A0;the&#x00A0;transform&#x00A0;by&#x00A0;5&#x00A0;in&#x00A0;the&#x00A0;z&#x00A0;axis&#x00A0;<br /><span class="label"><a 
@@ -748,17 +748,17 @@ class="ecti-1000">Transform </span>class:
  id="x1-14016r7"></a></span>v&#x00A0;=&#x00A0;Vector3(...)&#x00A0;<br /><span class="label"><a 
  id="x1-14017r8"></a></span>result&#x00A0;=&#x00A0;t.xform(&#x00A0;v&#x00A0;)
    </div>
-<!--l. 431--><p class="indent" >   Transform contains internally a Matrix3 &#8220;basis&#8221; and a Vector3 &#8220;origin&#8221; (which can
+<!--l. 431--><p class="indent" >   Transform3D contains internally a Basis &#8220;basis&#8221; and a Vector3 &#8220;origin&#8221; (which can
 be modified individually).
 <!--l. 435--><p class="noindent" >
    <h5 class="subsubsectionHead"><span class="titlemark">1.4.2   </span> <a 
- id="x1-150001.4.2"></a>Transform Internals</h5>
+ id="x1-150001.4.2"></a>Transform3D Internals</h5>
 <!--l. 437--><p class="noindent" >Internally, the xform() process is quite simple, to apply a 3x3 transform to a vector,
 the transposed axis vectors are used (as using the regular axis vectors will result on
 an inverse of the desired transform):
    <!--l. 442-->
    <div class="lstlisting"><span class="label"><a 
- id="x1-15001r1"></a></span>m&#x00A0;=&#x00A0;Matrix3(...)&#x00A0;<br /><span class="label"><a 
+ id="x1-15001r1"></a></span>m&#x00A0;=&#x00A0;Basis(...)&#x00A0;<br /><span class="label"><a 
  id="x1-15002r2"></a></span>v&#x00A0;=&#x00A0;Vector3(..)&#x00A0;<br /><span class="label"><a 
  id="x1-15003r3"></a></span>result&#x00A0;=&#x00A0;Vector3(...)&#x00A0;<br /><span class="label"><a 
  id="x1-15004r4"></a></span>&#x00A0;<br /><span class="label"><a 
@@ -774,14 +774,14 @@ an inverse of the desired transform):
  id="x1-15014r14"></a></span>&#x00A0;<br /><span class="label"><a 
  id="x1-15015r15"></a></span>result&#x00A0;=&#x00A0;m.xform(v)&#x00A0;<br /><span class="label"><a 
  id="x1-15016r16"></a></span>&#x00A0;<br /><span class="label"><a 
- id="x1-15017r17"></a></span>//&#x00A0;if&#x00A0;m&#x00A0;this&#x00A0;was&#x00A0;a&#x00A0;Transform(),&#x00A0;the&#x00A0;origin&#x00A0;would&#x00A0;be&#x00A0;added&#x00A0;<br /><span class="label"><a 
+ id="x1-15017r17"></a></span>//&#x00A0;if&#x00A0;m&#x00A0;this&#x00A0;was&#x00A0;a&#x00A0;Transform3D(),&#x00A0;the&#x00A0;origin&#x00A0;would&#x00A0;be&#x00A0;added&#x00A0;<br /><span class="label"><a 
  id="x1-15018r18"></a></span>//&#x00A0;like&#x00A0;this:&#x00A0;<br /><span class="label"><a 
  id="x1-15019r19"></a></span>&#x00A0;<br /><span class="label"><a 
  id="x1-15020r20"></a></span>result&#x00A0;=&#x00A0;result&#x00A0;+&#x00A0;t.get_origin()
    </div>
 <!--l. 468--><p class="noindent" >
    <h5 class="subsubsectionHead"><span class="titlemark">1.4.3   </span> <a 
- id="x1-160001.4.3"></a>Using The Transform</h5>
+ id="x1-160001.4.3"></a>Using The Transform3D</h5>
 <!--l. 470--><p class="noindent" >So, it is often desired apply sucessive operations to a transformation. For example,
 let&#8217;s a assume that there is a turtle sitting at the origin (the turtle is a logo reference,
 
@@ -804,7 +804,7 @@ class="ecti-1000">&#x00A0;</span><span
 class="ecti-1000">the</span><span 
 class="ecti-1000">&#x00A0;</span><span 
 class="ecti-1000">origin</span>&#x00A0;<br /><span class="label"><a 
- id="x1-16002r2"></a></span>turtle&#x00A0;=&#x00A0;Transform()&#x00A0;<br /><span class="label"><a 
+ id="x1-16002r2"></a></span>turtle&#x00A0;=&#x00A0;Transform3D()&#x00A0;<br /><span class="label"><a 
  id="x1-16003r3"></a></span><span 
 class="ecti-1000">//</span><span 
 class="ecti-1000">&#x00A0;</span><span 

@@ -30,7 +30,7 @@ class MeshInstanceEditor : public Node {
 
 
 	Panel *panel;
-	MeshInstance *node;
+	MeshInstance3D *node;
 
 	LineEdit *surface_source;
 	LineEdit *mesh_source;
@@ -47,7 +47,7 @@ protected:
 	static void _bind_methods();
 public:
 
-	void edit(MeshInstance *p_mesh);
+	void edit(MeshInstance3D *p_mesh);
 	MeshInstanceEditor();
 };
 
@@ -60,7 +60,7 @@ class MeshInstanceEditorPlugin : public EditorPlugin {
 
 public:
 
-	virtual String get_name() const { return "MeshInstance"; }
+	virtual String get_name() const { return "MeshInstance3D"; }
 	bool has_main_screen() const { return false; }
 	virtual void edit(Object *p_node);
 	virtual bool handles(Object *p_node) const;

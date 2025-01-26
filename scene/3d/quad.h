@@ -33,9 +33,9 @@
 #include "scene/3d/visual_instance.h"
 #include "rid.h"
 
-class Quad : public GeometryInstance {
+class Quad : public GeometryInstance3D {
 
-	OBJ_TYPE(Quad,GeometryInstance);
+	OBJ_TYPE(Quad,GeometryInstance3D);
 
 	Vector3::Axis axis;
 	bool centered;

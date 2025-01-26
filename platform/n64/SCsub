@@ -1,0 +1,33 @@
+import shlex
+from SCons.Node import NodeList
+Import('env')
+
+
+
+common_ultra=[\
+	"os_ultra.cpp",\
+]
+"""
+n64tool
+N64_TOOLFLAGS = --title $(N64_ROM_TITLE)
+N64_TOOLFLAGS += $(if $(N64_ROM_HEADER),--header $(N64_ROM_HEADER))
+N64_TOOLFLAGS += $(if $(N64_ROM_REGION),--region $(N64_ROM_REGION))
+$(N64_TOOL) $(N64_TOOLFLAGS) --toc --output $@ --align 256 $<.stripped --align 8 $<.sym --align 8
+"""
+prog = env.Program('#bin/godot_ultra',['godot_ultra.cpp']+common_ultra)
+
+env.Command(
+	"#bin/strippedultra.elf", prog, shlex.join(['/opt/libdragon/bin/mips64-elf-strip','-o','bin/strippedultra.elf','-s', str(prog if not isinstance(prog, NodeList) else prog[0])])
+)
+
+env.Command(
+	"#bin/strippedultra2.elf", "#bin/strippedultra.elf", shlex.join(['/opt/libdragon/bin/n64elfcompress','-c', '1', '-o','bin','bin/strippedultra.elf'])
+)
+
+
+env.Command(
+	"#bin/fusion.z64", "#bin/strippedultra2.elf", shlex.join(['/opt/libdragon/bin/n64tool','--title','FUSION', '--output', 'bin/fusion.z64','--align', '256', 'bin/strippedultra.elf'])
+)
+env.Command(
+	"#bin/rom.z64", "#bin/fusion.z64", shlex.join(['rm','bin/strippedultra.elf'])
+)

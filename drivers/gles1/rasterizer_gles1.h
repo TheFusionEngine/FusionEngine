@@ -31,7 +31,7 @@
 
 #include "servers/visual/rasterizer.h"
 
-#ifdef GLES1_ENABLED
+#if defined(GLES1_ENABLED) || defined(__psp2__) || defined(__WII__)
 
 #include "image.h"
 #include "rid.h"
@@ -42,13 +42,11 @@
 #include "sort.h"
 // #include "tools/editor/scene_tree_editor.h"
 #include "platform_config.h"
-#ifndef GLES1_INCLUDE_H
-#include <GLES/gl.h>
-
+#if defined(GLES1_INCLUDE_H)
+ #include GLES1_INCLUDE_H
 #else
-#include GLES1_INCLUDE_H
+ #include <GLES/gl.h>
 #endif
-
 
 #include "servers/visual/particle_system_sw.h"
 
@@ -62,9 +60,13 @@ class RasterizerGLES1 : public Rasterizer {
 		MAX_SCENE_LIGHTS=2048,
 		LIGHT_SPOT_BIT=0x80,
 		DEFAULT_SKINNED_BUFFER_SIZE = 1024 * 1024, // 10k vertices
+#ifdef __psp2__
+		MAX_HW_LIGHTS = 8, //Yay! 8 Lights :blush:
+#else
 		MAX_HW_LIGHTS = 4,
+#endif
 	};
-	#ifdef PSP
+	#if defined(PSP) || defined(__WII__)
 	void glActiveTexture(int a1) { };
 	void glClientActiveTexture(int a1) { };
 	#endif
@@ -163,7 +165,7 @@ class RasterizerGLES1 : public Rasterizer {
 
 		VS::MaterialDepthDrawMode depth_draw_mode;
 
-		Transform uv_transform;
+		Transform3D uv_transform;
 		VS::FixedMaterialTexCoordMode texcoord_mode[VisualServer::FIXED_MATERIAL_PARAM_MAX];
 
 		VS::MaterialBlendMode blend_mode;
@@ -434,7 +436,7 @@ class RasterizerGLES1 : public Rasterizer {
 		RID particles;
 
 		ParticleSystemProcessSW particles_process;
-		Transform transform;
+		Transform3D transform;
 
 		ParticlesInstance() {  }
 	};
@@ -444,7 +446,7 @@ class RasterizerGLES1 : public Rasterizer {
 
 	struct Skeleton {
 
-		Vector<Transform> bones;
+		Vector<Transform3D> bones;
 
 	};
 
@@ -545,17 +547,17 @@ class RasterizerGLES1 : public Rasterizer {
 		struct SplitInfo {
 
 			CameraMatrix camera;
-			Transform transform;
+			Transform3D transform;
 			float near;
 			float far;
 		};
 
 		RID light;
 		Light *base;
-		Transform transform;
+		Transform3D transform;
 		CameraMatrix projection;
 
-		Transform custom_transform;
+		Transform3D custom_transform;
 		CameraMatrix custom_projection;
 
 		Vector3 light_vector;
@@ -566,22 +568,23 @@ class RasterizerGLES1 : public Rasterizer {
 		uint64_t last_pass;
 		uint16_t sort_key;
 
-		Vector<ShadowBuffer*> shadow_buffers;
+		ShadowBuffer* shadow_buffer;
 
-		void clear_shadow_buffers() {
+		void clear_shadow_buffers() {/*
 
-			for (int i=0;i<shadow_buffers.size();i++) {
+			for (int i=0;i<shadow_buffer.size();i++) {
 
-				ShadowBuffer *sb=shadow_buffers[i];
+				ShadowBuffer *sb=shadow_buffer[i];
 				ERR_CONTINUE( sb->owner != this );
 
 				sb->owner=NULL;
 			}
-
-			shadow_buffers.clear();
+			
+			shadow_buffers.clear();*/
+			shadow_buffer = NULL;
 		}
 
-		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; }
+		LightInstance() { shadow_pass=0; last_pass=0; sort_key=0; shadow_buffer=NULL; }
 
 	};
 	mutable RID_Owner<Light> light_owner;
@@ -767,8 +770,8 @@ class RasterizerGLES1 : public Rasterizer {
 
 	FX *scene_fx;
 	CameraMatrix camera_projection;
-	Transform camera_transform;
-	Transform camera_transform_inverse;
+	Transform3D camera_transform;
+	Transform3D camera_transform_inverse;
 	float camera_z_near;
 	float camera_z_far;
 	Size2 camera_vp_size;
@@ -958,8 +961,8 @@ public:
 	virtual void fixed_material_set_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter, VS::FixedMaterialTexCoordMode p_mode);
 	virtual VS::FixedMaterialTexCoordMode fixed_material_get_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter) const;
 
-	virtual void fixed_material_set_uv_transform(RID p_material,const Transform& p_transform);
-	virtual Transform fixed_material_get_uv_transform(RID p_material) const;
+	virtual void fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform);
+	virtual Transform3D fixed_material_get_uv_transform(RID p_material) const;
 
 	virtual void fixed_material_set_point_size(RID p_material,float p_size);
 	virtual float fixed_material_get_point_size(RID p_material) const;
@@ -1005,13 +1008,13 @@ public:
 
 	virtual void multimesh_set_mesh(RID p_multimesh,RID p_mesh);
 	virtual void multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb);
-	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform);
+	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform);
 	virtual void multimesh_instance_set_color(RID p_multimesh,int p_index,const Color& p_color);
 
 	virtual RID multimesh_get_mesh(RID p_multimesh) const;
 	virtual AABB multimesh_get_aabb(RID p_multimesh) const;;
 
-	virtual Transform multimesh_instance_get_transform(RID p_multimesh,int p_index) const;
+	virtual Transform3D multimesh_instance_get_transform(RID p_multimesh,int p_index) const;
 	virtual Color multimesh_instance_get_color(RID p_multimesh,int p_index) const;
 
 	virtual void multimesh_set_visible_instances(RID p_multimesh,int p_visible);
@@ -1099,8 +1102,8 @@ public:
 	virtual RID skeleton_create();
 	virtual void skeleton_resize(RID p_skeleton,int p_bones);
 	virtual int skeleton_get_bone_count(RID p_skeleton) const;
-	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform);
-	virtual Transform skeleton_bone_get_transform(RID p_skeleton,int p_bone);
+	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform);
+	virtual Transform3D skeleton_bone_get_transform(RID p_skeleton,int p_bone);
 
 
 	/* LIGHT API */
@@ -1139,18 +1142,18 @@ public:
 
 
 	virtual RID light_instance_create(RID p_light);
-	virtual void light_instance_set_transform(RID p_light_instance,const Transform& p_transform);
+	virtual void light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform);
 
 	virtual bool light_instance_has_shadow(RID p_light_instance) const;
 	virtual bool light_instance_assign_shadow(RID p_light_instance);
 	virtual ShadowType light_instance_get_shadow_type(RID p_light_instance) const;
 	virtual int light_instance_get_shadow_passes(RID p_light_instance) const;
 	virtual bool light_instance_get_pssm_shadow_overlap(RID p_light_instance) const;
-	virtual void light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near=0,float p_split_far=0);
+	virtual void light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near=0,float p_split_far=0);
 	virtual int light_instance_get_shadow_size(RID p_light_instance, int p_index=0) const { return 1; }
 
 	virtual ShadowType light_instance_get_shadow_type(RID p_light_instance,bool p_far=false) const;
-	virtual void light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform& p_transform, float p_split_near=0,float p_split_far=0);
+	virtual void light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near=0,float p_split_far=0);
 
 	virtual void shadow_clear_near();
 	virtual bool shadow_allocate_near(RID p_light);
@@ -1160,7 +1163,7 @@ public:
 	/* PARTICLES INSTANCE */
 
 	virtual RID particles_instance_create(RID p_particles);
-	virtual void particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform);
+	virtual void particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform);
 
 	/* VIEWPORT */
 
@@ -1185,7 +1188,7 @@ public:
 	virtual void begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug);
 	virtual void begin_shadow_map( RID p_light_instance, int p_shadow_pass );
 
-	virtual void set_camera(const Transform& p_world,const CameraMatrix& p_projection);
+	virtual void set_camera(const Transform3D& p_world,const CameraMatrix& p_projection);
 
 	virtual void add_light( RID p_light_instance ); ///< all "add_light" calls happen before add_geometry calls
 
@@ -1206,7 +1209,7 @@ public:
 	virtual void canvas_disable_blending();
 	virtual void canvas_set_opacity(float p_opacity);
 	virtual void canvas_set_blend_mode(VS::MaterialBlendMode p_mode);
-	virtual void canvas_begin_rect(const Matrix32& p_transform);
+	virtual void canvas_begin_rect(const Transform2D& p_transform);
 	virtual void canvas_set_clip(bool p_clip, const Rect2& p_rect);
 	virtual void canvas_end_rect();
 	virtual void canvas_draw_line(const Point2& p_from, const Point2& p_to,const Color& p_color,float p_width);
@@ -1214,7 +1217,7 @@ public:
 	virtual void canvas_draw_style_box(const Rect2& p_rect, RID p_texture,const float *p_margins, bool p_draw_center=true,const Color& p_modulate=Color(1,1,1));
 	virtual void canvas_draw_primitive(const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs, RID p_texture,float p_width);
 	virtual void canvas_draw_polygon(int p_vertex_count, const int* p_indices, const Vector2* p_vertices, const Vector2* p_uvs, const Color* p_colors,const RID& p_texture,bool p_singlecolor);
-	virtual void canvas_set_transform(const Matrix32& p_transform);
+	virtual void canvas_set_transform(const Transform2D& p_transform);
 
 	/* FX */
 

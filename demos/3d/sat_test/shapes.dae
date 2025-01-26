@@ -285,7 +285,7 @@
 <library_controllers>
 </library_controllers>
 <library_cameras>
-	<camera id="id-camera-19" name="Camera">
+	<camera id="id-camera-19" name="Camera3D">
 		<optics>
 			<technique_common>
 				<perspective>
@@ -356,7 +356,7 @@
 			<matrix sid="transform"> -0.29086464643478394 -0.7711008191108704 0.5663931965827942 4.076245307922363 0.9551711678504944 -0.1998833566904068 0.21839119493961334 1.0054539442062378 -0.05518905818462372 0.6045247316360474 0.7946722507476807 5.903861999511719 0.0 0.0 0.0 1.0  </matrix>
 			<instance_light url="#id-light-18"/>
 		</node>
-		<node id="Camera" name="Camera" type="NODE">
+		<node id="Camera3D" name="Camera3D" type="NODE">
 			<matrix sid="transform"> 0.6858805418014526 -0.31737011671066284 0.6548618674278259 7.481131553649902 0.7276337742805481 0.31246861815452576 -0.6106656193733215 -6.5076398849487305 -0.010816780850291252 0.8953432440757751 0.4452453553676605 5.34366512298584 0.0 0.0 0.0 1.0  </matrix>
 			<instance_camera url="#id-camera-19"/>
 		</node>

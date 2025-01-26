@@ -248,7 +248,7 @@ void GridMap::_get_property_list( List<PropertyInfo> *p_list) const {
 
 	p_list->push_back( PropertyInfo( Variant::DICTIONARY, "data", PROPERTY_HINT_NONE,"",PROPERTY_USAGE_STORAGE) );
 
-	for(const Map<int,Area*>::Element *E=area_map.front();E;E=E->next()) {
+	for(const Map<int,Area3D*>::Element *E=area_map.front();E;E=E->next()) {
 
 		String base="areas/"+itos(E->key())+"/";
 		p_list->push_back( PropertyInfo( Variant::_AABB, base+"bounds", PROPERTY_HINT_NONE,"",PROPERTY_USAGE_STORAGE) );
@@ -331,9 +331,9 @@ bool GridMap::get_center_z() const {
 
 int GridMap::_find_area(const IndexKey& p_pos) const {
 
-	for(const Map<int,Area*>::Element *E=area_map.front();E;E=E->next()) {
+	for(const Map<int,Area3D*>::Element *E=area_map.front();E;E=E->next()) {
 	//this should somehow be faster...
-		const Area& a=*E->get();
+		const Area3D& a=*E->get();
 		if (	p_pos.x>=a.from.x && p_pos.x<a.to.x &&
 			p_pos.y>=a.from.y && p_pos.y<a.to.y &&
 			p_pos.z>=a.from.z && p_pos.z<a.to.z ) {
@@ -513,7 +513,7 @@ void GridMap::_octant_enter_world(const OctantKey &p_key) {
 
 	if (g.baked.is_valid()) {
 
-		Transform xf = get_global_transform();
+		Transform3D xf = get_global_transform();
 		xf.translate(_octant_get_offset(p_key));
 
 		VS::get_singleton()->instance_set_transform(g.bake_instance,xf);
@@ -546,7 +546,7 @@ void GridMap::_octant_transform(const OctantKey &p_key) {
 
 	if (g.baked.is_valid()) {
 
-		Transform xf = get_global_transform();
+		Transform3D xf = get_global_transform();
 		xf.origin+=_octant_get_offset(p_key);
 		VS::get_singleton()->instance_set_transform(g.bake_instance,xf);
 	} else {
@@ -592,7 +592,7 @@ void GridMap::_octant_update(const OctantKey &p_key) {
 
 			Vector3 cellpos = Vector3(ik.x,ik.y,ik.z );
 
-			Transform xform;
+			Transform3D xform;
 
 			if (clip && ( (clip_above && cellpos[clip_axis]>clip_floor) || (!clip_above && cellpos[clip_axis]<clip_floor))) {
 
@@ -711,7 +711,7 @@ void GridMap::_octant_bake(const OctantKey &p_key, const Ref<TriangleMesh>& p_tm
 			ERR_CONTINUE(!C);
 			Vector3 cellpos = Vector3(ik.x,ik.y,ik.z );
 
-			Transform xform;
+			Transform3D xform;
 			xform.basis.set_orthogonal_index(C->get().rot);
 			xform.set_origin( cellpos*cell_size+ofs);
 			if (!p_prebake)
@@ -882,7 +882,7 @@ void GridMap::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_TRANSFORM_CHANGED: {
 
-			Transform new_xform = get_global_transform();
+			Transform3D new_xform = get_global_transform();
 			if (new_xform==last_transform)
 				break;
 			//update run
@@ -969,7 +969,7 @@ void GridMap::_clear_internal(bool p_keep_areas) {
 	if (p_keep_areas)
 		return;
 
-	for (Map<int,Area*>::Element *E=area_map.front();E;E=E->next()) {
+	for (Map<int,Area3D*>::Element *E=area_map.front();E;E=E->next()) {
 
 
 		VS::get_singleton()->free(E->get()->base_portal);
@@ -1098,9 +1098,9 @@ void GridMap::set_clip(bool p_enabled, bool p_clip_above, int p_floor, Vector3::
 void GridMap::_update_areas() {
 
 	//clear the portals
-	for(Map<int,Area*>::Element *E=area_map.front();E;E=E->next()) {
+	for(Map<int,Area3D*>::Element *E=area_map.front();E;E=E->next()) {
 		//this should somehow be faster...
-		Area& a=*E->get();
+		Area3D& a=*E->get();
 		a.portals.clear();
 		if (a.instance.is_valid()) {
 			VisualServer::get_singleton()->free(a.instance);
@@ -1109,16 +1109,16 @@ void GridMap::_update_areas() {
 	}
 
 	//test all areas against all areas and create portals - this sucks (slow :( )
-	for(Map<int,Area*>::Element *E=area_map.front();E;E=E->next()) {
-		Area& a=*E->get();
+	for(Map<int,Area3D*>::Element *E=area_map.front();E;E=E->next()) {
+		Area3D& a=*E->get();
 		if (a.exterior_portal) //that's pretty much all it does... yes it is
 			continue;
 		Vector3 from_a(a.from.x,a.from.y,a.from.z);
 		Vector3 to_a(a.to.x,a.to.y,a.to.z);
 
-		for(Map<int,Area*>::Element *F=area_map.front();F;F=F->next()) {
+		for(Map<int,Area3D*>::Element *F=area_map.front();F;F=F->next()) {
 
-			Area& b=*F->get();
+			Area3D& b=*F->get();
 			Vector3 from_b(b.from.x,b.from.y,b.from.z);
 			Vector3 to_b(b.to.x,b.to.y,b.to.z);
 
@@ -1167,7 +1167,7 @@ void GridMap::_update_areas() {
 			if (axis==-1 || !valid)
 				continue;
 
-			Transform xf;
+			Transform3D xf;
 
 
 			for(int i=0;i<3;i++) {
@@ -1185,7 +1185,7 @@ void GridMap::_update_areas() {
 
 
 
-			Area::Portal portal;
+			Area3D::Portal portal;
 			portal.xform=xf;
 			a.portals.push_back(portal);
 		}
@@ -1197,20 +1197,20 @@ void GridMap::_update_areas() {
 
 void GridMap::_update_area_instances() {
 
-	Transform base_xform;
+	Transform3D base_xform;
 	if (_in_tree)
 		base_xform=get_global_transform();
 
-	for(Map<int,Area*>::Element *E=area_map.front();E;E=E->next()) {
+	for(Map<int,Area3D*>::Element *E=area_map.front();E;E=E->next()) {
 		//this should somehow be faster...
-		Area& a=*E->get();
+		Area3D& a=*E->get();
 		if (a.instance.is_valid()!=_in_tree) {
 
 			if (!_in_tree) {
 
 				for(int i=0;i<a.portals.size();i++) {
 
-					Area::Portal&p=a.portals[i];
+					Area3D::Portal&p=a.portals[i];
 					ERR_CONTINUE(!p.instance.is_valid());
 					VisualServer::get_singleton()->free(p.instance);
 					p.instance=RID();
@@ -1224,7 +1224,7 @@ void GridMap::_update_area_instances() {
 				//a.instance = VisualServer::get_singleton()->instance_create2(base_room,get_world()->get_scenario());
 				for(int i=0;i<a.portals.size();i++) {
 
-					Area::Portal&p=a.portals[i];
+					Area3D::Portal&p=a.portals[i];
 					ERR_CONTINUE(p.instance.is_valid());
 					p.instance=VisualServer::get_singleton()->instance_create2(a.base_portal,get_world()->get_scenario());
 					VisualServer::get_singleton()->instance_set_room(p.instance,a.instance);
@@ -1233,7 +1233,7 @@ void GridMap::_update_area_instances() {
 		}
 
 		if (a.instance.is_valid()) {
-			Transform xform;
+			Transform3D xform;
 
 			Vector3 from_a(a.from.x,a.from.y,a.from.z);
 			Vector3 to_a(a.to.x,a.to.y,a.to.z);
@@ -1250,7 +1250,7 @@ void GridMap::_update_area_instances() {
 
 			for(int i=0;i<a.portals.size();i++) {
 
-				Area::Portal&p=a.portals[i];
+				Area3D::Portal&p=a.portals[i];
 				ERR_CONTINUE(!p.instance.is_valid());
 
 				VisualServer::get_singleton()->instance_set_transform(p.instance,base_xform * xform);
@@ -1279,9 +1279,9 @@ Error GridMap::create_area(int p_id,const AABB& p_bounds) {
 	to.z=p_bounds.pos.z+p_bounds.size.z;
 
 
-	for(Map<int,Area*>::Element *E=area_map.front();E;E=E->next()) {
+	for(Map<int,Area3D*>::Element *E=area_map.front();E;E=E->next()) {
 		//this should somehow be faster...
-		Area& a=*E->get();
+		Area3D& a=*E->get();
 
 		//does it interset with anything else?
 
@@ -1300,12 +1300,12 @@ Error GridMap::create_area(int p_id,const AABB& p_bounds) {
 	}
 
 
-	Area *area = memnew( Area );
+	Area3D *area = memnew( Area3D );
 	area->from=from;
 	area->to=to;
 	area->portal_disable_distance=0;
 	area->exterior_portal=false;
-	area->name="Area "+itos(p_id);
+	area->name="Area3D "+itos(p_id);
 	area_map[p_id]=area;
 	_recreate_octant_data();
 	return OK;
@@ -1315,7 +1315,7 @@ AABB GridMap::area_get_bounds(int p_area) const {
 
 	ERR_FAIL_COND_V(!area_map.has(p_area),AABB());
 
-	const Area *a = area_map[p_area];
+	const Area3D *a = area_map[p_area];
 	AABB aabb;
 	aabb.pos=Vector3(a->from.x,a->from.y,a->from.z);
 	aabb.size=Vector3(a->to.x,a->to.y,a->to.z)-aabb.pos;
@@ -1327,7 +1327,7 @@ void GridMap::area_set_name(int p_area,const String& p_name) {
 
 	ERR_FAIL_COND(!area_map.has(p_area));
 
-	Area *a = area_map[p_area];
+	Area3D *a = area_map[p_area];
 	a->name=p_name;
 }
 
@@ -1335,7 +1335,7 @@ String GridMap::area_get_name(int p_area) const {
 
 	ERR_FAIL_COND_V(!area_map.has(p_area),"");
 
-	const Area *a = area_map[p_area];
+	const Area3D *a = area_map[p_area];
 	return a->name;
 }
 
@@ -1344,7 +1344,7 @@ void GridMap::area_set_exterior_portal(int p_area,bool p_enable) {
 
 	ERR_FAIL_COND(!area_map.has(p_area));
 
-	Area *a = area_map[p_area];
+	Area3D *a = area_map[p_area];
 	if (a->exterior_portal==p_enable)
 		return;
 	a->exterior_portal=p_enable;
@@ -1356,7 +1356,7 @@ bool GridMap::area_is_exterior_portal(int p_area) const {
 
 	ERR_FAIL_COND_V(!area_map.has(p_area),false);
 
-	const Area *a = area_map[p_area];
+	const Area3D *a = area_map[p_area];
 	return a->exterior_portal;
 }
 
@@ -1364,7 +1364,7 @@ void GridMap::area_set_portal_disable_distance(int p_area, float p_distance) {
 
 	ERR_FAIL_COND(!area_map.has(p_area));
 
-	Area *a = area_map[p_area];
+	Area3D *a = area_map[p_area];
 	a->portal_disable_distance=p_distance;
 
 }
@@ -1373,7 +1373,7 @@ float GridMap::area_get_portal_disable_distance(int p_area) const {
 
 	ERR_FAIL_COND_V(!area_map.has(p_area),0);
 
-	const Area *a = area_map[p_area];
+	const Area3D *a = area_map[p_area];
 	return a->portal_disable_distance;
 }
 
@@ -1381,7 +1381,7 @@ void GridMap::area_set_portal_disable_color(int p_area, Color p_color) {
 
 	ERR_FAIL_COND(!area_map.has(p_area));
 
-	Area *a = area_map[p_area];
+	Area3D *a = area_map[p_area];
 	a->portal_disable_color=p_color;
 
 }
@@ -1390,13 +1390,13 @@ Color GridMap::area_get_portal_disable_color(int p_area) const {
 
 	ERR_FAIL_COND_V(!area_map.has(p_area),Color());
 
-	const Area *a = area_map[p_area];
+	const Area3D *a = area_map[p_area];
 	return a->portal_disable_color;
 }
 
 void GridMap::get_area_list(List<int> *p_areas) const {
 
-	for(const Map<int,Area*>::Element *E=area_map.front();E;E=E->next()) {
+	for(const Map<int,Area3D*>::Element *E=area_map.front();E;E=E->next()) {
 
 		p_areas->push_back(E->key());
 	}
@@ -1404,14 +1404,14 @@ void GridMap::get_area_list(List<int> *p_areas) const {
 }
 
 
-GridMap::Area::Portal::~Portal() {
+GridMap::Area3D::Portal::~Portal() {
 
 	if (instance.is_valid())
 		VisualServer::get_singleton()->free(instance);
 }
 
 
-GridMap::Area::Area() {
+GridMap::Area3D::Area3D() {
 
 	base_portal=VisualServer::get_singleton()->portal_create();
 	Vector< Point2 > points;
@@ -1424,7 +1424,7 @@ GridMap::Area::Area() {
 }
 
 
-GridMap::Area::~Area() {
+GridMap::Area3D::~Area3D() {
 
 	if (instance.is_valid())
 		VisualServer::get_singleton()->free(instance);
@@ -1435,7 +1435,7 @@ void GridMap::erase_area(int p_area) {
 
 	ERR_FAIL_COND(!area_map.has(p_area));
 
-	Area* a=area_map[p_area];
+	Area3D* a=area_map[p_area];
 	memdelete(a);
 	area_map.erase(p_area);
 	_recreate_octant_data();
@@ -1503,13 +1503,13 @@ void GridMap::bake_geometry() {
 
 		for(int i=0;i<get_child_count();i++) {
 
-			if (get_child(i)->cast_to<Light>()) {
-				Light *l = get_child(i)->cast_to<Light>();
+			if (get_child(i)->cast_to<Light3D>()) {
+				Light3D *l = get_child(i)->cast_to<Light3D>();
 				BakeLight bl;
-				for(int i=0;i<Light::PARAM_MAX;i++) {
-					bl.param[i]=l->get_parameter(Light::Parameter(i));
+				for(int i=0;i<Light3D::PARAM_MAX;i++) {
+					bl.param[i]=l->get_parameter(Light3D::Parameter(i));
 				}
-				Transform t=l->get_global_transform();
+				Transform3D t=l->get_global_transform();
 				bl.pos=t.origin;
 				bl.dir=t.basis.get_axis(2);
 				bl.type=l->get_light_type();
@@ -1592,7 +1592,7 @@ Array GridMap::_get_baked_light_meshes() {
 
 		Vector3 cellpos = Vector3(ik.x,ik.y,ik.z );
 
-		Transform xform;
+		Transform3D xform;
 
 		xform.basis.set_orthogonal_index(E->get().rot);
 

@@ -27,7 +27,7 @@ func _draw():
 	
 func _process(delta):
 	var width = get_viewport_rect().size.x*2.0
-	var mat = Matrix32()
+	var mat = Transform2D()
 	for b in bullets:
 		b.pos.x-=b.speed*delta
 		if (b.pos.x < -30):
@@ -53,7 +53,7 @@ func _ready():
 		
 		b.pos = Vector2( get_viewport_rect().size * Vector2(randf()*2.0,randf()) ) #twice as long
 		b.pos.x += get_viewport_rect().size.x # start outside
-		var mat = Matrix32()
+		var mat = Transform2D()
 		mat.o=b.pos
 		Physics2DServer.body_set_state(b.body,Physics2DServer.BODY_STATE_TRANSFORM,mat)
 		

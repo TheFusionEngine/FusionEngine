@@ -35,6 +35,7 @@
 #include "io/marshalls.h"
 #include "globals.h"
 #include "os/file_access.h"
+#include "core/io/file_access_pack.h"
 #include "os/os.h"
 #include "platform/javascript/logo.h"
 #include "string.h"
@@ -79,7 +80,7 @@ public:
 	virtual String get_device_info(int p_device) const { return "Run exported HTML in the system's default browser."; }
 	virtual Error run(int p_device,bool p_dumb=false);
 
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const { return "html"; }
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 
@@ -225,7 +226,7 @@ Error EditorExportPlatformJavaScript::export_project(const String& p_path, bool 
 		EditorNode::add_io_error("Could not create file for writing:\n"+p_path.basename()+"_files.js");
 		return ERR_FILE_CANT_WRITE;
 	}
-	Error err = save_pack(f);
+	Error err = save_pack(f, PackedData::get_singleton()->get_source(0), false);
 	size_t len = f->get_len();
 	memdelete(f);
 	if (err)
@@ -330,7 +331,7 @@ bool EditorExportPlatformJavaScript::can_export(String *r_error) const {
 	String exe_path = EditorSettings::get_singleton()->get_settings_path()+"/templates/";
 
 	if (!FileAccess::exists(exe_path+"javascript_debug.zip") || !FileAccess::exists(exe_path+"javascript_release.zip")) {
-		valid=false;
+		// valid=false;
 		err+="No export templates found.\nDownload and install export templates.\n";
 	}
 

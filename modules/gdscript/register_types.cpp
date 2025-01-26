@@ -121,8 +121,8 @@ static void register_editor_plugin() {
 
 void register_gdscript_types() {
 
-	ObjectTypeDB::register_type<GDScript>();
-	ObjectTypeDB::register_virtual_type<GDFunctionState>();
+	REGISTER_OBJECT(GDScript);
+	REGISTER_VIRTUAL_OBJECT(GDFunctionState);
 
 	script_language_gd=memnew( GDScriptLanguage );
 	//script_language_gd->init();

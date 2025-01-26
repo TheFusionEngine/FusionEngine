@@ -36,9 +36,9 @@
 #include "servers/spatial_sound_server.h"
 #include "scene/main/viewport.h"
 
-class SpatialPlayer : public Spatial {
+class SoundPlayer3D : public Node3D {
 
-	OBJ_TYPE(SpatialPlayer,Spatial);
+	OBJ_TYPE(SoundPlayer3D,Node3D);
 public:
 
 
@@ -77,11 +77,11 @@ public:
 	float get_param( Param p_param) const;
 
 
-	SpatialPlayer();
-	~SpatialPlayer();
+	SoundPlayer3D();
+	~SoundPlayer3D();
 
 
 };
 
-VARIANT_ENUM_CAST( SpatialPlayer::Param );
+VARIANT_ENUM_CAST( SoundPlayer3D::Param );
 #endif // SPATIAL_PLAYER_H

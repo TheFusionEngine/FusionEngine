@@ -41,7 +41,7 @@ void Volume::_set(const String& p_name, const Variant& p_value) {
 		ERR_FAIL_COND( !shape.has("type") || !shape.has("data"));
 		String type = shape["type"];
 		Variant data=shape["data"];
-		Transform transform;
+		Transform3D transform;
 		if (shape.has("transform"))
 			transform=shape["transform"];
 		
@@ -108,28 +108,28 @@ void Volume::_get_property_list( List<PropertyInfo> *p_list) const {
 
 
 
-void Volume::add_shape(ShapeType p_shape_type, const Variant& p_data, const Transform& p_transform) {
+void Volume::add_shape(ShapeType p_shape_type, const Variant& p_data, const Transform3D& p_transform) {
 
 	PhysicsServer::get_singleton()->volume_add_shape(volume,(PhysicsServer::ShapeType)p_shape_type,p_data,p_transform);
 	_change_notify();
 }
 
 
-void Volume::add_plane_shape(const Plane& p_plane,const Transform& p_transform) {
+void Volume::add_plane_shape(const Plane& p_plane,const Transform3D& p_transform) {
 
 	add_shape(SHAPE_PLANE, p_plane, p_transform );
 }	
 
-void Volume::add_sphere_shape(float p_radius,const Transform& p_transform) {
+void Volume::add_sphere_shape(float p_radius,const Transform3D& p_transform) {
 
 	add_shape(SHAPE_SPHERE, p_radius, p_transform );
 }
 
-void Volume::add_box_shape(const Vector3& p_half_extents,const Transform& p_transform) {
+void Volume::add_box_shape(const Vector3& p_half_extents,const Transform3D& p_transform) {
 
 	add_shape(SHAPE_BOX, p_half_extents, p_transform );
 }
-void Volume::add_cylinder_shape(float p_radius, float p_height,const Transform& p_transform) {
+void Volume::add_cylinder_shape(float p_radius, float p_height,const Transform3D& p_transform) {
 
 	Dictionary d;
 	d["radius"]=p_radius;
@@ -137,7 +137,7 @@ void Volume::add_cylinder_shape(float p_radius, float p_height,const Transform& 
 
 	add_shape(SHAPE_CYLINDER,d,p_transform);
 }
-void Volume::add_capsule_shape(float p_radius, float p_height,const Transform& p_transform) {
+void Volume::add_capsule_shape(float p_radius, float p_height,const Transform3D& p_transform) {
 
 	Dictionary d;
 	d["radius"]=p_radius;	
@@ -157,7 +157,7 @@ Volume::ShapeType Volume::get_shape_type(int p_shape) const {
 	return (ShapeType)PhysicsServer::get_singleton()->volume_get_shape_type(volume,p_shape);
 }
 
-Transform Volume::get_shape_transform(int p_shape) const {
+Transform3D Volume::get_shape_transform(int p_shape) const {
 
 	return PhysicsServer::get_singleton()->volume_get_shape_transform(volume,p_shape);
 }
@@ -169,12 +169,12 @@ Variant Volume::get_shape(int p_shape) const {
 
 void Volume::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("add_shape","type","data","transform"),&Volume::add_shape,DEFVAL( Transform() ));
-	ObjectTypeDB::bind_method(_MD("add_plane_shape","plane","transform"),&Volume::add_plane_shape,DEFVAL( Transform() ));
-	ObjectTypeDB::bind_method(_MD("add_sphere_shape"),&Volume::add_sphere_shape,DEFVAL( Transform() ));
-	ObjectTypeDB::bind_method(_MD("add_box_shape","radius","transform"),&Volume::add_box_shape,DEFVAL( Transform() ));
-	ObjectTypeDB::bind_method(_MD("add_cylinder_shape","radius","height","transform"),&Volume::add_cylinder_shape,DEFVAL( Transform() ));
-	ObjectTypeDB::bind_method(_MD("add_capsule_shape","radius","height","transform"),&Volume::add_capsule_shape,DEFVAL( Transform() ));
+	ObjectTypeDB::bind_method(_MD("add_shape","type","data","transform"),&Volume::add_shape,DEFVAL( Transform3D() ));
+	ObjectTypeDB::bind_method(_MD("add_plane_shape","plane","transform"),&Volume::add_plane_shape,DEFVAL( Transform3D() ));
+	ObjectTypeDB::bind_method(_MD("add_sphere_shape"),&Volume::add_sphere_shape,DEFVAL( Transform3D() ));
+	ObjectTypeDB::bind_method(_MD("add_box_shape","radius","transform"),&Volume::add_box_shape,DEFVAL( Transform3D() ));
+	ObjectTypeDB::bind_method(_MD("add_cylinder_shape","radius","height","transform"),&Volume::add_cylinder_shape,DEFVAL( Transform3D() ));
+	ObjectTypeDB::bind_method(_MD("add_capsule_shape","radius","height","transform"),&Volume::add_capsule_shape,DEFVAL( Transform3D() ));
 	ObjectTypeDB::bind_method(_MD("get_shape_count"),&Volume::get_shape_count);
 	ObjectTypeDB::bind_method(_MD("get_shape_type","shape_idx"),&Volume::get_shape_type);
 	ObjectTypeDB::bind_method(_MD("get_shape_transform","shape_idx"),&Volume::get_shape_transform);

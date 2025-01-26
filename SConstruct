@@ -79,6 +79,10 @@ env_base.__class__.disable_module = methods.disable_module
 
 env_base.__class__.add_source_files = methods.add_source_files
 
+
+env_base.__class__.postlink = methods.postlink
+env_base.__class__.rcomp = methods.rcomp
+
 customs = ['custom.py']
 
 profile = ARGUMENTS.get("profile", False)
@@ -97,7 +101,10 @@ opts.Add('p','Platform (same as platform=).',"")
 opts.Add('tools','Build Tools (Including Editor): (yes/no)','yes')
 opts.Add('gdscript','Build GDSCript support: (yes/no)','yes')
 opts.Add('vorbis','Build Ogg Vorbis Support: (yes/no)','yes')
-opts.Add('minizip','Build Minizip Archive Support: (yes/no)','yes')
+opts.Add('pck','Build Godot PCK pack Support: (yes/no)','yes')
+opts.Add('minizip','Build Minizip Archive pack Support: (yes/no)','yes')
+opts.Add('small_pck','Build SmallPCK Support: (yes/no)','no')
+opts.Add('single_pack_source', 'Build the engine to only use one pack source: (yes/no)', 'no')
 opts.Add('squish','Squish BC Texture Compression in editor (yes/no)','yes')
 opts.Add('theora','Theora Video (yes/no)','yes')
 opts.Add('use_theoraplayer_binary', "Use precompiled binaries from libtheoraplayer for ogg/theora/vorbis (yes/no)", "no")
@@ -118,6 +125,7 @@ opts.Add("CFLAGS", "Custom flags for the C compiler");
 opts.Add("LINKFLAGS", "Custom flags for the linker");
 opts.Add('disable_3d', 'Disable 3D nodes for smaller executable (yes/no)', "no")
 opts.Add('disable_advanced_gui', 'Disable advance 3D gui nodes and behaviors (yes/no)', "no")
+opts.Add("disable_classes", "Disable given classes (comma separated)", "")
 
 # add platform specific options
 
@@ -288,6 +296,9 @@ if selected_platform in platform_list:
 
 	if (env['tools']=='yes'):
 		env.Append(CPPFLAGS=['-DTOOLS_ENABLED'])
+
+	methods.write_disabled_classes(env["disable_classes"].split(","))
+
 	if (env['disable_3d']=='yes'):
 		env.Append(CPPFLAGS=['-D_3D_DISABLED'])
 	if (env['gdscript']=='yes'):
@@ -295,8 +306,15 @@ if selected_platform in platform_list:
 	if (env['disable_advanced_gui']=='yes'):
 		env.Append(CPPFLAGS=['-DADVANCED_GUI_DISABLED'])
 
+	if (env['pck'] == 'yes'):
+		env.Append(CPPFLAGS=['-DPCK_ENABLED'])
 	if (env['minizip'] == 'yes'):
 		env.Append(CPPFLAGS=['-DMINIZIP_ENABLED'])
+	if (env['single_pack_source'] == 'yes'):
+		if (env['tools'] == 'yes'):
+			print("You cannot have single pack source on for compiling the editor!")
+		else:
+			env.Append(CPPFLAGS=['-DSINGLE_PACK_SOURCE_ENABLED'])
 
 	if (env['xml']=='yes'):
 		env.Append(CPPFLAGS=['-DXML_ENABLED'])

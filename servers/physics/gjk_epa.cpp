@@ -58,8 +58,8 @@ struct	MinkowskiDiff {
 
 	const ShapeSW* m_shapes[2];
 
-	Transform transform_A;
-	Transform transform_B;
+	Transform3D transform_A;
+	Transform3D transform_B;
 
 	// i wonder how this could be sped up... if it can
 	_FORCE_INLINE_ Vector3 Support0 ( const Vector3& d ) const {
@@ -733,8 +733,8 @@ struct	GJK
 	};
 
 	//
-	static void	Initialize(	const ShapeSW* shape0,const Transform& wtrs0,
-		const ShapeSW* shape1,const Transform& wtrs1,
+	static void	Initialize(	const ShapeSW* shape0,const Transform3D& wtrs0,
+		const ShapeSW* shape1,const Transform3D& wtrs1,
 		sResults& results,
 		tShape& shape,
 		bool withmargins)
@@ -761,9 +761,9 @@ struct	GJK
 
 //
 bool Distance(	const ShapeSW*	shape0,
-									  const Transform&		wtrs0,
+									  const Transform3D&		wtrs0,
 									  const ShapeSW*	shape1,
-									  const Transform&		wtrs1,
+									  const Transform3D&		wtrs1,
 									  const Vector3&		guess,
 									  sResults&				results)
 {
@@ -799,9 +799,9 @@ bool Distance(	const ShapeSW*	shape0,
 
 //
 bool Penetration(	const ShapeSW*	shape0,
-									 const Transform&		wtrs0,
+									 const Transform3D&		wtrs0,
 									 const ShapeSW*	shape1,
-									 const Transform&		wtrs1,
+									 const Transform3D&		wtrs1,
 									 const Vector3&		guess,
 									 sResults&				results
 									)
@@ -866,7 +866,7 @@ bool Penetration(	const ShapeSW*	shape0,
 
 
 
-bool gjk_epa_calculate_distance(const ShapeSW *p_shape_A, const Transform& p_transform_A, const ShapeSW *p_shape_B, const Transform& p_transform_B, Vector3& r_result_A, Vector3& r_result_B) {
+bool gjk_epa_calculate_distance(const ShapeSW *p_shape_A, const Transform3D& p_transform_A, const ShapeSW *p_shape_B, const Transform3D& p_transform_B, Vector3& r_result_A, Vector3& r_result_B) {
 
 
 	GjkEpa2::sResults res;
@@ -882,7 +882,7 @@ bool gjk_epa_calculate_distance(const ShapeSW *p_shape_A, const Transform& p_tra
 
 }
 
-bool gjk_epa_calculate_penetration(const ShapeSW *p_shape_A, const Transform& p_transform_A, const ShapeSW *p_shape_B, const Transform& p_transform_B, CollisionSolverSW::CallbackResult p_result_callback,void *p_userdata, bool p_swap ) {
+bool gjk_epa_calculate_penetration(const ShapeSW *p_shape_A, const Transform3D& p_transform_A, const ShapeSW *p_shape_B, const Transform3D& p_transform_B, CollisionSolverSW::CallbackResult p_result_callback,void *p_userdata, bool p_swap ) {
 
 	GjkEpa2::sResults res;
 	

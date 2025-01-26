@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resource_file type="PackedScene" subresource_count="5" version="0.99" version_name="Godot Engine v0.99.3735-pre-beta">
-	<ext_resource path="res://box.*" type="PackedScene"></ext_resource>
-	<ext_resource path="res://sphere.*" type="PackedScene"></ext_resource>
-	<ext_resource path="res://capsule.*" type="PackedScene"></ext_resource>
-	<ext_resource path="res://convex.*" type="PackedScene"></ext_resource>
+	<ext_resource path="res://box.xscn" type="PackedScene"></ext_resource>
+	<ext_resource path="res://sphere.xscn" type="PackedScene"></ext_resource>
+	<ext_resource path="res://capsule.xscn" type="PackedScene"></ext_resource>
+	<ext_resource path="res://convex.xscn" type="PackedScene"></ext_resource>
 	<main_resource>
 		<dictionary name="_bundled" shared="false">
 			<string> "names" </string>
@@ -11,11 +11,11 @@
 				<string> "Node" </string>
 				<string> "__meta__" </string>
 				<string> "sphere" </string>
-				<string> "Spatial" </string>
+				<string> "Node3D" </string>
 				<string> "transform/local" </string>
 				<string> "box" </string>
 				<string> "convex" </string>
-				<string> "Camera" </string>
+				<string> "Camera3D" </string>
 				<string> "projection" </string>
 				<string> "fov" </string>
 				<string> "near" </string>
@@ -24,7 +24,7 @@
 				<string> "current" </string>
 				<string> "visible_layers" </string>
 				<string> "environment" </string>
-				<string> "OmniLight" </string>
+				<string> "OmniLight3D" </string>
 				<string> "layers" </string>
 				<string> "params/energy" </string>
 				<string> "colors/ambient" </string>
@@ -144,13 +144,13 @@
 					<string> "__editor_plugin_screen__" </string>
 					<string> "3D" </string>
 				</dictionary>
-				<resource  resource_type="PackedScene" path="res://sphere.*">  </resource>
+				<resource  resource_type="PackedScene" path="res://sphere.xscn">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.93877 </transform>
-				<resource  resource_type="PackedScene" path="res://box.*">  </resource>
+				<resource  resource_type="PackedScene" path="res://box.xscn">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5356, 0, -3.40082 </transform>
-				<resource  resource_type="PackedScene" path="res://convex.*">  </resource>
+				<resource  resource_type="PackedScene" path="res://convex.xscn">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.8626, 0, -2.50073 </transform>
-				<resource  resource_type="PackedScene" path="res://capsule.*">  </resource>
+				<resource  resource_type="PackedScene" path="res://capsule.xscn">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4061, 0, -2.76809 </transform>
 				<transform> 1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 14.482, 11.1225, 20.5858 </transform>
 				<int> 0 </int>

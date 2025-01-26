@@ -36,8 +36,8 @@ class HingeJointSW : public JointSW {
 	JacobianEntrySW	m_jac[3]; //3 orthogonal linear constraints
 	JacobianEntrySW	m_jacAng[3]; //2 orthogonal angular constraints+ 1 for limit/motor
 
-	Transform m_rbAFrame; // constraint axii. Assumes z is hinge axis.
-	Transform m_rbBFrame;
+	Transform3D m_rbAFrame; // constraint axii. Assumes z is hinge axis.
+	Transform3D m_rbBFrame;
 
 	real_t	m_motorTargetVelocity;
 	real_t	m_maxMotorImpulse;
@@ -81,7 +81,7 @@ public:
 	void set_flag(PhysicsServer::HingeJointFlag p_flag, bool p_value);
 	bool get_flag(PhysicsServer::HingeJointFlag p_flag) const;
 
-	HingeJointSW(BodySW* rbA,BodySW* rbB, const Transform& frameA, const Transform& frameB);
+	HingeJointSW(BodySW* rbA,BodySW* rbB, const Transform3D& frameA, const Transform3D& frameB);
 	HingeJointSW(BodySW* rbA,BodySW* rbB, const Vector3& pivotInA,const Vector3& pivotInB, const Vector3& axisInA,const Vector3& axisInB);
 
 };

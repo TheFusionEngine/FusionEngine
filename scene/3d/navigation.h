@@ -4,9 +4,9 @@
 #include "scene/3d/spatial.h"
 #include "scene/3d/navigation_mesh.h"
 
-class Navigation : public Spatial {
+class Navigation : public Node3D {
 
-	OBJ_TYPE( Navigation, Spatial);
+	OBJ_TYPE( Navigation, Node3D);
 
 
 	union Point {
@@ -79,7 +79,7 @@ class Navigation : public Spatial {
 	struct NavMesh {
 
 		Object *owner;
-		Transform xform;
+		Transform3D xform;
 		bool linked;
 		Ref<NavigationMesh> navmesh;
 		List<Polygon> polygons;
@@ -130,8 +130,8 @@ public:
 	Vector3 get_up_vector() const;
 
 	//API should be as dynamic as possible
-	int navmesh_create(const Ref<NavigationMesh>& p_mesh,const Transform& p_xform,Object* p_owner=NULL);
-	void navmesh_set_transform(int p_id, const Transform& p_xform);
+	int navmesh_create(const Ref<NavigationMesh>& p_mesh,const Transform3D& p_xform,Object* p_owner=NULL);
+	void navmesh_set_transform(int p_id, const Transform3D& p_xform);
 	void navmesh_remove(int p_id);
 
 	Vector<Vector3> get_simple_path(const Vector3& p_start, const Vector3& p_end,bool p_optimize=true);

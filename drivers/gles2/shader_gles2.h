@@ -208,7 +208,7 @@ private:
 
 		case Variant::MATRIX32: {
 
-			Matrix32 tr=p_value;
+			Transform2D tr=p_value;
 			GLfloat matrix[16]={ /* build a 16x16 matrix */
 				tr.elements[0][0],
 				tr.elements[0][1],
@@ -234,7 +234,7 @@ private:
 		case Variant::MATRIX3:
 		case Variant::TRANSFORM: {
 
-			Transform tr=p_value;
+			Transform3D tr=p_value;
 			GLfloat matrix[16]={ /* build a 16x16 matrix */
 				tr.basis.elements[0][0],
 				tr.basis.elements[1][0],

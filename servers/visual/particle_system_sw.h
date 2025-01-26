@@ -105,7 +105,7 @@ struct ParticleSystemProcessSW {
 	uint32_t rand_seed;	
 	Vector<ParticleData> particle_data;
 
-	void process(const ParticleSystemSW *p_system,const Transform& p_transform,float p_time);
+	void process(const ParticleSystemSW *p_system,const Transform3D& p_transform,float p_time);
 
 	ParticleSystemProcessSW();
 };
@@ -116,7 +116,7 @@ struct ParticleSystemDrawInfoSW {
 
 		const ParticleSystemProcessSW::ParticleData *data;
 		float d;
-		Transform transform;
+		Transform3D transform;
 		Color color;
 
 	};
@@ -124,7 +124,7 @@ struct ParticleSystemDrawInfoSW {
 	ParticleDrawInfo draw_info[ParticleSystemSW::MAX_PARTICLES];
 	ParticleDrawInfo *draw_info_order[ParticleSystemSW::MAX_PARTICLES];
 
-	void prepare(const ParticleSystemSW *p_system,const ParticleSystemProcessSW *p_process,const Transform& p_system_transform,const Transform& p_camera_transform);
+	void prepare(const ParticleSystemSW *p_system,const ParticleSystemProcessSW *p_process,const Transform3D& p_system_transform,const Transform3D& p_camera_transform);
 
 };
 

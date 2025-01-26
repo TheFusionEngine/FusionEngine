@@ -45,7 +45,7 @@ class ParticlesEditor : public Control {
 	Panel *panel;
 	MenuButton *options;
 	HBoxContainer *particles_editor_hb;
-	Particles *node;
+	Particles3D *node;
 
 
 	FileDialog *emission_file_dialog;
@@ -88,7 +88,7 @@ protected:
 	static void _bind_methods();
 public:
 
-	void edit(Particles *p_particles);
+	void edit(Particles3D *p_particles);
 	ParticlesEditor();
 };
 
@@ -101,7 +101,7 @@ class ParticlesEditorPlugin : public EditorPlugin {
 
 public:
 
-	virtual String get_name() const { return "Particles"; }
+	virtual String get_name() const { return "Particles3D"; }
 	bool has_main_screen() const { return false; }
 	virtual void edit(Object *p_node);
 	virtual bool handles(Object *p_node) const;

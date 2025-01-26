@@ -110,7 +110,7 @@ _FORCE_INLINE_ static uint32_t _irand_from_seed(uint32_t *seed) {
 	return s;
 }
 
-void ParticleSystemProcessSW::process(const ParticleSystemSW *p_system,const Transform& p_transform,float p_time) {
+void ParticleSystemProcessSW::process(const ParticleSystemSW *p_system,const Transform3D& p_transform,float p_time) {
 
 	valid=false;
 	if (p_system->amount<=0) {
@@ -282,7 +282,7 @@ struct _ParticleSorterSW {
 	}
 };
 
-void ParticleSystemDrawInfoSW::prepare(const ParticleSystemSW *p_system,const ParticleSystemProcessSW *p_process,const Transform& p_system_transform,const Transform& p_camera_transform) {
+void ParticleSystemDrawInfoSW::prepare(const ParticleSystemSW *p_system,const ParticleSystemProcessSW *p_process,const Transform3D& p_system_transform,const Transform3D& p_camera_transform) {
 
 	ERR_FAIL_COND(p_process->particle_data.size() != p_system->amount);
 	ERR_FAIL_COND(p_system->amount<=0 || p_system->amount>=ParticleSystemSW::MAX_PARTICLES);

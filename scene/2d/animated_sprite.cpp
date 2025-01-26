@@ -28,16 +28,16 @@
 /*************************************************************************/
 #include "animated_sprite.h"
 #include "scene/scene_string_names.h"
-void AnimatedSprite::edit_set_pivot(const Point2& p_pivot) {
+void AnimatedSprite2D::edit_set_pivot(const Point2& p_pivot) {
 
 	set_offset(p_pivot);
 }
 
-Point2 AnimatedSprite::edit_get_pivot() const {
+Point2 AnimatedSprite2D::edit_get_pivot() const {
 
 	return get_offset();
 }
-bool AnimatedSprite::edit_has_pivot() const {
+bool AnimatedSprite2D::edit_has_pivot() const {
 
 	return true;
 }
@@ -122,7 +122,7 @@ SpriteFrames::SpriteFrames() {
 //////////////////////////
 
 
-void AnimatedSprite::_notification(int p_what) {
+void AnimatedSprite2D::_notification(int p_what) {
 
 	switch(p_what) {
 
@@ -168,7 +168,7 @@ void AnimatedSprite::_notification(int p_what) {
 
 }
 
-void AnimatedSprite::set_sprite_frames(const Ref<SpriteFrames> &p_frames) {
+void AnimatedSprite2D::set_sprite_frames(const Ref<SpriteFrames> &p_frames) {
 
 	if (frames.is_valid())
 		frames->disconnect("changed",this,"_res_changed");
@@ -186,12 +186,12 @@ void AnimatedSprite::set_sprite_frames(const Ref<SpriteFrames> &p_frames) {
 
 }
 
-Ref<SpriteFrames> AnimatedSprite::get_sprite_frames() const {
+Ref<SpriteFrames> AnimatedSprite2D::get_sprite_frames() const {
 
 	return frames;
 }
 
-void AnimatedSprite::set_frame(int p_frame) {
+void AnimatedSprite2D::set_frame(int p_frame) {
 
 	if (!frames.is_valid()) {
 		return;
@@ -210,70 +210,70 @@ void AnimatedSprite::set_frame(int p_frame) {
 	emit_signal(SceneStringNames::get_singleton()->frame_changed);
 
 }
-int AnimatedSprite::get_frame() const {
+int AnimatedSprite2D::get_frame() const {
 
 	return frame;
 }
 
 
-void AnimatedSprite::set_centered(bool p_center) {
+void AnimatedSprite2D::set_centered(bool p_center) {
 
 	centered=p_center;
 	update();
 	item_rect_changed();
 }
 
-bool AnimatedSprite::is_centered() const {
+bool AnimatedSprite2D::is_centered() const {
 
 	return centered;
 }
 
-void AnimatedSprite::set_offset(const Point2& p_offset) {
+void AnimatedSprite2D::set_offset(const Point2& p_offset) {
 
 	offset=p_offset;
 	update();
 	item_rect_changed();
 	_change_notify("offset");
 }
-Point2 AnimatedSprite::get_offset() const {
+Point2 AnimatedSprite2D::get_offset() const {
 
 	return offset;
 }
 
-void AnimatedSprite::set_flip_h(bool p_flip) {
+void AnimatedSprite2D::set_flip_h(bool p_flip) {
 
 	hflip=p_flip;
 	update();
 }
-bool AnimatedSprite::is_flipped_h() const {
+bool AnimatedSprite2D::is_flipped_h() const {
 
 	return hflip;
 }
 
-void AnimatedSprite::set_flip_v(bool p_flip) {
+void AnimatedSprite2D::set_flip_v(bool p_flip) {
 
 	vflip=p_flip;
 	update();
 }
-bool AnimatedSprite::is_flipped_v() const {
+bool AnimatedSprite2D::is_flipped_v() const {
 
 	return vflip;
 }
 
 
-void AnimatedSprite::set_modulate(const Color& p_color) {
+void AnimatedSprite2D::set_modulate(const Color& p_color) {
 
 	modulate=p_color;
 	update();
 }
 
-Color AnimatedSprite::get_modulate() const{
+Color AnimatedSprite2D::get_modulate() const{
 
 	return modulate;
 }
 
 
-Rect2 AnimatedSprite::get_item_rect() const {
+Rect2 AnimatedSprite2D::get_item_rect() const {
 
 	if (!frames.is_valid() || !frames->get_frame_count() || frame<0 || frame>=frames->get_frame_count()) {
 		return Node2D::get_item_rect();
@@ -294,37 +294,37 @@ Rect2 AnimatedSprite::get_item_rect() const {
 	return Rect2(ofs,s);
 }
 
-void AnimatedSprite::_res_changed() {
+void AnimatedSprite2D::_res_changed() {
 
 	set_frame(frame);
 	update();
 }
 
-void AnimatedSprite::_bind_methods() {
+void AnimatedSprite2D::_bind_methods() {
 
-	ObjectTypeDB::bind_method(_MD("set_sprite_frames","sprite_frames:SpriteFrames"),&AnimatedSprite::set_sprite_frames);
-	ObjectTypeDB::bind_method(_MD("get_sprite_frames:SpriteFrames"),&AnimatedSprite::get_sprite_frames);
+	ObjectTypeDB::bind_method(_MD("set_sprite_frames","sprite_frames:SpriteFrames"),&AnimatedSprite2D::set_sprite_frames);
+	ObjectTypeDB::bind_method(_MD("get_sprite_frames:SpriteFrames"),&AnimatedSprite2D::get_sprite_frames);
 
-	ObjectTypeDB::bind_method(_MD("set_centered","centered"),&AnimatedSprite::set_centered);
-	ObjectTypeDB::bind_method(_MD("is_centered"),&AnimatedSprite::is_centered);
+	ObjectTypeDB::bind_method(_MD("set_centered","centered"),&AnimatedSprite2D::set_centered);
+	ObjectTypeDB::bind_method(_MD("is_centered"),&AnimatedSprite2D::is_centered);
 
-	ObjectTypeDB::bind_method(_MD("set_offset","offset"),&AnimatedSprite::set_offset);
-	ObjectTypeDB::bind_method(_MD("get_offset"),&AnimatedSprite::get_offset);
+	ObjectTypeDB::bind_method(_MD("set_offset","offset"),&AnimatedSprite2D::set_offset);
+	ObjectTypeDB::bind_method(_MD("get_offset"),&AnimatedSprite2D::get_offset);
 
-	ObjectTypeDB::bind_method(_MD("set_flip_h","flip_h"),&AnimatedSprite::set_flip_h);
-	ObjectTypeDB::bind_method(_MD("is_flipped_h"),&AnimatedSprite::is_flipped_h);
+	ObjectTypeDB::bind_method(_MD("set_flip_h","flip_h"),&AnimatedSprite2D::set_flip_h);
+	ObjectTypeDB::bind_method(_MD("is_flipped_h"),&AnimatedSprite2D::is_flipped_h);
 
-	ObjectTypeDB::bind_method(_MD("set_flip_v","flip_v"),&AnimatedSprite::set_flip_v);
-	ObjectTypeDB::bind_method(_MD("is_flipped_v"),&AnimatedSprite::is_flipped_v);
+	ObjectTypeDB::bind_method(_MD("set_flip_v","flip_v"),&AnimatedSprite2D::set_flip_v);
+	ObjectTypeDB::bind_method(_MD("is_flipped_v"),&AnimatedSprite2D::is_flipped_v);
 
-	ObjectTypeDB::bind_method(_MD("set_frame","frame"),&AnimatedSprite::set_frame);
-	ObjectTypeDB::bind_method(_MD("get_frame"),&AnimatedSprite::get_frame);
+	ObjectTypeDB::bind_method(_MD("set_frame","frame"),&AnimatedSprite2D::set_frame);
+	ObjectTypeDB::bind_method(_MD("get_frame"),&AnimatedSprite2D::get_frame);
 
-	ObjectTypeDB::bind_method(_MD("set_modulate","modulate"),&AnimatedSprite::set_modulate);
-	ObjectTypeDB::bind_method(_MD("get_modulate"),&AnimatedSprite::get_modulate);
+	ObjectTypeDB::bind_method(_MD("set_modulate","modulate"),&AnimatedSprite2D::set_modulate);
+	ObjectTypeDB::bind_method(_MD("get_modulate"),&AnimatedSprite2D::get_modulate);
 
 
-	ObjectTypeDB::bind_method(_MD("_res_changed"),&AnimatedSprite::_res_changed);
+	ObjectTypeDB::bind_method(_MD("_res_changed"),&AnimatedSprite2D::_res_changed);
 
 	ADD_SIGNAL(MethodInfo("frame_changed"));
 
@@ -338,7 +338,7 @@ void AnimatedSprite::_bind_methods() {
 
 }
 
-AnimatedSprite::AnimatedSprite() {
+AnimatedSprite2D::AnimatedSprite2D() {
 
 	centered=true;
 	hflip=false;

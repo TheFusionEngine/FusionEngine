@@ -6,7 +6,7 @@
 #include "io/zip_io.h"
 #include "io/marshalls.h"
 #include "globals.h"
-#include "os/file_access.h"
+#include "core/io/file_access_pack.h"
 #include "os/os.h"
 #include "platform/android/logo.h"
 
@@ -245,7 +245,7 @@ public:
 	virtual String get_device_info(int p_device) const;
 	virtual Error run(int p_device,bool p_dumb=false);
 
-	virtual bool requieres_password(bool p_debug) const { return !p_debug; }
+	virtual bool requires_password(bool p_debug) const { return !p_debug; }
 	virtual String get_binary_extension() const { return "apk"; }
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 
@@ -978,9 +978,9 @@ Error EditorExportPlatformAndroid::save_apk_file(void *p_userdata,const String& 
 		Z_DEFAULT_COMPRESSION);
 
 
-	zipWriteInFileInZip(ed->apk,p_data.ptr(),p_data.size());
+	zipWriteInFileInZip(ed->apk, p_data.ptr(), p_data.size());
 	zipCloseFileInZip(ed->apk);
-	ed->ep->step("File: "+p_path,3+p_file*100/p_total);
+	ed->ep->step("File: " + p_path, 3 + p_file * 100 / p_total);
 	return OK;
 
 }
@@ -1141,7 +1141,8 @@ Error EditorExportPlatformAndroid::export_project(const String& p_path, bool p_d
 				EditorNode::add_io_error("Could not write expansion package file: "+apkfname);
 				return OK;
 			}
-			err = save_pack(pf);
+
+			err = save_pack(pf, PackedData::get_singleton()->get_source(0), false);
 			memdelete(pf);
 
 			cl.push_back("-use_apk_expansion");
@@ -1152,11 +1153,18 @@ Error EditorExportPlatformAndroid::export_project(const String& p_path, bool p_d
 
 		} else {
 
-			APKExportData ed;
-			ed.ep=&ep;
-			ed.apk=apk;
+			Vector<FileExportData> files;
 
-			err = export_project_files(save_apk_file,&ed,false);
+			err = get_project_files(files, false);
+
+			for (int i = 0; i < files.size(); i++){
+				FileExportData formatted = files.get(i);
+				formatted.export_path = formatted.export_path.replace_first("res://","assets/");
+				files.set(i, formatted);
+			}
+			FileAccess *zip_pack = FileAccess::open(p_path, FileAccess::ModeFlags::WRITE);
+
+			PackedData::get_singleton()->get_source(0)->export_pack(zip_pack, files, NULL);
 		}
 	}
 

@@ -64,8 +64,8 @@ class SpatialSoundServerSW : public SpatialSoundServer {
 
 	struct Room {
 		RID space;
-		Transform transform;
-		Transform inverse_transform;
+		Transform3D transform;
+		Transform3D inverse_transform;
 		BSP_Tree bounds;
 		RoomReverb reverb;
 		float params[ROOM_PARAM_MAX];
@@ -133,7 +133,7 @@ class SpatialSoundServerSW : public SpatialSoundServer {
 		} stream_data;
 
 		RID space;
-		Transform transform;
+		Transform3D transform;
 		float params[SOURCE_PARAM_MAX];
 		AudioServer::AudioStream *stream;
 		Vector<Voice> voices;
@@ -147,7 +147,7 @@ class SpatialSoundServerSW : public SpatialSoundServer {
 	struct Listener {
 
 		RID space;
-		Transform transform;
+		Transform3D transform;
 		float params[LISTENER_PARAM_MAX];
 
 		Listener();
@@ -184,8 +184,8 @@ public:
 
 	virtual void room_set_bounds(RID p_room, const BSP_Tree& p_bounds);
 	virtual BSP_Tree room_get_bounds(RID p_room) const;
-	virtual void room_set_transform(RID p_room, const Transform& p_transform);
-	virtual Transform room_get_transform(RID p_room) const;
+	virtual void room_set_transform(RID p_room, const Transform3D& p_transform);
+	virtual Transform3D room_get_transform(RID p_room) const;
 
 
 	virtual void room_set_param(RID p_room, RoomParam p_param, float p_value);
@@ -208,8 +208,8 @@ public:
 	virtual void source_set_polyphony(RID p_source,int p_voice_count);
 	virtual int source_get_polyphony(RID p_source) const;
 
-	virtual void source_set_transform(RID p_source, const Transform& p_transform);
-	virtual Transform source_get_transform(RID p_source) const;
+	virtual void source_set_transform(RID p_source, const Transform3D& p_transform);
+	virtual Transform3D source_get_transform(RID p_source) const;
 
 	virtual void source_set_param(RID p_source, SourceParam p_param, float p_value);
 	virtual float source_get_param(RID p_source, SourceParam p_param) const;
@@ -228,8 +228,8 @@ public:
 	virtual RID listener_create();
 	virtual void listener_set_space(RID p_listener, RID p_space);
 
-	virtual void listener_set_transform(RID p_listener, const Transform& p_transform);
-	virtual Transform listener_get_transform(RID p_listener) const;
+	virtual void listener_set_transform(RID p_listener, const Transform3D& p_transform);
+	virtual Transform3D listener_get_transform(RID p_listener) const;
 
 	virtual void listener_set_param(RID p_listener, ListenerParam p_param, float p_value);
 	virtual float listener_get_param(RID p_listener, ListenerParam p_param) const;

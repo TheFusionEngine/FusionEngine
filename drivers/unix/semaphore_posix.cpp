@@ -56,8 +56,9 @@ Error SemaphorePosix::post() {
 int SemaphorePosix::get() const {
 
 	int val;
+#ifndef JAVASCRIPT_ENABLED
 	sem_getvalue(&sem, &val);
-	
+#endif
 	return val;	
 }
 

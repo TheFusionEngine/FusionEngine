@@ -59,8 +59,8 @@ public:
 
 	virtual void room_set_bounds(RID p_room, const BSP_Tree& p_bounds)=0;
 	virtual BSP_Tree room_get_bounds(RID p_room) const=0;
-	virtual void room_set_transform(RID p_room, const Transform& p_transform)=0;
-	virtual Transform room_get_transform(RID p_room) const=0;
+	virtual void room_set_transform(RID p_room, const Transform3D& p_transform)=0;
+	virtual Transform3D room_get_transform(RID p_room) const=0;
 
 	enum RoomParam {
 		ROOM_PARAM_SPEED_OF_SOUND_SCALE,
@@ -101,8 +101,8 @@ public:
 
 	virtual RID source_create(RID p_space)=0;
 
-	virtual void source_set_transform(RID p_source, const Transform& p_transform)=0;
-	virtual Transform source_get_transform(RID p_source) const=0;
+	virtual void source_set_transform(RID p_source, const Transform3D& p_transform)=0;
+	virtual Transform3D source_get_transform(RID p_source) const=0;
 
 	virtual void source_set_polyphony(RID p_source,int p_voice_count)=0;
 	virtual int source_get_polyphony(RID p_source) const=0;
@@ -146,8 +146,8 @@ public:
 	virtual RID listener_create()=0;
 	virtual void listener_set_space(RID p_listener, RID p_space)=0;
 
-	virtual void listener_set_transform(RID p_listener, const Transform& p_transform)=0;
-	virtual Transform listener_get_transform(RID p_listener) const=0;
+	virtual void listener_set_transform(RID p_listener, const Transform3D& p_transform)=0;
+	virtual Transform3D listener_get_transform(RID p_listener) const=0;
 
 	virtual void listener_set_param(RID p_listener, ListenerParam p_param, float p_value)=0;
 	virtual float listener_get_param(RID p_listener, ListenerParam p_param) const=0;

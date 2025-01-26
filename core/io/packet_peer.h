@@ -32,9 +32,9 @@
 #include "object.h"
 #include "io/stream_peer.h"
 #include "ring_buffer.h"
-class PacketPeer : public Reference {
+class PacketPeer : public RefCounted {
 
-	OBJ_TYPE( PacketPeer, Reference );
+	OBJ_TYPE( PacketPeer, RefCounted );
 
 	Variant _bnd_get_var() const;
 	void _bnd_put_var(const Variant& p_var);

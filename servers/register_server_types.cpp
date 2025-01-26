@@ -52,15 +52,15 @@ void register_server_types() {
 	Globals::get_singleton()->add_singleton( Globals::Singleton("SS2D",SpatialSound2DServer::get_singleton()) );
 
 
-	ObjectTypeDB::register_virtual_type<Physics2DDirectBodyState>();
-	ObjectTypeDB::register_virtual_type<Physics2DDirectSpaceState>();
-	ObjectTypeDB::register_virtual_type<Physics2DShapeQueryResult>();
-	ObjectTypeDB::register_type<Physics2DShapeQueryParameters>();
+	REGISTER_VIRTUAL_OBJECT(Physics2DDirectBodyState);
+	REGISTER_VIRTUAL_OBJECT(Physics2DDirectSpaceState);
+	REGISTER_VIRTUAL_OBJECT(Physics2DShapeQueryResult);
+	REGISTER_OBJECT(Physics2DShapeQueryParameters);
 
-	ObjectTypeDB::register_type<PhysicsShapeQueryParameters>();
-	ObjectTypeDB::register_virtual_type<PhysicsDirectBodyState>();
-	ObjectTypeDB::register_virtual_type<PhysicsDirectSpaceState>();
-	ObjectTypeDB::register_virtual_type<PhysicsShapeQueryResult>();
+	REGISTER_OBJECT(PhysicsShapeQueryParameters);
+	REGISTER_VIRTUAL_OBJECT(PhysicsDirectBodyState);
+	REGISTER_VIRTUAL_OBJECT(PhysicsDirectSpaceState);
+	REGISTER_VIRTUAL_OBJECT(PhysicsShapeQueryResult);
 
 }
 

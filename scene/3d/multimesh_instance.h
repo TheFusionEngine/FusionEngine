@@ -36,8 +36,8 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
-class MultiMeshInstance : public GeometryInstance {
-	OBJ_TYPE( MultiMeshInstance, GeometryInstance );
+class MultiMeshInstance3D : public GeometryInstance3D {
+	OBJ_TYPE( MultiMeshInstance3D, GeometryInstance3D );
 
 
 	Ref<MultiMesh> multimesh;
@@ -56,8 +56,8 @@ public:
 
 	virtual AABB get_aabb() const;
 
-	MultiMeshInstance();
-	~MultiMeshInstance();
+	MultiMeshInstance3D();
+	~MultiMeshInstance3D();
 };
 
 #endif // MULTIMESH_INSTANCE_H

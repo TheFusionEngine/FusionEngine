@@ -33,9 +33,9 @@
 #include "scene/3d/physics_body.h"
 
 
-class Joint : public Spatial {
+class Joint3D : public Node3D {
 
-	OBJ_TYPE(Joint,Spatial);
+	OBJ_TYPE(Joint3D,Node3D);
 
 	RID ba,bb;
 
@@ -53,7 +53,7 @@ protected:
 
 	void _notification(int p_what);
 
-	virtual RID _configure_joint(PhysicsBody *body_a,PhysicsBody *body_b)=0;
+	virtual RID _configure_joint(PhysicsBody3D *body_a,PhysicsBody3D *body_b)=0;
 
 	static void _bind_methods();
 public:
@@ -68,16 +68,16 @@ public:
 	int get_solver_priority() const;
 
 	RID get_joint() const { return joint; }
-	Joint();
+	Joint3D();
 
 };
 
 ///////////////////////////////////////////
 
 
-class PinJoint : public Joint {
+class PinJoint3D : public Joint3D {
 
-	OBJ_TYPE(PinJoint,Joint);
+	OBJ_TYPE(PinJoint3D,Joint3D);
 public:
 
 	enum Param {
@@ -89,22 +89,22 @@ public:
 protected:
 
 	float params[3];
-	virtual RID _configure_joint(PhysicsBody *body_a, PhysicsBody *body_b);
+	virtual RID _configure_joint(PhysicsBody3D *body_a, PhysicsBody3D *body_b);
 	static void _bind_methods();
 public:
 
 	void set_param(Param p_param,float p_value);
 	float get_param(Param p_param) const;
 
-	PinJoint();
+	PinJoint3D();
 };
 
-VARIANT_ENUM_CAST(PinJoint::Param);
+VARIANT_ENUM_CAST(PinJoint3D::Param);
 
 
-class HingeJoint : public Joint {
+class HingeJoint3D : public Joint3D {
 
-	OBJ_TYPE(HingeJoint,Joint);
+	OBJ_TYPE(HingeJoint3D,Joint3D);
 public:
 
 	enum Param {
@@ -131,7 +131,7 @@ protected:
 
 	float params[PARAM_MAX];
 	bool flags[FLAG_MAX];
-	virtual RID _configure_joint(PhysicsBody *body_a, PhysicsBody *body_b);
+	virtual RID _configure_joint(PhysicsBody3D *body_a, PhysicsBody3D *body_b);
 	static void _bind_methods();
 
 	void _set_upper_limit(float p_limit);
@@ -148,16 +148,16 @@ public:
 	void set_flag(Flag p_flag,bool p_value);
 	bool get_flag(Flag p_flag) const;
 
-	HingeJoint();
+	HingeJoint3D();
 };
 
-VARIANT_ENUM_CAST(HingeJoint::Param);
-VARIANT_ENUM_CAST(HingeJoint::Flag);
+VARIANT_ENUM_CAST(HingeJoint3D::Param);
+VARIANT_ENUM_CAST(HingeJoint3D::Flag);
 
 
-class SliderJoint : public Joint {
+class SliderJoint3D : public Joint3D {
 
-	OBJ_TYPE(SliderJoint,Joint);
+	OBJ_TYPE(SliderJoint3D,Joint3D);
 public:
 
 	enum Param {
@@ -199,25 +199,25 @@ protected:
 	float _get_lower_limit_angular() const;
 
 	float params[PARAM_MAX];
-	virtual RID _configure_joint(PhysicsBody *body_a, PhysicsBody *body_b);
+	virtual RID _configure_joint(PhysicsBody3D *body_a, PhysicsBody3D *body_b);
 	static void _bind_methods();
 public:
 
 	void set_param(Param p_param,float p_value);
 	float get_param(Param p_param) const;
 
-	SliderJoint();
+	SliderJoint3D();
 };
 
 
-VARIANT_ENUM_CAST(SliderJoint::Param);
+VARIANT_ENUM_CAST(SliderJoint3D::Param);
 
 
 
 
-class ConeTwistJoint : public Joint {
+class ConeTwistJoint : public Joint3D {
 
-	OBJ_TYPE(ConeTwistJoint,Joint);
+	OBJ_TYPE(ConeTwistJoint,Joint3D);
 public:
 
 	enum Param {
@@ -240,7 +240,7 @@ protected:
 	float _get_twist_span() const;
 
 	float params[PARAM_MAX];
-	virtual RID _configure_joint(PhysicsBody *body_a, PhysicsBody *body_b);
+	virtual RID _configure_joint(PhysicsBody3D *body_a, PhysicsBody3D *body_b);
 	static void _bind_methods();
 public:
 
@@ -254,9 +254,9 @@ public:
 VARIANT_ENUM_CAST(ConeTwistJoint::Param);
 
 
-class Generic6DOFJoint : public Joint {
+class Generic6DOFJoint : public Joint3D {
 
-	OBJ_TYPE(Generic6DOFJoint,Joint);
+	OBJ_TYPE(Generic6DOFJoint,Joint3D);
 public:
 
 	enum Param {
@@ -314,7 +314,7 @@ protected:
 	float params_z[PARAM_MAX];
 	bool flags_z[FLAG_MAX];
 
-	virtual RID _configure_joint(PhysicsBody *body_a, PhysicsBody *body_b);
+	virtual RID _configure_joint(PhysicsBody3D *body_a, PhysicsBody3D *body_b);
 	static void _bind_methods();
 public:
 
@@ -345,9 +345,9 @@ VARIANT_ENUM_CAST(Generic6DOFJoint::Flag);
 
 
 #if 0
-class PhysicsJoint : public Spatial {
+class PhysicsJoint : public Node3D {
 
-	OBJ_TYPE(PhysicsJoint,Spatial);
+	OBJ_TYPE(PhysicsJoint,Node3D);
 	OBJ_CATEGORY("3D Physics Nodes");
 
 	NodePath body_A;
@@ -370,7 +370,7 @@ protected:
 	void _notification(int p_what);
 	static void _bind_methods();
 
-	virtual RID create(PhysicsBody*A,PhysicsBody*B)=0;
+	virtual RID create(PhysicsBody3D*A,PhysicsBody3D*B)=0;
 	virtual void _update_indicator()=0;
 
 	void _disconnect();
@@ -405,7 +405,7 @@ class PhysicsJointPin : public PhysicsJoint {
 protected:
 
 	virtual void _update_indicator();
-	virtual RID create(PhysicsBody*A,PhysicsBody*B);
+	virtual RID create(PhysicsBody3D*A,PhysicsBody3D*B);
 public:
 
 

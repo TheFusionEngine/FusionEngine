@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resource_file type="PackedScene" subresource_count="12" version="1.0" version_name="Fusion Engine v1.0.stable.custom_build">
+	<ext_resource path="res://navmesh.gd" type="Script"></ext_resource>
+	<ext_resource path="res://particle.png" type="Texture"></ext_resource>
+	<resource type="FixedMaterial" path="local://0">
+		<bool name="flags/visible"> True </bool>
+		<bool name="flags/double_sided"> True </bool>
+		<bool name="flags/invert_faces"> False </bool>
+		<bool name="flags/unshaded"> False </bool>
+		<bool name="flags/on_top"> False </bool>
+		<bool name="flags/lightmap_on_uv2"> True </bool>
+		<bool name="flags/colarray_is_srgb"> True </bool>
+		<int name="params/blend_mode"> 0 </int>
+		<int name="params/depth_draw"> 1 </int>
+		<real name="params/line_width"> 0 </real>
+		<bool name="fixed_flags/use_alpha"> False </bool>
+		<bool name="fixed_flags/use_color_array"> False </bool>
+		<bool name="fixed_flags/use_point_size"> False </bool>
+		<bool name="fixed_flags/discard_alpha"> False </bool>
+		<bool name="fixed_flags/use_xy_normalmap"> False </bool>
+		<bool name="fixed_flags/use_envmap"> False </bool>
+		<color name="params/diffuse"> 0.297249, 0.422189, 1, 1 </color>
+		<color name="params/specular"> 0, 0, 0, 1 </color>
+		<color name="params/emission"> 0, 0, 0, 1 </color>
+		<int name="params/specular_exp"> 40 </int>
+		<real name="params/detail_mix"> 1 </real>
+		<int name="params/normal_depth"> 1 </int>
+		<int name="params/shader"> 0 </int>
+		<real name="params/shader_param"> 0.5 </real>
+		<int name="params/glow"> 0 </int>
+		<real name="params/point_size"> 1 </real>
+		<transform name="uv_xform"> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 </transform>
+		<resource name="textures/diffuse"></resource>		<int name="textures/diffuse_tc"> 0 </int>
+		<resource name="textures/detail"></resource>		<int name="textures/detail_tc"> 0 </int>
+		<resource name="textures/specular"></resource>		<int name="textures/specular_tc"> 0 </int>
+		<resource name="textures/emission"></resource>		<int name="textures/emission_tc"> 0 </int>
+		<resource name="textures/specular_exp"></resource>		<int name="textures/specular_exp_tc"> 0 </int>
+		<resource name="textures/glow"></resource>		<int name="textures/glow_tc"> 0 </int>
+		<resource name="textures/normal"></resource>		<int name="textures/normal_tc"> 0 </int>
+		<resource name="textures/shade_param"></resource>		<int name="textures/shade_param_tc"> 0 </int>
+		<resource name="textures/envmap"></resource>		<int name="textures/envmap_tc"> 0 </int>
+
+	</resource>
+	<resource type="Mesh" path="local://1">
+		<dictionary name="surfaces/0" shared="false">
+			<string> "alphasort" </string>
+			<bool> False </bool>
+			<string> "material" </string>
+			<resource  resource_type="Material" path="local://0">  </resource>
+			<string> "morph_arrays" </string>
+			<array  len="0" shared="false">
+			</array>
+			<string> "primitive" </string>
+			<int> 4 </int>
+			<string> "arrays" </string>
+			<array  len="9" shared="false">
+				<vector3_array  len="207"> 					0, 0, -1, -0.39384, 0.2, -2.03101, -1.23509, 0.2, -1.49037, -1, 0, -1, -0.39384, 0.2, -2.03101, -1.24385, 0.5, -2.65188, -1.65927, 0.5, -1.74225, -1.23509, 0.2, -1.49037, -1.24385, 0.5, -2.65188, -2.2439, 0.9, -2.70735, -2.10158, 0.9, -1.71753, -1.65927, 0.5, -1.74225, -2.2439, 0.9, -2.70735, -3.06858, 1.3, -2.23463, -2.41372, 1.3, -1.47888, -2.10158, 0.9, -1.71753, -3.06858, 1.3, -2.23463, -3.37908, 1.7, -1.43419, -2.41959, 1.7, -1.15246, -2.41372, 1.3, -1.47888, -3.37908, 1.7, -1.43419, -3.29166, 1.8, -0.590103, -2.33217, 1.8, -0.871835, -2.41959, 1.7, -1.15246, -3.29166, 1.8, -0.590103, -2.78394, 2, -0.00816378, -2.04637, 2, -0.483217, -2.33217, 1.8, -0.871835, -2.78394, 2, -0.00816378, -2.29613, 2.30275, 0.619816, -1.55305, 2.30275, -0.0340935, -2.04637, 2, -0.483217, 2, 0, 2.75, 2, 0, 4, 2.67914, 0.69546, 4, 2.67914, 0.69546, 2.75, 2.66646, 0.697839, -1, 2.66646, 0.697839, 0.25, 3.67502, 1.03457, 0.25, 3.67502, 1.03457, -1, 5.07502, 1.03457, -1, 5.07502, 1.03457, 0.25, 6.37502, 1.03457, 0.25, 6.37502, 1.03457, -1, 3.67502, 1.03457, -1, 3.67502, 1.03457, 0.25, -1, 0, -1, -0.383353, 0, 1.53551, 0.752355, 0, 0.0592138, 0, 0, -1, 5.07502, 1.03457, 1.5, 5.07502, 1.03457, 2.75, 6.37502, 1.03457, 2.75, 3.67502, 1.03457, 2.75, 3.67502, 1.03457, 4, 5.07502, 1.03457, 4, 6.37502, 1.03457, 4, 5.07502, 1.03457, 2.75, 5.07502, 1.03457, 1.5, 4.22547, 1.51352, 1.5, 4.22547, 1.51352, 2.75, 3.53746, 2.33457, 2.75, 3.53746, 2.33457, 1.5, 2.47502, 2.33457, 1.5, 2.47502, 2.33457, 2.75, 4.22547, 1.51352, 2.75, 4.22547, 1.51352, 1.5, 3.53746, 2.33457, 1.5, 3.53746, 2.33457, 2.75, 2, 0, -1, 2, 0, 0.25, 2.66646, 0.697839, 0.25, 2.66646, 0.697839, -1, 2.67914, 0.69546, 2.75, 2.67914, 0.69546, 4, 3.67502, 1.03457, 4, 3.67502, 1.03457, 2.75, 2, 0, 0.25, 2, 0, -1, 1.25737, 0, 0.475594, 2, 0, 2.75, 0.0351091, 0, 1.82824, 2, 0, 4, -1, 0, 4, 2.37344, 2.33421, 1.64881, 2.2283, 2.33421, 1.17032, 1.33102, 2.33421, 1.54199, 1.4209, 2.33421, 1.83828, -1.54525, 2.33421, 0.0256338, -1.93176, 2.33421, 0.342839, -1.24502, 2.33421, 1.02958, -1.00568, 2.33421, 0.833161, -1.10428, 2.33421, 4.5029, -0.625793, 2.11952, 4.64805, -0.436321, 2.11952, 3.6955, -0.732612, 2.33421, 3.60562, 2.37344, 2.33421, 2.64402, 2.42245, 2.33421, 2.14641, 1.45125, 2.33421, 2.14641, 1.4209, 2.33421, 2.45455, -0.625794, 2.11952, -0.355217, -1.10428, 2.33421, -0.210071, -0.732612, 2.33421, 0.687205, -0.436321, 2.11952, 0.597326, -1.93176, 2.33421, 3.94999, -1.54525, 2.33421, 4.2672, -1.00568, 2.33421, 3.45967, -1.24502, 2.33421, 3.26324, 1.99259, 2.33421, 3.56347, 2.2283, 2.33421, 3.1225, 1.33102, 2.33421, 2.75084, 1.18507, 2.33421, 3.0239, -2.48467, 2.33421, 3.1225, -2.24897, 2.33421, 3.56348, -1.44144, 2.33421, 3.0239, -1.5874, 2.33421, 2.75084, 0.847897, 2.33421, -0.210072, 0.369414, 2.11952, -0.355218, 0.179942, 2.11952, 0.597326, 0.476234, 2.33421, 0.687205, 1.28887, 2.33421, 4.2672, 1.67539, 2.33421, 3.94999, 0.988643, 2.33421, 3.26324, 0.749301, 2.33421, 3.45967, -2.67883, 2.33421, 2.14641, -2.62982, 2.33421, 2.64402, -1.67728, 2.33421, 2.45455, -1.70762, 2.33421, 2.14641, 1.67539, 2.33421, 0.342837, 1.28887, 2.33421, 0.0256318, 0.749298, 2.33421, 0.83316, 0.988641, 2.33421, 1.02958, 0.369419, 2.11952, 4.64805, 0.847901, 2.33421, 4.5029, 0.476237, 2.33421, 3.60562, 0.179945, 2.11952, 3.6955, -2.48467, 2.33421, 1.17033, -2.62982, 2.33421, 1.64881, -1.67728, 2.33421, 1.83828, -1.5874, 2.33421, 1.54199, 1.99259, 2.33421, 0.729351, 1.18506, 2.33421, 1.26892, -2.24897, 2.33421, 0.729354, -1.44144, 2.33421, 1.26893, -0.625793, 2.11952, 4.64805, -0.128187, 2.11952, 4.69706, -0.128188, 2.11952, 3.72585, -0.436321, 2.11952, 3.6955, -1.10428, 2.33421, -0.210071, -0.732612, 2.33421, 0.687205, -1.10428, 2.33421, 4.5029, -0.732612, 2.33421, 3.60562, -0.128188, 2.11952, -0.404227, -0.625794, 2.11952, -0.355217, -0.436321, 2.11952, 0.597326, -0.128188, 2.11952, 0.566978, 0.369414, 2.11952, -0.355218, 0.179942, 2.11952, 0.597326, 0.847897, 2.33421, -0.210072, 0.476234, 2.33421, 0.687205, 0.847901, 2.33421, 4.5029, 0.476237, 2.33421, 3.60562, 0.369419, 2.11952, 4.64805, 0.179945, 2.11952, 3.6955, 2.42245, 2.33421, 2.14641, 2.47502, 2.33457, 2.75, 2.47502, 2.33457, 1.5, 2.42245, 2.33421, 2.14641, 2.47502, 2.33457, 1.5, 2.37344, 2.33421, 1.64881, 2.37344, 2.33421, 2.64402, 2.47502, 2.33457, 2.75, -2.29613, 2.30275, 0.619816, -1.93176, 2.33421, 0.342839, -1.55305, 2.30275, -0.0340935, -1.93176, 2.33421, 0.342839, -2.29613, 2.30275, 0.619816, -2.24897, 2.33421, 0.729354, -1.54525, 2.33421, 0.0256338, -1.55305, 2.30275, -0.0340935, -1.93176, 2.33421, 0.342839, 0.752355, 0, 0.0592138, -1.94658, 4.01029, 3.02298, -1.44156, 4.01029, 3.43936, 1.25737, 0, 0.475594, -1.94658, 4.01029, 3.02298, -2.88634, 4.01029, 4.04929, -2.38132, 4.01029, 4.46567, -1.44156, 4.01029, 3.43936, -0.984051, 4.01029, 5.61564, -0.0442939, 4.01029, 4.58932, -0.426647, 4.01029, 5.6129, -0.00818396, 4.01029, 5.1559, -0.426647, 4.01029, 5.6129, 3.24657, 1.03679, 5.69412, 3.26271, 1.03679, 5.07468, -0.00818396, 4.01029, 5.1559, 3.24657, 1.03679, 5.69412, 5.48249, 1.03679, 5.69412, 5.49863, 1.03679, 5.07468, 3.26271, 1.03679, 5.07468, 5.96677, 1.03679, 5.69412, 5.98291, 1.03679, 5.07468, 6.37502, 1.03457, 4, 5.07502, 1.03457, 4, 5.49863, 1.03679, 5.07468, 5.98291, 1.03679, 5.07468 </vector3_array>
+				<vector3_array  len="207"> 					0.067, 0.971, 0.227, 0.067, 0.971, 0.227, 0.067, 0.971, 0.227, 0.067, 0.971, 0.227, 0.275, 0.931, 0.237, 0.275, 0.931, 0.237, 0.275, 0.931, 0.237, 0.275, 0.931, 0.237, 0.483, 0.873, 0.068, 0.483, 0.873, 0.068, 0.483, 0.873, 0.068, 0.483, 0.873, 0.068, 0.469, 0.857, -0.214, 0.469, 0.857, -0.214, 0.469, 0.857, -0.214, 0.469, 0.857, -0.214, 0.314, 0.813, -0.489, 0.314, 0.813, -0.489, 0.314, 0.813, -0.489, 0.314, 0.813, -0.489, 0, 0.985, -0.175, 0, 0.985, -0.175, 0, 0.985, -0.175, 0, 0.985, -0.175, -0.127, 0.949, -0.287, -0.127, 0.949, -0.287, -0.127, 0.949, -0.287, -0.127, 0.949, -0.287, -0.232, 0.923, -0.306, -0.232, 0.923, -0.306, -0.232, 0.923, -0.306, -0.232, 0.923, -0.306, -0.714, 0.699, -0, -0.714, 0.699, -0, -0.714, 0.699, -0, -0.714, 0.699, -0, -0.316, 0.949, -0, -0.316, 0.949, -0, -0.316, 0.949, -0, -0.316, 0.949, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0.491, 0.871, -0, 0.491, 0.871, -0, 0.491, 0.871, -0, 0.491, 0.871, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0.766, 0.642, -0, 0.766, 0.642, -0, 0.766, 0.642, -0, 0.766, 0.642, -0, -0.722, 0.691, -0, -0.722, 0.691, -0, -0.722, 0.691, -0, -0.722, 0.691, -0, -0.321, 0.947, -0, -0.321, 0.947, -0, -0.321, 0.947, -0, -0.321, 0.947, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0.448, 0.883, 0.135, 0.448, 0.883, 0.135, 0.448, 0.883, 0.135, 0.448, 0.883, 0.135, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0.448, 0.883, -0.136, 0.448, 0.883, -0.136, 0.448, 0.883, -0.136, 0.448, 0.883, -0.136, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, -0.447, 0.883, -0.136, -0.447, 0.883, -0.136, -0.447, 0.883, -0.136, -0.447, 0.883, -0.136, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, -0.447, 0.883, 0.135, -0.447, 0.883, 0.135, -0.447, 0.883, 0.135, -0.447, 0.883, 0.135, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, -0.006, 1, -0, -0.006, 1, -0, -0.006, 1, -0, -0.002, 1, -0, -0.002, 1, -0, -0.002, 1, -0, -0.002, 1, -0, -0.002, 1, -0, -0.456, 0.722, -0.52, -0.456, 0.722, -0.52, -0.456, 0.722, -0.52, -0.219, 0.959, -0.181, -0.219, 0.959, -0.181, -0.219, 0.959, -0.181, -0.331, 0.852, -0.405, -0.331, 0.852, -0.405, -0.331, 0.852, -0.405, 0.45, 0.707, -0.546, 0.45, 0.707, -0.546, 0.45, 0.707, -0.546, 0.45, 0.707, -0.546, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0.629, 0.735, 0.253, 0.629, 0.735, 0.253, 0.629, 0.735, 0.253, 0.629, 0.735, 0.253, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0, 0, 1, -0.002, 0, 1, -0.002, 0, 1, -0.002, 0, 1, -0.002 </vector3_array>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<int_array  len="414"> 					0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 8, 10, 9, 8, 11, 10, 12, 14, 13, 12, 15, 14, 16, 18, 17, 16, 19, 18, 20, 22, 21, 20, 23, 22, 24, 26, 25, 24, 27, 26, 28, 30, 29, 28, 31, 30, 32, 34, 33, 32, 35, 34, 36, 38, 37, 36, 39, 38, 40, 42, 41, 40, 43, 42, 44, 41, 45, 44, 40, 41, 46, 48, 47, 46, 49, 48, 42, 50, 41, 42, 51, 50, 42, 52, 51, 53, 55, 54, 53, 51, 55, 51, 56, 55, 51, 52, 56, 57, 59, 58, 57, 60, 59, 61, 63, 62, 61, 64, 63, 65, 67, 66, 65, 68, 67, 69, 71, 70, 69, 72, 71, 73, 75, 74, 73, 76, 75, 77, 49, 78, 77, 48, 49, 48, 77, 79, 77, 80, 79, 81, 80, 82, 81, 79, 80, 82, 83, 81, 81, 83, 47, 83, 46, 47, 84, 86, 85, 84, 87, 86, 88, 90, 89, 88, 91, 90, 92, 94, 93, 92, 95, 94, 96, 98, 97, 96, 99, 98, 100, 102, 101, 100, 103, 102, 104, 106, 105, 104, 107, 106, 108, 110, 109, 108, 111, 110, 112, 114, 113, 112, 115, 114, 116, 118, 117, 116, 119, 118, 120, 122, 121, 120, 123, 122, 124, 126, 125, 124, 127, 126, 128, 130, 129, 128, 131, 130, 132, 134, 133, 132, 135, 134, 136, 138, 137, 136, 139, 138, 85, 141, 140, 85, 86, 141, 89, 143, 142, 89, 90, 143, 144, 146, 145, 144, 147, 146, 97, 87, 84, 97, 98, 87, 148, 91, 88, 148, 149, 91, 105, 151, 150, 105, 106, 151, 109, 99, 96, 109, 110, 99, 152, 154, 153, 152, 155, 154, 113, 107, 104, 113, 114, 107, 156, 155, 152, 156, 157, 155, 121, 111, 108, 121, 122, 111, 125, 115, 112, 125, 126, 115, 129, 159, 158, 129, 130, 159, 160, 123, 120, 160, 161, 123, 137, 127, 124, 137, 138, 127, 140, 131, 128, 140, 141, 131, 145, 163, 162, 145, 146, 163, 142, 139, 136, 142, 143, 139, 164, 166, 165, 167, 169, 168, 167, 171, 170, 172, 174, 173, 175, 177, 176, 178, 180, 179, 181, 183, 182, 181, 184, 183, 185, 187, 186, 185, 188, 187, 187, 190, 189, 187, 188, 190, 189, 192, 191, 189, 190, 192, 193, 195, 194, 193, 196, 195, 197, 199, 198, 197, 200, 199, 198, 202, 201, 198, 199, 202, 203, 205, 204, 203, 206, 205 </int_array>
+			</array>
+		</dictionary>
+		<aabb name="custom_aabb/custom_aabb"> 0, 0, 0, 0, 0, 0 </aabb>
+
+	</resource>
+	<resource type="NavigationMesh" path="local://2">
+		<vector3_array name="vertices" len="207"> 			0, 0, -1, -0.39384, 0.2, -2.03101, -1.23509, 0.2, -1.49037, -1, 0, -1, -0.39384, 0.2, -2.03101, -1.24385, 0.5, -2.65188, -1.65927, 0.5, -1.74225, -1.23509, 0.2, -1.49037, -1.24385, 0.5, -2.65188, -2.2439, 0.9, -2.70735, -2.10158, 0.9, -1.71753, -1.65927, 0.5, -1.74225, -2.2439, 0.9, -2.70735, -3.06858, 1.3, -2.23463, -2.41372, 1.3, -1.47888, -2.10158, 0.9, -1.71753, -3.06858, 1.3, -2.23463, -3.37908, 1.7, -1.43419, -2.41959, 1.7, -1.15246, -2.41372, 1.3, -1.47888, -3.37908, 1.7, -1.43419, -3.29166, 1.8, -0.590103, -2.33217, 1.8, -0.871835, -2.41959, 1.7, -1.15246, -3.29166, 1.8, -0.590103, -2.78394, 2, -0.00816378, -2.04637, 2, -0.483217, -2.33217, 1.8, -0.871835, -2.78394, 2, -0.00816378, -2.29613, 2.30275, 0.619816, -1.55305, 2.30275, -0.0340935, -2.04637, 2, -0.483217, 2, 0, 2.75, 2, 0, 4, 2.67914, 0.69546, 4, 2.67914, 0.69546, 2.75, 2.66646, 0.697839, -1, 2.66646, 0.697839, 0.25, 3.67502, 1.03457, 0.25, 3.67502, 1.03457, -1, 5.07502, 1.03457, -1, 5.07502, 1.03457, 0.25, 6.37502, 1.03457, 0.25, 6.37502, 1.03457, -1, 3.67502, 1.03457, -1, 3.67502, 1.03457, 0.25, -1, 0, -1, -0.383353, 0, 1.53551, 0.752355, 0, 0.0592138, 0, 0, -1, 5.07502, 1.03457, 1.5, 5.07502, 1.03457, 2.75, 6.37502, 1.03457, 2.75, 3.67502, 1.03457, 2.75, 3.67502, 1.03457, 4, 5.07502, 1.03457, 4, 6.37502, 1.03457, 4, 5.07502, 1.03457, 2.75, 5.07502, 1.03457, 1.5, 4.22547, 1.51352, 1.5, 4.22547, 1.51352, 2.75, 3.53746, 2.33457, 2.75, 3.53746, 2.33457, 1.5, 2.47502, 2.33457, 1.5, 2.47502, 2.33457, 2.75, 4.22547, 1.51352, 2.75, 4.22547, 1.51352, 1.5, 3.53746, 2.33457, 1.5, 3.53746, 2.33457, 2.75, 2, 0, -1, 2, 0, 0.25, 2.66646, 0.697839, 0.25, 2.66646, 0.697839, -1, 2.67914, 0.69546, 2.75, 2.67914, 0.69546, 4, 3.67502, 1.03457, 4, 3.67502, 1.03457, 2.75, 2, 0, 0.25, 2, 0, -1, 1.25737, 0, 0.475594, 2, 0, 2.75, 0.0351091, 0, 1.82824, 2, 0, 4, -1, 0, 4, 2.37344, 2.33421, 1.64881, 2.2283, 2.33421, 1.17032, 1.33102, 2.33421, 1.54199, 1.4209, 2.33421, 1.83828, -1.54525, 2.33421, 0.0256338, -1.93176, 2.33421, 0.342839, -1.24502, 2.33421, 1.02958, -1.00568, 2.33421, 0.833161, -1.10428, 2.33421, 4.5029, -0.625793, 2.11952, 4.64805, -0.436321, 2.11952, 3.6955, -0.732612, 2.33421, 3.60562, 2.37344, 2.33421, 2.64402, 2.42245, 2.33421, 2.14641, 1.45125, 2.33421, 2.14641, 1.4209, 2.33421, 2.45455, -0.625794, 2.11952, -0.355217, -1.10428, 2.33421, -0.210071, -0.732612, 2.33421, 0.687205, -0.436321, 2.11952, 0.597326, -1.93176, 2.33421, 3.94999, -1.54525, 2.33421, 4.2672, -1.00568, 2.33421, 3.45967, -1.24502, 2.33421, 3.26324, 1.99259, 2.33421, 3.56347, 2.2283, 2.33421, 3.1225, 1.33102, 2.33421, 2.75084, 1.18507, 2.33421, 3.0239, -2.48467, 2.33421, 3.1225, -2.24897, 2.33421, 3.56348, -1.44144, 2.33421, 3.0239, -1.5874, 2.33421, 2.75084, 0.847897, 2.33421, -0.210072, 0.369414, 2.11952, -0.355218, 0.179942, 2.11952, 0.597326, 0.476234, 2.33421, 0.687205, 1.28887, 2.33421, 4.2672, 1.67539, 2.33421, 3.94999, 0.988643, 2.33421, 3.26324, 0.749301, 2.33421, 3.45967, -2.67883, 2.33421, 2.14641, -2.62982, 2.33421, 2.64402, -1.67728, 2.33421, 2.45455, -1.70762, 2.33421, 2.14641, 1.67539, 2.33421, 0.342837, 1.28887, 2.33421, 0.0256318, 0.749298, 2.33421, 0.83316, 0.988641, 2.33421, 1.02958, 0.369419, 2.11952, 4.64805, 0.847901, 2.33421, 4.5029, 0.476237, 2.33421, 3.60562, 0.179945, 2.11952, 3.6955, -2.48467, 2.33421, 1.17033, -2.62982, 2.33421, 1.64881, -1.67728, 2.33421, 1.83828, -1.5874, 2.33421, 1.54199, 1.99259, 2.33421, 0.729351, 1.18506, 2.33421, 1.26892, -2.24897, 2.33421, 0.729354, -1.44144, 2.33421, 1.26893, -0.625793, 2.11952, 4.64805, -0.128187, 2.11952, 4.69706, -0.128188, 2.11952, 3.72585, -0.436321, 2.11952, 3.6955, -1.10428, 2.33421, -0.210071, -0.732612, 2.33421, 0.687205, -1.10428, 2.33421, 4.5029, -0.732612, 2.33421, 3.60562, -0.128188, 2.11952, -0.404227, -0.625794, 2.11952, -0.355217, -0.436321, 2.11952, 0.597326, -0.128188, 2.11952, 0.566978, 0.369414, 2.11952, -0.355218, 0.179942, 2.11952, 0.597326, 0.847897, 2.33421, -0.210072, 0.476234, 2.33421, 0.687205, 0.847901, 2.33421, 4.5029, 0.476237, 2.33421, 3.60562, 0.369419, 2.11952, 4.64805, 0.179945, 2.11952, 3.6955, 2.42245, 2.33421, 2.14641, 2.47502, 2.33457, 2.75, 2.47502, 2.33457, 1.5, 2.42245, 2.33421, 2.14641, 2.47502, 2.33457, 1.5, 2.37344, 2.33421, 1.64881, 2.37344, 2.33421, 2.64402, 2.47502, 2.33457, 2.75, -2.29613, 2.30275, 0.619816, -1.93176, 2.33421, 0.342839, -1.55305, 2.30275, -0.0340935, -1.93176, 2.33421, 0.342839, -2.29613, 2.30275, 0.619816, -2.24897, 2.33421, 0.729354, -1.54525, 2.33421, 0.0256338, -1.55305, 2.30275, -0.0340935, -1.93176, 2.33421, 0.342839, 0.752355, 0, 0.0592138, -1.94658, 4.01029, 3.02298, -1.44156, 4.01029, 3.43936, 1.25737, 0, 0.475594, -1.94658, 4.01029, 3.02298, -2.88634, 4.01029, 4.04929, -2.38132, 4.01029, 4.46567, -1.44156, 4.01029, 3.43936, -0.984051, 4.01029, 5.61564, -0.0442939, 4.01029, 4.58932, -0.426647, 4.01029, 5.6129, -0.00818396, 4.01029, 5.1559, -0.426647, 4.01029, 5.6129, 3.24657, 1.03679, 5.69412, 3.26271, 1.03679, 5.07468, -0.00818396, 4.01029, 5.1559, 3.24657, 1.03679, 5.69412, 5.48249, 1.03679, 5.69412, 5.49863, 1.03679, 5.07468, 3.26271, 1.03679, 5.07468, 5.96677, 1.03679, 5.69412, 5.98291, 1.03679, 5.07468, 6.37502, 1.03457, 4, 5.07502, 1.03457, 4, 5.49863, 1.03679, 5.07468, 5.98291, 1.03679, 5.07468 </vector3_array>
+		<array name="polygons" len="138" shared="false">
+			<int_array  len="3"> 				0, 2, 1 </int_array>
+			<int_array  len="3"> 				0, 3, 2 </int_array>
+			<int_array  len="3"> 				4, 6, 5 </int_array>
+			<int_array  len="3"> 				4, 7, 6 </int_array>
+			<int_array  len="3"> 				8, 10, 9 </int_array>
+			<int_array  len="3"> 				8, 11, 10 </int_array>
+			<int_array  len="3"> 				12, 14, 13 </int_array>
+			<int_array  len="3"> 				12, 15, 14 </int_array>
+			<int_array  len="3"> 				16, 18, 17 </int_array>
+			<int_array  len="3"> 				16, 19, 18 </int_array>
+			<int_array  len="3"> 				20, 22, 21 </int_array>
+			<int_array  len="3"> 				20, 23, 22 </int_array>
+			<int_array  len="3"> 				24, 26, 25 </int_array>
+			<int_array  len="3"> 				24, 27, 26 </int_array>
+			<int_array  len="3"> 				28, 30, 29 </int_array>
+			<int_array  len="3"> 				28, 31, 30 </int_array>
+			<int_array  len="3"> 				32, 34, 33 </int_array>
+			<int_array  len="3"> 				32, 35, 34 </int_array>
+			<int_array  len="3"> 				36, 38, 37 </int_array>
+			<int_array  len="3"> 				36, 39, 38 </int_array>
+			<int_array  len="3"> 				40, 42, 41 </int_array>
+			<int_array  len="3"> 				40, 43, 42 </int_array>
+			<int_array  len="3"> 				44, 41, 45 </int_array>
+			<int_array  len="3"> 				44, 40, 41 </int_array>
+			<int_array  len="3"> 				46, 48, 47 </int_array>
+			<int_array  len="3"> 				46, 49, 48 </int_array>
+			<int_array  len="3"> 				42, 50, 41 </int_array>
+			<int_array  len="3"> 				42, 51, 50 </int_array>
+			<int_array  len="3"> 				42, 52, 51 </int_array>
+			<int_array  len="3"> 				53, 55, 54 </int_array>
+			<int_array  len="3"> 				53, 51, 55 </int_array>
+			<int_array  len="3"> 				51, 56, 55 </int_array>
+			<int_array  len="3"> 				51, 52, 56 </int_array>
+			<int_array  len="3"> 				57, 59, 58 </int_array>
+			<int_array  len="3"> 				57, 60, 59 </int_array>
+			<int_array  len="3"> 				61, 63, 62 </int_array>
+			<int_array  len="3"> 				61, 64, 63 </int_array>
+			<int_array  len="3"> 				65, 67, 66 </int_array>
+			<int_array  len="3"> 				65, 68, 67 </int_array>
+			<int_array  len="3"> 				69, 71, 70 </int_array>
+			<int_array  len="3"> 				69, 72, 71 </int_array>
+			<int_array  len="3"> 				73, 75, 74 </int_array>
+			<int_array  len="3"> 				73, 76, 75 </int_array>
+			<int_array  len="3"> 				77, 49, 78 </int_array>
+			<int_array  len="3"> 				77, 48, 49 </int_array>
+			<int_array  len="3"> 				48, 77, 79 </int_array>
+			<int_array  len="3"> 				77, 80, 79 </int_array>
+			<int_array  len="3"> 				81, 80, 82 </int_array>
+			<int_array  len="3"> 				81, 79, 80 </int_array>
+			<int_array  len="3"> 				82, 83, 81 </int_array>
+			<int_array  len="3"> 				81, 83, 47 </int_array>
+			<int_array  len="3"> 				83, 46, 47 </int_array>
+			<int_array  len="3"> 				84, 86, 85 </int_array>
+			<int_array  len="3"> 				84, 87, 86 </int_array>
+			<int_array  len="3"> 				88, 90, 89 </int_array>
+			<int_array  len="3"> 				88, 91, 90 </int_array>
+			<int_array  len="3"> 				92, 94, 93 </int_array>
+			<int_array  len="3"> 				92, 95, 94 </int_array>
+			<int_array  len="3"> 				96, 98, 97 </int_array>
+			<int_array  len="3"> 				96, 99, 98 </int_array>
+			<int_array  len="3"> 				100, 102, 101 </int_array>
+			<int_array  len="3"> 				100, 103, 102 </int_array>
+			<int_array  len="3"> 				104, 106, 105 </int_array>
+			<int_array  len="3"> 				104, 107, 106 </int_array>
+			<int_array  len="3"> 				108, 110, 109 </int_array>
+			<int_array  len="3"> 				108, 111, 110 </int_array>
+			<int_array  len="3"> 				112, 114, 113 </int_array>
+			<int_array  len="3"> 				112, 115, 114 </int_array>
+			<int_array  len="3"> 				116, 118, 117 </int_array>
+			<int_array  len="3"> 				116, 119, 118 </int_array>
+			<int_array  len="3"> 				120, 122, 121 </int_array>
+			<int_array  len="3"> 				120, 123, 122 </int_array>
+			<int_array  len="3"> 				124, 126, 125 </int_array>
+			<int_array  len="3"> 				124, 127, 126 </int_array>
+			<int_array  len="3"> 				128, 130, 129 </int_array>
+			<int_array  len="3"> 				128, 131, 130 </int_array>
+			<int_array  len="3"> 				132, 134, 133 </int_array>
+			<int_array  len="3"> 				132, 135, 134 </int_array>
+			<int_array  len="3"> 				136, 138, 137 </int_array>
+			<int_array  len="3"> 				136, 139, 138 </int_array>
+			<int_array  len="3"> 				85, 141, 140 </int_array>
+			<int_array  len="3"> 				85, 86, 141 </int_array>
+			<int_array  len="3"> 				89, 143, 142 </int_array>
+			<int_array  len="3"> 				89, 90, 143 </int_array>
+			<int_array  len="3"> 				144, 146, 145 </int_array>
+			<int_array  len="3"> 				144, 147, 146 </int_array>
+			<int_array  len="3"> 				97, 87, 84 </int_array>
+			<int_array  len="3"> 				97, 98, 87 </int_array>
+			<int_array  len="3"> 				148, 91, 88 </int_array>
+			<int_array  len="3"> 				148, 149, 91 </int_array>
+			<int_array  len="3"> 				105, 151, 150 </int_array>
+			<int_array  len="3"> 				105, 106, 151 </int_array>
+			<int_array  len="3"> 				109, 99, 96 </int_array>
+			<int_array  len="3"> 				109, 110, 99 </int_array>
+			<int_array  len="3"> 				152, 154, 153 </int_array>
+			<int_array  len="3"> 				152, 155, 154 </int_array>
+			<int_array  len="3"> 				113, 107, 104 </int_array>
+			<int_array  len="3"> 				113, 114, 107 </int_array>
+			<int_array  len="3"> 				156, 155, 152 </int_array>
+			<int_array  len="3"> 				156, 157, 155 </int_array>
+			<int_array  len="3"> 				121, 111, 108 </int_array>
+			<int_array  len="3"> 				121, 122, 111 </int_array>
+			<int_array  len="3"> 				125, 115, 112 </int_array>
+			<int_array  len="3"> 				125, 126, 115 </int_array>
+			<int_array  len="3"> 				129, 159, 158 </int_array>
+			<int_array  len="3"> 				129, 130, 159 </int_array>
+			<int_array  len="3"> 				160, 123, 120 </int_array>
+			<int_array  len="3"> 				160, 161, 123 </int_array>
+			<int_array  len="3"> 				137, 127, 124 </int_array>
+			<int_array  len="3"> 				137, 138, 127 </int_array>
+			<int_array  len="3"> 				140, 131, 128 </int_array>
+			<int_array  len="3"> 				140, 141, 131 </int_array>
+			<int_array  len="3"> 				145, 163, 162 </int_array>
+			<int_array  len="3"> 				145, 146, 163 </int_array>
+			<int_array  len="3"> 				142, 139, 136 </int_array>
+			<int_array  len="3"> 				142, 143, 139 </int_array>
+			<int_array  len="3"> 				164, 166, 165 </int_array>
+			<int_array  len="3"> 				167, 169, 168 </int_array>
+			<int_array  len="3"> 				167, 171, 170 </int_array>
+			<int_array  len="3"> 				172, 174, 173 </int_array>
+			<int_array  len="3"> 				175, 177, 176 </int_array>
+			<int_array  len="3"> 				178, 180, 179 </int_array>
+			<int_array  len="3"> 				181, 183, 182 </int_array>
+			<int_array  len="3"> 				181, 184, 183 </int_array>
+			<int_array  len="3"> 				185, 187, 186 </int_array>
+			<int_array  len="3"> 				185, 188, 187 </int_array>
+			<int_array  len="3"> 				187, 190, 189 </int_array>
+			<int_array  len="3"> 				187, 188, 190 </int_array>
+			<int_array  len="3"> 				189, 192, 191 </int_array>
+			<int_array  len="3"> 				189, 190, 192 </int_array>
+			<int_array  len="3"> 				193, 195, 194 </int_array>
+			<int_array  len="3"> 				193, 196, 195 </int_array>
+			<int_array  len="3"> 				197, 199, 198 </int_array>
+			<int_array  len="3"> 				197, 200, 199 </int_array>
+			<int_array  len="3"> 				198, 202, 201 </int_array>
+			<int_array  len="3"> 				198, 199, 202 </int_array>
+			<int_array  len="3"> 				203, 205, 204 </int_array>
+			<int_array  len="3"> 				203, 206, 205 </int_array>
+		</array>
+
+	</resource>
+	<resource type="Environment" path="local://3">
+		<bool name="ambient_light/enabled"> False </bool>
+		<color name="ambient_light/color"> 0, 0, 0, 1 </color>
+		<real name="ambient_light/energy"> 1 </real>
+		<int name="ambient_light/group_mode"> 0 </int>
+		<color name="ambient_light/group_color"> 0, 0, 0, 1 </color>
+		<bool name="fxaa/enabled"> True </bool>
+		<int name="background/mode"> 2 </int>
+		<color name="background/color"> 0, 0.193959, 0.298202, 1 </color>
+		<nil name="background/texture">  </nil>
+		<nil name="background/cubemap">  </nil>
+		<real name="background/energy"> 1 </real>
+		<real name="background/scale"> 1 </real>
+		<real name="background/glow"> 0 </real>
+		<bool name="es1blur/enabled"> False </bool>
+		<nil name="es1blur/alpha">  </nil>
+		<nil name="es1blur/times">  </nil>
+		<bool name="glow/enabled"> True </bool>
+		<int name="glow/blur_passes"> 3 </int>
+		<int name="glow/blur_scale"> 1 </int>
+		<int name="glow/blur_strength"> 1 </int>
+		<nil name="glow/blur_blend_mode">  </nil>
+		<real name="glow/bloom"> 0.3 </real>
+		<real name="glow/bloom_treshold"> 0.5 </real>
+		<bool name="dof_blur/enabled"> False </bool>
+		<int name="dof_blur/blur_passes"> 1 </int>
+		<real name="dof_blur/begin"> 100 </real>
+		<real name="dof_blur/range"> 10 </real>
+		<bool name="hdr/enabled"> False </bool>
+		<int name="hdr/tonemapper"> 0 </int>
+		<real name="hdr/exposure"> 0.4 </real>
+		<real name="hdr/white"> 1 </real>
+		<real name="hdr/glow_treshold"> 0.95 </real>
+		<real name="hdr/glow_scale"> 0.2 </real>
+		<real name="hdr/min_luminance"> 0.4 </real>
+		<real name="hdr/max_luminance"> 8 </real>
+		<real name="hdr/exposure_adj_speed"> 0.5 </real>
+		<bool name="fog/enabled"> True </bool>
+		<real name="fog/begin"> 10 </real>
+		<color name="fog/begin_color"> 0.53995, 0.754214, 0.902597, 1 </color>
+		<color name="fog/end_color"> 0.610623, 0.567266, 0.97952, 1 </color>
+		<real name="fog/attenuation"> 1 </real>
+		<bool name="fog/bg"> True </bool>
+		<bool name="bcs/enabled"> False </bool>
+		<real name="bcs/brightness"> 1 </real>
+		<real name="bcs/contrast"> 1 </real>
+		<real name="bcs/saturation"> 1 </real>
+		<bool name="srgb/enabled"> False </bool>
+
+	</resource>
+	<resource type="FixedMaterial" path="local://4">
+		<string name="resource/name"> "Material.001" </string>
+		<bool name="flags/visible"> True </bool>
+		<bool name="flags/double_sided"> False </bool>
+		<bool name="flags/invert_faces"> False </bool>
+		<bool name="flags/unshaded"> False </bool>
+		<bool name="flags/on_top"> False </bool>
+		<bool name="flags/lightmap_on_uv2"> True </bool>
+		<bool name="flags/colarray_is_srgb"> True </bool>
+		<int name="params/blend_mode"> 0 </int>
+		<int name="params/depth_draw"> 1 </int>
+		<real name="params/line_width"> 0 </real>
+		<bool name="fixed_flags/use_alpha"> False </bool>
+		<bool name="fixed_flags/use_color_array"> False </bool>
+		<bool name="fixed_flags/use_point_size"> False </bool>
+		<bool name="fixed_flags/discard_alpha"> False </bool>
+		<bool name="fixed_flags/use_xy_normalmap"> False </bool>
+		<bool name="fixed_flags/use_envmap"> False </bool>
+		<color name="params/diffuse"> 0.0518931, 0.389853, 0.64, 1 </color>
+		<color name="params/specular"> 0.5, 0.5, 0.5, 1 </color>
+		<color name="params/emission"> 0, 0, 0, 1 </color>
+		<real name="params/specular_exp"> 50 </real>
+		<real name="params/detail_mix"> 1 </real>
+		<int name="params/normal_depth"> 1 </int>
+		<int name="params/shader"> 0 </int>
+		<real name="params/shader_param"> 0.5 </real>
+		<int name="params/glow"> 0 </int>
+		<real name="params/point_size"> 1 </real>
+		<transform name="uv_xform"> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 </transform>
+		<resource name="textures/diffuse"></resource>		<int name="textures/diffuse_tc"> 0 </int>
+		<resource name="textures/detail"></resource>		<int name="textures/detail_tc"> 0 </int>
+		<resource name="textures/specular"></resource>		<int name="textures/specular_tc"> 0 </int>
+		<resource name="textures/emission"></resource>		<int name="textures/emission_tc"> 0 </int>
+		<resource name="textures/specular_exp"></resource>		<int name="textures/specular_exp_tc"> 0 </int>
+		<resource name="textures/glow"></resource>		<int name="textures/glow_tc"> 0 </int>
+		<resource name="textures/normal"></resource>		<int name="textures/normal_tc"> 0 </int>
+		<resource name="textures/shade_param"></resource>		<int name="textures/shade_param_tc"> 0 </int>
+		<resource name="textures/envmap"></resource>		<int name="textures/envmap_tc"> 0 </int>
+
+	</resource>
+	<resource type="FixedMaterial" path="local://5">
+		<string name="resource/name"> "Material.002" </string>
+		<bool name="flags/visible"> True </bool>
+		<bool name="flags/double_sided"> False </bool>
+		<bool name="flags/invert_faces"> False </bool>
+		<bool name="flags/unshaded"> False </bool>
+		<bool name="flags/on_top"> False </bool>
+		<bool name="flags/lightmap_on_uv2"> True </bool>
+		<bool name="flags/colarray_is_srgb"> True </bool>
+		<int name="params/blend_mode"> 0 </int>
+		<int name="params/depth_draw"> 1 </int>
+		<real name="params/line_width"> 0 </real>
+		<bool name="fixed_flags/use_alpha"> False </bool>
+		<bool name="fixed_flags/use_color_array"> False </bool>
+		<bool name="fixed_flags/use_point_size"> False </bool>
+		<bool name="fixed_flags/discard_alpha"> False </bool>
+		<bool name="fixed_flags/use_xy_normalmap"> False </bool>
+		<bool name="fixed_flags/use_envmap"> False </bool>
+		<color name="params/diffuse"> 0, 0, 0, 1 </color>
+		<color name="params/specular"> 0.5, 0.5, 0.5, 1 </color>
+		<color name="params/emission"> 0, 0, 0, 1 </color>
+		<real name="params/specular_exp"> 50 </real>
+		<real name="params/detail_mix"> 1 </real>
+		<int name="params/normal_depth"> 1 </int>
+		<int name="params/shader"> 0 </int>
+		<real name="params/shader_param"> 0.5 </real>
+		<int name="params/glow"> 0 </int>
+		<real name="params/point_size"> 1 </real>
+		<transform name="uv_xform"> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 </transform>
+		<resource name="textures/diffuse"></resource>		<int name="textures/diffuse_tc"> 0 </int>
+		<resource name="textures/detail"></resource>		<int name="textures/detail_tc"> 0 </int>
+		<resource name="textures/specular"></resource>		<int name="textures/specular_tc"> 0 </int>
+		<resource name="textures/emission"></resource>		<int name="textures/emission_tc"> 0 </int>
+		<resource name="textures/specular_exp"></resource>		<int name="textures/specular_exp_tc"> 0 </int>
+		<resource name="textures/glow"></resource>		<int name="textures/glow_tc"> 0 </int>
+		<resource name="textures/normal"></resource>		<int name="textures/normal_tc"> 0 </int>
+		<resource name="textures/shade_param"></resource>		<int name="textures/shade_param_tc"> 0 </int>
+		<resource name="textures/envmap"></resource>		<int name="textures/envmap_tc"> 0 </int>
+
+	</resource>
+	<resource type="FixedMaterial" path="local://6">
+		<string name="resource/name"> "Material.003" </string>
+		<bool name="flags/visible"> True </bool>
+		<bool name="flags/double_sided"> False </bool>
+		<bool name="flags/invert_faces"> False </bool>
+		<bool name="flags/unshaded"> False </bool>
+		<bool name="flags/on_top"> False </bool>
+		<bool name="flags/lightmap_on_uv2"> True </bool>
+		<bool name="flags/colarray_is_srgb"> True </bool>
+		<int name="params/blend_mode"> 0 </int>
+		<int name="params/depth_draw"> 1 </int>
+		<real name="params/line_width"> 0 </real>
+		<bool name="fixed_flags/use_alpha"> False </bool>
+		<bool name="fixed_flags/use_color_array"> False </bool>
+		<bool name="fixed_flags/use_point_size"> False </bool>
+		<bool name="fixed_flags/discard_alpha"> False </bool>
+		<bool name="fixed_flags/use_xy_normalmap"> False </bool>
+		<bool name="fixed_flags/use_envmap"> False </bool>
+		<color name="params/diffuse"> 0, 0.37, 0.8, 1 </color>
+		<color name="params/specular"> 0.5, 0.5, 0.5, 1 </color>
+		<color name="params/emission"> 0, 0.489441, 1, 1 </color>
+		<real name="params/specular_exp"> 50 </real>
+		<real name="params/detail_mix"> 1 </real>
+		<int name="params/normal_depth"> 1 </int>
+		<int name="params/shader"> 0 </int>
+		<real name="params/shader_param"> 0.5 </real>
+		<real name="params/glow"> 1 </real>
+		<real name="params/point_size"> 1 </real>
+		<transform name="uv_xform"> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 </transform>
+		<resource name="textures/diffuse"></resource>		<int name="textures/diffuse_tc"> 0 </int>
+		<resource name="textures/detail"></resource>		<int name="textures/detail_tc"> 0 </int>
+		<resource name="textures/specular"></resource>		<int name="textures/specular_tc"> 0 </int>
+		<resource name="textures/emission"></resource>		<int name="textures/emission_tc"> 0 </int>
+		<resource name="textures/specular_exp"></resource>		<int name="textures/specular_exp_tc"> 0 </int>
+		<resource name="textures/glow"></resource>		<int name="textures/glow_tc"> 0 </int>
+		<resource name="textures/normal"></resource>		<int name="textures/normal_tc"> 0 </int>
+		<resource name="textures/shade_param"></resource>		<int name="textures/shade_param_tc"> 0 </int>
+		<resource name="textures/envmap"></resource>		<int name="textures/envmap_tc"> 0 </int>
+
+	</resource>
+	<resource type="Mesh" path="local://7">
+		<string name="resource/name"> "Sphere.001" </string>
+		<dictionary name="surfaces/0" shared="false">
+			<string> "alphasort" </string>
+			<bool> False </bool>
+			<string> "morph_arrays" </string>
+			<array  len="0" shared="false">
+			</array>
+			<string> "material" </string>
+			<resource  resource_type="Material" path="local://4">  </resource>
+			<string> "name" </string>
+			<string> "Material.001" </string>
+			<string> "primitive" </string>
+			<int> 4 </int>
+			<string> "arrays" </string>
+			<array  len="9" shared="false">
+				<vector3_array  len="495"> 					-0.959827, 0.0420112, -2.56114e-08, -0.987921, 0.0820898, -2.93367e-08, -0.968939, 0.0820898, -0.15827, -0.941384, 0.0420112, -0.153769, -1, 0.155241, -0.032995, -0.980785, 0.219242, -0.0998476, -0.96194, 0.219242, -0.234287, -0.980785, 0.155241, -0.186718, -0.92388, 0.466506, -0.0772619, -0.83147, 0.694385, -0.037737, -0.815493, 0.694385, -0.151709, -0.906127, 0.466506, -0.203901, -0.69288, 0.849415, 0.00743433, -0.55557, 0.941255, 0.00743433, -0.544895, 0.941255, -0.0687194, -0.679566, 0.849415, -0.0875408, -0.243497, -0.239446, -1.16415e-08, -0.477636, -0.208475, -1.16415e-08, -0.468458, -0.208475, -0.0765197, -0.238818, -0.239446, -0.0390094, -0.382683, 0.990845, 0.00743433, -0.19509, 1.02138, 0.00743433, -0.191342, 1.02138, -0.0193073, -0.37533, 0.990845, -0.0450213, -0.69342, -0.158181, -1.16415e-08, -0.826816, -0.0975718, -1.62981e-08, -0.810929, -0.0975718, -0.13246, -0.680096, -0.158181, -0.111089, -0.908037, -0.0306193, -2.14204e-08, -0.890589, -0.0306193, -0.145472, -0.640137, 0.849415, -0.178866, -0.768178, 0.694385, -0.261301, -0.353553, 0.990845, -0.095461, -0.51328, 0.941255, -0.141946, -0.640637, -0.158181, -0.21791, -0.441278, -0.208475, -0.150099, -0.838917, -0.0306193, -0.285354, -0.763878, -0.0975718, -0.25983, -0.91272, 0.0820898, -0.310458, -0.886764, 0.0420112, -0.301629, -0.906127, 0.219242, -0.363559, -0.923879, 0.155241, -0.334533, -0.853553, 0.466506, -0.325673, -0.224961, -0.239446, -0.0765197, -0.18024, 1.02138, -0.0450213, -0.576108, 0.849415, -0.263032, -0.691342, 0.694385, -0.362302, -0.31819, 0.990845, -0.141947, -0.46194, 0.941255, -0.209433, -0.576558, -0.158181, -0.316356, -0.39714, -0.208475, -0.21791, -0.755005, -0.0306193, -0.414269, -0.687473, -0.0975718, -0.377214, -0.821426, 0.0820898, -0.450715, -0.798067, 0.0420112, -0.437897, -0.815493, 0.219242, -0.482698, -0.831469, 0.155241, -0.470761, -0.768178, 0.466506, -0.437899, -0.20246, -0.239446, -0.111089, -0.162212, 1.02138, -0.0687194, -0.48994, 0.849415, -0.336804, -0.587938, 0.694385, -0.45083, -0.270598, 0.990845, -0.182691, -0.392847, 0.941255, -0.268585, -0.490322, -0.158181, -0.402645, -0.33774, -0.208475, -0.277346, -0.642079, -0.0306193, -0.527265, -0.584647, -0.0975718, -0.480103, -0.698566, 0.0820898, -0.573651, -0.6787, 0.0420112, -0.557337, -0.69352, 0.219242, -0.587124, -0.707107, 0.155241, -0.590165, -0.653281, 0.466506, -0.536266, -0.172178, -0.239446, -0.14139, -0.13795, 1.02138, -0.089491, -0.384943, 0.849415, -0.397347, -0.46194, 0.694385, -0.523483, -0.212607, 0.990845, -0.21613, -0.308658, 0.941255, -0.317131, -0.385243, -0.158181, -0.47346, -0.26536, -0.208475, -0.326125, -0.504478, -0.0306193, -0.619998, -0.459354, -0.0975718, -0.564541, -0.548859, 0.0820898, -0.674542, -0.533251, 0.0420112, -0.655359, -0.544895, 0.219242, -0.672824, -0.55557, 0.155241, -0.688158, -0.51328, 0.466506, -0.616993, -0.135279, -0.239446, -0.166257, -0.108386, 1.02138, -0.106538, -0.265153, 0.849415, -0.442335, -0.318189, 0.694385, -0.577469, -0.146446, 0.990845, -0.240977, -0.212607, 0.941255, -0.353203, -0.26536, -0.158181, -0.526081, -0.182783, -0.208475, -0.362371, -0.34749, -0.0306193, -0.688905, -0.316409, -0.0975718, -0.627285, -0.378061, 0.0820898, -0.749511, -0.36731, 0.0420112, -0.728196, -0.37533, 0.219242, -0.736504, -0.382683, 0.155241, -0.760973, -0.353553, 0.466506, -0.676979, -0.0931819, -0.239446, -0.184735, -0.0746576, 1.02138, -0.119205, -0.135174, 0.849415, -0.470038, -0.162211, 0.694385, -0.610713, -0.0746576, 0.990845, -0.256278, -0.108386, 0.941255, -0.375416, -0.135279, -0.158181, -0.558484, -0.0931819, -0.208475, -0.384691, -0.177149, -0.0306193, -0.731337, -0.161304, -0.0975718, -0.665922, -0.192734, 0.0820898, -0.795677, -0.187253, 0.0420112, -0.773049, -0.191341, 0.219242, -0.775719, -0.19509, 0.155241, -0.805812, -0.18024, 0.466506, -0.713919, -0.0475036, -0.239446, -0.196114, -0.03806, 1.02138, -0.127005, 3.17064e-07, 0.849415, -0.479392, 3.34087e-07, 0.694385, -0.621938, 3.19185e-07, 0.990845, -0.261444, 3.11735e-07, 0.941255, -0.382917, 3.57778e-07, -0.158181, -0.569425, 3.11281e-07, -0.208475, -0.392227, 3.40641e-07, -0.0306193, -0.745665, 3.29178e-07, -0.0975718, -0.678968, 3.94668e-07, 0.0820898, -0.811265, 2.28288e-07, 0.0420112, -0.788194, 3.93691e-07, 0.219242, -0.78896, 3.7879e-07, 0.155241, -0.820953, 2.74482e-07, 0.466506, -0.726391, 3.15931e-07, -0.239446, -0.199956, 3.26636e-07, 1.02138, -0.129639, 0.135174, 0.849415, -0.470038, 0.162212, 0.694385, -0.610713, 0.0746582, 0.990845, -0.256278, 0.108387, 0.941255, -0.375416, 0.13528, -0.158181, -0.558484, 0.0931825, -0.208475, -0.384691, 0.17715, -0.0306193, -0.731337, 0.161304, -0.0975718, -0.665922, 0.192734, 0.0820898, -0.795676, 0.187253, 0.0420112, -0.773049, 0.191342, 0.219242, -0.775719, 0.195091, 0.155241, -0.805812, 0.18024, 0.466506, -0.713919, 0.0475042, -0.239446, -0.196114, 0.0380606, 1.02138, -0.127005, 0.265154, 0.849415, -0.442335, 0.31819, 0.694385, -0.577468, 0.146447, 0.990845, -0.240977, 0.212608, 0.941255, -0.353203, 0.265361, -0.158181, -0.52608, 0.182784, -0.208475, -0.362371, 0.347491, -0.0306193, -0.688905, 0.316409, -0.0975718, -0.627285, 0.378062, 0.0820898, -0.749511, 0.36731, 0.0420112, -0.728196, 0.375331, 0.219242, -0.736504, 0.382684, 0.155241, -0.760973, 0.353554, 0.466506, -0.676979, 0.0931825, -0.239446, -0.184735, 0.0746583, 1.02138, -0.119205, 0.384944, 0.849415, -0.397347, 0.46194, 0.694385, -0.523483, 0.212608, 0.990845, -0.21613, 0.308659, 0.941255, -0.317131, 0.385244, -0.158181, -0.47346, 0.265361, -0.208475, -0.326125, 0.504479, -0.0306193, -0.619998, 0.459355, -0.0975718, -0.564541, 0.54886, 0.0820898, -0.674542, 0.533252, 0.0420112, -0.655359, 0.544895, 0.219242, -0.672823, 0.555571, 0.155241, -0.688158, 0.51328, 0.466506, -0.616993, 0.13528, -0.239446, -0.166257, 0.108387, 1.02138, -0.106538, 0.48994, 0.849415, -0.336804, 0.587938, 0.694385, -0.45083, 0.270599, 0.990845, -0.182691, 0.392848, 0.941255, -0.268585, 0.490323, -0.158181, -0.402644, 0.33774, -0.208475, -0.277346, 0.64208, -0.0306193, -0.527265, 0.584648, -0.0975718, -0.480103, 0.698566, 0.0820898, -0.573651, 0.6787, 0.0420112, -0.557337, 0.69352, 0.219242, -0.587123, 0.707107, 0.155241, -0.590165, 0.653282, 0.466506, -0.536266, 0.172179, -0.239446, -0.14139, 0.13795, 1.02138, -0.089491, 0.576109, 0.849415, -0.263032, 0.691342, 0.694385, -0.362302, 0.31819, 0.990845, -0.141946, 0.46194, 0.941255, -0.209433, 0.576558, -0.158181, -0.316356, 0.39714, -0.208475, -0.21791, 0.755006, -0.0306193, -0.414269, 0.687473, -0.0975718, -0.377214, 0.821427, 0.0820898, -0.450714, 0.798067, 0.0420112, -0.437897, 0.815493, 0.219242, -0.482698, 0.83147, 0.155241, -0.470761, 0.768178, 0.466506, -0.437899, 0.202461, -0.239446, -0.111089, 0.162212, 1.02138, -0.0687194, 0.640138, 0.849415, -0.178866, 0.768178, 0.694385, -0.261301, 0.353554, 0.990845, -0.095461, 0.51328, 0.941255, -0.141946, 0.640637, -0.158181, -0.21791, 0.441279, -0.208475, -0.150099, 0.838917, -0.0306193, -0.285354, 0.763879, -0.0975718, -0.25983, 0.912721, 0.0820898, -0.310457, 0.886765, 0.0420112, -0.301629, 0.906128, 0.219242, -0.363559, 0.92388, 0.155241, -0.334533, 0.853554, 0.466506, -0.325673, 0.224962, -0.239446, -0.0765197, 0.18024, 1.02138, -0.0450213, 0.679567, 0.849415, -0.0875407, 0.815493, 0.694385, -0.151709, 0.375331, 0.990845, -0.0450213, 0.544896, 0.941255, -0.0687193, 0.680097, -0.158181, -0.111089, 0.468459, -0.208475, -0.0765197, 0.890589, -0.0306193, -0.145472, 0.810929, -0.0975718, -0.13246, 0.968939, 0.0820898, -0.15827, 0.941384, 0.0420112, -0.153769, 0.96194, 0.219242, -0.234287, 0.980786, 0.155241, -0.186718, 0.906128, 0.466506, -0.203901, 0.238818, -0.239446, -0.0390094, 0.191342, 1.02138, -0.0193073, 0.69288, 0.849415, 0.00743435, 0.83147, 0.694385, -0.037737, 0.382684, 0.990845, 0.0074343, 0.555571, 0.941255, 0.0074343, 0.69342, -0.158181, -4.65661e-10, 0.477636, -0.208475, -1.53668e-08, 0.908037, -0.0306193, 5.4948e-08, 0.826816, -0.0975718, 8.3819e-09, 0.987921, 0.0820898, 4.14439e-08, 0.959827, 0.0420112, -7.96281e-08, 0.980785, 0.219242, -0.0998475, 1, 0.155241, -0.0329949, 0.92388, 0.466506, -0.077262, 0.243497, -0.239446, -1.53668e-08, 0.195091, 1.02138, 0.00743433, 0.679567, 0.849415, 0.102409, 0.815493, 0.694385, 0.076235, 0.375331, 0.990845, 0.0598898, 0.544896, 0.941255, 0.083588, 0.680097, -0.158181, 0.111089, 0.468459, -0.208475, 0.0765196, 0.890589, -0.0306193, 0.145472, 0.810929, -0.0975718, 0.13246, 0.968939, 0.0820898, 0.15827, 0.941384, 0.0420112, 0.153769, 0.96194, 0.219242, 0.0345915, 0.980786, 0.155241, 0.120728, 0.906128, 0.466506, 0.0493769, 0.238818, -0.239446, 0.0390094, 0.191342, 1.02138, 0.034176, 0.640138, 0.849415, 0.193735, 0.768178, 0.694385, 0.185827, 0.353554, 0.990845, 0.11033, 0.51328, 0.941255, 0.156815, 0.640637, -0.158181, 0.21791, 0.441279, -0.208475, 0.150099, 0.838917, -0.0306193, 0.285354, 0.763879, -0.0975718, 0.25983, 0.91272, 0.0820898, 0.310458, 0.886765, 0.0420112, 0.301629, 0.906127, 0.219242, 0.163864, 0.92388, 0.155241, 0.268543, 0.853554, 0.466506, 0.171149, 0.224962, -0.239446, 0.0765196, 0.18024, 1.02138, 0.0598899, 0.576109, 0.849415, 0.2779, 0.691342, 0.694385, 0.286828, 0.31819, 0.990845, 0.156815, 0.46194, 0.941255, 0.224302, 0.576558, -0.158181, 0.316356, 0.39714, -0.208475, 0.21791, 0.755005, -0.0306193, 0.414269, 0.687473, -0.0975718, 0.377214, 0.821427, 0.0820898, 0.450714, 0.798067, 0.0420112, 0.437897, 0.815493, 0.219242, 0.283003, 0.83147, 0.155241, 0.404771, 0.768178, 0.466506, 0.283375, 0.20246, -0.239446, 0.111089, 0.162212, 1.02138, 0.083588, 0.524035, 0.787773, 0.387876, 0.635656, 0.645515, 0.406246, 0.270598, 0.990845, 0.19756, 0.392848, 0.941255, 0.283454, 0.490322, -0.158181, 0.402644, 0.33774, -0.208475, 0.277346, 0.642079, -0.0306193, 0.527265, 0.584648, -0.0975718, 0.480103, 0.698566, 0.0820898, 0.573651, 0.6787, 0.0420112, 0.557337, 0.69352, 0.219242, 0.387428, 0.707107, 0.155241, 0.524175, 0.654639, 0.459374, 0.416312, 0.172179, -0.239446, 0.14139, 0.13795, 1.02138, 0.10436, -0.654638, 0.459374, 0.416312, -0.515439, 0.393367, 0.474251, -0.490803, 0.433416, 0.458973, -0.598623, 0.47947, 0.442197, 0.212608, 0.990845, 0.230998, 0.308659, 0.941255, 0.331999, 0.385244, -0.158181, 0.47346, 0.265361, -0.208475, 0.326125, 0.504478, -0.0306193, 0.619998, 0.459355, -0.0975718, 0.564541, 0.54886, 0.0820898, 0.674542, 0.533252, 0.0420112, 0.655359, 0.544895, 0.219242, 0.473128, 0.55557, 0.155241, 0.622168, -0.261912, 0.838546, 0.444909, -0.390081, 0.82061, 0.424247, -0.424598, 0.777754, 0.443334, -0.288773, 0.798665, 0.455064, 0.390082, 0.82061, 0.424247, 0.13528, -0.239446, 0.166257, 0.108387, 1.02138, 0.121406, 0.51544, 0.393367, 0.474251, 0.13261, 0.846502, 0.45655, 2.34721e-07, 0.848113, 0.460431, 2.17941e-07, 0.81016, 0.465514, 0.146467, 0.808328, 0.462851, 0.146447, 0.990845, 0.255845, 0.212608, 0.941255, 0.368071, 0.265361, -0.158181, 0.52608, 0.182784, -0.208475, 0.36237, 0.347491, -0.0306193, 0.688904, 0.316409, -0.0975718, 0.627284, 0.378061, 0.0820898, 0.749511, 0.36731, 0.0420112, 0.728196, 0.37533, 0.219242, 0.536809, 0.382684, 0.155241, 0.694983, -0.353634, 0.369161, 0.506333, -0.339007, 0.406649, 0.474193, 0.261913, 0.838546, 0.44491, 0.0931825, -0.239446, 0.184735, 0.0746582, 1.02138, 0.134073, 0.353634, 0.369161, 0.506333, 1.84492e-07, 0.357541, 0.530533, 0.179988, 0.360503, 0.524478, 0.172668, 0.396196, 0.484138, 2.0911e-07, 0.392485, 0.487529, 0.0746581, 0.990845, 0.271146, 0.108387, 0.941255, 0.390285, 0.13528, -0.158181, 0.558484, 0.0931824, -0.208475, 0.38469, 0.177149, -0.0306193, 0.731337, 0.161304, -0.0975718, 0.665922, 0.192734, 0.0820898, 0.795676, 0.187253, 0.0420112, 0.773049, 0.191342, 0.219242, 0.576023, 0.19509, 0.155241, 0.739822, -0.132609, 0.846502, 0.45655, -0.146467, 0.808328, 0.462851, 0.0475042, -0.239446, 0.196113, 0.0380606, 1.02138, 0.141874, 0.288773, 0.798665, 0.455064, 2.81932e-07, 0.990845, 0.276313, 2.81932e-07, 0.941255, 0.397785, 2.55486e-07, -0.158181, 0.569425, 2.46187e-07, -0.208475, 0.392227, 1.29087e-07, -0.0306193, 0.745665, 1.72363e-07, -0.0975718, 0.678968, 9.44765e-08, 0.0820898, 0.811264, 3.21174e-07, 0.0420112, 0.788194, 9.56679e-08, 0.219242, 0.589264, 1.40371e-07, 0.155241, 0.754962, 0.531179, 0.751179, 0.43073, 0.585433, 0.627735, 0.436617, 3.2523e-07, -0.239446, 0.199955, 3.11735e-07, 1.02138, 0.144507, -0.179987, 0.360503, 0.524478, -0.172668, 0.396196, 0.484138, -0.0746575, 0.990845, 0.271146, -0.108386, 0.941255, 0.390284, -0.135279, -0.158181, 0.558484, -0.0931819, -0.208475, 0.38469, -0.177149, -0.0306193, 0.731337, -0.161304, -0.0975718, 0.665921, -0.192734, 0.0820898, 0.795676, -0.187253, 0.0420112, 0.773049, -0.191342, 0.219242, 0.576023, -0.19509, 0.155241, 0.739822, 0.339008, 0.406649, 0.474193, -0.0475035, -0.239446, 0.196113, -0.0380599, 1.02138, 0.141874, -0.524034, 0.787773, 0.387876, -0.635656, 0.645515, 0.406246, -0.585433, 0.627735, 0.436617, -0.531179, 0.751179, 0.43073, -0.146446, 0.990845, 0.255845, -0.212607, 0.941255, 0.368071, -0.26536, -0.158181, 0.52608, -0.182783, -0.208475, 0.36237, -0.34749, -0.0306193, 0.688904, -0.316409, -0.0975718, 0.627284, -0.378061, 0.0820898, 0.74951, -0.36731, 0.0420112, 0.728196, -0.37533, 0.219242, 0.536809, -0.382683, 0.155241, 0.694982, 0.424598, 0.777754, 0.443334, -0.0931818, -0.239446, 0.184735, -0.0746576, 1.02138, 0.134073, 0.490803, 0.433416, 0.458973, -0.212607, 0.990845, 0.230998, -0.308658, 0.941255, 0.331999, -0.385243, -0.158181, 0.473459, -0.26536, -0.208475, 0.326125, -0.504478, -0.0306193, 0.619997, -0.459354, -0.0975718, 0.564541, -0.548859, 0.0820898, 0.674541, -0.533251, 0.0420112, 0.655359, -0.544895, 0.219242, 0.473128, -0.55557, 0.155241, 0.622167, -0.135279, -0.239446, 0.166257, -0.108386, 1.02138, 0.121406, 0.598624, 0.47947, 0.442197, -0.270598, 0.990845, 0.19756, -0.392847, 0.941255, 0.283454, -0.490322, -0.158181, 0.402644, -0.337739, -0.208475, 0.277346, -0.642079, -0.0306193, 0.527264, -0.584647, -0.0975718, 0.480103, -0.698565, 0.0820898, 0.57365, -0.6787, 0.0420112, 0.557337, -0.693519, 0.219242, 0.387428, -0.707106, 0.155241, 0.524175, -0.172178, -0.239446, 0.14139, -0.137949, 1.02138, 0.10436, -0.576108, 0.849415, 0.2779, -0.691341, 0.694385, 0.286827, -0.318189, 0.990845, 0.156815, -0.461939, 0.941255, 0.224301, -0.576557, -0.158181, 0.316355, -0.397139, -0.208475, 0.217909, -0.755005, -0.0306193, 0.414269, -0.687472, -0.0975718, 0.377214, -0.821426, 0.0820898, 0.450714, -0.798066, 0.0420112, 0.437897, -0.815492, 0.219242, 0.283002, -0.831469, 0.155241, 0.40477, -0.768177, 0.466506, 0.283375, -0.20246, -0.239446, 0.111089, -0.162211, 1.02138, 0.083588, -0.640137, 0.849415, 0.193734, -0.768177, 0.694385, 0.185827, -0.353553, 0.990845, 0.11033, -0.51328, 0.941255, 0.156815, -0.640636, -0.158181, 0.217909, -0.441278, -0.208475, 0.150099, -0.838916, -0.0306193, 0.285353, -0.763878, -0.0975718, 0.25983, -0.91272, 0.0820898, 0.310457, -0.886764, 0.0420112, 0.301629, -0.906127, 0.219242, 0.163864, -0.923879, 0.155241, 0.268543, -0.853553, 0.466506, 0.171149, -0.224961, -0.239446, 0.0765196, -0.18024, 1.02138, 0.0598899, -0.679566, 0.849415, 0.102409, -0.815492, 0.694385, 0.0762347, -0.37533, 0.990845, 0.0598898, -0.544895, 0.941255, 0.0835879, -0.680096, -0.158181, 0.111089, -0.468458, -0.208475, 0.0765195, -0.890589, -0.0306193, 0.145472, -0.810929, -0.0975718, 0.13246, -0.968938, 0.0820898, 0.15827, -0.941384, 0.0420112, 0.153769, -0.961939, 0.219242, 0.0345913, -0.980785, 0.155241, 0.120728, -0.906127, 0.466506, 0.0493769, -0.238818, -0.239446, 0.0390093, -0.191342, 1.02138, 0.0341759, 3.38188e-07, -0.249904, -1.16415e-08, 2.01147e-07, 1.03169, 0.00743454 </vector3_array>
+				<vector3_array  len="495"> 					-0.816, -0.576, -0, -0.931, -0.362, 0.016, -0.891, -0.403, -0.203, -0.795, -0.573, -0.192, -0.994, 0.095, 0.013, -0.971, 0.232, -0.037, -0.943, 0.161, -0.288, -0.97, -0.052, -0.232, -0.953, 0.3, -0.002, -0.852, 0.522, -0, -0.803, 0.55, -0.224, -0.91, 0.324, -0.257, -0.662, 0.748, 0.007, -0.431, 0.902, -0, -0.42, 0.899, -0.12, -0.628, 0.758, -0.17, -0.089, -0.995, -0, -0.182, -0.982, -0, -0.178, -0.982, -0.044, -0.088, -0.995, -0.022, -0.223, 0.975, -0, -0.111, 0.994, -0, -0.108, 0.993, -0.032, -0.218, 0.974, -0.063, -0.328, -0.943, -0, -0.536, -0.843, -0, -0.524, -0.841, -0.127, -0.321, -0.943, -0.078, -0.735, -0.676, -0, -0.717, -0.673, -0.173, -0.566, 0.757, -0.326, -0.713, 0.564, -0.416, -0.204, 0.971, -0.122, -0.39, 0.891, -0.232, -0.301, -0.94, -0.153, -0.167, -0.981, -0.085, -0.666, -0.664, -0.335, -0.489, -0.835, -0.247, -0.814, -0.416, -0.403, -0.737, -0.563, -0.371, -0.85, 0.142, -0.505, -0.881, -0.118, -0.457, -0.812, 0.337, -0.476, -0.082, -0.995, -0.042, -0.101, 0.993, -0.061, -0.485, 0.747, -0.454, -0.599, 0.566, -0.565, -0.182, 0.967, -0.175, -0.343, 0.879, -0.329, -0.269, -0.936, -0.22, -0.15, -0.98, -0.124, -0.587, -0.652, -0.477, -0.434, -0.827, -0.354, -0.709, -0.409, -0.573, -0.647, -0.55, -0.526, -0.72, 0.164, -0.674, -0.757, -0.104, -0.643, -0.683, 0.341, -0.646, -0.073, -0.994, -0.061, -0.09, 0.992, -0.088, -0.394, 0.734, -0.553, -0.477, 0.564, -0.674, -0.153, 0.963, -0.221, -0.285, 0.866, -0.409, -0.226, -0.932, -0.278, -0.127, -0.978, -0.157, -0.488, -0.638, -0.593, -0.364, -0.817, -0.444, -0.584, -0.388, -0.711, -0.536, -0.535, -0.652, -0.572, 0.209, -0.792, -0.615, -0.042, -0.787, -0.542, 0.34, -0.768, -0.062, -0.994, -0.078, -0.076, 0.991, -0.111, -0.297, 0.721, -0.626, -0.354, 0.559, -0.749, -0.119, 0.959, -0.258, -0.219, 0.854, -0.471, -0.176, -0.928, -0.325, -0.099, -0.977, -0.183, -0.375, -0.626, -0.683, -0.282, -0.808, -0.515, -0.446, -0.363, -0.817, -0.41, -0.521, -0.747, -0.421, 0.262, -0.868, -0.461, 0.033, -0.886, -0.401, 0.337, -0.851, -0.048, -0.994, -0.091, -0.059, 0.99, -0.13, -0.198, 0.71, -0.676, -0.233, 0.555, -0.799, -0.081, 0.955, -0.284, -0.148, 0.844, -0.514, -0.12, -0.925, -0.359, -0.068, -0.976, -0.203, -0.253, -0.615, -0.745, -0.192, -0.8, -0.566, -0.301, -0.34, -0.89, -0.276, -0.51, -0.813, -0.275, 0.306, -0.911, -0.305, 0.098, -0.947, -0.264, 0.334, -0.905, -0.033, -0.993, -0.101, -0.04, 0.989, -0.143, -0.099, 0.703, -0.704, -0.115, 0.551, -0.826, -0.041, 0.953, -0.301, -0.074, 0.838, -0.54, -0.061, -0.922, -0.379, -0.034, -0.975, -0.215, -0.127, -0.609, -0.782, -0.096, -0.796, -0.597, -0.151, -0.325, -0.933, -0.139, -0.503, -0.852, -0.135, 0.335, -0.932, -0.151, 0.141, -0.978, -0.13, 0.332, -0.934, -0.016, -0.993, -0.107, -0.02, 0.988, -0.151, 0, 0.7, -0.714, 0, 0.55, -0.835, 0, 0.952, -0.306, 0, 0.836, -0.549, 0, -0.921, -0.386, 0, -0.975, -0.219, 0, -0.606, -0.794, 0, -0.794, -0.607, 0, -0.319, -0.947, 0, -0.501, -0.865, 0, 0.345, -0.939, 0, 0.156, -0.988, 0, 0.331, -0.944, 0, -0.993, -0.108, 0, 0.988, -0.154, 0.1, 0.703, -0.704, 0.116, 0.551, -0.826, 0.042, 0.953, -0.301, 0.075, 0.838, -0.54, 0.062, -0.922, -0.379, 0.035, -0.975, -0.215, 0.128, -0.609, -0.782, 0.097, -0.796, -0.597, 0.152, -0.325, -0.933, 0.14, -0.503, -0.852, 0.136, 0.335, -0.932, 0.152, 0.141, -0.978, 0.131, 0.332, -0.934, 0.017, -0.993, -0.107, 0.021, 0.988, -0.151, 0.199, 0.71, -0.676, 0.234, 0.555, -0.799, 0.082, 0.955, -0.284, 0.149, 0.844, -0.514, 0.121, -0.925, -0.359, 0.069, -0.976, -0.203, 0.254, -0.615, -0.745, 0.193, -0.8, -0.566, 0.302, -0.34, -0.89, 0.277, -0.51, -0.813, 0.276, 0.306, -0.911, 0.306, 0.098, -0.947, 0.265, 0.334, -0.905, 0.034, -0.993, -0.101, 0.041, 0.989, -0.143, 0.298, 0.721, -0.626, 0.355, 0.559, -0.749, 0.12, 0.959, -0.258, 0.22, 0.854, -0.471, 0.177, -0.928, -0.325, 0.1, -0.977, -0.183, 0.376, -0.626, -0.683, 0.283, -0.808, -0.515, 0.447, -0.363, -0.817, 0.411, -0.521, -0.747, 0.422, 0.262, -0.868, 0.462, 0.033, -0.886, 0.402, 0.337, -0.851, 0.049, -0.994, -0.091, 0.06, 0.99, -0.13, 0.395, 0.734, -0.553, 0.478, 0.564, -0.674, 0.154, 0.963, -0.221, 0.286, 0.866, -0.409, 0.227, -0.932, -0.278, 0.128, -0.978, -0.157, 0.489, -0.638, -0.593, 0.365, -0.817, -0.444, 0.585, -0.388, -0.711, 0.537, -0.535, -0.652, 0.573, 0.209, -0.792, 0.616, -0.042, -0.787, 0.543, 0.34, -0.768, 0.063, -0.994, -0.078, 0.077, 0.991, -0.111, 0.486, 0.747, -0.454, 0.6, 0.566, -0.565, 0.183, 0.967, -0.175, 0.344, 0.879, -0.329, 0.27, -0.936, -0.22, 0.151, -0.98, -0.124, 0.588, -0.652, -0.477, 0.435, -0.827, -0.354, 0.71, -0.409, -0.573, 0.648, -0.55, -0.526, 0.721, 0.164, -0.674, 0.758, -0.104, -0.643, 0.684, 0.341, -0.646, 0.074, -0.994, -0.061, 0.091, 0.992, -0.088, 0.567, 0.757, -0.326, 0.714, 0.564, -0.416, 0.205, 0.971, -0.122, 0.391, 0.891, -0.232, 0.302, -0.94, -0.153, 0.168, -0.981, -0.085, 0.667, -0.664, -0.335, 0.49, -0.835, -0.247, 0.815, -0.416, -0.403, 0.738, -0.563, -0.371, 0.851, 0.142, -0.505, 0.882, -0.118, -0.457, 0.813, 0.337, -0.476, 0.083, -0.995, -0.042, 0.102, 0.993, -0.061, 0.629, 0.758, -0.17, 0.804, 0.55, -0.224, 0.219, 0.974, -0.063, 0.421, 0.899, -0.12, 0.322, -0.943, -0.078, 0.179, -0.982, -0.044, 0.718, -0.673, -0.173, 0.525, -0.841, -0.127, 0.892, -0.403, -0.203, 0.796, -0.573, -0.192, 0.944, 0.161, -0.288, 0.971, -0.052, -0.232, 0.911, 0.324, -0.257, 0.089, -0.995, -0.022, 0.109, 0.993, -0.032, 0.663, 0.748, 0.007, 0.853, 0.522, -0, 0.224, 0.975, -0, 0.432, 0.902, -0, 0.329, -0.943, -0, 0.183, -0.982, -0, 0.736, -0.676, -0, 0.537, -0.843, -0, 0.932, -0.362, 0.016, 0.817, -0.576, -0, 0.972, 0.232, -0.037, 0.995, 0.095, 0.013, 0.954, 0.3, -0.002, 0.09, -0.995, -0, 0.112, 0.994, -0, 0.661, 0.725, 0.194, 0.845, 0.479, 0.236, 0.219, 0.974, 0.062, 0.421, 0.899, 0.119, 0.322, -0.943, 0.077, 0.179, -0.982, 0.043, 0.718, -0.673, 0.172, 0.525, -0.841, 0.126, 0.923, -0.295, 0.243, 0.796, -0.573, 0.191, 0.914, 0.345, 0.211, 0.929, 0.279, 0.241, 0.929, 0.264, 0.257, 0.089, -0.995, 0.021, 0.109, 0.993, 0.031, 0.62, 0.691, 0.372, 0.782, 0.425, 0.455, 0.205, 0.971, 0.121, 0.391, 0.891, 0.231, 0.302, -0.94, 0.152, 0.168, -0.981, 0.084, 0.667, -0.664, 0.334, 0.49, -0.835, 0.246, 0.863, -0.212, 0.457, 0.738, -0.563, 0.37, 0.788, 0.453, 0.415, 0.793, 0.446, 0.413, 0.843, 0.223, 0.488, 0.083, -0.995, 0.041, 0.102, 0.993, 0.06, 0.534, 0.682, 0.498, 0.722, 0.403, 0.561, 0.183, 0.967, 0.174, 0.34, 0.871, 0.353, 0.27, -0.936, 0.219, 0.151, -0.98, 0.123, 0.588, -0.652, 0.476, 0.435, -0.827, 0.353, 0.758, -0.13, 0.638, 0.648, -0.55, 0.525, 0.655, 0.516, 0.55, 0.629, 0.576, 0.522, 0.766, 0.171, 0.619, 0.074, -0.994, 0.06, 0.091, 0.992, 0.087, 0.465, 0.632, 0.618, 0.661, 0.315, 0.68, 0.154, 0.963, 0.22, 0.291, 0.847, 0.443, 0.227, -0.932, 0.277, 0.128, -0.978, 0.156, 0.489, -0.638, 0.592, 0.365, -0.817, 0.443, 0.623, -0.058, 0.779, 0.537, -0.535, 0.651, 0.513, 0.541, 0.666, 0.467, 0.668, 0.578, 0.589, 0.104, 0.801, 0.063, -0.994, 0.077, 0.077, 0.991, 0.11, -0.588, 0.104, 0.801, -0.271, 0.183, 0.944, -0.125, 0.371, 0.919, -0.338, 0.115, 0.933, 0.12, 0.959, 0.257, 0.227, 0.829, 0.51, 0.177, -0.928, 0.324, 0.1, -0.977, 0.182, 0.376, -0.626, 0.682, 0.283, -0.808, 0.514, 0.473, -0.003, 0.88, 0.411, -0.521, 0.746, 0.326, 0.575, 0.749, 0.325, 0.729, 0.601, -0.156, 0.49, 0.856, -0.262, 0.612, 0.745, -0.272, 0.624, 0.731, -0.147, 0.386, 0.91, 0.263, 0.612, 0.745, 0.049, -0.994, 0.09, 0.06, 0.99, 0.129, 0.272, 0.183, 0.944, 0.073, 0.404, 0.911, 0, 0.37, 0.928, 0, 0.152, 0.987, 0.062, 0.212, 0.974, 0.082, 0.955, 0.283, 0.148, 0.806, 0.573, 0.121, -0.925, 0.358, 0.069, -0.976, 0.202, 0.254, -0.615, 0.744, 0.193, -0.8, 0.565, 0.316, 0.034, 0.947, 0.277, -0.51, 0.812, 0.185, 0.647, 0.739, 0.203, 0.767, 0.608, -0.125, 0.417, 0.899, -0.028, 0.633, 0.773, 0.157, 0.49, 0.856, 0.034, -0.993, 0.1, 0.041, 0.989, 0.142, 0.126, 0.417, 0.899, 0, 0.579, 0.814, 0.056, 0.543, 0.837, 0.01, 0.737, 0.675, 0, 0.763, 0.645, 0.042, 0.953, 0.3, 0.073, 0.783, 0.617, 0.062, -0.922, 0.378, 0.035, -0.975, 0.214, 0.128, -0.609, 0.781, 0.097, -0.796, 0.596, 0.158, 0.056, 0.985, 0.14, -0.503, 0.851, 0.083, 0.701, 0.708, 0.098, 0.787, 0.608, -0.072, 0.404, 0.911, -0.061, 0.212, 0.974, 0.017, -0.993, 0.106, 0.021, 0.988, 0.15, 0.148, 0.386, 0.91, 0, 0.952, 0.305, 0, 0.774, 0.632, 0, -0.921, 0.385, 0, -0.975, 0.218, 0, -0.606, 0.793, 0, -0.794, 0.606, 0, 0.064, 0.997, 0, -0.501, 0.864, 0, 0.719, 0.694, 0, 0.793, 0.608, 0.496, 0.535, 0.682, 0.541, 0.256, 0.8, 0, -0.993, 0.107, 0, 0.988, 0.153, -0.055, 0.543, 0.837, -0.009, 0.737, 0.675, -0.041, 0.953, 0.3, -0.072, 0.783, 0.617, -0.061, -0.922, 0.378, -0.034, -0.975, 0.214, -0.127, -0.609, 0.781, -0.096, -0.796, 0.596, -0.157, 0.056, 0.985, -0.139, -0.503, 0.851, -0.082, 0.701, 0.708, -0.097, 0.787, 0.608, 0.029, 0.633, 0.773, -0.016, -0.993, 0.106, -0.02, 0.988, 0.15, -0.464, 0.632, 0.618, -0.66, 0.315, 0.68, -0.54, 0.256, 0.8, -0.495, 0.535, 0.682, -0.081, 0.955, 0.283, -0.147, 0.806, 0.573, -0.12, -0.925, 0.358, -0.068, -0.976, 0.202, -0.253, -0.615, 0.744, -0.192, -0.8, 0.565, -0.315, 0.034, 0.947, -0.276, -0.51, 0.812, -0.184, 0.647, 0.739, -0.202, 0.767, 0.608, 0.273, 0.624, 0.731, -0.033, -0.993, 0.1, -0.04, 0.989, 0.142, 0.126, 0.371, 0.919, -0.119, 0.959, 0.257, -0.226, 0.829, 0.51, -0.176, -0.928, 0.324, -0.099, -0.977, 0.182, -0.375, -0.626, 0.682, -0.282, -0.808, 0.514, -0.472, -0.003, 0.88, -0.41, -0.521, 0.746, -0.325, 0.575, 0.749, -0.324, 0.729, 0.601, -0.048, -0.994, 0.09, -0.059, 0.99, 0.129, 0.339, 0.115, 0.933, -0.153, 0.963, 0.22, -0.29, 0.847, 0.443, -0.226, -0.932, 0.277, -0.127, -0.978, 0.156, -0.488, -0.638, 0.592, -0.364, -0.817, 0.443, -0.622, -0.058, 0.779, -0.536, -0.535, 0.651, -0.512, 0.541, 0.666, -0.466, 0.668, 0.578, -0.062, -0.994, 0.077, -0.076, 0.991, 0.11, -0.533, 0.682, 0.498, -0.721, 0.403, 0.561, -0.182, 0.967, 0.174, -0.339, 0.871, 0.353, -0.269, -0.936, 0.219, -0.15, -0.98, 0.123, -0.587, -0.652, 0.476, -0.434, -0.827, 0.353, -0.757, -0.13, 0.638, -0.647, -0.55, 0.525, -0.654, 0.516, 0.55, -0.628, 0.576, 0.522, -0.765, 0.171, 0.619, -0.073, -0.994, 0.06, -0.09, 0.992, 0.087, -0.619, 0.691, 0.372, -0.781, 0.425, 0.455, -0.204, 0.971, 0.121, -0.39, 0.891, 0.231, -0.301, -0.94, 0.152, -0.167, -0.981, 0.084, -0.666, -0.664, 0.334, -0.489, -0.835, 0.246, -0.862, -0.212, 0.457, -0.737, -0.563, 0.37, -0.787, 0.453, 0.415, -0.792, 0.446, 0.413, -0.842, 0.223, 0.488, -0.082, -0.995, 0.041, -0.101, 0.993, 0.06, -0.66, 0.725, 0.194, -0.844, 0.479, 0.236, -0.218, 0.974, 0.062, -0.42, 0.899, 0.119, -0.321, -0.943, 0.077, -0.178, -0.982, 0.043, -0.717, -0.673, 0.172, -0.524, -0.841, 0.126, -0.922, -0.295, 0.243, -0.795, -0.573, 0.191, -0.913, 0.345, 0.211, -0.928, 0.279, 0.241, -0.928, 0.264, 0.257, -0.088, -0.995, 0.021, -0.108, 0.993, 0.031, 0, -0.999, -0, 0, 1, -0 </vector3_array>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<int_array  len="2904"> 					0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 8, 10, 9, 8, 11, 10, 12, 14, 13, 12, 15, 14, 16, 18, 17, 16, 19, 18, 20, 22, 21, 20, 23, 22, 24, 26, 25, 24, 27, 26, 28, 3, 0, 28, 29, 3, 1, 7, 4, 1, 2, 7, 5, 11, 8, 5, 6, 11, 9, 15, 12, 9, 10, 15, 13, 23, 20, 13, 14, 23, 17, 27, 24, 17, 18, 27, 25, 29, 28, 25, 26, 29, 10, 30, 15, 10, 31, 30, 14, 32, 23, 14, 33, 32, 18, 34, 27, 18, 35, 34, 26, 36, 29, 26, 37, 36, 3, 38, 2, 3, 39, 38, 7, 40, 6, 7, 41, 40, 11, 31, 10, 11, 42, 31, 15, 33, 14, 15, 30, 33, 19, 35, 18, 19, 43, 35, 23, 44, 22, 23, 32, 44, 27, 37, 26, 27, 34, 37, 29, 39, 3, 29, 36, 39, 2, 41, 7, 2, 38, 41, 6, 42, 11, 6, 40, 42, 31, 45, 30, 31, 46, 45, 33, 47, 32, 33, 48, 47, 35, 49, 34, 35, 50, 49, 37, 51, 36, 37, 52, 51, 39, 53, 38, 39, 54, 53, 41, 55, 40, 41, 56, 55, 42, 46, 31, 42, 57, 46, 30, 48, 33, 30, 45, 48, 43, 50, 35, 43, 58, 50, 32, 59, 44, 32, 47, 59, 34, 52, 37, 34, 49, 52, 36, 54, 39, 36, 51, 54, 38, 56, 41, 38, 53, 56, 40, 57, 42, 40, 55, 57, 46, 60, 45, 46, 61, 60, 48, 62, 47, 48, 63, 62, 50, 64, 49, 50, 65, 64, 52, 66, 51, 52, 67, 66, 54, 68, 53, 54, 69, 68, 56, 70, 55, 56, 71, 70, 57, 61, 46, 57, 72, 61, 45, 63, 48, 45, 60, 63, 58, 65, 50, 58, 73, 65, 47, 74, 59, 47, 62, 74, 49, 67, 52, 49, 64, 67, 51, 69, 54, 51, 66, 69, 53, 71, 56, 53, 68, 71, 55, 72, 57, 55, 70, 72, 61, 75, 60, 61, 76, 75, 63, 77, 62, 63, 78, 77, 65, 79, 64, 65, 80, 79, 67, 81, 66, 67, 82, 81, 69, 83, 68, 69, 84, 83, 71, 85, 70, 71, 86, 85, 72, 76, 61, 72, 87, 76, 60, 78, 63, 60, 75, 78, 73, 80, 65, 73, 88, 80, 62, 89, 74, 62, 77, 89, 64, 82, 67, 64, 79, 82, 66, 84, 69, 66, 81, 84, 68, 86, 71, 68, 83, 86, 70, 87, 72, 70, 85, 87, 76, 90, 75, 76, 91, 90, 78, 92, 77, 78, 93, 92, 80, 94, 79, 80, 95, 94, 82, 96, 81, 82, 97, 96, 84, 98, 83, 84, 99, 98, 86, 100, 85, 86, 101, 100, 87, 91, 76, 87, 102, 91, 75, 93, 78, 75, 90, 93, 88, 95, 80, 88, 103, 95, 77, 104, 89, 77, 92, 104, 79, 97, 82, 79, 94, 97, 81, 99, 84, 81, 96, 99, 83, 101, 86, 83, 98, 101, 85, 102, 87, 85, 100, 102, 91, 105, 90, 91, 106, 105, 93, 107, 92, 93, 108, 107, 95, 109, 94, 95, 110, 109, 97, 111, 96, 97, 112, 111, 99, 113, 98, 99, 114, 113, 101, 115, 100, 101, 116, 115, 102, 106, 91, 102, 117, 106, 90, 108, 93, 90, 105, 108, 103, 110, 95, 103, 118, 110, 92, 119, 104, 92, 107, 119, 94, 112, 97, 94, 109, 112, 96, 114, 99, 96, 111, 114, 98, 116, 101, 98, 113, 116, 100, 117, 102, 100, 115, 117, 106, 120, 105, 106, 121, 120, 108, 122, 107, 108, 123, 122, 110, 124, 109, 110, 125, 124, 112, 126, 111, 112, 127, 126, 114, 128, 113, 114, 129, 128, 116, 130, 115, 116, 131, 130, 117, 121, 106, 117, 132, 121, 105, 123, 108, 105, 120, 123, 118, 125, 110, 118, 133, 125, 107, 134, 119, 107, 122, 134, 109, 127, 112, 109, 124, 127, 111, 129, 114, 111, 126, 129, 113, 131, 116, 113, 128, 131, 115, 132, 117, 115, 130, 132, 121, 135, 120, 121, 136, 135, 123, 137, 122, 123, 138, 137, 125, 139, 124, 125, 140, 139, 127, 141, 126, 127, 142, 141, 129, 143, 128, 129, 144, 143, 131, 145, 130, 131, 146, 145, 132, 136, 121, 132, 147, 136, 120, 138, 123, 120, 135, 138, 133, 140, 125, 133, 148, 140, 122, 149, 134, 122, 137, 149, 124, 142, 127, 124, 139, 142, 126, 144, 129, 126, 141, 144, 128, 146, 131, 128, 143, 146, 130, 147, 132, 130, 145, 147, 136, 150, 135, 136, 151, 150, 138, 152, 137, 138, 153, 152, 140, 154, 139, 140, 155, 154, 142, 156, 141, 142, 157, 156, 144, 158, 143, 144, 159, 158, 146, 160, 145, 146, 161, 160, 147, 151, 136, 147, 162, 151, 135, 153, 138, 135, 150, 153, 148, 155, 140, 148, 163, 155, 137, 164, 149, 137, 152, 164, 139, 157, 142, 139, 154, 157, 141, 159, 144, 141, 156, 159, 143, 161, 146, 143, 158, 161, 145, 162, 147, 145, 160, 162, 151, 165, 150, 151, 166, 165, 153, 167, 152, 153, 168, 167, 155, 169, 154, 155, 170, 169, 157, 171, 156, 157, 172, 171, 159, 173, 158, 159, 174, 173, 161, 175, 160, 161, 176, 175, 162, 166, 151, 162, 177, 166, 150, 168, 153, 150, 165, 168, 163, 170, 155, 163, 178, 170, 152, 179, 164, 152, 167, 179, 154, 172, 157, 154, 169, 172, 156, 174, 159, 156, 171, 174, 158, 176, 161, 158, 173, 176, 160, 177, 162, 160, 175, 177, 166, 180, 165, 166, 181, 180, 168, 182, 167, 168, 183, 182, 170, 184, 169, 170, 185, 184, 172, 186, 171, 172, 187, 186, 174, 188, 173, 174, 189, 188, 176, 190, 175, 176, 191, 190, 177, 181, 166, 177, 192, 181, 165, 183, 168, 165, 180, 183, 178, 185, 170, 178, 193, 185, 167, 194, 179, 167, 182, 194, 169, 187, 172, 169, 184, 187, 171, 189, 174, 171, 186, 189, 173, 191, 176, 173, 188, 191, 175, 192, 177, 175, 190, 192, 181, 195, 180, 181, 196, 195, 183, 197, 182, 183, 198, 197, 185, 199, 184, 185, 200, 199, 187, 201, 186, 187, 202, 201, 189, 203, 188, 189, 204, 203, 191, 205, 190, 191, 206, 205, 192, 196, 181, 192, 207, 196, 180, 198, 183, 180, 195, 198, 193, 200, 185, 193, 208, 200, 182, 209, 194, 182, 197, 209, 184, 202, 187, 184, 199, 202, 186, 204, 189, 186, 201, 204, 188, 206, 191, 188, 203, 206, 190, 207, 192, 190, 205, 207, 196, 210, 195, 196, 211, 210, 198, 212, 197, 198, 213, 212, 200, 214, 199, 200, 215, 214, 202, 216, 201, 202, 217, 216, 204, 218, 203, 204, 219, 218, 206, 220, 205, 206, 221, 220, 207, 211, 196, 207, 222, 211, 195, 213, 198, 195, 210, 213, 208, 215, 200, 208, 223, 215, 197, 224, 209, 197, 212, 224, 199, 217, 202, 199, 214, 217, 201, 219, 204, 201, 216, 219, 203, 221, 206, 203, 218, 221, 205, 222, 207, 205, 220, 222, 211, 225, 210, 211, 226, 225, 213, 227, 212, 213, 228, 227, 215, 229, 214, 215, 230, 229, 217, 231, 216, 217, 232, 231, 219, 233, 218, 219, 234, 233, 221, 235, 220, 221, 236, 235, 222, 226, 211, 222, 237, 226, 210, 228, 213, 210, 225, 228, 223, 230, 215, 223, 238, 230, 212, 239, 224, 212, 227, 239, 214, 232, 217, 214, 229, 232, 216, 234, 219, 216, 231, 234, 218, 236, 221, 218, 233, 236, 220, 237, 222, 220, 235, 237, 226, 240, 225, 226, 241, 240, 228, 242, 227, 228, 243, 242, 230, 244, 229, 230, 245, 244, 232, 246, 231, 232, 247, 246, 234, 248, 233, 234, 249, 248, 236, 250, 235, 236, 251, 250, 237, 241, 226, 237, 252, 241, 225, 243, 228, 225, 240, 243, 238, 245, 230, 238, 253, 245, 227, 254, 239, 227, 242, 254, 229, 247, 232, 229, 244, 247, 231, 249, 234, 231, 246, 249, 233, 251, 236, 233, 248, 251, 235, 252, 237, 235, 250, 252, 241, 255, 240, 241, 256, 255, 243, 257, 242, 243, 258, 257, 245, 259, 244, 245, 260, 259, 247, 261, 246, 247, 262, 261, 249, 263, 248, 249, 264, 263, 251, 265, 250, 251, 266, 265, 252, 256, 241, 252, 267, 256, 240, 258, 243, 240, 255, 258, 253, 260, 245, 253, 268, 260, 242, 269, 254, 242, 257, 269, 244, 262, 247, 244, 259, 262, 246, 264, 249, 246, 261, 264, 248, 266, 251, 248, 263, 266, 250, 267, 252, 250, 265, 267, 256, 270, 255, 256, 271, 270, 258, 272, 257, 258, 273, 272, 260, 274, 259, 260, 275, 274, 262, 276, 261, 262, 277, 276, 264, 278, 263, 264, 279, 278, 266, 280, 265, 266, 281, 280, 267, 271, 256, 267, 282, 271, 255, 273, 258, 255, 270, 273, 268, 275, 260, 268, 283, 275, 257, 284, 269, 257, 272, 284, 259, 277, 262, 259, 274, 277, 261, 279, 264, 261, 276, 279, 263, 281, 266, 263, 278, 281, 265, 282, 267, 265, 280, 282, 271, 285, 270, 271, 286, 285, 273, 287, 272, 273, 288, 287, 275, 289, 274, 275, 290, 289, 277, 291, 276, 277, 292, 291, 279, 293, 278, 279, 294, 293, 281, 295, 280, 281, 296, 295, 282, 286, 271, 282, 297, 286, 270, 288, 273, 270, 285, 288, 283, 290, 275, 283, 298, 290, 272, 299, 284, 272, 287, 299, 274, 292, 277, 274, 289, 292, 276, 294, 279, 276, 291, 294, 278, 296, 281, 278, 293, 296, 280, 297, 282, 280, 295, 297, 286, 300, 285, 286, 301, 300, 288, 302, 287, 288, 303, 302, 290, 304, 289, 290, 305, 304, 292, 306, 291, 292, 307, 306, 294, 308, 293, 294, 309, 308, 296, 310, 295, 296, 311, 310, 297, 301, 286, 297, 312, 301, 285, 303, 288, 285, 300, 303, 298, 305, 290, 298, 313, 305, 287, 314, 299, 287, 302, 314, 289, 307, 292, 289, 304, 307, 291, 309, 294, 291, 306, 309, 293, 311, 296, 293, 308, 311, 295, 312, 297, 295, 310, 312, 315, 317, 316, 315, 318, 317, 303, 319, 302, 303, 320, 319, 305, 321, 304, 305, 322, 321, 307, 323, 306, 307, 324, 323, 309, 325, 308, 309, 326, 325, 311, 327, 310, 311, 328, 327, 329, 331, 330, 329, 332, 331, 300, 320, 303, 300, 333, 320, 313, 322, 305, 313, 334, 322, 302, 335, 314, 302, 319, 335, 304, 324, 307, 304, 321, 324, 306, 326, 309, 306, 323, 326, 308, 328, 311, 308, 325, 328, 310, 336, 312, 310, 327, 336, 337, 339, 338, 337, 340, 339, 320, 341, 319, 320, 342, 341, 322, 343, 321, 322, 344, 343, 324, 345, 323, 324, 346, 345, 326, 347, 325, 326, 348, 347, 328, 349, 327, 328, 350, 349, 316, 352, 351, 316, 317, 352, 333, 342, 320, 333, 353, 342, 334, 344, 322, 334, 354, 344, 319, 355, 335, 319, 341, 355, 321, 346, 324, 321, 343, 346, 323, 348, 326, 323, 345, 348, 325, 350, 328, 325, 347, 350, 327, 356, 336, 327, 349, 356, 357, 359, 358, 357, 360, 359, 342, 361, 341, 342, 362, 361, 344, 363, 343, 344, 364, 363, 346, 365, 345, 346, 366, 365, 348, 367, 347, 348, 368, 367, 350, 369, 349, 350, 370, 369, 371, 332, 329, 371, 372, 332, 353, 362, 342, 353, 337, 362, 354, 364, 344, 354, 373, 364, 341, 374, 355, 341, 361, 374, 343, 366, 346, 343, 363, 366, 345, 368, 348, 345, 365, 368, 347, 370, 350, 347, 367, 370, 349, 358, 356, 349, 369, 358, 353, 340, 337, 353, 375, 340, 362, 376, 361, 362, 377, 376, 364, 378, 363, 364, 379, 378, 366, 380, 365, 366, 381, 380, 368, 382, 367, 368, 383, 382, 370, 384, 369, 370, 385, 384, 301, 386, 300, 301, 387, 386, 337, 377, 362, 337, 338, 377, 373, 379, 364, 373, 388, 379, 361, 389, 374, 361, 376, 389, 363, 381, 366, 363, 378, 381, 365, 383, 368, 365, 380, 383, 367, 385, 370, 367, 382, 385, 369, 357, 358, 369, 384, 357, 351, 391, 390, 351, 352, 391, 377, 392, 376, 377, 393, 392, 379, 394, 378, 379, 395, 394, 381, 396, 380, 381, 397, 396, 383, 398, 382, 383, 399, 398, 385, 400, 384, 385, 401, 400, 358, 402, 356, 358, 359, 402, 338, 393, 377, 338, 371, 393, 388, 395, 379, 388, 403, 395, 376, 404, 389, 376, 392, 404, 378, 397, 381, 378, 394, 397, 380, 399, 383, 380, 396, 399, 382, 401, 385, 382, 398, 401, 384, 390, 357, 384, 400, 390, 405, 407, 406, 405, 408, 407, 393, 409, 392, 393, 410, 409, 395, 411, 394, 395, 412, 411, 397, 413, 396, 397, 414, 413, 399, 415, 398, 399, 416, 415, 401, 417, 400, 401, 418, 417, 333, 375, 353, 333, 419, 375, 371, 410, 393, 371, 329, 410, 403, 412, 395, 403, 420, 412, 392, 421, 404, 392, 409, 421, 394, 414, 397, 394, 411, 414, 396, 416, 399, 396, 413, 416, 398, 418, 401, 398, 415, 418, 400, 351, 390, 400, 417, 351, 356, 422, 336, 356, 402, 422, 410, 423, 409, 410, 424, 423, 412, 425, 411, 412, 426, 425, 414, 427, 413, 414, 428, 427, 416, 429, 415, 416, 430, 429, 418, 431, 417, 418, 432, 431, 300, 419, 333, 300, 386, 419, 329, 424, 410, 329, 330, 424, 420, 426, 412, 420, 433, 426, 409, 434, 421, 409, 423, 434, 411, 428, 414, 411, 425, 428, 413, 430, 416, 413, 427, 430, 415, 432, 418, 415, 429, 432, 417, 316, 351, 417, 431, 316, 336, 435, 312, 336, 422, 435, 424, 436, 423, 424, 437, 436, 426, 438, 425, 426, 439, 438, 428, 440, 427, 428, 441, 440, 430, 442, 429, 430, 443, 442, 432, 444, 431, 432, 445, 444, 312, 387, 301, 312, 435, 387, 330, 437, 424, 330, 405, 437, 433, 439, 426, 433, 446, 439, 423, 447, 434, 423, 436, 447, 425, 441, 428, 425, 438, 441, 427, 443, 430, 427, 440, 443, 429, 445, 432, 429, 442, 445, 431, 315, 316, 431, 444, 315, 406, 448, 405, 406, 449, 448, 437, 450, 436, 437, 451, 450, 439, 452, 438, 439, 453, 452, 441, 454, 440, 441, 455, 454, 443, 456, 442, 443, 457, 456, 445, 458, 444, 445, 459, 458, 315, 449, 406, 315, 460, 449, 405, 451, 437, 405, 448, 451, 446, 453, 439, 446, 461, 453, 436, 462, 447, 436, 450, 462, 438, 455, 441, 438, 452, 455, 440, 457, 443, 440, 454, 457, 442, 459, 445, 442, 456, 459, 444, 460, 315, 444, 458, 460, 449, 463, 448, 449, 464, 463, 451, 465, 450, 451, 466, 465, 453, 467, 452, 453, 468, 467, 455, 469, 454, 455, 470, 469, 457, 471, 456, 457, 472, 471, 459, 473, 458, 459, 474, 473, 460, 464, 449, 460, 475, 464, 448, 466, 451, 448, 463, 466, 461, 468, 453, 461, 476, 468, 450, 477, 462, 450, 465, 477, 452, 470, 455, 452, 467, 470, 454, 472, 457, 454, 469, 472, 456, 474, 459, 456, 471, 474, 458, 475, 460, 458, 473, 475, 464, 478, 463, 464, 479, 478, 466, 480, 465, 466, 481, 480, 468, 482, 467, 468, 483, 482, 470, 484, 469, 470, 485, 484, 472, 486, 471, 472, 487, 486, 474, 488, 473, 474, 489, 488, 475, 479, 464, 475, 490, 479, 463, 481, 466, 463, 478, 481, 476, 483, 468, 476, 491, 483, 465, 492, 477, 465, 480, 492, 467, 485, 470, 467, 482, 485, 469, 487, 472, 469, 484, 487, 471, 489, 474, 471, 486, 489, 473, 490, 475, 473, 488, 490, 493, 19, 16, 21, 22, 494, 493, 43, 19, 22, 44, 494, 493, 58, 43, 44, 59, 494, 493, 73, 58, 59, 74, 494, 493, 88, 73, 74, 89, 494, 493, 103, 88, 89, 104, 494, 493, 118, 103, 104, 119, 494, 493, 133, 118, 119, 134, 494, 493, 148, 133, 134, 149, 494, 493, 163, 148, 149, 164, 494, 493, 178, 163, 164, 179, 494, 493, 193, 178, 179, 194, 494, 493, 208, 193, 194, 209, 494, 493, 223, 208, 209, 224, 494, 493, 238, 223, 224, 239, 494, 493, 253, 238, 239, 254, 494, 493, 268, 253, 254, 269, 494, 493, 283, 268, 269, 284, 494, 493, 298, 283, 284, 299, 494, 493, 313, 298, 299, 314, 494, 493, 334, 313, 314, 335, 494, 493, 354, 334, 335, 355, 494, 493, 373, 354, 355, 374, 494, 493, 388, 373, 374, 389, 494, 493, 403, 388, 389, 404, 494, 493, 420, 403, 404, 421, 494, 493, 433, 420, 421, 434, 494, 493, 446, 433, 434, 447, 494, 493, 461, 446, 447, 462, 494, 493, 476, 461, 462, 477, 494, 493, 491, 476, 477, 492, 494, 479, 12, 478, 479, 9, 12, 493, 16, 491, 481, 20, 480, 481, 13, 20, 483, 24, 482, 483, 17, 24, 492, 21, 494, 485, 28, 484, 485, 25, 28, 487, 1, 486, 487, 0, 1, 489, 5, 488, 489, 4, 5, 490, 9, 479, 490, 8, 9, 478, 13, 481, 478, 12, 13, 491, 17, 483, 491, 16, 17, 480, 21, 492, 480, 20, 21, 482, 25, 485, 482, 24, 25, 484, 0, 487, 484, 28, 0, 486, 4, 489, 486, 1, 4, 488, 8, 490, 488, 5, 8, 390, 360, 357, 390, 391, 360, 330, 408, 405, 330, 331, 408, 406, 318, 315, 406, 407, 318, 338, 372, 371, 338, 339, 372 </int_array>
+			</array>
+		</dictionary>
+		<dictionary name="surfaces/1" shared="false">
+			<string> "alphasort" </string>
+			<bool> False </bool>
+			<string> "morph_arrays" </string>
+			<array  len="0" shared="false">
+			</array>
+			<string> "material" </string>
+			<resource  resource_type="Material" path="local://5">  </resource>
+			<string> "name" </string>
+			<string> "Material.002" </string>
+			<string> "primitive" </string>
+			<int> 4 </int>
+			<string> "arrays" </string>
+			<array  len="9" shared="false">
+				<vector3_array  len="347"> 					0.585433, 0.627735, 0.436617, 0.531179, 0.751179, 0.43073, 0.424598, 0.777754, 0.443334, 0.46945, 0.62018, 0.446698, 0.598624, 0.47947, 0.442197, 0.490803, 0.433416, 0.458973, 0.288773, 0.798665, 0.455064, 0.322622, 0.618527, 0.457849, 0.339008, 0.406649, 0.474193, 0.146467, 0.808328, 0.462851, 0.164273, 0.618464, 0.465851, 0.172668, 0.396196, 0.484138, 2.17941e-07, 0.81016, 0.465514, 2.05877e-07, 0.617739, 0.468604, 2.0911e-07, 0.392485, 0.487529, -0.146467, 0.808328, 0.462851, -0.164273, 0.618464, 0.465851, -0.172668, 0.396196, 0.484138, -0.288773, 0.798665, 0.455064, -0.322621, 0.618527, 0.457849, -0.339007, 0.406649, 0.474193, -0.424598, 0.777754, 0.443334, -0.469449, 0.62018, 0.446698, -0.490803, 0.433416, 0.458973, -0.531179, 0.751179, 0.43073, -0.585433, 0.627735, 0.436617, -0.598623, 0.47947, 0.442197, -0.336631, 0.70859, 0.444525, -0.299866, 0.710537, 0.447722, -0.2631, 0.70859, 0.45092, -0.227748, 0.702822, 0.453995, -0.195167, 0.693455, 0.456829, -0.166609, 0.68085, 0.459313, -0.143172, 0.66549, 0.461351, -0.125757, 0.647966, 0.462866, -0.115033, 0.628951, 0.463799, -0.12343, 0.615345, 0.463069, -0.12682, 0.626591, 0.462774, -0.13686, 0.637404, 0.4619, -0.153165, 0.64737, 0.460482, -0.175107, 0.656106, 0.458574, -0.201843, 0.663275, 0.456248, -0.232347, 0.668601, 0.453595, -0.265445, 0.671882, 0.450716, -0.299866, 0.672989, 0.447723, -0.334286, 0.671882, 0.444729, -0.367385, 0.668601, 0.44185, -0.397888, 0.663275, 0.439197, -0.424624, 0.656106, 0.436871, -0.446566, 0.64737, 0.434963, -0.462871, 0.637404, 0.433545, -0.472911, 0.626591, 0.432671, -0.476301, 0.615345, 0.432377, -0.484698, 0.628951, 0.431646, -0.473974, 0.647966, 0.432579, -0.456559, 0.66549, 0.434094, -0.433122, 0.68085, 0.436132, -0.404565, 0.693455, 0.438616, -0.371984, 0.702822, 0.44145, -0.12343, 0.615345, 0.463069, -0.115033, 0.628951, 0.463799, -0.119607, 0.628951, 0.497002, -0.128004, 0.615345, 0.496272, -0.371984, 0.702822, 0.44145, -0.404565, 0.693455, 0.438616, -0.409138, 0.693455, 0.471819, -0.376557, 0.702822, 0.474653, -0.397888, 0.663275, 0.439197, -0.367385, 0.668601, 0.44185, -0.371958, 0.668601, 0.475053, -0.402462, 0.663275, 0.4724, -0.13686, 0.637404, 0.4619, -0.12682, 0.626591, 0.462774, -0.131394, 0.626591, 0.495977, -0.141434, 0.637404, 0.495104, -0.299866, 0.710537, 0.447722, -0.336631, 0.70859, 0.444525, -0.341205, 0.70859, 0.477728, -0.304439, 0.710537, 0.480926, -0.446566, 0.64737, 0.434963, -0.424624, 0.656106, 0.436871, -0.429198, 0.656106, 0.470074, -0.45114, 0.64737, 0.468166, -0.2631, 0.70859, 0.45092, -0.299866, 0.710537, 0.447722, -0.304439, 0.710537, 0.480926, -0.267674, 0.70859, 0.484123, -0.175107, 0.656106, 0.458574, -0.153165, 0.64737, 0.460482, -0.157738, 0.64737, 0.493685, -0.17968, 0.656106, 0.491777, -0.472911, 0.626591, 0.432671, -0.462871, 0.637404, 0.433545, -0.467444, 0.637404, 0.466748, -0.477485, 0.626591, 0.465875, -0.195167, 0.693455, 0.456829, -0.227748, 0.702822, 0.453995, -0.232321, 0.702822, 0.487198, -0.19974, 0.693455, 0.490032, -0.232347, 0.668601, 0.453595, -0.201843, 0.663275, 0.456248, -0.206417, 0.663275, 0.489452, -0.23692, 0.668601, 0.486798, -0.484698, 0.628951, 0.431646, -0.476301, 0.615345, 0.432377, -0.480875, 0.615345, 0.46558, -0.489272, 0.628951, 0.464849, -0.143172, 0.66549, 0.461351, -0.166609, 0.68085, 0.459313, -0.171183, 0.68085, 0.492516, -0.147746, 0.66549, 0.494555, -0.299866, 0.672989, 0.447723, -0.265445, 0.671882, 0.450716, -0.270018, 0.671882, 0.48392, -0.304439, 0.672989, 0.480926, -0.456559, 0.66549, 0.434094, -0.473974, 0.647966, 0.432579, -0.478548, 0.647966, 0.465782, -0.461133, 0.66549, 0.467297, -0.115033, 0.628951, 0.463799, -0.125757, 0.647966, 0.462866, -0.130331, 0.647966, 0.496069, -0.119607, 0.628951, 0.497002, -0.404565, 0.693455, 0.438616, -0.433122, 0.68085, 0.436132, -0.437696, 0.68085, 0.469335, -0.409138, 0.693455, 0.471819, -0.367385, 0.668601, 0.44185, -0.334286, 0.671882, 0.444729, -0.33886, 0.671882, 0.477932, -0.371958, 0.668601, 0.475053, -0.12682, 0.626591, 0.462774, -0.12343, 0.615345, 0.463069, -0.128004, 0.615345, 0.496272, -0.131394, 0.626591, 0.495977, -0.336631, 0.70859, 0.444525, -0.371984, 0.702822, 0.44145, -0.376557, 0.702822, 0.474653, -0.341205, 0.70859, 0.477728, -0.424624, 0.656106, 0.436871, -0.397888, 0.663275, 0.439197, -0.402462, 0.663275, 0.4724, -0.429198, 0.656106, 0.470074, -0.153165, 0.64737, 0.460482, -0.13686, 0.637404, 0.4619, -0.141434, 0.637404, 0.495104, -0.157738, 0.64737, 0.493685, -0.462871, 0.637404, 0.433545, -0.446566, 0.64737, 0.434963, -0.45114, 0.64737, 0.468166, -0.467444, 0.637404, 0.466748, -0.227748, 0.702822, 0.453995, -0.2631, 0.70859, 0.45092, -0.267674, 0.70859, 0.484123, -0.232321, 0.702822, 0.487198, -0.201843, 0.663275, 0.456248, -0.175107, 0.656106, 0.458574, -0.17968, 0.656106, 0.491777, -0.206417, 0.663275, 0.489452, -0.476301, 0.615345, 0.432377, -0.472911, 0.626591, 0.432671, -0.477485, 0.626591, 0.465875, -0.480875, 0.615345, 0.46558, -0.166609, 0.68085, 0.459313, -0.195167, 0.693455, 0.456829, -0.19974, 0.693455, 0.490032, -0.171183, 0.68085, 0.492516, -0.265445, 0.671882, 0.450716, -0.232347, 0.668601, 0.453595, -0.23692, 0.668601, 0.486798, -0.270018, 0.671882, 0.48392, -0.473974, 0.647966, 0.432579, -0.484698, 0.628951, 0.431646, -0.489272, 0.628951, 0.464849, -0.478548, 0.647966, 0.465782, -0.125757, 0.647966, 0.462866, -0.143172, 0.66549, 0.461351, -0.147746, 0.66549, 0.494555, -0.130331, 0.647966, 0.496069, -0.433122, 0.68085, 0.436132, -0.456559, 0.66549, 0.434094, -0.461133, 0.66549, 0.467297, -0.437696, 0.68085, 0.469335, -0.334286, 0.671882, 0.444729, -0.299866, 0.672989, 0.447723, -0.304439, 0.672989, 0.480926, -0.33886, 0.671882, 0.477932, 0.280068, 0.70859, 0.446924, 0.316872, 0.710537, 0.444022, 0.353676, 0.70859, 0.441119, 0.389066, 0.702822, 0.438329, 0.421682, 0.693455, 0.435756, 0.45027, 0.68085, 0.433502, 0.473731, 0.66549, 0.431652, 0.491164, 0.647966, 0.430277, 0.5019, 0.628951, 0.42943, 0.493494, 0.615345, 0.430093, 0.4901, 0.626591, 0.430361, 0.48005, 0.637404, 0.431153, 0.463728, 0.64737, 0.432441, 0.441763, 0.656106, 0.434173, 0.414998, 0.663275, 0.436284, 0.384463, 0.668601, 0.438692, 0.35133, 0.671882, 0.441305, 0.316872, 0.672989, 0.444022, 0.282415, 0.671882, 0.446739, 0.249282, 0.668601, 0.449352, 0.218747, 0.663275, 0.45176, 0.191982, 0.656106, 0.453871, 0.170017, 0.64737, 0.455603, 0.153695, 0.637404, 0.45689, 0.143644, 0.626591, 0.457683, 0.140251, 0.615345, 0.457951, 0.131845, 0.628951, 0.458613, 0.14258, 0.647966, 0.457767, 0.160014, 0.66549, 0.456392, 0.183475, 0.68085, 0.454542, 0.212063, 0.693455, 0.452287, 0.244678, 0.702822, 0.449715, 0.493494, 0.615345, 0.430093, 0.5019, 0.628951, 0.42943, 0.506051, 0.628951, 0.462668, 0.497645, 0.615345, 0.463331, 0.244678, 0.702822, 0.449715, 0.212063, 0.693455, 0.452287, 0.216214, 0.693455, 0.485525, 0.248829, 0.702822, 0.482953, 0.218747, 0.663275, 0.45176, 0.249282, 0.668601, 0.449352, 0.253433, 0.668601, 0.48259, 0.222898, 0.663275, 0.484998, 0.48005, 0.637404, 0.431153, 0.4901, 0.626591, 0.430361, 0.494252, 0.626591, 0.463599, 0.484201, 0.637404, 0.464392, 0.316872, 0.710537, 0.444022, 0.280068, 0.70859, 0.446924, 0.284219, 0.70859, 0.480163, 0.321024, 0.710537, 0.47726, 0.170017, 0.64737, 0.455603, 0.191982, 0.656106, 0.453871, 0.196133, 0.656106, 0.487109, 0.174168, 0.64737, 0.488841, 0.353676, 0.70859, 0.441119, 0.316872, 0.710537, 0.444022, 0.321024, 0.710537, 0.47726, 0.357827, 0.70859, 0.474358, 0.441763, 0.656106, 0.434173, 0.463728, 0.64737, 0.432441, 0.467879, 0.64737, 0.465679, 0.445914, 0.656106, 0.467411, 0.143644, 0.626591, 0.457683, 0.153695, 0.637404, 0.45689, 0.157846, 0.637404, 0.490128, 0.147796, 0.626591, 0.490921, 0.421682, 0.693455, 0.435756, 0.389066, 0.702822, 0.438329, 0.393217, 0.702822, 0.471567, 0.425833, 0.693455, 0.468995, 0.384463, 0.668601, 0.438692, 0.414998, 0.663275, 0.436284, 0.419149, 0.663275, 0.469522, 0.388614, 0.668601, 0.47193, 0.131845, 0.628951, 0.458613, 0.140251, 0.615345, 0.457951, 0.144402, 0.615345, 0.491189, 0.135996, 0.628951, 0.491852, 0.473731, 0.66549, 0.431652, 0.45027, 0.68085, 0.433502, 0.454421, 0.68085, 0.46674, 0.477882, 0.66549, 0.46489, 0.316872, 0.672989, 0.444022, 0.35133, 0.671882, 0.441305, 0.355481, 0.671882, 0.474543, 0.321024, 0.672989, 0.47726, 0.160014, 0.66549, 0.456392, 0.14258, 0.647966, 0.457767, 0.146731, 0.647966, 0.491005, 0.164165, 0.66549, 0.48963, 0.5019, 0.628951, 0.42943, 0.491164, 0.647966, 0.430277, 0.495315, 0.647966, 0.463515, 0.506051, 0.628951, 0.462668, 0.212063, 0.693455, 0.452287, 0.183475, 0.68085, 0.454542, 0.187626, 0.68085, 0.48778, 0.216214, 0.693455, 0.485525, 0.249282, 0.668601, 0.449352, 0.282415, 0.671882, 0.446739, 0.286566, 0.671882, 0.479977, 0.253433, 0.668601, 0.48259, 0.4901, 0.626591, 0.430361, 0.493494, 0.615345, 0.430093, 0.497645, 0.615345, 0.463331, 0.494252, 0.626591, 0.463599, 0.280068, 0.70859, 0.446924, 0.244678, 0.702822, 0.449715, 0.248829, 0.702822, 0.482953, 0.284219, 0.70859, 0.480163, 0.191982, 0.656106, 0.453871, 0.218747, 0.663275, 0.45176, 0.222898, 0.663275, 0.484998, 0.196133, 0.656106, 0.487109, 0.463728, 0.64737, 0.432441, 0.48005, 0.637404, 0.431153, 0.484201, 0.637404, 0.464392, 0.467879, 0.64737, 0.465679, 0.153695, 0.637404, 0.45689, 0.170017, 0.64737, 0.455603, 0.174168, 0.64737, 0.488841, 0.157846, 0.637404, 0.490128, 0.389066, 0.702822, 0.438329, 0.353676, 0.70859, 0.441119, 0.357827, 0.70859, 0.474358, 0.393217, 0.702822, 0.471567, 0.414998, 0.663275, 0.436284, 0.441763, 0.656106, 0.434173, 0.445914, 0.656106, 0.467411, 0.419149, 0.663275, 0.469522, 0.140251, 0.615345, 0.457951, 0.143644, 0.626591, 0.457683, 0.147796, 0.626591, 0.490921, 0.144402, 0.615345, 0.491189, 0.45027, 0.68085, 0.433502, 0.421682, 0.693455, 0.435756, 0.425833, 0.693455, 0.468995, 0.454421, 0.68085, 0.46674, 0.35133, 0.671882, 0.441305, 0.384463, 0.668601, 0.438692, 0.388614, 0.668601, 0.47193, 0.355481, 0.671882, 0.474543, 0.14258, 0.647966, 0.457767, 0.131845, 0.628951, 0.458613, 0.135996, 0.628951, 0.491852, 0.146731, 0.647966, 0.491005, 0.491164, 0.647966, 0.430277, 0.473731, 0.66549, 0.431652, 0.477882, 0.66549, 0.46489, 0.495315, 0.647966, 0.463515, 0.183475, 0.68085, 0.454542, 0.160014, 0.66549, 0.456392, 0.164165, 0.66549, 0.48963, 0.187626, 0.68085, 0.48778, 0.282415, 0.671882, 0.446739, 0.316872, 0.672989, 0.444022, 0.321024, 0.672989, 0.47726, 0.286566, 0.671882, 0.479977 </vector3_array>
+				<vector3_array  len="347"> 					0.105, 0.067, 0.991, 0.107, 0.07, 0.991, 0.091, 0.049, 0.994, 0.094, 0.064, 0.992, 0.104, 0.064, 0.992, 0.091, 0.072, 0.992, 0.065, 0.029, 0.996, 0.068, 0.056, 0.995, 0.066, 0.081, 0.994, 0.034, 0.02, 0.998, 0.035, 0.051, 0.997, 0.035, 0.083, 0.995, 0, 0.017, 0.999, 0, 0.05, 0.998, 0, 0.083, 0.996, -0.033, 0.02, 0.998, -0.034, 0.051, 0.997, -0.034, 0.083, 0.995, -0.064, 0.029, 0.996, -0.067, 0.056, 0.995, -0.065, 0.081, 0.994, -0.09, 0.049, 0.994, -0.093, 0.064, 0.992, -0.09, 0.072, 0.992, -0.106, 0.07, 0.991, -0.104, 0.067, 0.991, -0.103, 0.064, 0.992, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.087, 0, -0.996, 0.842, -0.525, 0.115, 0.842, -0.525, 0.115, 0.842, -0.525, 0.115, 0.842, -0.525, 0.115, -0.272, 0.961, -0.038, -0.272, 0.961, -0.038, -0.272, 0.961, -0.038, -0.272, 0.961, -0.038, 0.17, -0.984, 0.022, 0.17, -0.984, 0.022, 0.17, -0.984, 0.022, 0.17, -0.984, 0.022, -0.724, -0.68, -0.1, -0.724, -0.68, -0.1, -0.724, -0.68, -0.1, -0.724, -0.68, -0.1, -0.051, 0.999, -0.007, -0.051, 0.999, -0.007, -0.051, 0.999, -0.007, -0.051, 0.999, -0.007, 0.366, -0.928, 0.049, 0.366, -0.928, 0.049, 0.366, -0.928, 0.049, 0.366, -0.928, 0.049, 0.052, 0.999, 0.006, 0.052, 0.999, 0.006, 0.052, 0.999, 0.006, 0.052, 0.999, 0.006, -0.365, -0.928, -0.05, -0.365, -0.928, -0.05, -0.365, -0.928, -0.05, -0.365, -0.928, -0.05, 0.725, -0.68, 0.099, 0.725, -0.68, 0.099, 0.725, -0.68, 0.099, 0.725, -0.68, 0.099, 0.273, 0.961, 0.037, 0.273, 0.961, 0.037, 0.273, 0.961, 0.037, 0.273, 0.961, 0.037, -0.169, -0.984, -0.023, -0.169, -0.984, -0.023, -0.169, -0.984, -0.023, -0.169, -0.984, -0.023, -0.841, -0.525, -0.116, -0.841, -0.525, -0.116, -0.841, -0.525, -0.116, -0.841, -0.525, -0.116, 0.542, 0.837, 0.074, 0.542, 0.837, 0.074, 0.542, 0.837, 0.074, 0.542, 0.837, 0.074, -0.031, -0.998, -0.004, -0.031, -0.998, -0.004, -0.031, -0.998, -0.004, -0.031, -0.998, -0.004, -0.701, 0.706, -0.097, -0.701, 0.706, -0.097, -0.701, 0.706, -0.097, -0.701, 0.706, -0.097, 0.862, 0.492, 0.118, 0.862, 0.492, 0.118, 0.862, 0.492, 0.118, 0.862, 0.492, 0.118, -0.398, 0.915, -0.055, -0.398, 0.915, -0.055, -0.398, 0.915, -0.055, -0.398, 0.915, -0.055, 0.097, -0.994, 0.012, 0.097, -0.994, 0.012, 0.097, -0.994, 0.012, 0.097, -0.994, 0.012, -0.947, -0.288, -0.131, -0.947, -0.288, -0.131, -0.947, -0.288, -0.131, -0.947, -0.288, -0.131, -0.158, 0.987, -0.022, -0.158, 0.987, -0.022, -0.158, 0.987, -0.022, -0.158, 0.987, -0.022, 0.256, -0.965, 0.034, 0.256, -0.965, 0.034, 0.256, -0.965, 0.034, 0.256, -0.965, 0.034, -0.515, -0.853, -0.071, -0.515, -0.853, -0.071, -0.515, -0.853, -0.071, -0.515, -0.853, -0.071, 0.516, -0.853, 0.07, 0.516, -0.853, 0.07, 0.516, -0.853, 0.07, 0.516, -0.853, 0.07, 0.159, 0.987, 0.021, 0.159, 0.987, 0.021, 0.159, 0.987, 0.021, 0.159, 0.987, 0.021, -0.255, -0.965, -0.035, -0.255, -0.965, -0.035, -0.255, -0.965, -0.035, -0.255, -0.965, -0.035, 0.948, -0.288, 0.13, 0.948, -0.288, 0.13, 0.948, -0.288, 0.13, 0.948, -0.288, 0.13, 0.399, 0.915, 0.054, 0.399, 0.915, 0.054, 0.399, 0.915, 0.054, 0.399, 0.915, 0.054, -0.096, -0.994, -0.013, -0.096, -0.994, -0.013, -0.096, -0.994, -0.013, -0.096, -0.994, -0.013, -0.861, 0.492, -0.119, -0.861, 0.492, -0.119, -0.861, 0.492, -0.119, -0.861, 0.492, -0.119, 0.702, 0.706, 0.096, 0.702, 0.706, 0.096, 0.702, 0.706, 0.096, 0.702, 0.706, 0.096, -0.541, 0.837, -0.075, -0.541, 0.837, -0.075, -0.541, 0.837, -0.075, -0.541, 0.837, -0.075, 0.032, -0.998, 0.003, 0.032, -0.998, 0.003, 0.032, -0.998, 0.003, 0.032, -0.998, 0.003, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, -0.078, 0, -0.997, 0.844, -0.525, -0.105, 0.844, -0.525, -0.105, 0.844, -0.525, -0.105, 0.844, -0.525, -0.105, -0.272, 0.961, 0.033, -0.272, 0.961, 0.033, -0.272, 0.961, 0.033, -0.272, 0.961, 0.033, 0.17, -0.984, -0.021, 0.17, -0.984, -0.021, 0.17, -0.984, -0.021, 0.17, -0.984, -0.021, -0.725, -0.681, 0.09, -0.725, -0.681, 0.09, -0.725, -0.681, 0.09, -0.725, -0.681, 0.09, -0.051, 0.999, 0.006, -0.051, 0.999, 0.006, -0.051, 0.999, 0.006, -0.051, 0.999, 0.006, 0.366, -0.928, -0.046, 0.366, -0.928, -0.046, 0.366, -0.928, -0.046, 0.366, -0.928, -0.046, 0.052, 0.999, -0.007, 0.052, 0.999, -0.007, 0.052, 0.999, -0.007, 0.052, 0.999, -0.007, -0.365, -0.928, 0.045, -0.365, -0.928, 0.045, -0.365, -0.928, 0.045, -0.365, -0.928, 0.045, 0.726, -0.681, -0.091, 0.726, -0.681, -0.091, 0.726, -0.681, -0.091, 0.726, -0.681, -0.091, 0.273, 0.961, -0.034, 0.273, 0.961, -0.034, 0.273, 0.961, -0.034, 0.273, 0.961, -0.034, -0.169, -0.984, 0.02, -0.169, -0.984, 0.02, -0.169, -0.984, 0.02, -0.169, -0.984, 0.02, -0.843, -0.525, 0.104, -0.843, -0.525, 0.104, -0.843, -0.525, 0.104, -0.843, -0.525, 0.104, 0.543, 0.837, -0.068, 0.543, 0.837, -0.068, 0.543, 0.837, -0.068, 0.543, 0.837, -0.068, -0.031, -0.998, 0.003, -0.031, -0.998, 0.003, -0.031, -0.998, 0.003, -0.031, -0.998, 0.003, -0.702, 0.706, 0.087, -0.702, 0.706, 0.087, -0.702, 0.706, 0.087, -0.702, 0.706, 0.087, 0.864, 0.492, -0.108, 0.864, 0.492, -0.108, 0.864, 0.492, -0.108, 0.864, 0.492, -0.108, -0.399, 0.915, 0.049, -0.399, 0.915, 0.049, -0.399, 0.915, 0.049, -0.399, 0.915, 0.049, 0.098, -0.994, -0.012, 0.098, -0.994, -0.012, 0.098, -0.994, -0.012, 0.098, -0.994, -0.012, -0.949, -0.288, 0.118, -0.949, -0.288, 0.118, -0.949, -0.288, 0.118, -0.949, -0.288, 0.118, -0.158, 0.987, 0.019, -0.158, 0.987, 0.019, -0.158, 0.987, 0.019, -0.158, 0.987, 0.019, 0.256, -0.965, -0.032, 0.256, -0.965, -0.032, 0.256, -0.965, -0.032, 0.256, -0.965, -0.032, -0.515, -0.853, 0.063, -0.515, -0.853, 0.063, -0.515, -0.853, 0.063, -0.515, -0.853, 0.063, 0.516, -0.853, -0.064, 0.516, -0.853, -0.064, 0.516, -0.853, -0.064, 0.516, -0.853, -0.064, 0.159, 0.987, -0.02, 0.159, 0.987, -0.02, 0.159, 0.987, -0.02, 0.159, 0.987, -0.02, -0.255, -0.965, 0.031, -0.255, -0.965, 0.031, -0.255, -0.965, 0.031, -0.255, -0.965, 0.031, 0.95, -0.288, -0.119, 0.95, -0.288, -0.119, 0.95, -0.288, -0.119, 0.95, -0.288, -0.119, 0.4, 0.915, -0.05, 0.4, 0.915, -0.05, 0.4, 0.915, -0.05, 0.4, 0.915, -0.05, -0.097, -0.994, 0.011, -0.097, -0.994, 0.011, -0.097, -0.994, 0.011, -0.097, -0.994, 0.011, -0.863, 0.492, 0.107, -0.863, 0.492, 0.107, -0.863, 0.492, 0.107, -0.863, 0.492, 0.107, 0.703, 0.706, -0.088, 0.703, 0.706, -0.088, 0.703, 0.706, -0.088, 0.703, 0.706, -0.088, -0.542, 0.837, 0.067, -0.542, 0.837, 0.067, -0.542, 0.837, 0.067, -0.542, 0.837, 0.067, 0.032, -0.998, -0.004, 0.032, -0.998, -0.004, 0.032, -0.998, -0.004, 0.032, -0.998, -0.004 </vector3_array>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<int_array  len="660"> 					0, 2, 1, 0, 3, 2, 4, 3, 0, 4, 5, 3, 3, 6, 2, 3, 7, 6, 5, 7, 3, 5, 8, 7, 7, 9, 6, 7, 10, 9, 8, 10, 7, 8, 11, 10, 10, 12, 9, 10, 13, 12, 11, 13, 10, 11, 14, 13, 13, 15, 12, 13, 16, 15, 14, 16, 13, 14, 17, 16, 16, 18, 15, 16, 19, 18, 17, 19, 16, 17, 20, 19, 19, 21, 18, 19, 22, 21, 20, 22, 19, 20, 23, 22, 22, 24, 21, 22, 25, 24, 23, 25, 22, 23, 26, 25, 27, 29, 28, 27, 30, 29, 27, 31, 30, 27, 32, 31, 27, 33, 32, 27, 34, 33, 27, 35, 34, 27, 36, 35, 27, 37, 36, 27, 38, 37, 27, 39, 38, 27, 40, 39, 27, 41, 40, 27, 42, 41, 27, 43, 42, 27, 44, 43, 27, 45, 44, 27, 46, 45, 27, 47, 46, 27, 48, 47, 27, 49, 48, 27, 50, 49, 27, 51, 50, 27, 52, 51, 27, 53, 52, 27, 54, 53, 27, 55, 54, 27, 56, 55, 27, 57, 56, 27, 58, 57, 59, 61, 60, 59, 62, 61, 63, 65, 64, 63, 66, 65, 67, 69, 68, 67, 70, 69, 71, 73, 72, 71, 74, 73, 75, 77, 76, 75, 78, 77, 79, 81, 80, 79, 82, 81, 83, 85, 84, 83, 86, 85, 87, 89, 88, 87, 90, 89, 91, 93, 92, 91, 94, 93, 95, 97, 96, 95, 98, 97, 99, 101, 100, 99, 102, 101, 103, 105, 104, 103, 106, 105, 107, 109, 108, 107, 110, 109, 111, 113, 112, 111, 114, 113, 115, 117, 116, 115, 118, 117, 119, 121, 120, 119, 122, 121, 123, 125, 124, 123, 126, 125, 127, 129, 128, 127, 130, 129, 131, 133, 132, 131, 134, 133, 135, 137, 136, 135, 138, 137, 139, 141, 140, 139, 142, 141, 143, 145, 144, 143, 146, 145, 147, 149, 148, 147, 150, 149, 151, 153, 152, 151, 154, 153, 155, 157, 156, 155, 158, 157, 159, 161, 160, 159, 162, 161, 163, 165, 164, 163, 166, 165, 167, 169, 168, 167, 170, 169, 171, 173, 172, 171, 174, 173, 175, 177, 176, 175, 178, 177, 179, 181, 180, 179, 182, 181, 183, 185, 184, 183, 186, 185, 187, 189, 188, 187, 190, 189, 187, 191, 190, 187, 192, 191, 187, 193, 192, 187, 194, 193, 187, 195, 194, 187, 196, 195, 187, 197, 196, 187, 198, 197, 187, 199, 198, 187, 200, 199, 187, 201, 200, 187, 202, 201, 187, 203, 202, 187, 204, 203, 187, 205, 204, 187, 206, 205, 187, 207, 206, 187, 208, 207, 187, 209, 208, 187, 210, 209, 187, 211, 210, 187, 212, 211, 187, 213, 212, 187, 214, 213, 187, 215, 214, 187, 216, 215, 187, 217, 216, 187, 218, 217, 219, 221, 220, 219, 222, 221, 223, 225, 224, 223, 226, 225, 227, 229, 228, 227, 230, 229, 231, 233, 232, 231, 234, 233, 235, 237, 236, 235, 238, 237, 239, 241, 240, 239, 242, 241, 243, 245, 244, 243, 246, 245, 247, 249, 248, 247, 250, 249, 251, 253, 252, 251, 254, 253, 255, 257, 256, 255, 258, 257, 259, 261, 260, 259, 262, 261, 263, 265, 264, 263, 266, 265, 267, 269, 268, 267, 270, 269, 271, 273, 272, 271, 274, 273, 275, 277, 276, 275, 278, 277, 279, 281, 280, 279, 282, 281, 283, 285, 284, 283, 286, 285, 287, 289, 288, 287, 290, 289, 291, 293, 292, 291, 294, 293, 295, 297, 296, 295, 298, 297, 299, 301, 300, 299, 302, 301, 303, 305, 304, 303, 306, 305, 307, 309, 308, 307, 310, 309, 311, 313, 312, 311, 314, 313, 315, 317, 316, 315, 318, 317, 319, 321, 320, 319, 322, 321, 323, 325, 324, 323, 326, 325, 327, 329, 328, 327, 330, 329, 331, 333, 332, 331, 334, 333, 335, 337, 336, 335, 338, 337, 339, 341, 340, 339, 342, 341, 343, 345, 344, 343, 346, 345 </int_array>
+			</array>
+		</dictionary>
+		<dictionary name="surfaces/2" shared="false">
+			<string> "alphasort" </string>
+			<bool> False </bool>
+			<string> "morph_arrays" </string>
+			<array  len="0" shared="false">
+			</array>
+			<string> "material" </string>
+			<resource  resource_type="Material" path="local://6">  </resource>
+			<string> "name" </string>
+			<string> "Material.003" </string>
+			<string> "primitive" </string>
+			<int> 4 </int>
+			<string> "arrays" </string>
+			<array  len="9" shared="false">
+				<vector3_array  len="64"> 					-0.341205, 0.70859, 0.477728, -0.376557, 0.702822, 0.474653, -0.409138, 0.693455, 0.471819, -0.437696, 0.68085, 0.469335, -0.461133, 0.66549, 0.467297, -0.478548, 0.647966, 0.465782, -0.489272, 0.628951, 0.464849, -0.480875, 0.615345, 0.46558, -0.477485, 0.626591, 0.465875, -0.467444, 0.637404, 0.466748, -0.45114, 0.64737, 0.468166, -0.429198, 0.656106, 0.470074, -0.402462, 0.663275, 0.4724, -0.371958, 0.668601, 0.475053, -0.33886, 0.671882, 0.477932, -0.304439, 0.672989, 0.480926, -0.270018, 0.671882, 0.48392, -0.23692, 0.668601, 0.486798, -0.206417, 0.663275, 0.489452, -0.17968, 0.656106, 0.491777, -0.157738, 0.64737, 0.493685, -0.141434, 0.637404, 0.495104, -0.131394, 0.626591, 0.495977, -0.128004, 0.615345, 0.496272, -0.119607, 0.628951, 0.497002, -0.130331, 0.647966, 0.496069, -0.147746, 0.66549, 0.494555, -0.171183, 0.68085, 0.492516, -0.19974, 0.693455, 0.490032, -0.232321, 0.702822, 0.487198, -0.267674, 0.70859, 0.484123, -0.304439, 0.710537, 0.480926, 0.284219, 0.70859, 0.480163, 0.248829, 0.702822, 0.482953, 0.216214, 0.693455, 0.485525, 0.187626, 0.68085, 0.48778, 0.164165, 0.66549, 0.48963, 0.146731, 0.647966, 0.491005, 0.135996, 0.628951, 0.491852, 0.144402, 0.615345, 0.491189, 0.147796, 0.626591, 0.490921, 0.157846, 0.637404, 0.490128, 0.174168, 0.64737, 0.488841, 0.196133, 0.656106, 0.487109, 0.222898, 0.663275, 0.484998, 0.253433, 0.668601, 0.48259, 0.286566, 0.671882, 0.479977, 0.321024, 0.672989, 0.47726, 0.355481, 0.671882, 0.474543, 0.388614, 0.668601, 0.47193, 0.419149, 0.663275, 0.469522, 0.445914, 0.656106, 0.467411, 0.467879, 0.64737, 0.465679, 0.484201, 0.637404, 0.464392, 0.494252, 0.626591, 0.463599, 0.497645, 0.615345, 0.463331, 0.506051, 0.628951, 0.462668, 0.495315, 0.647966, 0.463515, 0.477882, 0.66549, 0.46489, 0.454421, 0.68085, 0.46674, 0.425833, 0.693455, 0.468995, 0.393217, 0.702822, 0.471567, 0.357827, 0.70859, 0.474358, 0.321024, 0.710537, 0.47726 </vector3_array>
+				<vector3_array  len="64"> 					-0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, -0.086, 0, 0.995, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996, 0.079, 0, 0.996 </vector3_array>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<nil>  </nil>
+				<int_array  len="180"> 					0, 2, 1, 0, 3, 2, 0, 4, 3, 0, 5, 4, 0, 6, 5, 0, 7, 6, 0, 8, 7, 0, 9, 8, 0, 10, 9, 0, 11, 10, 0, 12, 11, 0, 13, 12, 0, 14, 13, 0, 15, 14, 0, 16, 15, 0, 17, 16, 0, 18, 17, 0, 19, 18, 0, 20, 19, 0, 21, 20, 0, 22, 21, 0, 23, 22, 0, 24, 23, 0, 25, 24, 0, 26, 25, 0, 27, 26, 0, 28, 27, 0, 29, 28, 0, 30, 29, 0, 31, 30, 32, 34, 33, 32, 35, 34, 32, 36, 35, 32, 37, 36, 32, 38, 37, 32, 39, 38, 32, 40, 39, 32, 41, 40, 32, 42, 41, 32, 43, 42, 32, 44, 43, 32, 45, 44, 32, 46, 45, 32, 47, 46, 32, 48, 47, 32, 49, 48, 32, 50, 49, 32, 51, 50, 32, 52, 51, 32, 53, 52, 32, 54, 53, 32, 55, 54, 32, 56, 55, 32, 57, 56, 32, 58, 57, 32, 59, 58, 32, 60, 59, 32, 61, 60, 32, 62, 61, 32, 63, 62 </int_array>
+			</array>
+		</dictionary>
+		<aabb name="custom_aabb/custom_aabb"> 0, 0, 0, 0, 0, 0 </aabb>
+
+	</resource>
+	<resource type="ParticleSystemMaterial" path="local://8">
+		<bool name="flags/visible"> True </bool>
+		<bool name="flags/double_sided"> True </bool>
+		<bool name="flags/invert_faces"> False </bool>
+		<bool name="flags/unshaded"> True </bool>
+		<bool name="flags/on_top"> False </bool>
+		<bool name="flags/lightmap_on_uv2"> True </bool>
+		<bool name="flags/colarray_is_srgb"> True </bool>
+		<int name="params/blend_mode"> 0 </int>
+		<int name="params/depth_draw"> 3 </int>
+		<real name="params/line_width"> 0 </real>
+		<resource name="texture" resource_type="Texture" path="res://particle.png">  </resource>
+
+	</resource>
+	<main_resource>
+		<dictionary name="_bundled" shared="false">
+			<string> "names" </string>
+			<string_array  len="123">
+				<string> "Node3D" </string>
+				<string> "Navigation" </string>
+				<string> "_import_path" </string>
+				<string> "_import_transform" </string>
+				<string> "visibility/visible" </string>
+				<string> "up_vector" </string>
+				<string> "script/script" </string>
+				<string> "__meta__" </string>
+				<string> "Level" </string>
+				<string> "MeshInstance3D" </string>
+				<string> "layers" </string>
+				<string> "geometry/visible" </string>
+				<string> "geometry/material_override" </string>
+				<string> "geometry/cast_shadow" </string>
+				<string> "geometry/receive_shadows" </string>
+				<string> "geometry/range_begin" </string>
+				<string> "geometry/range_end" </string>
+				<string> "geometry/billboard" </string>
+				<string> "geometry/billboard_y" </string>
+				<string> "geometry/depth_scale" </string>
+				<string> "geometry/visible_in_all_rooms" </string>
+				<string> "geometry/use_baked_light" </string>
+				<string> "geometry/baked_light_tex_id" </string>
+				<string> "mesh/mesh" </string>
+				<string> "mesh/skeleton" </string>
+				<string> "NavMesh" </string>
+				<string> "NavigationMeshInstance" </string>
+				<string> "transform/local" </string>
+				<string> "navmesh" </string>
+				<string> "enabled" </string>
+				<string> "AnimationPlayer" </string>
+				<string> "playback/process_mode" </string>
+				<string> "playback/default_blend_time" </string>
+				<string> "root/root" </string>
+				<string> "playback/active" </string>
+				<string> "playback/speed" </string>
+				<string> "blend_times" </string>
+				<string> "autoplay" </string>
+				<string> "DirectionalLight3D" </string>
+				<string> "params/enabled" </string>
+				<string> "params/editor_only" </string>
+				<string> "params/bake_mode" </string>
+				<string> "params/energy" </string>
+				<string> "colors/diffuse" </string>
+				<string> "colors/specular" </string>
+				<string> "shadow/shadow" </string>
+				<string> "shadow/darkening" </string>
+				<string> "shadow/z_offset" </string>
+				<string> "shadow/z_slope_scale" </string>
+				<string> "shadow/esm_multiplier" </string>
+				<string> "shadow/blur_passes" </string>
+				<string> "projector" </string>
+				<string> "operator" </string>
+				<string> "shadow/mode" </string>
+				<string> "shadow/max_distance" </string>
+				<string> "shadow/split_weight" </string>
+				<string> "shadow/zoffset_scale" </string>
+				<string> "WorldEnvironment" </string>
+				<string> "environment" </string>
+				<string> "draw" </string>
+				<string> "ImmediateGeometry3D" </string>
+				<string> "cambase" </string>
+				<string> "Camera3D" </string>
+				<string> "projection" </string>
+				<string> "fov" </string>
+				<string> "near" </string>
+				<string> "far" </string>
+				<string> "keep_aspect" </string>
+				<string> "current" </string>
+				<string> "visible_layers" </string>
+				<string> "robot_base" </string>
+				<string> "Position3D" </string>
+				<string> "robot" </string>
+				<string> "antigravity" </string>
+				<string> "Particles3D" </string>
+				<string> "material" </string>
+				<string> "amount" </string>
+				<string> "emitting" </string>
+				<string> "visibility" </string>
+				<string> "emission_extents" </string>
+				<string> "emission_base_velocity" </string>
+				<string> "emission_points" </string>
+				<string> "gravity_normal" </string>
+				<string> "local_coords" </string>
+				<string> "emit_timeout" </string>
+				<string> "vars/lifetime" </string>
+				<string> "vars/spread" </string>
+				<string> "vars/gravity" </string>
+				<string> "vars/linear_vel" </string>
+				<string> "vars/angular_vel" </string>
+				<string> "vars/linear_accel" </string>
+				<string> "vars/radial_accel" </string>
+				<string> "vars/tan_accel" </string>
+				<string> "vars/damping" </string>
+				<string> "vars/initial_size" </string>
+				<string> "vars/final_size" </string>
+				<string> "vars/initial_angle" </string>
+				<string> "vars/height_from_velocity" </string>
+				<string> "vars/height" </string>
+				<string> "vars/height_speed_scale" </string>
+				<string> "rand/lifetime" </string>
+				<string> "rand/spread" </string>
+				<string> "rand/gravity" </string>
+				<string> "rand/linear_vel" </string>
+				<string> "rand/angular_vel" </string>
+				<string> "rand/linear_accel" </string>
+				<string> "rand/radial_accel" </string>
+				<string> "rand/tan_accel" </string>
+				<string> "rand/damping" </string>
+				<string> "rand/initial_size" </string>
+				<string> "rand/final_size" </string>
+				<string> "rand/initial_angle" </string>
+				<string> "rand/height" </string>
+				<string> "rand/height_speed_scale" </string>
+				<string> "color_phases/count" </string>
+				<string> "phase_0/pos" </string>
+				<string> "phase_0/color" </string>
+				<string> "phase_1/pos" </string>
+				<string> "phase_1/color" </string>
+				<string> "phase_2/pos" </string>
+				<string> "phase_2/color" </string>
+				<string> "phase_3/pos" </string>
+				<string> "phase_3/color" </string>
+			</string_array>
+			<string> "version" </string>
+			<int> 1 </int>
+			<string> "conn_count" </string>
+			<int> 0 </int>
+			<string> "node_count" </string>
+			<int> 12 </int>
+			<string> "variants" </string>
+			<array  len="53" shared="false">
+				<node_path> "." </node_path>
+				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 </transform>
+				<bool> True </bool>
+				<vector3> 0, 1, 0 </vector3>
+				<resource  resource_type="Script" path="res://navmesh.gd">  </resource>
+				<dictionary  shared="false">
+					<string> "__editor_plugin_states__" </string>
+					<dictionary  shared="false">
+						<string> "Script" </string>
+						<dictionary  shared="false">
+							<string> "current" </string>
+							<int> 0 </int>
+							<string> "sources" </string>
+							<array  len="1" shared="false">
+								<string> "res://navmesh.gd" </string>
+							</array>
+						</dictionary>
+						<string> "2D" </string>
+						<dictionary  shared="false">
+							<string> "pixel_snap" </string>
+							<bool> False </bool>
+							<string> "zoom" </string>
+							<real> 1 </real>
+							<string> "use_snap" </string>
+							<bool> False </bool>
+							<string> "ofs" </string>
+							<vector2> 1, 1 </vector2>
+							<string> "snap" </string>
+							<int> 10 </int>
+						</dictionary>
+						<string> "3D" </string>
+						<dictionary  shared="false">
+							<string> "deflight_rot_y" </string>
+							<real> 0.628319 </real>
+							<string> "zfar" </string>
+							<real> 500 </real>
+							<string> "fov" </string>
+							<real> 45 </real>
+							<string> "viewports" </string>
+							<array  len="4" shared="false">
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 11.748774 </real>
+									<string> "x_rot" </string>
+									<real> 0.233296 </real>
+									<string> "y_rot" </string>
+									<real> 3.650006 </real>
+									<string> "listener" </string>
+									<bool> True </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> -0.597964, 0.311408, 1.51014 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+								<dictionary  shared="false">
+									<string> "distance" </string>
+									<real> 4 </real>
+									<string> "x_rot" </string>
+									<real> 0 </real>
+									<string> "y_rot" </string>
+									<real> 0 </real>
+									<string> "listener" </string>
+									<bool> False </bool>
+									<string> "use_environment" </string>
+									<bool> False </bool>
+									<string> "use_orthogonal" </string>
+									<bool> False </bool>
+									<string> "pos" </string>
+									<vector3> 0, 0, 0 </vector3>
+								</dictionary>
+							</array>
+							<string> "viewport_mode" </string>
+							<int> 1 </int>
+							<string> "default_light" </string>
+							<bool> False </bool>
+							<string> "ambient_light_color" </string>
+							<color> 0.15, 0.15, 0.15, 1 </color>
+							<string> "show_grid" </string>
+							<bool> True </bool>
+							<string> "show_origin" </string>
+							<bool> True </bool>
+							<string> "znear" </string>
+							<real> 0.1 </real>
+							<string> "default_srgb" </string>
+							<bool> False </bool>
+							<string> "deflight_rot_x" </string>
+							<real> 0.942478 </real>
+						</dictionary>
+					</dictionary>
+					<string> "__editor_run_settings__" </string>
+					<dictionary  shared="false">
+						<string> "custom_args" </string>
+						<string> "-l $scene" </string>
+						<string> "run_mode" </string>
+						<int> 0 </int>
+					</dictionary>
+					<string> "__editor_plugin_screen__" </string>
+					<string> "3D" </string>
+				</dictionary>
+				<node_path> "Cube" </node_path>
+				<int> 1 </int>
+				<resource name=""></resource>				<real> 0 </real>
+				<bool> False </bool>
+				<int> 0 </int>
+				<resource  resource_type="Mesh" path="local://1">  </resource>
+				<node_path> ".." </node_path>
+				<node_path> "" </node_path>
+				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0452547, 0 </transform>
+				<resource  resource_type="NavigationMesh" path="local://2">  </resource>
+				<node_path> "AnimationPlayer" </node_path>
+				<real> 1 </real>
+				<array  len="0" shared="false">
+				</array>
+				<string> "" </string>
+				<transform> -0.892927, 0.368508, -0.258619, 0.197616, 0.836977, 0.510311, 0.404512, 0.404563, -0.820182, 10.0773, 5.02381, 0 </transform>
+				<color> 1, 1, 1, 1 </color>
+				<real> 0.01 </real>
+				<real> 60 </real>
+				<int> 3 </int>
+				<real> 20 </real>
+				<real> 0.5 </real>
+				<real> 2 </real>
+				<resource  resource_type="Environment" path="local://3">  </resource>
+				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.07475, 0, 1.96678 </transform>
+				<node_path> "Camera3D" </node_path>
+				<transform> 0.685881, -0.31737, 0.654862, -0.0108168, 0.895343, 0.445245, -0.727634, -0.312469, 0.610666, 7.48113, 5.34367, 6.50764 </transform>
+				<transform> -0.488777, -0.391442, 0.779661, 0.11248, 0.857953, 0.501264, -0.865127, 0.332702, -0.375318, 8.87416, 7.5079, -5.0124 </transform>
+				<real> 49.134342 </real>
+				<real> 0.1 </real>
+				<int> 1048575 </int>
+				<node_path> "Sphere" </node_path>
+				<transform> 0.794627, 0, 0, 0, 1.48622, 0, 0, 0, 1, 0, 0, 0 </transform>
+				<transform> -0.22646, 0, -2.49146e-08, 0, 0.423557, 0, 1.97978e-08, 0, -0.284989, 0, 0.328851, 0 </transform>
+				<resource  resource_type="Mesh" path="local://7">  </resource>
+				<transform> 1, 3.75509e-06, -3.78323e-07, -1.06179e-07, -4.37106e-08, -0.672847, -1.60933e-06, 1.48622, -3.3204e-08, 0, 0, 0 </transform>
+				<resource  resource_type="Material" path="local://8">  </resource>
+				<int> 32 </int>
+				<aabb> -4, -4, -4, 8, 8, 8 </aabb>
+				<vector3> 0.3, 0.3, 0.1 </vector3>
+				<vector3> 0, 0, 0 </vector3>
+				<vector3_array  len="0"> 					 </vector3_array>
+				<vector3> 0, -1, 0 </vector3>
+				<int> 2 </int>
+				<color> 0.773677, 0.945368, 1, 1 </color>
+				<color> 0, 0.538295, 1, 1 </color>
+				<color> 0, 0, 0, 1 </color>
+			</array>
+			<string> "nodes" </string>
+			<int_array  len="452"> 				-1, -1, 1, 0, -1, 6, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 7, 5, 0, 0, 0, 9, 8, -1, 18, 2, 6, 3, 1, 4, 2, 10, 7, 11, 2, 12, 8, 13, 2, 14, 2, 15, 9, 16, 9, 17, 10, 18, 10, 19, 10, 20, 10, 21, 2, 22, 11, 23, 12, 24, 13, 0, 1, 0, 26, 25, -1, 6, 2, 14, 3, 1, 27, 15, 4, 2, 28, 16, 29, 2, 0, 0, 0, 30, 30, -1, 8, 2, 17, 31, 7, 32, 9, 33, 13, 34, 2, 35, 18, 36, 19, 37, 20, 0, 0, 0, 38, 38, -1, 23, 2, 14, 3, 1, 27, 21, 4, 2, 10, 7, 39, 2, 40, 10, 41, 11, 42, 18, 43, 22, 44, 22, 45, 2, 46, 9, 47, 9, 48, 23, 49, 24, 50, 18, 51, 8, 52, 11, 53, 25, 54, 26, 55, 27, 56, 28, 0, 0, 0, 57, 57, -1, 4, 2, 14, 3, 1, 4, 2, 58, 29, 0, 0, 0, 60, 59, -1, 16, 2, 14, 3, 1, 4, 2, 10, 7, 11, 2, 12, 8, 13, 2, 14, 2, 15, 9, 16, 9, 17, 10, 18, 10, 19, 10, 20, 10, 21, 10, 22, 11, 0, 0, 0, 0, 61, -1, 4, 2, 14, 3, 1, 27, 30, 4, 2, 0, 7, 0, 62, 62, -1, 12, 2, 31, 3, 32, 27, 33, 4, 2, 63, 11, 64, 34, 65, 35, 66, 26, 67, 7, 68, 10, 69, 36, 58, 8, 0, 0, 0, 71, 70, -1, 3, 2, 14, 3, 1, 4, 2, 0, 9, 0, 9, 72, -1, 19, 2, 37, 3, 38, 27, 39, 4, 2, 10, 7, 11, 2, 12, 8, 13, 2, 14, 2, 15, 9, 16, 9, 17, 10, 18, 10, 19, 10, 20, 10, 21, 2, 22, 11, 23, 40, 24, 13, 0, 10, 0, 74, 73, -1, 65, 2, 14, 3, 1, 27, 41, 4, 2, 10, 7, 11, 2, 12, 8, 13, 2, 14, 2, 15, 9, 16, 9, 17, 10, 18, 10, 19, 10, 20, 10, 21, 10, 22, 11, 75, 42, 76, 43, 77, 2, 78, 44, 79, 45, 80, 46, 81, 47, 82, 48, 83, 10, 84, 9, 85, 18, 86, 9, 87, 9, 88, 18, 89, 9, 90, 9, 91, 9, 92, 9, 93, 9, 94, 35, 95, 23, 96, 9, 97, 10, 98, 18, 99, 9, 100, 9, 101, 9, 102, 9, 103, 9, 104, 9, 105, 9, 106, 9, 107, 9, 108, 9, 109, 9, 110, 9, 111, 9, 112, 9, 113, 9, 114, 49, 115, 9, 116, 50, 117, 18, 118, 51, 119, 18, 120, 52, 121, 18, 122, 52, 0 </int_array>
+			<string> "conns" </string>
+			<int_array  len="0"> 				 </int_array>
+		</dictionary>
+
+	</main_resource>
+</resource_file>

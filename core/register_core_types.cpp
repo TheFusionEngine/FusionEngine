@@ -106,42 +106,42 @@ void register_core_types() {
 	resource_loader_xml = memnew( ResourceFormatLoaderXML );
 	ResourceLoader::add_resource_format_loader(resource_loader_xml);
 
-	ObjectTypeDB::register_type<Object>();
+	REGISTER_OBJECT(Object);
 
 
-	ObjectTypeDB::register_type<Reference>();
-	ObjectTypeDB::register_type<ResourceImportMetadata>();
-	ObjectTypeDB::register_type<Resource>();
-	ObjectTypeDB::register_type<FuncRef>();
-	ObjectTypeDB::register_virtual_type<StreamPeer>();
+	REGISTER_OBJECT(RefCounted);
+	REGISTER_OBJECT(ResourceImportMetadata);
+	REGISTER_OBJECT(Resource);
+	REGISTER_OBJECT(Callable);
+	REGISTER_VIRTUAL_OBJECT(StreamPeer);
 	ObjectTypeDB::register_create_type<StreamPeerTCP>();
 	ObjectTypeDB::register_create_type<TCP_Server>();
 	ObjectTypeDB::register_create_type<PacketPeerUDP>();
 	ObjectTypeDB::register_create_type<StreamPeerSSL>();
-	ObjectTypeDB::register_virtual_type<IP>();
-	ObjectTypeDB::register_virtual_type<PacketPeer>();
-	ObjectTypeDB::register_type<PacketPeerStream>();
-	ObjectTypeDB::register_type<MainLoop>();
-//	ObjectTypeDB::register_type<OptimizedSaver>();
-	ObjectTypeDB::register_type<Translation>();
-	ObjectTypeDB::register_type<PHashTranslation>();
+	REGISTER_VIRTUAL_OBJECT(IP);
+	REGISTER_VIRTUAL_OBJECT(PacketPeer);
+	REGISTER_OBJECT(PacketPeerStream);
+	REGISTER_OBJECT(MainLoop);
+//	REGISTER_OBJECT(OptimizedSaver);
+	REGISTER_OBJECT(Translation);
+	REGISTER_OBJECT(PHashTranslation);
 
-	ObjectTypeDB::register_type<HTTPClient>();
+	REGISTER_OBJECT(HTTPClient);
 
-	ObjectTypeDB::register_virtual_type<ResourceInteractiveLoader>();
+	REGISTER_VIRTUAL_OBJECT(ResourceInteractiveLoader);
 
-	ObjectTypeDB::register_type<_File>();
-	ObjectTypeDB::register_type<_Directory>();
-	ObjectTypeDB::register_type<_Thread>();
-	ObjectTypeDB::register_type<_Mutex>();
-	ObjectTypeDB::register_type<_Semaphore>();
+	REGISTER_OBJECT(_File);
+	REGISTER_OBJECT(_Directory);
+	REGISTER_OBJECT(_Thread);
+	REGISTER_OBJECT(_Mutex);
+	REGISTER_OBJECT(_Semaphore);
 
-	ObjectTypeDB::register_type<XMLParser>();
+	REGISTER_OBJECT(XMLParser);
 
-	ObjectTypeDB::register_type<ConfigFile>();
+	REGISTER_OBJECT(ConfigFile);
 
-	ObjectTypeDB::register_type<PackedDataContainer>();
-	ObjectTypeDB::register_virtual_type<PackedDataContainerRef>();
+	REGISTER_OBJECT(PackedDataContainer);
+	REGISTER_VIRTUAL_OBJECT(PackedDataContainerRef);
 
 	ip = IP::create();
 

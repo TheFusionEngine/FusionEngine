@@ -68,9 +68,9 @@ static MemoryPoolDynamicStatic *mempool_dynamic=NULL;
 void OS_KOS::initialize_core() {
 
 	printf("init core\n");
- 	ThreadPosix::make_default();
+ 	ThreadDummy::make_default();
  	SemaphoreDummy::make_default();
- 	MutexPosix::make_default();
+ 	MutexDummy::make_default();
 	printf("init fs\n");
 
 	ticks_start = 0;

@@ -175,7 +175,7 @@ void EditorSettings::create() {
 	config_path = OS::get_singleton()->get_system_dir(OS::SYSTEM_DIR_DOCUMENTS);
 	config_dir=String(_MKSTR(VERSION_SHORT_NAME)).capitalize();
 
-	ObjectTypeDB::register_type<EditorSettings>(); //otherwise it can't be unserialized
+	REGISTER_OBJECT(EditorSettings); //otherwise it can't be unserialized
 	String config_file_path;
 
 	if (config_path!=""){
@@ -490,7 +490,7 @@ bool EditorSettings::is_plugin_enabled(const String& p_plugin) {
 	if (!has("_plugins/enabled"))
 		return false;
 
-	StringArray sa=get("_plugins/enabled");
+	PackedStringArray sa=get("_plugins/enabled");
 
 	for(int i=0;i<sa.size();i++) {
 
@@ -509,7 +509,7 @@ void EditorSettings::enable_plugins() {
 
 	// editor plugins
 	if (has("_plugins/enabled")) {
-	StringArray sa=get("_plugins/enabled");
+	PackedStringArray sa=get("_plugins/enabled");
 
 		for(int i=0;i<sa.size();i++) {
 
@@ -585,7 +585,7 @@ void EditorSettings::set_plugin_enabled(const String& p_plugin, bool p_enabled) 
 		return;
 
 	print_line("REQUEST "+p_plugin+" to "+itos(p_enabled));
-	StringArray sa;
+	PackedStringArray sa;
 	if (has("_plugins/enabled"))
 		sa=get("_plugins/enabled");
 

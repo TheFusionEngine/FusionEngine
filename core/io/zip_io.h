@@ -41,15 +41,13 @@ static void* zipio_open(void* data, const char* p_fname, int mode) {
 	if (mode & ZLIB_FILEFUNC_MODE_WRITE) {
 		f = FileAccess::open(p_fname,FileAccess::WRITE);
 	} else {
-
 		f = FileAccess::open(p_fname,FileAccess::READ);
 	}
 
 	if (!f)
 		return NULL;
 
-	return data;
-
+	return f->is_open()?data:NULL;
 };
 
 static uLong zipio_read(void* data, void* fdata, void* buf, uLong size) {

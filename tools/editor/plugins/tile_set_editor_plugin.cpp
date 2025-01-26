@@ -45,10 +45,10 @@ void TileSetEditor::_import_scene(Node *scene, Ref<TileSet> p_library, bool p_me
 	       Node *child = scene->get_child(i);
 
 
-	       if (!child->cast_to<Sprite>()) {
+	       if (!child->cast_to<Sprite2D>()) {
 		       if (child->get_child_count()>0) {
 			       child=child->get_child(0);
-			       if (!child->cast_to<Sprite>()) {
+			       if (!child->cast_to<Sprite2D>()) {
 				       continue;
 			       }
 
@@ -58,7 +58,7 @@ void TileSetEditor::_import_scene(Node *scene, Ref<TileSet> p_library, bool p_me
 
 	       }
 
-	       Sprite *mi = child->cast_to<Sprite>();
+	       Sprite2D *mi = child->cast_to<Sprite2D>();
 	       Ref<Texture> texture=mi->get_texture();
 	       if (texture.is_null())
 			continue;

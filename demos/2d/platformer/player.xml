@@ -326,7 +326,7 @@
 				<string> "script/script" </string>
 				<string> "__meta__" </string>
 				<string> "sprite" </string>
-				<string> "Sprite" </string>
+				<string> "Sprite2D" </string>
 				<string> "texture" </string>
 				<string> "centered" </string>
 				<string> "offset" </string>

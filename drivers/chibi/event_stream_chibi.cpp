@@ -847,7 +847,7 @@ void initialize_chibi() {
 
 	sample_manager = memnew( CPSampleManagerImpl );
 	resource_loader = memnew( ResourceFormatLoaderChibi );
-	ObjectTypeDB::register_type<EventStreamChibi>();
+	REGISTER_OBJECT(EventStreamChibi);
 	ResourceLoader::add_resource_format_loader( resource_loader );
 }
 

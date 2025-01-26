@@ -38,7 +38,7 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
-class Camera;
+class Camera3D;
 class Viewport;
 
 class RenderTargetTexture : public Texture {
@@ -84,8 +84,8 @@ private:
 friend class RenderTargetTexture;
 	Viewport *parent;
 
-	Camera *camera;
-	Set<Camera*> cameras;
+	Camera3D *camera;
+	Set<Camera3D*> cameras;
 
 	RID viewport;
 	RID canvas_item;
@@ -97,9 +97,9 @@ friend class RenderTargetTexture;
 	bool audio_listener_2d;
 	RID listener_2d;
 
-	Matrix32 canvas_transform;
-	Matrix32 global_canvas_transform;
-	Matrix32 stretch_transform;
+	Transform2D canvas_transform;
+	Transform2D global_canvas_transform;
+	Transform2D stretch_transform;
 
 	Rect2 rect;
 	Rect2 to_screen_rect;
@@ -131,8 +131,8 @@ friend class RenderTargetTexture;
 	void _parent_visibility_changed();
 
 	Ref<World2D> world_2d;
-	Ref<World> world;
-	Ref<World> own_world;
+	Ref<World3D> world;
+	Ref<World3D> own_world;
 
 	StringName input_group;
 	StringName gui_input_group;
@@ -157,7 +157,7 @@ friend class RenderTargetTexture;
 
 	void update_worlds();
 
-	_FORCE_INLINE_ Matrix32 _get_input_pre_xform() const;
+	_FORCE_INLINE_ Transform2D _get_input_pre_xform() const;
 
 	void _vp_enter_tree();
 	void _vp_exit_tree();
@@ -166,9 +166,9 @@ friend class RenderTargetTexture;
 	void _vp_unhandled_input(const InputEvent& p_ev);
 	void _make_input_local(InputEvent& ev);
 
-friend class Camera;
+friend class Camera3D;
 	void _camera_transform_changed_notify();
-	void _set_camera(Camera* p_camera);
+	void _set_camera(Camera3D* p_camera);
 
 protected:	
 	void _notification(int p_what);
@@ -176,7 +176,7 @@ protected:
 public:
 
 
-	Camera* get_camera() const;
+	Camera3D* get_camera() const;
 
 	void set_as_audio_listener(bool p_enable);
 	bool is_audio_listener() const;
@@ -189,20 +189,20 @@ public:
 	Rect2 get_visible_rect() const;
 	RID get_viewport() const;
 
-	void set_world(const Ref<World>& p_world);
-	Ref<World> get_world() const;
-	Ref<World> find_world() const;
+	void set_world(const Ref<World3D>& p_world);
+	Ref<World3D> get_world() const;
+	Ref<World3D> find_world() const;
 
 	Ref<World2D> find_world_2d() const;
 
 
-	void set_canvas_transform(const Matrix32& p_transform);
-	Matrix32 get_canvas_transform() const;
+	void set_canvas_transform(const Transform2D& p_transform);
+	Transform2D get_canvas_transform() const;
 
-	void set_global_canvas_transform(const Matrix32& p_transform);
-	Matrix32 get_global_canvas_transform() const;
+	void set_global_canvas_transform(const Transform2D& p_transform);
+	Transform2D get_global_canvas_transform() const;
 
-	Matrix32 get_final_transform() const;
+	Transform2D get_final_transform() const;
 
 	void set_transparent_background(bool p_enable);
 	bool has_transparent_background() const;

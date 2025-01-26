@@ -31,9 +31,9 @@
 
 #include "reference.h"
 #include "face3.h"
-class TriangleMesh : public Reference {
+class TriangleMesh : public RefCounted {
 
-	OBJ_TYPE( TriangleMesh, Reference);
+	OBJ_TYPE( TriangleMesh, RefCounted);
 
 	struct Triangle {
 

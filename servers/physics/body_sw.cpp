@@ -40,7 +40,7 @@ void BodySW::_update_inertia() {
 
 void BodySW::_update_inertia_tensor() {
 
-	Matrix3 tb = get_transform().basis;
+	Basis tb = get_transform().basis;
 	tb.scale(_inv_inertia);
 	_inv_inertia_tensor = tb * get_transform().basis.transposed();
 
@@ -132,7 +132,7 @@ void BodySW::set_active(bool p_active) {
 		return;
 
 	for(int i=0;i<get_shape_count();i++) {
-		Shape &s=shapes[i];
+		Shape3D &s=shapes[i];
 		if (s.bpid>0) {
 			get_space()->get_broadphase()->set_active(s.bpid,active);
 		}
@@ -254,7 +254,7 @@ void BodySW::set_state(PhysicsServer::BodyState p_state, const Variant& p_varian
 				_set_inv_transform(get_transform().affine_inverse());
 				wakeup_neighbours();
 			} else {
-				Transform t = p_variant;
+				Transform3D t = p_variant;
 				t.orthonormalize();
 				new_transform=get_transform(); //used as old to compute motion
 				_set_transform(t);
@@ -398,7 +398,7 @@ void BodySW::integrate_forces(real_t p_step) {
 		linear_velocity = (new_transform.origin - get_transform().origin)/p_step;
 
 		//compute a FAKE angular velocity, not so easy
-		Matrix3 rot=new_transform.basis.orthonormalized().transposed() * get_transform().basis.orthonormalized();
+		Basis rot=new_transform.basis.orthonormalized().transposed() * get_transform().basis.orthonormalized();
 		Vector3 axis;
 		float angle;
 
@@ -504,12 +504,12 @@ void BodySW::integrate_velocities(real_t p_step) {
 
 
 	float ang_vel = total_angular_velocity.length();
-	Transform transform = get_transform();
+	Transform3D transform = get_transform();
 
 
 	if (ang_vel!=0.0) {
 		Vector3 ang_vel_axis = total_angular_velocity / ang_vel;
-		Matrix3 rot( ang_vel_axis, -ang_vel*p_step );
+		Basis rot( ang_vel_axis, -ang_vel*p_step );
 		transform.basis = rot * transform.basis;
 		transform.orthonormalize();
 	}
@@ -535,9 +535,9 @@ void BodySW::integrate_velocities(real_t p_step) {
 }
 
 /*
-void BodySW::simulate_motion(const Transform& p_xform,real_t p_step) {
+void BodySW::simulate_motion(const Transform3D& p_xform,real_t p_step) {
 
-	Transform inv_xform = p_xform.affine_inverse();
+	Transform3D inv_xform = p_xform.affine_inverse();
 	if (!get_space()) {
 		_set_transform(p_xform);
 		_set_inv_transform(inv_xform);
@@ -550,7 +550,7 @@ void BodySW::simulate_motion(const Transform& p_xform,real_t p_step) {
 	linear_velocity=(p_xform.origin - get_transform().origin)/p_step;
 
 	//compute a FAKE angular velocity, not so easy
-	Matrix3 rot=get_transform().basis.orthonormalized().transposed() * p_xform.basis.orthonormalized();
+	Basis rot=get_transform().basis.orthonormalized().transposed() * p_xform.basis.orthonormalized();
 	Vector3 axis;
 	float angle;
 
@@ -670,7 +670,7 @@ BodySW::BodySW() : CollisionObjectSW(TYPE_BODY), active_list(this), inertia_upda
 	active=true;
 
 	mass=1;
-//	_inv_inertia=Transform();
+//	_inv_inertia=Transform3D();
 	_inv_mass=1;
 	bounce=0;
 	friction=1;

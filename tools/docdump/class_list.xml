@@ -191,7 +191,7 @@
 			</description>
 		</method>
 		<method name="property_track_get_key_indices" qualifiers="const" >
-			<return type="IntArray">
+			<return type="PackedIntArray">
 			</return>
 			<argument index="0" name="idx" type="int">
 			</argument>
@@ -221,7 +221,7 @@
 			</description>
 		</method>
 		<method name="method_track_get_key_indices" qualifiers="const" >
-			<return type="IntArray">
+			<return type="PackedIntArray">
 			</return>
 			<argument index="0" name="idx" type="int">
 			</argument>
@@ -285,7 +285,7 @@
 		<constant name="INTERPOLATION_CUBIC" value="2">
 		</constant>
 		<constant name="TYPE_TRANSFORM" value="0">
-			Transform tracks are used to change node local transforms or skeleton pose bones. Transitions are Interpolated.
+			Transform3D tracks are used to change node local transforms or skeleton pose bones. Transitions are Interpolated.
 		</constant>
 		<constant name="TYPE_BLEND" value="4">
 		</constant>
@@ -356,7 +356,7 @@
 			</description>
 		</method>
 		<method name="get_animation_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<description>
 			Get the list of names of the animations stored in the player.
@@ -972,7 +972,7 @@
 		<method name="sample_set_signed_data"  >
 			<argument index="0" name="sample" type="RID">
 			</argument>
-			<argument index="1" name="data" type="RealArray">
+			<argument index="1" name="data" type="PackedFloatArray">
 			</argument>
 			<description>
 			</description>
@@ -980,13 +980,13 @@
 		<method name="sample_set_data"  >
 			<argument index="0" name="sample" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="RawArray">
+			<argument index="1" name="arg1" type="PackedByteArray">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="sample_get_data" qualifiers="const" >
-			<return type="RawArray">
+			<return type="PackedByteArray">
 			</return>
 			<argument index="0" name="sample" type="RID">
 			</argument>
@@ -1491,7 +1491,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="BodyShape" inherits="Spatial" category="Nodes/3D/3D Physics Nodes">
+<class name="BodyShape" inherits="Node3D" category="Nodes/3D/3D Physics Nodes">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -1501,7 +1501,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="BoxShape" inherits="Shape" category="Resources">
+<class name="BoxShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -1591,12 +1591,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="Camera" inherits="Spatial" category="Nodes/3D">
+<class name="Camera3D" inherits="Node3D" category="Nodes/3D">
 	<brief_description>
-	Camera node, displays from a point of view.
+	Camera3D node, displays from a point of view.
 	</brief_description>
 	<description>
-	Camera is a special node that displays what is visible from its current location. Cameras register themselves in the nearest [Viewport] node (when ascending the tree). Only one camera can be active per viewport. If no viewport is available ascending the tree, the Camera will register in the global viewport. In other words, a Camera just provides [html i]3D[html /i] display capabilities to a [Viewport], and, without one, a [Scene] registered in that [Viewport] (or higher viewports) can&apos;t be displayed.
+	Camera3D is a special node that displays what is visible from its current location. Cameras register themselves in the nearest [Viewport] node (when ascending the tree). Only one camera can be active per viewport. If no viewport is available ascending the tree, the Camera3D will register in the global viewport. In other words, a Camera3D just provides [html i]3D[html /i] display capabilities to a [Viewport], and, without one, a [Scene] registered in that [Viewport] (or higher viewports) can&apos;t be displayed.
 	</description>
 	<methods>
 		<method name="project_ray_normal" qualifiers="const" >
@@ -1650,7 +1650,7 @@
 		</method>
 		<method name="make_current"  >
 			<description>
-			Make this camera the current Camera for the [Viewport] (see class description). If the Camera Node is outside the scene tree, it will attempt to become current once it&apos;s added.
+			Make this camera the current Camera3D for the [Viewport] (see class description). If the Camera3D Node is outside the scene tree, it will attempt to become current once it&apos;s added.
 			</description>
 		</method>
 		<method name="clear_current"  >
@@ -1661,11 +1661,11 @@
 			<return type="bool">
 			</return>
 			<description>
-			Return wether the Camera is the current one in the [Viewport], or plans to become current (if outside the scene tree).
+			Return wether the Camera3D is the current one in the [Viewport], or plans to become current (if outside the scene tree).
 			</description>
 		</method>
 		<method name="get_camera_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			Get the camera transform. Subclassed cameras (such as CharacterCamera) may provide different transforms than the [Node] transform.
@@ -1837,7 +1837,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="CapsuleShape" inherits="Shape" category="Resources">
+<class name="CapsuleShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -1923,20 +1923,20 @@
 	<constants>
 	</constants>
 </class>
-<class name="ConcavePolygonShape" inherits="Shape" category="Resources">
+<class name="ConcavePolygonShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
 	</description>
 	<methods>
 		<method name="set_faces"  >
-			<argument index="0" name="faces" type="Vector3Array">
+			<argument index="0" name="faces" type="PackedVector3Array">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_faces" qualifiers="const" >
-			<return type="Vector3Array">
+			<return type="PackedVector3Array">
 			</return>
 			<description>
 			</description>
@@ -2407,7 +2407,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="ConvexPolygonShape" inherits="Shape" category="Resources">
+<class name="ConvexPolygonShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2429,7 +2429,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="GridMap" inherits="Spatial" category="Nodes/3D">
+<class name="GridMap" inherits="Node3D" category="Nodes/3D">
 	<brief_description>
 	GridMap is like a tile map, but in 3D.
 	</brief_description>
@@ -2794,7 +2794,7 @@
 			</description>
 		</method>
 		<method name="get_item_list" qualifiers="const" >
-			<return type="IntArray">
+			<return type="PackedIntArray">
 			</return>
 			<description>
 			Get the list of item IDs contained in this theme.
@@ -2811,7 +2811,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="CylinderShape" inherits="Shape" category="Resources">
+<class name="CylinderShape" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -2855,19 +2855,19 @@
 	<constants>
 	</constants>
 </class>
-<class name="DirectionalLight" inherits="Light" category="Nodes/3D/3D Visual Nodes/3D Light Nodes">
+<class name="DirectionalLight3D" inherits="Light" category="Nodes/3D/3D Visual Nodes/3D Light Nodes">
 	<brief_description>
 	Directional Light, such as the Sun or the Moon.
 	</brief_description>
 	<description>
-	A DirectionalLight is a type of [Light] node that emits light constantly in one direction (the negative z axis of the node). It is used lights with strong intensity that are located far away from the scene to model sunlight or moonlight. The worldpace location of the DirectionalLight transform (origin) is ignored, only the basis is used do determine light direction.
+	A DirectionalLight3D is a type of [Light] node that emits light constantly in one direction (the negative z axis of the node). It is used lights with strong intensity that are located far away from the scene to model sunlight or moonlight. The worldpace location of the DirectionalLight3D transform (origin) is ignored, only the basis is used do determine light direction.
 	</description>
 	<methods>
 	</methods>
 	<constants>
 	</constants>
 </class>
-<class name="DynamicBody" inherits="PhysicsBody" category="Nodes/3D">
+<class name="DynamicBody" inherits="PhysicsBody3D" category="Nodes/3D">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -3234,14 +3234,14 @@
 			</description>
 		</method>
 		<method name="set_uv_transform"  >
-			<argument index="0" name="transform" type="Transform">
+			<argument index="0" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			Sets a special transform used to post-transform UV coordinates of the uv_xfrom tecoord mode: TEXCOORD_UV_TRANSFORM
 			</description>
 		</method>
 		<method name="get_uv_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			Returns the special transform used to post-transform UV coordinates of the uv_xfrom tecoord mode: TEXCOORD_UV_TRANSFORM
@@ -3314,7 +3314,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="FollowCamera" inherits="Camera" category="Nodes/3D">
+<class name="FollowCamera" inherits="Camera3D" category="Nodes/3D">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -4016,7 +4016,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="Light" inherits="VisualInstance" category="Nodes/3D/3D Visual Nodes/3D Light Nodes">
+<class name="Light" inherits="VisualInstance3D" category="Nodes/3D/3D Visual Nodes/3D Light Nodes">
 	<brief_description>
 	Provides a base class for different kinds of light nodes.
 	</brief_description>
@@ -4258,7 +4258,7 @@
 	Abstract base [Resource] for coloring and shading geometry.
 	</brief_description>
 	<description>
-	Material is a base [Resource] used for coloring and shading geometry. All materials inherit from it and almost all [VisualInstance] derived nodes carry a Material. A few flags and parameters are shared between all material types and are configured here.
+	Material is a base [Resource] used for coloring and shading geometry. All materials inherit from it and almost all [VisualInstance3D] derived nodes carry a Material. A few flags and parameters are shared between all material types and are configured here.
 	</description>
 	<methods>
 		<method name="set_flag"  >
@@ -4654,12 +4654,12 @@
 		</constant>
 	</constants>
 </class>
-<class name="MeshInstance" inherits="VisualInstance" category="Nodes/3D/3D Visual Nodes">
+<class name="MeshInstance3D" inherits="VisualInstance3D" category="Nodes/3D/3D Visual Nodes">
 	<brief_description>
 	Node that instances meshes into a [Scenario].
 	</brief_description>
 	<description>
-	MeshInstance is a [Node] that takes a [Mesh] resource and adds it to the current [Scenario] by creating an instance of it. This is the class most often used to get 3D geometry rendered and can be used to instance a sigle [Mesh] in many places. This allows to reuse geometry and save on resources. When a [Mesh] has to be instanced more than thousands of times at close proximity, consider using a [MultiMesh] in a [MultiMeshInstance] instead.
+	MeshInstance3D is a [Node] that takes a [Mesh] resource and adds it to the current [Scenario] by creating an instance of it. This is the class most often used to get 3D geometry rendered and can be used to instance a sigle [Mesh] in many places. This allows to reuse geometry and save on resources. When a [Mesh] has to be instanced more than thousands of times at close proximity, consider using a [MultiMesh] in a [MultiMeshInstance3D] instead.
 	</description>
 	<methods>
 		<method name="set_mesh"  >
@@ -4685,7 +4685,7 @@
 		</method>
 		<method name="create_trimesh_collision"  >
 			<description>
-			This helper creates a [StaticBody] child [Node] using the mesh geometry as collision. It&apos;s mainly used for testing.
+			This helper creates a [StaticBody3D] child [Node] using the mesh geometry as collision. It&apos;s mainly used for testing.
 			</description>
 		</method>
 	</methods>
@@ -4708,7 +4708,7 @@
 	Provides high perfomance mesh instancing.
 	</brief_description>
 	<description>
-	MultiMesh provides low level mesh instancing. If the amount of [Mesh] instances needed goes from hundreds to thousands (and most need to be visible at close proximity) creating such a large amount of [MeshInstance] nodes may affect performance by using too much CPU or video memory. [html br/]For this case a MultiMesh becomes very useful, as it can draw thousands of instances with little API overhead.[html br/] As a drawback, if the instances are too far away of each other, performance may be reduced as every sigle instance will always rendered (they are spatially indexed as one, for the whole object).[html br/] Since instances may have any  behavior, the AABB used for visibility must be provided by the user, or generated with [method generate_aabb].
+	MultiMesh provides low level mesh instancing. If the amount of [Mesh] instances needed goes from hundreds to thousands (and most need to be visible at close proximity) creating such a large amount of [MeshInstance3D] nodes may affect performance by using too much CPU or video memory. [html br/]For this case a MultiMesh becomes very useful, as it can draw thousands of instances with little API overhead.[html br/] As a drawback, if the instances are too far away of each other, performance may be reduced as every sigle instance will always rendered (they are spatially indexed as one, for the whole object).[html br/] Since instances may have any  behavior, the AABB used for visibility must be provided by the user, or generated with [method generate_aabb].
 	</description>
 	<methods>
 		<method name="set_mesh"  >
@@ -4742,14 +4742,14 @@
 		<method name="set_instance_transform"  >
 			<argument index="0" name="arg0" type="int">
 			</argument>
-			<argument index="1" name="arg1" type="Transform">
+			<argument index="1" name="arg1" type="Transform3D">
 			</argument>
 			<description>
 			Set the transform for a specific instance.
 			</description>
 		</method>
 		<method name="get_instance_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="int">
 			</argument>
@@ -4798,12 +4798,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="MultiMeshInstance" inherits="VisualInstance" category="Nodes/3D/3D Visual Nodes">
+<class name="MultiMeshInstance3D" inherits="VisualInstance3D" category="Nodes/3D/3D Visual Nodes">
 	<brief_description>
 	Node that instances a [MultiMesh].
 	</brief_description>
 	<description>
-	MultiMeshInstance is a [Node] that takes a [MultiMesh] resource and adds it to the current [Scenario] by creating an instance of it (yes, this is an instance of instances).
+	MultiMeshInstance3D is a [Node] that takes a [MultiMesh] resource and adds it to the current [Scenario] by creating an instance of it (yes, this is an instance of instances).
 	</description>
 	<methods>
 		<method name="set_multimesh"  >
@@ -5361,7 +5361,7 @@
 			</return>
 			<argument index="0" name="path" type="String">
 			</argument>
-			<argument index="1" name="arguments" type="StringArray">
+			<argument index="1" name="arguments" type="PackedStringArray">
 			</argument>
 			<argument index="2" name="blocking" type="bool">
 			</argument>
@@ -5399,7 +5399,7 @@
 			</description>
 		</method>
 		<method name="get_cmdline_args"  >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<description>
 			</description>
@@ -5583,7 +5583,7 @@
 			</description>
 		</method>
 		<method name="get_meta_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<description>
 			</description>
@@ -5682,7 +5682,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="OmniLight" inherits="Light" category="Nodes/3D/3D Visual Nodes/3D Light Nodes">
+<class name="OmniLight3D" inherits="Light" category="Nodes/3D/3D Visual Nodes/3D Light Nodes">
 	<brief_description>
 	OmniDirectional Light, such as a lightbulb or a candle.
 	</brief_description>
@@ -5903,12 +5903,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="Particles" inherits="VisualInstance" category="Nodes/3D/3D Visual Nodes">
+<class name="Particles3D" inherits="VisualInstance3D" category="Nodes/3D/3D Visual Nodes">
 	<brief_description>
 	Particle system 3D Node
 	</brief_description>
 	<description>
-	Particles is a particle system 3D [Node] that is used to simulate several types of particle effects, such as explosions, rain, snow, fireflies, or other magical-like shinny sparkles. Particles are drawn using impostors, and given their dynamic behavior, the user must provide a visibility AABB (although helpers to create one automatically exist).
+	Particles3D is a particle system 3D [Node] that is used to simulate several types of particle effects, such as explosions, rain, snow, fireflies, or other magical-like shinny sparkles. Particles3D are drawn using impostors, and given their dynamic behavior, the user must provide a visibility AABB (although helpers to create one automatically exist).
 	</description>
 	<methods>
 		<method name="set_amount"  >
@@ -5968,13 +5968,13 @@
 			</description>
 		</method>
 		<method name="set_emission_points"  >
-			<argument index="0" name="points" type="Vector3Array">
+			<argument index="0" name="points" type="PackedVector3Array">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_emission_points" qualifiers="const" >
-			<return type="Vector3Array">
+			<return type="PackedVector3Array">
 			</return>
 			<description>
 			</description>
@@ -6309,18 +6309,18 @@
 		</constant>
 	</constants>
 </class>
-<class name="PhysicsBody" inherits="Spatial" category="Nodes/3D">
+<class name="PhysicsBody3D" inherits="Node3D" category="Nodes/3D">
 	<brief_description>
 	Base class for differnt types of Physics bodies.
 	</brief_description>
 	<description>
-	PhysicsBody is an abstract base class for implementing a physics body. All PhysicsBody types inherit from it.
+	PhysicsBody3D is an abstract base class for implementing a physics body. All PhysicsBody3D types inherit from it.
 	</description>
 	<methods>
 		<method name="add_shape"  >
 			<argument index="0" name="shape" type="Object">
 			</argument>
-			<argument index="1" name="transform" type="Transform" default="Transform()">
+			<argument index="1" name="transform" type="Transform3D" default="Transform3D()">
 			</argument>
 			<description>
 			</description>
@@ -6342,7 +6342,7 @@
 		<method name="set_shape_transform"  >
 			<argument index="0" name="shape_idx" type="int">
 			</argument>
-			<argument index="1" name="transform" type="Transform">
+			<argument index="1" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -6356,7 +6356,7 @@
 			</description>
 		</method>
 		<method name="get_shape_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="shape_idx" type="int">
 			</argument>
@@ -6432,7 +6432,7 @@
 			</description>
 		</method>
 		<method name="get_inverse_inertia_tensor" qualifiers="const" >
-			<return type="Matrix3">
+			<return type="Basis">
 			</return>
 			<description>
 			</description>
@@ -6462,13 +6462,13 @@
 			</description>
 		</method>
 		<method name="set_transform"  >
-			<argument index="0" name="transform" type="Transform">
+			<argument index="0" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			</description>
@@ -6652,7 +6652,7 @@
 		<method name="area_set_transform"  >
 			<argument index="0" name="area" type="RID">
 			</argument>
-			<argument index="1" name="transform" type="Transform">
+			<argument index="1" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -6682,7 +6682,7 @@
 			</description>
 		</method>
 		<method name="area_get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="area" type="RID">
 			</argument>
@@ -6722,7 +6722,7 @@
 			</argument>
 			<argument index="1" name="shape" type="RID">
 			</argument>
-			<argument index="2" name="transform" type="Transform" default="Transform()">
+			<argument index="2" name="transform" type="Transform3D" default="Transform3D()">
 			</argument>
 			<description>
 			</description>
@@ -6742,7 +6742,7 @@
 			</argument>
 			<argument index="1" name="shape_idx" type="int">
 			</argument>
-			<argument index="2" name="transform" type="Transform">
+			<argument index="2" name="transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -6766,7 +6766,7 @@
 			</description>
 		</method>
 		<method name="body_get_shape_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="body" type="RID">
 			</argument>
@@ -6832,7 +6832,7 @@
 		<method name="body_static_simulate_motion"  >
 			<argument index="0" name="body" type="RID">
 			</argument>
-			<argument index="1" name="motion" type="Transform">
+			<argument index="1" name="motion" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -6996,7 +6996,7 @@
 			</argument>
 			<argument index="1" name="shape" type="RID">
 			</argument>
-			<argument index="2" name="arg2" type="Transform">
+			<argument index="2" name="arg2" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -7006,7 +7006,7 @@
 			</argument>
 			<argument index="1" name="bounds" type="Dictionary">
 			</argument>
-			<argument index="2" name="arg2" type="Transform">
+			<argument index="2" name="arg2" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -7151,7 +7151,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PlaneShape" inherits="Shape" category="Resources">
+<class name="PlaneShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7458,7 +7458,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Portal" inherits="VisualInstance" category="Nodes/3D/3D Visual Nodes">
+<class name="Portal" inherits="VisualInstance3D" category="Nodes/3D/3D Visual Nodes">
 	<brief_description>
 	Portals provide virtual openings to rooms.
 	</brief_description>
@@ -7658,7 +7658,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="RayShape" inherits="Shape" category="Resources">
+<class name="RayShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7680,7 +7680,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Reference" inherits="Object" category="Core">
+<class name="RefCounted" inherits="Object" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7690,7 +7690,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Resource" inherits="Reference" category="Resources">
+<class name="Resource" inherits="RefCounted" category="Resources">
 	<brief_description>
 	Base class for all resources.
 	</brief_description>
@@ -7760,7 +7760,7 @@
 			</description>
 		</method>
 		<method name="get_recognized_extensions_for_type"  >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="type" type="String">
 			</argument>
@@ -7788,7 +7788,7 @@
 			</description>
 		</method>
 		<method name="get_recognized_extensions"  >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="type" type="Object">
 			</argument>
@@ -7988,14 +7988,14 @@
 			</description>
 		</method>
 		<method name="set_geometry_hint"  >
-			<argument index="0" name="triangles" type="Vector3Array">
+			<argument index="0" name="triangles" type="PackedVector3Array">
 			</argument>
 			<description>
 			Set the &quot;geometry&quot; hint of the room. This means, how the room actually looks (an array of [Vector3]s, forming triangles).
 			</description>
 		</method>
 		<method name="get_geometry_hint" qualifiers="const" >
-			<return type="Vector3Array">
+			<return type="PackedVector3Array">
 			</return>
 			<description>
 			Return the &quot;geometry&quot; hint of the room. This means, how the room actually looks (an array of [Vector3]s, forming triangles).
@@ -8005,7 +8005,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="RoomInstance" inherits="VisualInstance" category="Nodes/3D/3D Visual Nodes">
+<class name="RoomInstance" inherits="VisualInstance3D" category="Nodes/3D/3D Visual Nodes">
 	<brief_description>
 	Node that instances a Room.
 	</brief_description>
@@ -8029,7 +8029,7 @@
 		</method>
 		<method name="compute_room_from_subtree"  >
 			<description>
-			This helper function computes a [Room] from the shapes of all the children [VisualInstance] nodes, and sets it to the node.
+			This helper function computes a [Room] from the shapes of all the children [VisualInstance3D] nodes, and sets it to the node.
 			</description>
 		</method>
 		<method name="set_simulate_acoustics"  >
@@ -8099,14 +8099,14 @@
 			</description>
 		</method>
 		<method name="set_data"  >
-			<argument index="0" name="data" type="RawArray">
+			<argument index="0" name="data" type="PackedByteArray">
 			</argument>
 			<description>
 			Set sample data. Data must be little endian, no matter the host platform, and exactly as long to fit all frames. Example, if data is Stereo, 16 bits, 256 frames, it will be 1024 bytes long.
 			</description>
 		</method>
 		<method name="get_data" qualifiers="const" >
-			<return type="RawArray">
+			<return type="PackedByteArray">
 			</return>
 			<description>
 			Return sample data. Data will be endian, no matter with the host platform, and exactly as long to fit all frames. Example, if data is Stereo, 16 bits, 256 frames, it will be 1024 bytes long.
@@ -8835,7 +8835,7 @@
 			</description>
 		</method>
 		<method name="get_param_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<description>
 			</description>
@@ -8870,7 +8870,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Shape" inherits="Resource" category="Core">
+<class name="Shape3D" inherits="Resource" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -8880,12 +8880,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="Skeleton" inherits="Spatial" category="Nodes/3D">
+<class name="Skeleton3D" inherits="Node3D" category="Nodes/3D">
 	<brief_description>
-	Skeleton for characters and animated objects.
+	Skeleton3D for characters and animated objects.
 	</brief_description>
 	<description>
-	Skeleton provides a hierachial interface for managing bones, including pose, rest and animation (see [Animation]). Skeleton will support rag doll dynamics in the future.
+	Skeleton3D provides a hierachial interface for managing bones, including pose, rest and animation (see [Animation]). Skeleton3D will support rag doll dynamics in the future.
 	</description>
 	<methods>
 		<method name="add_bone"  >
@@ -8939,7 +8939,7 @@
 			</description>
 		</method>
 		<method name="get_bone_rest" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
@@ -8950,7 +8950,7 @@
 		<method name="set_bone_rest"  >
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
-			<argument index="1" name="rest" type="Transform">
+			<argument index="1" name="rest" type="Transform3D">
 			</argument>
 			<description>
 			Set the rest transform for bone &quot;bone_idx&quot;
@@ -8989,7 +8989,7 @@
 			</description>
 		</method>
 		<method name="get_bone_pose" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
@@ -9000,14 +9000,14 @@
 		<method name="set_bone_pose"  >
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
-			<argument index="1" name="pose" type="Transform">
+			<argument index="1" name="pose" type="Transform3D">
 			</argument>
 			<description>
 			Return the pose transform for bone &quot;bone_idx&quot;.
 			</description>
 		</method>
 		<method name="get_bone_custom_pose" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
@@ -9017,13 +9017,13 @@
 		<method name="set_bone_custom_pose"  >
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
-			<argument index="1" name="custom_pose" type="Transform">
+			<argument index="1" name="custom_pose" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="get_bone_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="bone_idx" type="int">
 			</argument>
@@ -9106,37 +9106,37 @@
 	<constants>
 	</constants>
 </class>
-<class name="Spatial" inherits="Node" category="Nodes/3D">
+<class name="Node3D" inherits="Node" category="Nodes/3D">
 	<brief_description>
 	Base class for all 3D nodes.
 	</brief_description>
 	<description>
-	Spatial is the base for every type of 3D [Node]. It contains a 3D [Transform] which can be set or get as local or global. If a Spatial [Node] has Spatial children, their transforms will be relative to the parent.
+	Node3D is the base for every type of 3D [Node]. It contains a 3D [Transform3D] which can be set or get as local or global. If a Node3D [Node] has Node3D children, their transforms will be relative to the parent.
 	</description>
 	<methods>
 		<method name="set_transform"  >
-			<argument index="0" name="local" type="Transform">
+			<argument index="0" name="local" type="Transform3D">
 			</argument>
 			<description>
 			Set the transform locally, relative to the parent spatial node.
 			</description>
 		</method>
 		<method name="get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			Return the local transform, relative to the bone parent.
 			</description>
 		</method>
 		<method name="set_global_transform"  >
-			<argument index="0" name="global" type="Transform">
+			<argument index="0" name="global" type="Transform3D">
 			</argument>
 			<description>
 			Set the transform globally, relative to worldspace.
 			</description>
 		</method>
 		<method name="get_global_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<description>
 			Return the gloal transform, relative to worldspace.
@@ -9146,7 +9146,7 @@
 			<return type="Object">
 			</return>
 			<description>
-			Return the parent [Spatial], or an empty [Object] if no parent exists or parent is not of type [Spatial.
+			Return the parent [Node3D], or an empty [Object] if no parent exists or parent is not of type [Node3D.
 			</description>
 		</method>
 		<method name="update_gizmo"  >
@@ -9156,14 +9156,14 @@
 	</methods>
 	<constants>
 		<constant name="NOTIFICATION_SCENARIO_CHANGED" value="41">
-			Spatial nodes receive this notification when the viewport next to it in ascending hierarchy changed the [Scenario].
+			Node3D nodes receive this notification when the viewport next to it in ascending hierarchy changed the [Scenario].
 		</constant>
 		<constant name="NOTIFICATION_TRANSFORM_CHANGED" value="40">
-			Spatial nodes receive this notifacation with their global transform changes. This means that either the current or a parent node changed it&apos;s transform.
+			Node3D nodes receive this notifacation with their global transform changes. This means that either the current or a parent node changed it&apos;s transform.
 		</constant>
 	</constants>
 </class>
-<class name="SpatialPlayer" inherits="Spatial" category="Core">
+<class name="SoundPlayer3D" inherits="Node3D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9173,7 +9173,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SpatialSamplePlayer" inherits="SpatialPlayer" category="Nodes/3D">
+<class name="SamplePlayer3D" inherits="SoundPlayer3D" category="Nodes/3D">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9275,7 +9275,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SpatialStreamPlayer" inherits="SpatialPlayer" category="Nodes/3D">
+<class name="StreamPlayer3D" inherits="SoundPlayer3D" category="Nodes/3D">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9347,7 +9347,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SphereShape" inherits="Shape" category="Resources">
+<class name="SphereShape3D" inherits="Shape3D" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9415,19 +9415,19 @@
 	<constants>
 	</constants>
 </class>
-<class name="SpotLight" inherits="Light" category="Nodes/3D/3D Visual Nodes/3D Light Nodes">
+<class name="SpotLight3D" inherits="Light" category="Nodes/3D/3D Visual Nodes/3D Light Nodes">
 	<brief_description>
 	Spotlight Light, such as a reflector spotlight or a latern.
 	</brief_description>
 	<description>
-	A SpotLight light is a type of [Light] node that emits lights in a specific direction, in the shape of a cone. The light is attenuated through the distance and this attenuation can be configured by changing the energy, radius and attenuation parameters of [Light]. TODO: Image of a spotlight.
+	A SpotLight3D light is a type of [Light] node that emits lights in a specific direction, in the shape of a cone. The light is attenuated through the distance and this attenuation can be configured by changing the energy, radius and attenuation parameters of [Light]. TODO: Image of a spotlight.
 	</description>
 	<methods>
 	</methods>
 	<constants>
 	</constants>
 </class>
-<class name="Sprite" inherits="Node2D" category="Nodes">
+<class name="Sprite2D" inherits="Node2D" category="Nodes">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9545,12 +9545,12 @@
 	<constants>
 	</constants>
 </class>
-<class name="StaticBody" inherits="PhysicsBody" category="Nodes/3D">
+<class name="StaticBody3D" inherits="PhysicsBody3D" category="Nodes/3D">
 	<brief_description>
-	PhysicsBody for static collision objects.
+	PhysicsBody3D for static collision objects.
 	</brief_description>
 	<description>
-	StaticBody implements a static collision [Node], by utilizing a rigid body in the [PhysicsServer]. Static bodies are used for static collision. For more information on physics body nodes, see [PhysicsBody].
+	StaticBody3D implements a static collision [Node], by utilizing a rigid body in the [PhysicsServer]. Static bodies are used for static collision. For more information on physics body nodes, see [PhysicsBody3D].
 	</description>
 	<methods>
 		<method name="set_simulated_motion"  >
@@ -9566,7 +9566,7 @@
 			</description>
 		</method>
 		<method name="simulate_motion"  >
-			<argument index="0" name="new_transform" type="Transform">
+			<argument index="0" name="new_transform" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -9590,7 +9590,7 @@
 		<method name="put_data"  >
 			<return type="int">
 			</return>
-			<argument index="0" name="data" type="RawArray">
+			<argument index="0" name="data" type="PackedByteArray">
 			</argument>
 			<description>
 			Send a chunk of data through the connection, blocking if necesary until the data is done sending. This function returns an [Error] code.
@@ -9599,7 +9599,7 @@
 		<method name="put_partial_data"  >
 			<return type="Array">
 			</return>
-			<argument index="0" name="data" type="RawArray">
+			<argument index="0" name="data" type="PackedByteArray">
 			</argument>
 			<description>
 			Send a chunk of data through the connection, if all the data could not be sent at once, only part of it will. This function returns two values, an [Error] code and an integer, describing how much data was actually sent.
@@ -10061,7 +10061,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="SurfaceTool" inherits="Reference" category="Core">
+<class name="SurfaceTool" inherits="RefCounted" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10110,13 +10110,13 @@
 			</description>
 		</method>
 		<method name="add_bones"  >
-			<argument index="0" name="bones" type="IntArray">
+			<argument index="0" name="bones" type="PackedIntArray">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="add_weights"  >
-			<argument index="0" name="weights" type="RealArray">
+			<argument index="0" name="weights" type="PackedFloatArray">
 			</argument>
 			<description>
 			</description>
@@ -10174,7 +10174,7 @@
 			</return>
 			<argument index="0" name="port" type="int">
 			</argument>
-			<argument index="1" name="accepted_hosts" type="StringArray" default="StringArray()">
+			<argument index="1" name="accepted_hosts" type="PackedStringArray" default="PackedStringArray()">
 			</argument>
 			<description>
 			</description>
@@ -10291,7 +10291,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="TestCube" inherits="VisualInstance" category="Nodes/3D/3D Visual Nodes">
+<class name="TestCube" inherits="VisualInstance3D" category="Nodes/3D/3D Visual Nodes">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10446,7 +10446,7 @@
 			</description>
 		</method>
 		<method name="search" qualifiers="const" >
-			<return type="IntArray">
+			<return type="PackedIntArray">
 			</return>
 			<argument index="0" name="flags" type="String">
 			</argument>
@@ -10844,7 +10844,7 @@
 			</description>
 		</method>
 		<method name="get_icon_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -10890,7 +10890,7 @@
 			</description>
 		</method>
 		<method name="get_stylebox_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -10936,7 +10936,7 @@
 			</description>
 		</method>
 		<method name="get_font_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -10982,7 +10982,7 @@
 			</description>
 		</method>
 		<method name="get_color_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -11028,7 +11028,7 @@
 			</description>
 		</method>
 		<method name="get_constant_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -11036,7 +11036,7 @@
 			</description>
 		</method>
 		<method name="get_type_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="String">
 			</argument>
@@ -11692,7 +11692,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="VisualInstance" inherits="Spatial" category="Nodes/3D/3D Visual Nodes">
+<class name="VisualInstance3D" inherits="Node3D" category="Nodes/3D/3D Visual Nodes">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -11885,7 +11885,7 @@
 			</description>
 		</method>
 		<method name="shader_get_param_list" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="shader" type="RID">
 			</argument>
@@ -12077,13 +12077,13 @@
 		<method name="fixed_material_set_uv_transform"  >
 			<argument index="0" name="arg0" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="Transform">
+			<argument index="1" name="arg1" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="fixed_material_get_uv_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -12225,7 +12225,7 @@
 			</argument>
 			<argument index="1" name="arg1" type="int">
 			</argument>
-			<argument index="2" name="arg2" type="Transform">
+			<argument index="2" name="arg2" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -12259,7 +12259,7 @@
 			</description>
 		</method>
 		<method name="multimesh_instance_get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -12297,13 +12297,13 @@
 		<method name="poly_add_primitive"  >
 			<argument index="0" name="arg0" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="Vector3Array">
+			<argument index="1" name="arg1" type="PackedVector3Array">
 			</argument>
-			<argument index="2" name="arg2" type="Vector3Array">
+			<argument index="2" name="arg2" type="PackedVector3Array">
 			</argument>
-			<argument index="3" name="arg3" type="ColorArray">
+			<argument index="3" name="arg3" type="PackedColorArray">
 			</argument>
-			<argument index="4" name="arg4" type="Vector3Array">
+			<argument index="4" name="arg4" type="PackedVector3Array">
 			</argument>
 			<description>
 			</description>
@@ -12677,13 +12677,13 @@
 			</argument>
 			<argument index="1" name="arg1" type="int">
 			</argument>
-			<argument index="2" name="arg2" type="Transform">
+			<argument index="2" name="arg2" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="skeleton_bone_get_transform"  >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -12817,7 +12817,7 @@
 		<method name="camera_set_transform"  >
 			<argument index="0" name="arg0" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="Transform">
+			<argument index="1" name="arg1" type="Transform3D">
 			</argument>
 			<description>
 			</description>
@@ -12915,7 +12915,7 @@
 			</description>
 		</method>
 		<method name="scenario_fx_get_effects" qualifiers="const" >
-			<return type="StringArray">
+			<return type="PackedStringArray">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -12999,13 +12999,13 @@
 		<method name="instance_set_transform"  >
 			<argument index="0" name="arg0" type="RID">
 			</argument>
-			<argument index="1" name="arg1" type="Transform">
+			<argument index="1" name="arg1" type="Transform3D">
 			</argument>
 			<description>
 			</description>
 		</method>
 		<method name="instance_get_transform" qualifiers="const" >
-			<return type="Transform">
+			<return type="Transform3D">
 			</return>
 			<argument index="0" name="arg0" type="RID">
 			</argument>
@@ -13283,7 +13283,7 @@
 			</argument>
 			<argument index="2" name="arg2" type="RID">
 			</argument>
-			<argument index="3" name="arg3" type="RealArray">
+			<argument index="3" name="arg3" type="PackedFloatArray">
 			</argument>
 			<argument index="4" name="arg4" type="Color" default="Color(1,1,1,1)">
 			</argument>
@@ -13295,7 +13295,7 @@
 			</argument>
 			<argument index="1" name="arg1" type="Array">
 			</argument>
-			<argument index="2" name="arg2" type="ColorArray">
+			<argument index="2" name="arg2" type="PackedColorArray">
 			</argument>
 			<argument index="3" name="arg3" type="Array" default="Array()">
 			</argument>
@@ -13612,7 +13612,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="World" inherits="Resource" category="Resources">
+<class name="World3D" inherits="Resource" category="Resources">
 	<brief_description>
 	</brief_description>
 	<description>

@@ -37,9 +37,9 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
-class Light : public VisualInstance {
+class Light3D : public VisualInstance3D {
 
-	OBJ_TYPE( Light, VisualInstance );
+	OBJ_TYPE( Light3D, VisualInstance3D );
 	OBJ_CATEGORY("3D Light Nodes");
 
 public:
@@ -109,7 +109,7 @@ protected:
 	void _notification(int p_what);
 
 	
-	Light(VisualServer::LightType p_type);	
+	Light3D(VisualServer::LightType p_type);
 public:
 
 	VS::LightType get_light_type() const { return type; }
@@ -143,20 +143,20 @@ public:
 
 	void approximate_opengl_attenuation(float p_constant, float p_linear, float p_quadratic, float p_radius_treshold=0.5);
 
-	Light();
-	~Light();
+	Light3D();
+	~Light3D();
 
 };
 
-VARIANT_ENUM_CAST( Light::Parameter );
-VARIANT_ENUM_CAST( Light::LightColor );
-VARIANT_ENUM_CAST( Light::Operator );
-VARIANT_ENUM_CAST( Light::BakeMode);
+VARIANT_ENUM_CAST( Light3D::Parameter );
+VARIANT_ENUM_CAST( Light3D::LightColor );
+VARIANT_ENUM_CAST( Light3D::Operator );
+VARIANT_ENUM_CAST( Light3D::BakeMode);
 
 
-class DirectionalLight : public Light {
+class DirectionalLight3D : public Light3D {
 
-	OBJ_TYPE( DirectionalLight, Light );
+	OBJ_TYPE( DirectionalLight3D, Light3D );
 
 public:
 
@@ -187,34 +187,34 @@ public:
 	void set_shadow_param(ShadowParam p_param, float p_value);
 	float get_shadow_param(ShadowParam p_param) const;
 
-	DirectionalLight();
+	DirectionalLight3D();
 };
 
-VARIANT_ENUM_CAST( DirectionalLight::ShadowMode );
-VARIANT_ENUM_CAST( DirectionalLight::ShadowParam );
+VARIANT_ENUM_CAST( DirectionalLight3D::ShadowMode );
+VARIANT_ENUM_CAST( DirectionalLight3D::ShadowParam );
 
 
-class OmniLight : public Light {
+class OmniLight3D : public Light3D {
 
-	OBJ_TYPE( OmniLight, Light );
+	OBJ_TYPE( OmniLight3D, Light3D );
 protected:
 	static void _bind_methods();
 
 public:
 
 
-	OmniLight() : Light( VisualServer::LIGHT_OMNI ) { set_parameter(PARAM_SHADOW_Z_OFFSET,0.001);}
+	OmniLight3D() : Light3D( VisualServer::LIGHT_OMNI ) { set_parameter(PARAM_SHADOW_Z_OFFSET,0.001);}
 };
 
-class SpotLight : public Light {
+class SpotLight3D : public Light3D {
 
-	OBJ_TYPE( SpotLight, Light );
+	OBJ_TYPE( SpotLight3D, Light3D );
 protected:
 	static void _bind_methods();
 public:
 
 
-	SpotLight() : Light( VisualServer::LIGHT_SPOT ) {}
+	SpotLight3D() : Light3D( VisualServer::LIGHT_SPOT ) {}
 };
 
 

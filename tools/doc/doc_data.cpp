@@ -237,7 +237,7 @@ void DocData::generate(bool p_basic_types) {
 								default_arg_text="\""+default_arg_text+"\"";
 								break;
 							case Variant::TRANSFORM:
-								if (default_arg.operator Transform()==Transform()) {
+								if (default_arg.operator Transform3D()==Transform3D()) {
 									default_arg_text="";
 								}
 

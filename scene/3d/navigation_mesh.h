@@ -39,9 +39,9 @@ public:
 
 class Navigation;
 
-class NavigationMeshInstance : public Spatial {
+class NavigationMeshInstance : public Node3D {
 
-	OBJ_TYPE(NavigationMeshInstance,Spatial);
+	OBJ_TYPE(NavigationMeshInstance,Node3D);
 
 	bool enabled;
 	int nav_id;

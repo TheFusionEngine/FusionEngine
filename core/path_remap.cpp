@@ -153,9 +153,9 @@ void PathRemap::load_remaps() {
 		for(List<Variant>::Element *E=rk.front();E;E=E->next()) {
 
 			String source = E->get();
-			StringArray sa = remaps[E->get()];
+			PackedStringArray sa = remaps[E->get()];
 			int sas = sa.size();
-			StringArray::Read r = sa.read();
+			PackedStringArray::Read r = sa.read();
 
 			for(int i=0;i<sas;i++) {
 

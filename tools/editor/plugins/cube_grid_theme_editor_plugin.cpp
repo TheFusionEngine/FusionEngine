@@ -76,10 +76,10 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 
 		Node *child = p_scene->get_child(i);
 
-		if (!child->cast_to<MeshInstance>()) {
+		if (!child->cast_to<MeshInstance3D>()) {
 			if (child->get_child_count()>0) {
 				child=child->get_child(0);
-				if (!child->cast_to<MeshInstance>()) {
+				if (!child->cast_to<MeshInstance3D>()) {
 					continue;
 				}
 
@@ -89,7 +89,7 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 
 		}
 
-		MeshInstance *mi = child->cast_to<MeshInstance>();
+		MeshInstance3D *mi = child->cast_to<MeshInstance3D>();
 		Ref<Mesh> mesh=mi->get_mesh();
 		if (mesh.is_null())
 			 continue;
@@ -105,14 +105,14 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 
 		p_library->set_item_mesh(id,mesh);
 
-		Ref<Shape> collision;
+		Ref<Shape3D> collision;
 
 		for(int j=0;j<mi->get_child_count();j++) {
 #if 1
 			Node *child2 = mi->get_child(j);
-			if (!child2->cast_to<StaticBody>())
+			if (!child2->cast_to<StaticBody3D>())
 				continue;
-			StaticBody *sb = child2->cast_to<StaticBody>();
+			StaticBody3D *sb = child2->cast_to<StaticBody3D>();
 			if (sb->get_shape_count()==0)
 				continue;
 			collision=sb->get_shape(0);
@@ -145,7 +145,7 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 		 RID scen = VS::get_singleton()->scenario_create();
 		 VS::get_singleton()->viewport_set_scenario(vp,scen);
 		 RID cam = VS::get_singleton()->camera_create();
-		 VS::get_singleton()->camera_set_transform(cam, Transform() );
+		 VS::get_singleton()->camera_set_transform(cam, Transform3D() );
 		 VS::get_singleton()->viewport_attach_camera(vp,cam);
 		 RID light = VS::get_singleton()->light_create(VS::LIGHT_DIRECTIONAL);
 		 RID lightinst = VS::get_singleton()->instance_create2(light,scen);
@@ -164,9 +164,9 @@ void MeshLibraryEditor::_import_scene(Node *p_scene, Ref<MeshLibrary> p_library,
 			print_line("aabb: "+aabb);
 			Vector3 ofs = aabb.pos + aabb.size*0.5;
 			aabb.pos-=ofs;
-			Transform xform;
-			xform.basis=Matrix3().rotated(Vector3(0,1,0),Math_PI*0.25);
-			xform.basis = Matrix3().rotated(Vector3(1,0,0),-Math_PI*0.25)*xform.basis;
+			Transform3D xform;
+			xform.basis=Basis().rotated(Vector3(0,1,0),Math_PI*0.25);
+			xform.basis = Basis().rotated(Vector3(1,0,0),-Math_PI*0.25)*xform.basis;
 			AABB rot_aabb = xform.xform(aabb);
 			print_line("rot_aabb: "+rot_aabb);
 			float m = MAX(rot_aabb.size.x,rot_aabb.size.y)*0.5;

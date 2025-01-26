@@ -2156,8 +2156,8 @@ Error ShaderLanguage::parse_variable_declaration(Parser& parser,BlockNode *p_blo
 				case TYPE_VEC2: con->value=Vector2(); break;
 				case TYPE_VEC3: con->value=Vector3(); break;
 				case TYPE_VEC4: con->value=iscolor?Variant(Color()):Variant(Plane()); break;
-				case TYPE_MAT3: con->value=Matrix3(); break;
-				case TYPE_MAT4: con->value=Transform(); break;
+				case TYPE_MAT3: con->value=Basis(); break;
+				case TYPE_MAT4: con->value=Transform3D(); break;
 				case TYPE_TEXTURE:
 				case TYPE_CUBEMAP: con->value=RID(); break;
 				default: {}

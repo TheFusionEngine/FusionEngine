@@ -268,8 +268,8 @@ public:
 	virtual void fixed_material_set_texcoord_mode(RID p_material,FixedMaterialParam p_parameter, FixedMaterialTexCoordMode p_mode)=0;
 	virtual FixedMaterialTexCoordMode fixed_material_get_texcoord_mode(RID p_material,FixedMaterialParam p_parameter) const=0;
 
-	virtual void fixed_material_set_uv_transform(RID p_material,const Transform& p_transform)=0;
-	virtual Transform fixed_material_get_uv_transform(RID p_material) const=0;
+	virtual void fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform)=0;
+	virtual Transform3D fixed_material_get_uv_transform(RID p_material) const=0;
 
 	virtual void fixed_material_set_point_size(RID p_material,float p_size)=0;
 	virtual float fixed_material_get_point_size(RID p_material) const=0;
@@ -356,13 +356,13 @@ public:
 
 	virtual void multimesh_set_mesh(RID p_multimesh,RID p_mesh)=0;
 	virtual void multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb)=0;
-	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform)=0;
+	virtual void multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform)=0;
 	virtual void multimesh_instance_set_color(RID p_multimesh,int p_index,const Color& p_color)=0;
 
 	virtual RID multimesh_get_mesh(RID p_multimesh) const=0;
 	virtual AABB multimesh_get_aabb(RID p_multimesh,const AABB& p_aabb) const=0;;
 
-	virtual Transform multimesh_instance_get_transform(RID p_multimesh,int p_index) const=0;
+	virtual Transform3D multimesh_instance_get_transform(RID p_multimesh,int p_index) const=0;
 	virtual Color multimesh_instance_get_color(RID p_multimesh,int p_index) const=0;
 
 	virtual void multimesh_set_visible_instances(RID p_multimesh,int p_visible)=0;
@@ -553,8 +553,8 @@ public:
 	virtual RID skeleton_create()=0;
 	virtual void skeleton_resize(RID p_skeleton,int p_bones)=0;
 	virtual int skeleton_get_bone_count(RID p_skeleton) const=0;
-	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform)=0;
-	virtual Transform skeleton_bone_get_transform(RID p_skeleton,int p_bone)=0;
+	virtual void skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform)=0;
+	virtual Transform3D skeleton_bone_get_transform(RID p_skeleton,int p_bone)=0;
 	
 	/* ROOM API */
 
@@ -629,7 +629,7 @@ public:
 	virtual RID camera_create()=0;
 	virtual void camera_set_perspective(RID p_camera,float p_fovy_degrees, float p_z_near, float p_z_far)=0;
 	virtual void camera_set_orthogonal(RID p_camera,float p_size, float p_z_near, float p_z_far)=0;
-	virtual void camera_set_transform(RID p_camera,const Transform& p_transform)=0;	
+	virtual void camera_set_transform(RID p_camera,const Transform3D& p_transform)=0;	
 
 	virtual void camera_set_visible_layers(RID p_camera,uint32_t p_layers)=0;
 	virtual uint32_t camera_get_visible_layers(RID p_camera) const=0;
@@ -705,14 +705,14 @@ public:
 	virtual RID viewport_get_scenario(RID  p_viewport) const=0;
 	virtual void viewport_attach_canvas(RID p_viewport,RID p_canvas)=0;
 	virtual void viewport_remove_canvas(RID p_viewport,RID p_canvas)=0;
-	virtual void viewport_set_canvas_transform(RID p_viewport,RID p_canvas,const Matrix32& p_offset)=0;
-	virtual Matrix32 viewport_get_canvas_transform(RID p_viewport,RID p_canvas) const=0;
+	virtual void viewport_set_canvas_transform(RID p_viewport,RID p_canvas,const Transform2D& p_offset)=0;
+	virtual Transform2D viewport_get_canvas_transform(RID p_viewport,RID p_canvas) const=0;
 	virtual void viewport_set_transparent_background(RID p_viewport,bool p_enabled)=0;
 	virtual bool viewport_has_transparent_background(RID p_viewport) const=0;
 
 
-	virtual void viewport_set_global_canvas_transform(RID p_viewport,const Matrix32& p_transform)=0;
-	virtual Matrix32 viewport_get_global_canvas_transform(RID p_viewport) const=0;
+	virtual void viewport_set_global_canvas_transform(RID p_viewport,const Transform2D& p_transform)=0;
+	virtual Transform2D viewport_get_global_canvas_transform(RID p_viewport) const=0;
 	virtual void viewport_set_canvas_layer(RID p_viewport,RID p_canvas,int p_layer)=0;
 
 
@@ -890,8 +890,8 @@ public:
 
 	virtual AABB instance_get_base_aabb(RID p_instance) const=0;
 
-	virtual void instance_set_transform(RID p_instance, const Transform& p_transform)=0;
-	virtual Transform instance_get_transform(RID p_instance) const=0;
+	virtual void instance_set_transform(RID p_instance, const Transform3D& p_transform)=0;
+	virtual Transform3D instance_get_transform(RID p_instance) const=0;
 	
 
 	virtual void instance_attach_object_instance_ID(RID p_instance,uint32_t p_ID)=0;
@@ -972,7 +972,7 @@ public:
 
 	//virtual void canvas_item_set_rect(RID p_item, const Rect2& p_rect)=0;
 
-	virtual void canvas_item_set_transform(RID p_item, const Matrix32& p_transform)=0;
+	virtual void canvas_item_set_transform(RID p_item, const Transform2D& p_transform)=0;
 	virtual void canvas_item_set_clip(RID p_item, bool p_clip)=0;
 	virtual void canvas_item_set_custom_rect(RID p_item, bool p_custom_rect,const Rect2& p_rect=Rect2())=0;
 	virtual void canvas_item_set_opacity(RID p_item, float p_opacity)=0;
@@ -994,7 +994,7 @@ public:
 	virtual void canvas_item_add_polygon(RID p_item, const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs=Vector<Point2>(), RID p_texture=RID())=0;
 	virtual void canvas_item_add_triangle_array(RID p_item, const Vector<int>& p_indices, const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs=Vector<Point2>(), RID p_texture=RID(), int p_count=-1)=0;
 	virtual void canvas_item_add_triangle_array_ptr(RID p_item, int p_count, const int* p_indices, const Point2* p_points, const Color* p_colors,const Point2* p_uvs=NULL, RID p_texture=RID())=0;
-	virtual void canvas_item_add_set_transform(RID p_item,const Matrix32& p_transform)=0;
+	virtual void canvas_item_add_set_transform(RID p_item,const Transform2D& p_transform)=0;
 	virtual void canvas_item_add_set_blend_mode(RID p_item, MaterialBlendMode p_blend)=0;
 	virtual void canvas_item_add_clip_ignore(RID p_item, bool p_ignore)=0;
 	virtual void canvas_item_set_sort_children_by_y(RID p_item, bool p_enable)=0;

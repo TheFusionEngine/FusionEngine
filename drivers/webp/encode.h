@@ -87,7 +87,7 @@ typedef struct {
   float target_PSNR;      // if non-zero, specifies the minimal distortion to
                           // try to achieve. Takes precedence over target_size.
   int segments;           // maximum number of segments to use, in [1..4]
-  int sns_strength;       // Spatial Noise Shaping. 0=off, 100=maximum.
+  int sns_strength;       // Node3D Noise Shaping. 0=off, 100=maximum.
   int filter_strength;    // range: [0 = off .. 100 = strongest]
   int filter_sharpness;   // range: [0 = off .. 7 = least sharp]
   int filter_type;        // filtering type: 0 = simple, 1 = strong (only used

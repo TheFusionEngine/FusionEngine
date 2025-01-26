@@ -31,22 +31,22 @@
 
 #include "resource.h"
 
-class Shape : public Resource {
+class Shape3D : public Resource {
 
-	OBJ_TYPE( Shape, Resource );
-	OBJ_SAVE_TYPE( Shape );
+	OBJ_TYPE( Shape3D, Resource );
+	OBJ_SAVE_TYPE( Shape3D );
 	RES_BASE_EXTENSION("shp");
 	RID shape;
 
 protected:
 
 	_FORCE_INLINE_ RID get_shape() const { return shape; }
-	Shape(RID p_shape);
+	Shape3D(RID p_shape);
 public:
 
 	virtual RID get_rid() const { return shape; }
-	Shape();
-	~Shape();
+	Shape3D();
+	~Shape3D();
 };
 
 #endif // SHAPE_H

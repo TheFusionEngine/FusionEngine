@@ -38,12 +38,15 @@
 #include "scene/main/canvas_layer.h"
 #include "scene/main/viewport.h"
 #include "scene/gui/control.h"
+
 #include "scene/gui/texture_progress.h"
 #include "scene/gui/empty_control.h"
 #include "scene/gui/button.h"
 #include "scene/gui/button_array.h"
 #include "scene/gui/button_group.h"
+// #endif
 #include "scene/gui/label.h"
+#ifndef ULTRA
 #include "scene/gui/line_edit.h"
 #include "scene/gui/scroll_bar.h"
 #include "scene/gui/progress_bar.h"
@@ -104,6 +107,7 @@
 
 #include "scene/2d/position_2d.h"
 #include "scene/2d/tile_map.h"
+#endif
 //#include "scene/2d/tile_map.h"
 #include "scene/resources/tile_set.h"
 
@@ -132,6 +136,7 @@
 #include "scene/resources/convex_polygon_shape.h"
 #include "scene/resources/concave_polygon_shape.h"
 
+#ifndef ULTRA
 #include "scene/resources/shape_line_2d.h"
 #include "scene/resources/circle_shape_2d.h"
 #include "scene/resources/segment_shape_2d.h"
@@ -139,7 +144,7 @@
 #include "scene/resources/capsule_shape_2d.h"
 #include "scene/resources/convex_polygon_shape_2d.h"
 #include "scene/resources/concave_polygon_shape_2d.h"
-
+#endif
 #include "scene/resources/mesh_library.h"
 
 
@@ -185,10 +190,12 @@
 #include "scene/3d/portal.h"
 #include "scene/resources/environment.h"
 #include "scene/3d/physics_body.h"
-
+#ifndef UlTRA
 #include "scene/3d/vehicle_body.h"
+#endif
 #include "scene/3d/body_shape.h"
 #include "scene/3d/area.h"
+#ifndef ULTRA
 #include "scene/3d/physics_joint.h"
 #include "scene/3d/multimesh_instance.h"
 #include "scene/3d/baked_light_instance.h"
@@ -200,6 +207,7 @@
 #include "scene/3d/proximity_group.h"
 #include "scene/3d/navigation_mesh.h"
 #include "scene/3d/navigation.h"
+#endif
 #include "scene/3d/collision_polygon.h"
 #endif
 
@@ -251,322 +259,340 @@ void register_scene_types() {
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_type<Object>();
+	REGISTER_OBJECT(Object);
 
-	ObjectTypeDB::register_type<Node>();
+	REGISTER_OBJECT(Node);
 
-	ObjectTypeDB::register_type<Viewport>();
-	ObjectTypeDB::register_virtual_type<RenderTargetTexture>();
-	ObjectTypeDB::register_type<Timer>();
-	ObjectTypeDB::register_type<CanvasLayer>();
-	ObjectTypeDB::register_type<ResourcePreloader>();
+	REGISTER_OBJECT(Viewport);
+	REGISTER_VIRTUAL_OBJECT(RenderTargetTexture);
+	REGISTER_OBJECT(Timer);
+	REGISTER_OBJECT(CanvasLayer);
+	REGISTER_OBJECT(ResourcePreloader);
 
 	/* REGISTER GUI */
-	ObjectTypeDB::register_type<ButtonGroup>();
-	ObjectTypeDB::register_virtual_type<BaseButton>();
+	REGISTER_OBJECT(ButtonGroup);
+	REGISTER_VIRTUAL_OBJECT(BaseButton);
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_type<Control>();
-	ObjectTypeDB::register_type<EmptyControl>();
-	ObjectTypeDB::register_type<Button>();
-	ObjectTypeDB::register_type<Label>();
-	ObjectTypeDB::register_type<HScrollBar>();
-	ObjectTypeDB::register_type<VScrollBar>();
-	ObjectTypeDB::register_type<ProgressBar>();
-	ObjectTypeDB::register_type<HSlider>();
-	ObjectTypeDB::register_type<VSlider>();
-	ObjectTypeDB::register_type<Popup>();
-	ObjectTypeDB::register_type<PopupPanel>();
-	ObjectTypeDB::register_type<MenuButton>();
-	ObjectTypeDB::register_type<CheckButton>();
-	ObjectTypeDB::register_type<Panel>();
-	ObjectTypeDB::register_type<Range>();
+	REGISTER_OBJECT(Control);
+	REGISTER_OBJECT(EmptyControl);
+	REGISTER_OBJECT(Button);
+	REGISTER_OBJECT(Label);
+#ifndef ULTRA
+	REGISTER_OBJECT(HScrollBar);
+	REGISTER_OBJECT(VScrollBar);
+	REGISTER_OBJECT(ProgressBar);
+	REGISTER_OBJECT(HSlider);
+	REGISTER_OBJECT(VSlider);
+	REGISTER_OBJECT(Popup);
+	REGISTER_OBJECT(PopupPanel);
+	REGISTER_OBJECT(MenuButton);
+	REGISTER_OBJECT(CheckButton);
+	REGISTER_OBJECT(Panel);
+	REGISTER_OBJECT(Range);
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_type<TextureFrame>();
-	ObjectTypeDB::register_type<TabContainer>();
-	ObjectTypeDB::register_type<Tabs>();
-	ObjectTypeDB::register_virtual_type<Separator>();
-	ObjectTypeDB::register_type<HSeparator>();
-	ObjectTypeDB::register_type<VSeparator>();
-	ObjectTypeDB::register_type<TextureButton>();
-	ObjectTypeDB::register_type<Container>();
-	ObjectTypeDB::register_virtual_type<BoxContainer>();
-	ObjectTypeDB::register_type<HBoxContainer>();
-	ObjectTypeDB::register_type<VBoxContainer>();
-	ObjectTypeDB::register_type<GridContainer>();
-	ObjectTypeDB::register_type<CenterContainer>();
-	ObjectTypeDB::register_type<ScrollContainer>();
-	ObjectTypeDB::register_type<PanelContainer>();
-	ObjectTypeDB::register_virtual_type<SplitContainer>();
-	ObjectTypeDB::register_type<HSplitContainer>();
-	ObjectTypeDB::register_type<VSplitContainer>();
-
+	REGISTER_OBJECT(TextureFrame);
+	REGISTER_OBJECT(TabContainer);
+	REGISTER_OBJECT(Tabs);
+	REGISTER_VIRTUAL_OBJECT(Separator);
+	REGISTER_OBJECT(HSeparator);
+	REGISTER_OBJECT(VSeparator);
+	REGISTER_OBJECT(TextureButton);
+	REGISTER_OBJECT(Container);
+	REGISTER_VIRTUAL_OBJECT(BoxContainer);
+	REGISTER_OBJECT(HBoxContainer);
+	REGISTER_OBJECT(VBoxContainer);
+	REGISTER_OBJECT(GridContainer);
+	REGISTER_OBJECT(CenterContainer);
+	REGISTER_OBJECT(ScrollContainer);
+	REGISTER_OBJECT(PanelContainer);
+	REGISTER_VIRTUAL_OBJECT(SplitContainer);
+	REGISTER_OBJECT(HSplitContainer);
+	REGISTER_OBJECT(VSplitContainer);
+#endif
 	OS::get_singleton()->yield(); //may take time to init
 
 
-	ObjectTypeDB::register_virtual_type<ButtonArray>();
-	ObjectTypeDB::register_type<HButtonArray>();
-	ObjectTypeDB::register_type<VButtonArray>();
-	ObjectTypeDB::register_type<TextureProgress>();
+	REGISTER_VIRTUAL_OBJECT(ButtonArray);
+#ifndef ULTRA
+	REGISTER_OBJECT(HButtonArray);
+	REGISTER_OBJECT(VButtonArray);
+	REGISTER_OBJECT(TextureProgress);
 
 
 #ifndef	ADVANCED_GUI_DISABLED
 
-	ObjectTypeDB::register_type<FileDialog>();
-	ObjectTypeDB::register_type<LineEdit>();
-	ObjectTypeDB::register_type<PopupMenu>();
-	ObjectTypeDB::register_type<Tree>();
-	ObjectTypeDB::register_type<TextEdit>();
+	REGISTER_OBJECT(FileDialog);
+	REGISTER_OBJECT(LineEdit);
+	REGISTER_OBJECT(PopupMenu);
+	REGISTER_OBJECT(Tree);
+	REGISTER_OBJECT(TextEdit);
 
-	ObjectTypeDB::register_virtual_type<TreeItem>();
-	ObjectTypeDB::register_type<OptionButton>();
-	ObjectTypeDB::register_type<SpinBox>();
-	ObjectTypeDB::register_type<ReferenceFrame>();
-	ObjectTypeDB::register_type<ColorPicker>();
-	ObjectTypeDB::register_type<ColorPickerButton>();
-	ObjectTypeDB::register_type<RichTextLabel>();
-	ObjectTypeDB::register_type<PopupDialog>();
-	ObjectTypeDB::register_type<WindowDialog>();
-	ObjectTypeDB::register_type<AcceptDialog>();
-	ObjectTypeDB::register_type<ConfirmationDialog>();
-	ObjectTypeDB::register_type<VideoPlayer>();
-	ObjectTypeDB::register_type<MarginContainer>();
+	REGISTER_VIRTUAL_OBJECT(TreeItem);
+	REGISTER_OBJECT(OptionButton);
+	REGISTER_OBJECT(SpinBox);
+	REGISTER_OBJECT(ReferenceFrame);
+	REGISTER_OBJECT(ColorPicker);
+	REGISTER_OBJECT(ColorPickerButton);
+	REGISTER_OBJECT(RichTextLabel);
+	REGISTER_OBJECT(PopupDialog);
+	REGISTER_OBJECT(WindowDialog);
+	REGISTER_OBJECT(AcceptDialog);
+	REGISTER_OBJECT(ConfirmationDialog);
+	REGISTER_OBJECT(VideoPlayer);
+	REGISTER_OBJECT(MarginContainer);
 
 	OS::get_singleton()->yield(); //may take time to init
 
 #endif
-
+#endif // ultra
 	/* REGISTER 3D */
 
-	ObjectTypeDB::register_type<Spatial>();
-	ObjectTypeDB::register_type<Skeleton>();
-	ObjectTypeDB::register_type<AnimationPlayer>();
-	ObjectTypeDB::register_type<Tween>();
+	REGISTER_OBJECT(Node3D);
+	REGISTER_OBJECT(Skeleton3D);
+	REGISTER_OBJECT(AnimationPlayer);
+	REGISTER_OBJECT(Tween);
 
 	OS::get_singleton()->yield(); //may take time to init
 
 #ifndef _3D_DISABLED
-	ObjectTypeDB::register_type<BoneAttachment>();
-	ObjectTypeDB::register_virtual_type<VisualInstance>();
-	ObjectTypeDB::register_type<Camera>();
-	ObjectTypeDB::register_type<InterpolatedCamera>();
-	ObjectTypeDB::register_type<TestCube>();
-	ObjectTypeDB::register_type<MeshInstance>();
-	ObjectTypeDB::register_type<ImmediateGeometry>();
-	ObjectTypeDB::register_type<Sprite3D>();
-	ObjectTypeDB::register_type<AnimatedSprite3D>();
-	ObjectTypeDB::register_virtual_type<Light>();
-	ObjectTypeDB::register_type<DirectionalLight>();
-	ObjectTypeDB::register_type<OmniLight>();
-	ObjectTypeDB::register_type<SpotLight>();
-	ObjectTypeDB::register_type<AnimationTreePlayer>();
-	ObjectTypeDB::register_type<Portal>();
-	ObjectTypeDB::register_type<Particles>();
-	ObjectTypeDB::register_type<Position3D>();
-	ObjectTypeDB::register_type<Quad>();
-	ObjectTypeDB::register_type<NavigationMeshInstance>();
-	ObjectTypeDB::register_type<NavigationMesh>();
-	ObjectTypeDB::register_type<Navigation>();
+	REGISTER_OBJECT(BoneAttachment3D);
+	REGISTER_VIRTUAL_OBJECT(VisualInstance3D);
+	REGISTER_OBJECT(Camera3D);
+	REGISTER_OBJECT(InterpolatedCamera);
+	REGISTER_OBJECT(TestCube);
+	REGISTER_OBJECT(MeshInstance3D);
+#ifndef ULTRA
+	REGISTER_OBJECT(ImmediateGeometry3D);
+	REGISTER_OBJECT(Sprite3D);
+	REGISTER_OBJECT(AnimatedSprite3D);
+#endif
+	REGISTER_VIRTUAL_OBJECT(Light3D);
+	REGISTER_OBJECT(DirectionalLight3D);
+	REGISTER_OBJECT(OmniLight3D);
+	REGISTER_OBJECT(SpotLight3D);
+	REGISTER_OBJECT(AnimationTreePlayer);
+#ifndef ULTRA
+	REGISTER_OBJECT(Portal);
+	REGISTER_OBJECT(Particles3D);
+#endif
 
+	REGISTER_OBJECT(Position3D);
+#ifndef ULTRA
+	REGISTER_OBJECT(Quad);
+	REGISTER_OBJECT(NavigationMeshInstance);
+	REGISTER_OBJECT(NavigationMesh);
+	REGISTER_OBJECT(Navigation);
+#endif
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_virtual_type<CollisionObject>();
-	ObjectTypeDB::register_type<StaticBody>();
-	ObjectTypeDB::register_type<RigidBody>();
-	ObjectTypeDB::register_type<KinematicBody>();
+	REGISTER_VIRTUAL_OBJECT(CollisionObject3D);
+	REGISTER_OBJECT(StaticBody3D);
+	REGISTER_OBJECT(RigidBody3D);
+	REGISTER_OBJECT(CharacterBody3D);
 
+#ifndef ULTRA
+	REGISTER_OBJECT(VehicleBody3D);
+	REGISTER_OBJECT(VehicleWheel3D);
+	REGISTER_OBJECT(Area3D);
+	REGISTER_OBJECT(ProximityGroup);
+#endif
+	REGISTER_OBJECT(CollisionShape3D);
+	REGISTER_OBJECT(CollisionPolygon3D);
+#ifndef ULTRA
+	REGISTER_OBJECT(RayCast3D);
+	REGISTER_OBJECT(MultiMeshInstance3D);
+	REGISTER_OBJECT(Room);
+	REGISTER_OBJECT(Curve3D);
+	REGISTER_OBJECT(Path3D);
+	REGISTER_OBJECT(PathFollow3D);
+	REGISTER_OBJECT(VisibilityNotifier3D);
+	REGISTER_OBJECT(VisibilityEnabler3D);
+	REGISTER_OBJECT(BakedLightInstance);
+	REGISTER_OBJECT(BakedLightSampler);
+#endif
+	REGISTER_OBJECT(WorldEnvironment);
 
-	ObjectTypeDB::register_type<VehicleBody>();
-	ObjectTypeDB::register_type<VehicleWheel>();
-	ObjectTypeDB::register_type<Area>();
-	ObjectTypeDB::register_type<ProximityGroup>();
-	ObjectTypeDB::register_type<CollisionShape>();
-	ObjectTypeDB::register_type<CollisionPolygon>();
-	ObjectTypeDB::register_type<RayCast>();
-	ObjectTypeDB::register_type<MultiMeshInstance>();
-	ObjectTypeDB::register_type<Room>();
-	ObjectTypeDB::register_type<Curve3D>();
-	ObjectTypeDB::register_type<Path>();
-	ObjectTypeDB::register_type<PathFollow>();
-	ObjectTypeDB::register_type<VisibilityNotifier>();
-	ObjectTypeDB::register_type<VisibilityEnabler>();
-	ObjectTypeDB::register_type<BakedLightInstance>();
-	ObjectTypeDB::register_type<BakedLightSampler>();
-	ObjectTypeDB::register_type<WorldEnvironment>();
-
-	ObjectTypeDB::register_virtual_type<Joint>();
-	ObjectTypeDB::register_type<PinJoint>();
-	ObjectTypeDB::register_type<HingeJoint>();
-	ObjectTypeDB::register_type<SliderJoint>();
-	ObjectTypeDB::register_type<ConeTwistJoint>();
-	ObjectTypeDB::register_type<Generic6DOFJoint>();
+#ifndef ULTRA
+	REGISTER_VIRTUAL_OBJECT(Joint3D);
+	REGISTER_OBJECT(PinJoint3D);
+	REGISTER_OBJECT(HingeJoint3D);
+	REGISTER_OBJECT(SliderJoint3D);
+	REGISTER_OBJECT(ConeTwistJoint);
+	REGISTER_OBJECT(Generic6DOFJoint);
 
 	//scenariofx	
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_type<SpatialSamplePlayer>();
-	ObjectTypeDB::register_type<SpatialStreamPlayer>();
-	ObjectTypeDB::register_type<SoundRoomParams>();
-
+	REGISTER_OBJECT(SamplePlayer3D);
+	REGISTER_OBJECT(StreamPlayer3D);
+	REGISTER_OBJECT(SoundRoomParams);
 
 #endif
-	ObjectTypeDB::register_type<MeshLibrary>();
+#endif
+	REGISTER_OBJECT(MeshLibrary);
+#ifndef ULTRA
 	AcceptDialog::set_swap_ok_cancel( GLOBAL_DEF("display/swap_ok_cancel",bool(OS::get_singleton()->get_swap_ok_cancel())) );
-
-	ObjectTypeDB::register_type<SamplePlayer>();
-
-
-//	ObjectTypeDB::register_type<StaticBody>();
-//	ObjectTypeDB::register_type<RigidBody>();
-//	ObjectTypeDB::register_type<CharacterBody>();
-//	ObjectTypeDB::register_type<BodyVolumeSphere>();
-	//ObjectTypeDB::register_type<BodyVolumeBox>();
-	//ObjectTypeDB::register_type<BodyVolumeCylinder>();
-	//ObjectTypeDB::register_type<BodyVolumeCapsule>();
-	//ObjectTypeDB::register_type<PhysicsJointPin>();
+#endif
+	REGISTER_OBJECT(SamplePlayer);
 
 
+//	REGISTER_OBJECT(StaticBody3D);
+//	REGISTER_OBJECT(RigidBody3D);
+//	REGISTER_OBJECT(CharacterBody);
+//	REGISTER_OBJECT(BodyVolumeSphere);
+	//REGISTER_OBJECT(BodyVolumeBox);
+	//REGISTER_OBJECT(BodyVolumeCylinder);
+	//REGISTER_OBJECT(BodyVolumeCapsule);
+	//REGISTER_OBJECT(PhysicsJointPin);
 
 
-	ObjectTypeDB::register_type<StreamPlayer>();
-	ObjectTypeDB::register_type<EventPlayer>();
+
+
+	REGISTER_OBJECT(StreamPlayer);
+	REGISTER_OBJECT(EventPlayer);
 
 
 	/* disable types by default, only editors should enable them */
-	ObjectTypeDB::set_type_enabled("CollisionShape",false);
+	ObjectTypeDB::set_type_enabled("CollisionShape3D",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeSphere",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeBox",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeCapsule",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeCylinder",false);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeConvexPolygon",false);
-
-	ObjectTypeDB::register_virtual_type<CanvasItem>();
-	ObjectTypeDB::register_type<Node2D>();
-	ObjectTypeDB::register_type<Particles2D>();
-	ObjectTypeDB::register_type<ParticleAttractor2D>();
-	ObjectTypeDB::register_type<Sprite>();
-	ObjectTypeDB::register_type<ViewportSprite>();
-	ObjectTypeDB::register_type<SpriteFrames>();
-	ObjectTypeDB::register_type<AnimatedSprite>();
-	ObjectTypeDB::register_type<Position2D>();
-	ObjectTypeDB::register_virtual_type<CollisionObject2D>();
-	ObjectTypeDB::register_virtual_type<PhysicsBody2D>();
-	ObjectTypeDB::register_type<StaticBody2D>();
-	ObjectTypeDB::register_type<RigidBody2D>();
-	ObjectTypeDB::register_type<KinematicBody2D>();
-	ObjectTypeDB::register_type<Area2D>();
-	ObjectTypeDB::register_type<CollisionShape2D>();
-	ObjectTypeDB::register_type<CollisionPolygon2D>();
-	ObjectTypeDB::register_type<RayCast2D>();
-	ObjectTypeDB::register_type<VisibilityNotifier2D>();
-	ObjectTypeDB::register_type<VisibilityEnabler2D>();
-	ObjectTypeDB::register_type<Polygon2D>();
-	ObjectTypeDB::register_type<YSort>();
+#ifndef ULTRA
+	REGISTER_VIRTUAL_OBJECT(CanvasItem);
+	REGISTER_OBJECT(Node2D);
+	REGISTER_OBJECT(Particles2D);
+	REGISTER_OBJECT(ParticleAttractor2D);
+	REGISTER_OBJECT(Sprite2D);
+	REGISTER_OBJECT(ViewportSprite);
+	REGISTER_OBJECT(SpriteFrames);
+	REGISTER_OBJECT(AnimatedSprite2D);
+	REGISTER_OBJECT(Position2D);
+	REGISTER_VIRTUAL_OBJECT(CollisionObject2D);
+	REGISTER_VIRTUAL_OBJECT(PhysicsBody2D);
+	REGISTER_OBJECT(StaticBody2D);
+	REGISTER_OBJECT(RigidBody2D);
+	REGISTER_OBJECT(CharacterBody2D);
+	REGISTER_OBJECT(Area2D);
+	REGISTER_OBJECT(CollisionShape2D);
+	REGISTER_OBJECT(CollisionPolygon2D);
+	REGISTER_OBJECT(RayCast2D);
+	REGISTER_OBJECT(VisibilityNotifier2D);
+	REGISTER_OBJECT(VisibilityEnabler2D);
+	REGISTER_OBJECT(Polygon2D);
+	REGISTER_OBJECT(YSort);
 
 	ObjectTypeDB::set_type_enabled("CollisionShape2D",false);
 	ObjectTypeDB::set_type_enabled("CollisionPolygon2D",false);
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_type<Camera2D>();
-	ObjectTypeDB::register_virtual_type<Joint2D>();
-	ObjectTypeDB::register_type<PinJoint2D>();
-	ObjectTypeDB::register_type<GrooveJoint2D>();
-	ObjectTypeDB::register_type<DampedSpringJoint2D>();
-	ObjectTypeDB::register_type<TileSet>();
-	ObjectTypeDB::register_type<TileMap>();
-	ObjectTypeDB::register_type<ParallaxBackground>();
-	ObjectTypeDB::register_type<ParallaxLayer>();
-	ObjectTypeDB::register_virtual_type<SoundPlayer2D>();
-	ObjectTypeDB::register_type<SamplePlayer2D>();
-	ObjectTypeDB::register_type<TouchScreenButton>();
-	ObjectTypeDB::register_type<RemoteTransform2D>();
+	REGISTER_OBJECT(Camera2D);
+	REGISTER_VIRTUAL_OBJECT(Joint2D);
+	REGISTER_OBJECT(PinJoint2D);
+	REGISTER_OBJECT(GrooveJoint2D);
+	REGISTER_OBJECT(DampedSpringJoint2D);
+	REGISTER_OBJECT(TileSet);
+	REGISTER_OBJECT(TileMap);
+	REGISTER_OBJECT(ParallaxBackground);
+	REGISTER_OBJECT(ParallaxLayer);
+	REGISTER_VIRTUAL_OBJECT(SoundPlayer2D);
+	REGISTER_OBJECT(SamplePlayer2D);
+	REGISTER_OBJECT(TouchScreenButton);
+	REGISTER_OBJECT(RemoteTransform2D);
 
 	OS::get_singleton()->yield(); //may take time to init
 
 	/* REGISTER RESOURCES */
-
+#endif
 #ifndef _3D_DISABLED
-	ObjectTypeDB::register_type<Mesh>();
-	ObjectTypeDB::register_virtual_type<Material>();
-	ObjectTypeDB::register_type<FixedMaterial>();
-	ObjectTypeDB::register_type<ParticleSystemMaterial>();
-	ObjectTypeDB::register_type<UnshadedMaterial>();
-	ObjectTypeDB::register_type<ShaderMaterial>();
-	ObjectTypeDB::register_type<RoomBounds>();
-	ObjectTypeDB::register_type<Shader>();
-	ObjectTypeDB::register_type<MultiMesh>();
-	ObjectTypeDB::register_type<MeshLibrary>();
+	REGISTER_OBJECT(Mesh);
+	REGISTER_VIRTUAL_OBJECT(Material);
+	REGISTER_OBJECT(FixedMaterial);
+	REGISTER_OBJECT(ParticleSystemMaterial);
+	REGISTER_OBJECT(UnshadedMaterial);
+	REGISTER_OBJECT(ShaderMaterial);
+	REGISTER_OBJECT(RoomBounds);
+	REGISTER_OBJECT(Shader);
+#ifndef ULTRA
+	REGISTER_OBJECT(MultiMesh);
+#endif
+	REGISTER_OBJECT(MeshLibrary);
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_type<RayShape>();
-	ObjectTypeDB::register_type<SphereShape>();
-	ObjectTypeDB::register_type<BoxShape>();
-	ObjectTypeDB::register_type<CapsuleShape>();
-	ObjectTypeDB::register_type<PlaneShape>();
-	ObjectTypeDB::register_type<ConvexPolygonShape>();
-	ObjectTypeDB::register_type<ConcavePolygonShape>();
+	REGISTER_OBJECT(RayShape3D);
+	REGISTER_OBJECT(SphereShape3D);
+	REGISTER_OBJECT(BoxShape3D);
+	REGISTER_OBJECT(CapsuleShape3D);
+	REGISTER_OBJECT(PlaneShape3D);
+	REGISTER_OBJECT(ConvexPolygonShape3D);
+	REGISTER_OBJECT(ConcavePolygonShape3D);
 
-	ObjectTypeDB::register_type<SurfaceTool>();
-	ObjectTypeDB::register_type<MeshDataTool>();
-	ObjectTypeDB::register_type<BakedLight>();
-
+	REGISTER_OBJECT(SurfaceTool);
+	REGISTER_OBJECT(MeshDataTool);
+#ifndef ULTRA
+	REGISTER_OBJECT(BakedLight);
+#endif
 	OS::get_singleton()->yield(); //may take time to init
 
 #endif
-	ObjectTypeDB::register_type<World>();
-	ObjectTypeDB::register_type<Environment>();
-	ObjectTypeDB::register_type<World2D>();
-	ObjectTypeDB::register_virtual_type<Texture>();
-	ObjectTypeDB::register_type<ImageTexture>();
-	ObjectTypeDB::register_type<AtlasTexture>();
-	ObjectTypeDB::register_type<LargeTexture>();
-	ObjectTypeDB::register_type<CubeMap>();
-	ObjectTypeDB::register_type<Animation>();
-	ObjectTypeDB::register_type<Font>();
-	ObjectTypeDB::register_type<StyleBoxEmpty>();
-	ObjectTypeDB::register_type<StyleBoxTexture>();
-	ObjectTypeDB::register_type<StyleBoxFlat>();
-	ObjectTypeDB::register_type<StyleBoxImageMask>();
-	ObjectTypeDB::register_type<Theme>();
+	REGISTER_OBJECT(World3D);
+	REGISTER_OBJECT(Environment);
+	REGISTER_OBJECT(World2D);
+	REGISTER_VIRTUAL_OBJECT(Texture);
+	REGISTER_OBJECT(ImageTexture);
+	REGISTER_OBJECT(AtlasTexture);
+	REGISTER_OBJECT(LargeTexture);
+	REGISTER_OBJECT(CubeMap);
+	REGISTER_OBJECT(Animation);
+	REGISTER_OBJECT(Font);
+	REGISTER_OBJECT(StyleBoxEmpty);
+	REGISTER_OBJECT(StyleBoxTexture);
+	REGISTER_OBJECT(StyleBoxFlat);
+	REGISTER_OBJECT(StyleBoxImageMask);
+	REGISTER_OBJECT(Theme);
 
-	ObjectTypeDB::register_type<PolygonPathFinder>();
-	ObjectTypeDB::register_type<BitMap>();
-
-	OS::get_singleton()->yield(); //may take time to init
-
-	//ObjectTypeDB::register_type<Volume>();
-	ObjectTypeDB::register_type<Sample>();
-	ObjectTypeDB::register_type<SampleLibrary>();
-	ObjectTypeDB::register_virtual_type<AudioStream>();
-	ObjectTypeDB::register_type<AudioStreamGibberish>();
-	ObjectTypeDB::register_virtual_type<VideoStream>();
+	REGISTER_OBJECT(PolygonPathFinder);
+	REGISTER_OBJECT(BitMap);
 
 	OS::get_singleton()->yield(); //may take time to init
 
-	ObjectTypeDB::register_virtual_type<Shape2D>();
-	ObjectTypeDB::register_type<LineShape2D>();
-	ObjectTypeDB::register_type<SegmentShape2D>();
-	ObjectTypeDB::register_type<RayShape2D>();
-	ObjectTypeDB::register_type<CircleShape2D>();
-	ObjectTypeDB::register_type<RectangleShape2D>();
-	ObjectTypeDB::register_type<CapsuleShape2D>();
-	ObjectTypeDB::register_type<ConvexPolygonShape2D>();
-	ObjectTypeDB::register_type<ConcavePolygonShape2D>();
-	ObjectTypeDB::register_type<Curve2D>();
-	ObjectTypeDB::register_type<Path2D>();
-	ObjectTypeDB::register_type<PathFollow2D>();
+	//REGISTER_OBJECT(Volume);
+	REGISTER_OBJECT(Sample);
+	REGISTER_OBJECT(SampleLibrary);
+	REGISTER_VIRTUAL_OBJECT(AudioStream);
+	REGISTER_OBJECT(AudioStreamGibberish);
+#ifndef ULTRA
+	REGISTER_VIRTUAL_OBJECT(VideoStream);
+#endif
 
 	OS::get_singleton()->yield(); //may take time to init
+#ifndef ULTRA
+	REGISTER_VIRTUAL_OBJECT(Shape2D);
+	REGISTER_OBJECT(LineShape2D);
+	REGISTER_OBJECT(SegmentShape2D);
+	REGISTER_OBJECT(RayShape2D);
+	REGISTER_OBJECT(CircleShape2D);
+	REGISTER_OBJECT(RectangleShape2D);
+	REGISTER_OBJECT(CapsuleShape2D);
+	REGISTER_OBJECT(ConvexPolygonShape2D);
+	REGISTER_OBJECT(ConcavePolygonShape2D);
+	REGISTER_OBJECT(Curve2D);
+	REGISTER_OBJECT(Path2D);
+	REGISTER_OBJECT(PathFollow2D);
 
-	ObjectTypeDB::register_type<PackedScene>();
+	OS::get_singleton()->yield(); //may take time to init
+#endif
+	REGISTER_OBJECT(PackedScene);
 
-	ObjectTypeDB::register_type<SceneTree>();
+	REGISTER_OBJECT(SceneTree);
 
 	OS::get_singleton()->yield(); //may take time to init
 

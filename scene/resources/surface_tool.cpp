@@ -571,7 +571,7 @@ void SurfaceTool::create_from(const Ref<Mesh>& p_existing, int p_surface) {
 
 }
 
-void SurfaceTool::append_from(const Ref<Mesh>& p_existing, int p_surface,const Transform& p_xform) {
+void SurfaceTool::append_from(const Ref<Mesh>& p_existing, int p_surface,const Transform3D& p_xform) {
 
 	if (vertex_array.size()==0) {
 		primitive=p_existing->surface_get_primitive_type(p_surface);

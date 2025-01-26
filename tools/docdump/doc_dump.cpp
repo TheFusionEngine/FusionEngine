@@ -67,7 +67,7 @@ static String _escape_string(const String& p_str) {
 	ret=ret.replace("\"","&quot;");
 	for (int i=1;i<32;i++) {
 
-		char chr[2]={i,0};
+		char chr[2]={(char)i,(char)0};
 		ret=ret.replace(chr,"&#"+String::num(i)+";");
 	}
 	ret=ret.utf8();
@@ -175,7 +175,7 @@ void DocDump::dump(const String& p_file) {
 								default_arg_text="\""+default_arg_text+"\"";
 								break;
 							case Variant::TRANSFORM:
-								if (default_arg.operator Transform()==Transform()) {
+								if (default_arg.operator Transform3D()==Transform3D()) {
 									default_arg_text="";
 								}
 

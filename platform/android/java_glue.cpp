@@ -280,10 +280,10 @@ Variant _jobject_to_variant(JNIEnv * env, jobject obj) {
 
 		jdoubleArray arr = (jdoubleArray)obj;
 		int fCount = env->GetArrayLength(arr);
-		RealArray sarr;
+		PackedFloatArray sarr;
 		sarr.resize(fCount);
 
-		RealArray::Write w = sarr.write();
+		PackedFloatArray::Write w = sarr.write();
 
 		for (int i=0; i<fCount; i++) {
 
@@ -299,11 +299,11 @@ Variant _jobject_to_variant(JNIEnv * env, jobject obj) {
 
 		jfloatArray arr = (jfloatArray)obj;
 		int fCount = env->GetArrayLength(arr);
-		RealArray sarr;
+		PackedFloatArray sarr;
 		sarr.resize(fCount);
 
 
-		RealArray::Write w = sarr.write();
+		PackedFloatArray::Write w = sarr.write();
 
 		for (int i=0; i<fCount; i++) {
 
@@ -338,7 +338,7 @@ Variant _jobject_to_variant(JNIEnv * env, jobject obj) {
 		jmethodID get_keys = env->GetMethodID(oclass, "get_keys", "()[Ljava/lang/String;");
 		jobjectArray arr = (jobjectArray)env->CallObjectMethod(obj, get_keys);
 
-		StringArray keys = _jobject_to_variant(env, arr);
+		PackedStringArray keys = _jobject_to_variant(env, arr);
 
 		jmethodID get_values = env->GetMethodID(oclass, "get_values", "()[Ljava/lang/Object;");
 		arr = (jobjectArray)env->CallObjectMethod(obj, get_values);
@@ -1124,7 +1124,7 @@ enum {
     AKEYCODE_AT              = 77,
     AKEYCODE_NUM             = 78,
     AKEYCODE_HEADSETHOOK     = 79,
-    AKEYCODE_FOCUS           = 80,   // *Camera* focus
+    AKEYCODE_FOCUS           = 80,   // *Camera3D* focus
     AKEYCODE_PLUS            = 81,
     AKEYCODE_MENU            = 82,
     AKEYCODE_NOTIFICATION    = 83,
@@ -1275,7 +1275,7 @@ TODO: map these android key:
     AKEYCODE_AT              = 77,
     AKEYCODE_NUM             = 78,
     AKEYCODE_HEADSETHOOK     = 79,
-    AKEYCODE_FOCUS           = 80,   // *Camera* focus
+    AKEYCODE_FOCUS           = 80,   // *Camera3D* focus
     AKEYCODE_NOTIFICATION    = 83,
     AKEYCODE_SEARCH          = 84,
     AKEYCODE_PICTSYMBOLS     = 94,

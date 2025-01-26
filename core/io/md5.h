@@ -6,7 +6,7 @@
  ** md5.h -- Header file for implementation of MD5                   **
  ** RSA Data Security, Inc. MD5 Message Digest Algorithm             **
  ** Created: 2/17/90 RLR                                             **
- ** Revised: 12/27/90 SRD,AJ,BSK,JT Reference C version              **
+ ** Revised: 12/27/90 SRD,AJ,BSK,JT RefCounted C version              **
  ** Revised (for MD5): RLR 4/27/91                                   **
  **   -- G modified to have y&~z instead of y&z                      **
  **   -- FF, GG, HH modified to add in last register done            **

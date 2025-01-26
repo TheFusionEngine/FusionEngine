@@ -167,7 +167,7 @@ private:
 		Timer *tooltip_timer;
 		List<Control*> modal_stack;
 		unsigned int cancelled_input_ID;
-		Matrix32 focus_inv_xform;
+		Transform2D focus_inv_xform;
 		bool subwindow_order_dirty;
 		List<Control*> subwindows;
 		bool disable_input;
@@ -178,8 +178,8 @@ private:
 	Window *window;
 	
 	// used internally
-	Control* _find_next_visible_control_at_pos(Node* p_node,const Point2& p_global,Matrix32& r_xform) const;
-	Control* _find_control_at_pos(CanvasItem* p_node,const Point2& p_pos,const Matrix32& p_xform,Matrix32& r_inv_xform);
+	Control* _find_next_visible_control_at_pos(Node* p_node,const Point2& p_global,Transform2D& r_xform) const;
+	Control* _find_control_at_pos(CanvasItem* p_node,const Point2& p_pos,const Transform2D& p_xform,Transform2D& r_inv_xform);
 
 
 	void _window_sort_subwindows();
@@ -372,7 +372,7 @@ public:
 	virtual CursorShape get_cursor_shape(const Point2& p_pos=Point2i()) const;
 
 	virtual Rect2 get_item_rect() const;
-	virtual Matrix32 get_transform() const;
+	virtual Transform2D get_transform() const;
 
 	bool is_toplevel_control() const;
 

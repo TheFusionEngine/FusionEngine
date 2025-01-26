@@ -31,9 +31,9 @@
 
 #include "scene/resources/mesh.h"
 
-class MeshDataTool : public Reference  {
+class MeshDataTool : public RefCounted  {
 
-	OBJ_TYPE(MeshDataTool,Reference);
+	OBJ_TYPE(MeshDataTool,RefCounted);
 
 
 	int format;

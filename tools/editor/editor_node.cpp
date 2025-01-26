@@ -96,6 +96,7 @@
 #include "tools/editor/io_plugins/editor_translation_import_plugin.h"
 #include "tools/editor/io_plugins/editor_mesh_import_plugin.h"
 
+#include "tools/pck/pck_packer.h"
 
 
 EditorNode *EditorNode::singleton=NULL;
@@ -1313,7 +1314,7 @@ void EditorNode::_edit_current() {
 	p->add_separator();
 	p->add_item("Make Resources Unique",OBJECT_UNIQUE_RESOURCES);
 	p->add_separator();
-	p->add_icon_item(gui_base->get_icon("Help","EditorIcons"),"Class Reference",OBJECT_REQUEST_HELP);
+	p->add_icon_item(gui_base->get_icon("Help","EditorIcons"),"Class RefCounted",OBJECT_REQUEST_HELP);
 	List<MethodInfo> methods;
 	current_obj->get_method_list(&methods);
 
@@ -2746,9 +2747,9 @@ void EditorNode::_property_keyed(const String& p_keyed,const Variant& p_value) {
 	animation_editor->insert_value_key(p_keyed,p_value);
 }
 
-void EditorNode::_transform_keyed(Object *sp,const String& p_sub,const Transform& p_key) {
+void EditorNode::_transform_keyed(Object *sp,const String& p_sub,const Transform3D& p_key) {
 
-	Spatial *s=sp->cast_to<Spatial>();
+	Node3D *s=sp->cast_to<Node3D>();
 	if (!s)
 		return;
 	animation_editor->insert_transform_key(s,p_sub,p_key);
@@ -3031,14 +3032,15 @@ bool EditorNode::is_scene_in_use(const String& p_path) {
 
 void EditorNode::register_editor_types() {
 
-	ObjectTypeDB::register_type<EditorPlugin>();
-	ObjectTypeDB::register_type<EditorImportPlugin>();
-	ObjectTypeDB::register_type<EditorScenePostImport>();
-	ObjectTypeDB::register_type<EditorScript>();
+	REGISTER_OBJECT(EditorPlugin);
+	REGISTER_OBJECT(EditorImportPlugin);
+	REGISTER_OBJECT(EditorScenePostImport);
+	REGISTER_OBJECT(EditorScript);
 
 
-	//ObjectTypeDB::register_type<EditorImporter>();
-//	ObjectTypeDB::register_type<EditorPostImport>();
+	//REGISTER_OBJECT(EditorImporter);
+//	REGISTER_OBJECT(EditorPostImport);
+	REGISTER_OBJECT(PCKPacker);
 }
 
 void EditorNode::unregister_editor_types() {
@@ -3236,7 +3238,7 @@ EditorNode::EditorNode() {
 
 	GLOBAL_DEF("editor/main_run_args","$exec -path $path -scene $scene $main_scene");
 
-	ObjectTypeDB::set_type_enabled("CollisionShape",true);
+	ObjectTypeDB::set_type_enabled("CollisionShape3D",true);
 	ObjectTypeDB::set_type_enabled("CollisionShape2D",true);
 	ObjectTypeDB::set_type_enabled("CollisionPolygon2D",true);
 	//ObjectTypeDB::set_type_enabled("BodyVolumeConvexPolygon",true);

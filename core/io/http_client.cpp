@@ -384,11 +384,11 @@ Dictionary HTTPClient::_get_response_headers_as_dictionary() {
 	return ret;
 }
 
-StringArray HTTPClient::_get_response_headers() {
+PackedStringArray HTTPClient::_get_response_headers() {
 
 	List<String> rh;
 	get_response_headers(&rh);
-	StringArray ret;
+	PackedStringArray ret;
 	ret.resize(rh.size());
 	int idx=0;
 	for(const List<String>::Element *E=rh.front();E;E=E->next()) {

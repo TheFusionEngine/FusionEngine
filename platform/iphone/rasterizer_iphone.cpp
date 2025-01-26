@@ -33,7 +33,7 @@
 #include "globals.h"
 #include <stdio.h>
 
-_FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
+_FORCE_INLINE_ static void _gl_load_transform(const Transform3D& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
 		tr.basis.elements[0][0],
@@ -57,7 +57,7 @@ _FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
 	glLoadMatrixf(matrix);
 };
 
-_FORCE_INLINE_ static void _gl_mult_transform(const Transform& tr) {
+_FORCE_INLINE_ static void _gl_mult_transform(const Transform3D& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
 		tr.basis.elements[0][0],
@@ -569,17 +569,17 @@ VS::FixedMaterialTexGenMode RasterizerIPhone::fixed_material_get_texgen_mode(RID
 };
 
 
-void RasterizerIPhone::fixed_material_set_uv_transform(RID p_material,const Transform& p_transform) {
+void RasterizerIPhone::fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
 
 	m->uv_transform = p_transform;
 }
-Transform RasterizerIPhone::fixed_material_get_uv_transform(RID p_material) const {
+Transform3D RasterizerIPhone::fixed_material_get_uv_transform(RID p_material) const {
 
 	Material *m=material_owner.get( p_material );
-	ERR_FAIL_COND_V(!m, Transform());
+	ERR_FAIL_COND_V(!m, Transform3D());
 
 	return m->uv_transform;
 }
@@ -1145,7 +1145,7 @@ void RasterizerIPhone::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 
 
 }
-void RasterizerIPhone::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform& p_transform) {
+void RasterizerIPhone::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 
 }
@@ -1163,9 +1163,9 @@ AABB RasterizerIPhone::multimesh_get_aabb(RID p_multimesh) const {
 	return AABB();
 }
 
-Transform RasterizerIPhone::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D RasterizerIPhone::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
-	return Transform();
+	return Transform3D();
 }
 Color RasterizerIPhone::multimesh_instance_get_color(RID p_multimesh,int p_index) const {
 
@@ -1392,13 +1392,13 @@ AABB RasterizerIPhone::beam_get_aabb(RID p_particles) const {
 
 RID RasterizerIPhone::skeleton_create() {
 
-	Skeleton *skeleton = memnew( Skeleton );
+	Skeleton3D *skeleton = memnew( Skeleton3D );
 	ERR_FAIL_COND_V(!skeleton,RID());
 	return skeleton_owner.make_rid( skeleton );
 }
 void RasterizerIPhone::skeleton_resize(RID p_skeleton,int p_bones) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
 	if (p_bones == skeleton->bones.size()) {
 		return;
@@ -1410,23 +1410,23 @@ void RasterizerIPhone::skeleton_resize(RID p_skeleton,int p_bones) {
 }
 int RasterizerIPhone::skeleton_get_bone_count(RID p_skeleton) const {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void RasterizerIPhone::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform& p_transform) {
+void RasterizerIPhone::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
 	ERR_FAIL_INDEX( p_bone, skeleton->bones.size() );
 
 	skeleton->bones[p_bone] = p_transform;
 }
-Transform RasterizerIPhone::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D RasterizerIPhone::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
-	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
-	ERR_FAIL_COND_V(!skeleton, Transform());
-	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
+	Skeleton3D *skeleton = skeleton_owner.get( p_skeleton );
+	ERR_FAIL_COND_V(!skeleton, Transform3D());
+	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform3D() );
 
 	// something
 	return skeleton->bones[p_bone];
@@ -1565,7 +1565,7 @@ RID RasterizerIPhone::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void RasterizerIPhone::light_instance_set_transform(RID p_light_instance,const Transform& p_transform) {
+void RasterizerIPhone::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -1596,7 +1596,7 @@ int RasterizerIPhone::light_instance_get_shadow_passes(RID p_light_instance) con
 
 	return 0;
 }
-void RasterizerIPhone::light_instance_set_pssm_split_info(RID p_light_instance, int p_split, float p_near,float p_far, const CameraMatrix& p_camera, const Transform& p_transform) {
+void RasterizerIPhone::light_instance_set_pssm_split_info(RID p_light_instance, int p_split, float p_near,float p_far, const CameraMatrix& p_camera, const Transform3D& p_transform) {
 
 
 }
@@ -1607,7 +1607,7 @@ RID RasterizerIPhone::particles_instance_create(RID p_particles) {
 
 	return RID();
 }
-void RasterizerIPhone::particles_instance_set_transform(RID p_particles_instance,const Transform& p_transform) {
+void RasterizerIPhone::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 
 }
@@ -1731,7 +1731,7 @@ void RasterizerIPhone::set_viewport(const VS::ViewportRect& p_viewport) {
 
 
 	viewport=p_viewport;
-	canvas_transform=Transform();
+	canvas_transform=Transform3D();
 	canvas_transform.translate(-(viewport.width / 2.0f), -(viewport.height / 2.0f), 0.0f);
 	canvas_transform.scale( Vector3( 2.0f / viewport.width, -2.0f / viewport.height, 1.0f ) );
 
@@ -1751,7 +1751,7 @@ void RasterizerIPhone::begin_shadow_map( RID p_light_instance, int p_shadow_pass
 
 }
 
-void RasterizerIPhone::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
+void RasterizerIPhone::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
 
 	camera_transform=p_world;
 	camera_transform_inverse=camera_transform.inverse();
@@ -1828,7 +1828,7 @@ void RasterizerIPhone::add_light( RID p_light_instance ) {
 	light_instances[light_instance_count++]=li;
 }
 
-void RasterizerIPhone::_add_geometry( const Geometry* p_geometry, const Transform& p_world, uint32_t p_vertex_format, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides,const Skeleton* p_skeleton, GeometryOwner *p_owner) {
+void RasterizerIPhone::_add_geometry( const Geometry* p_geometry, const Transform3D& p_world, uint32_t p_vertex_format, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides,const Skeleton3D* p_skeleton, GeometryOwner *p_owner) {
 
 	Material *m=NULL;
 
@@ -1860,7 +1860,7 @@ void RasterizerIPhone::_add_geometry( const Geometry* p_geometry, const Transfor
 	render_list->add_element( p_geometry, m, p_world, lights, light_count, p_material_overrides,p_skeleton, camera_plane.distance(p_world.origin), p_owner );
 }
 
-void RasterizerIPhone::add_mesh( RID p_mesh, const Transform* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides, RID p_skeleton) {
+void RasterizerIPhone::add_mesh( RID p_mesh, const Transform3D* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides, RID p_skeleton) {
 
 	Mesh *mesh = mesh_owner.get(p_mesh);
 
@@ -1869,7 +1869,7 @@ void RasterizerIPhone::add_mesh( RID p_mesh, const Transform* p_world, const RID
 	for (int i=0;i<ssize;i++) {
 
 		Surface *s = mesh->surfaces[i];
-		Skeleton *sk = p_skeleton.is_valid()?skeleton_owner.get(p_skeleton):NULL;
+		Skeleton3D *sk = p_skeleton.is_valid()?skeleton_owner.get(p_skeleton):NULL;
 
 		_add_geometry(s,*p_world,s->format,p_light_instances,p_light_count,p_material_overrides,sk,NULL);
 	}
@@ -1877,12 +1877,12 @@ void RasterizerIPhone::add_mesh( RID p_mesh, const Transform* p_world, const RID
 	mesh->last_pass=frame;
 }
 
-void RasterizerIPhone::add_multimesh( RID p_multimesh, const Transform* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides) {
+void RasterizerIPhone::add_multimesh( RID p_multimesh, const Transform3D* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides) {
 
 
 }
 
-void RasterizerIPhone::add_poly( RID p_poly, const Transform* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides) {
+void RasterizerIPhone::add_poly( RID p_poly, const Transform3D* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides) {
 
 	Poly *p = poly_owner.get(p_poly);
 	if (!p->primitives.empty()) {
@@ -1901,7 +1901,7 @@ void RasterizerIPhone::add_poly( RID p_poly, const Transform* p_world, const RID
 	}
 }
 
-void RasterizerIPhone::add_beam( RID p_beam, const Transform* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides) {
+void RasterizerIPhone::add_beam( RID p_beam, const Transform3D* p_world, const RID* p_light_instances, int p_light_count, const ParamOverrideMap* p_material_overrides) {
 
 
 }
@@ -2201,7 +2201,7 @@ static const GLenum gl_primitive[]={
 	GL_TRIANGLE_FAN
 };
 
-void RasterizerIPhone::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton) {
+void RasterizerIPhone::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton3D* p_skeleton) {
 
 
 	switch(p_geometry->type) {
@@ -2239,7 +2239,7 @@ void RasterizerIPhone::_render_list_forward(RenderList *p_render_list) {
 
 	const Material *prev_material=NULL;
 	uint64_t prev_light_hash=0;
-	const Skeleton *prev_skeleton=NULL;
+	const Skeleton3D *prev_skeleton=NULL;
 	const Geometry *prev_geometry=NULL;
 	const ParamOverrideMap* prev_overrides=NULL; // make it diferent than NULL
 
@@ -2253,7 +2253,7 @@ void RasterizerIPhone::_render_list_forward(RenderList *p_render_list) {
 		RenderList::Element *e = p_render_list->elements[i];
 		const Material *material = e->material;
 		uint64_t light_hash = e->light_hash;
-		const Skeleton *skeleton = e->skeleton;
+		const Skeleton3D *skeleton = e->skeleton;
 		const Geometry *geometry = e->geometry;
 		const ParamOverrideMap* material_overrides=e->material_overrides;
 
@@ -2698,7 +2698,7 @@ void RasterizerIPhone::free(const RID& p_rid) const {
 
 	} else if (skeleton_owner.owns(p_rid)) {
 
-		Skeleton *skeleton = skeleton_owner.get( p_rid );
+		Skeleton3D *skeleton = skeleton_owner.get( p_rid );
 		ERR_FAIL_COND(!skeleton)
 
 		skeleton_owner.free(p_rid);

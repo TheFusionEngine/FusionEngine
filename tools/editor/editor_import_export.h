@@ -36,18 +36,17 @@
 class EditorExportPlatform;
 class FileAccess;
 class EditorProgress;
+class PackSource;
+class FileExportData;
 
-class EditorImportPlugin : public Reference {
 
-	OBJ_TYPE( EditorImportPlugin, Reference);
+class EditorImportPlugin : public RefCounted {
+	OBJ_TYPE( EditorImportPlugin, RefCounted);
 
 protected:
-
 	static void _bind_methods();
 
 public:
-
-
 	static String validate_source_path(const String& p_path);
 	static String expand_source_path(const String& p_path);
 
@@ -60,26 +59,23 @@ public:
 	EditorImportPlugin();
 };
 
-class EditorExportPlugin : public Reference {
 
-	OBJ_TYPE( EditorExportPlugin, Reference);
+class EditorExportPlugin : public RefCounted {
+	OBJ_TYPE( EditorExportPlugin, RefCounted);
 
 protected:
 	static void _bind_methods();
 
 public:
-
 	virtual Vector<uint8_t> custom_export(String& p_path,const Ref<EditorExportPlatform> &p_platform);
 
 	EditorExportPlugin();
 };
 
-class EditorExportPlatform : public Reference {
-
-	OBJ_TYPE( EditorExportPlatform,Reference );
+class EditorExportPlatform : public RefCounted {
+	OBJ_TYPE( EditorExportPlatform,RefCounted );
 
 public:
-
 	typedef Error (*EditorExportSaveFunction)(void *p_userdata,const String& p_path, const Vector<uint8_t>& p_data,int p_file,int p_total);
 protected:
 
@@ -87,28 +83,23 @@ protected:
 	virtual Vector<StringName> get_dependencies(bool p_bundles) const;
 
 	struct TempData {
-
-		uint64_t pos;
-		uint64_t ofs;
+		uint64_t file_pos;
+		uint64_t pck_offset;
 		uint64_t size;
 	};
 
 	struct PackData {
-
-		FileAccess *ftmp;
-		FileAccess *f;
-		Vector<TempData> file_ofs;
-		EditorProgress *ep;
+		FileAccess *fileaccess_temp; //ftmp
+		FileAccess *file; //f
+		Vector<TempData> file_offsets; //file_ofs
+		EditorProgress *editor_progress; //ep
 		int count;
-
 	};
 
-	static Error save_pack_file(void *p_userdata,const String& p_path, const Vector<uint8_t>& p_data,int p_file,int p_total);
-
 public:
+	static EditorProgress *progress_callback;
 
 	enum ImageCompression {
-
 		IMAGE_COMPRESSION_NONE,
 		IMAGE_COMPRESSION_INDEXED, // used for older hardware
 		IMAGE_COMPRESSION_BC, // directx compression format
@@ -118,10 +109,9 @@ public:
 		IMAGE_COMPRESSION_ETC2, // ericsson new compression format (can handle alpha)
 	};
 
+	Error get_project_files(Vector<FileExportData> &ret_file_list, bool p_make_bundles);
 
-	Error export_project_files(EditorExportSaveFunction p_func, void* p_udata,bool p_make_bundles);
-
-	Error save_pack(FileAccess *p_where, bool p_make_bundles=false);
+	Error save_pack(FileAccess *dst, PackSource *p_source, bool p_make_bundles);
 	virtual String get_name() const =0;
 	virtual ImageCompression get_image_compression() const=0;
 	virtual Ref<Texture> get_logo() const =0;
@@ -134,8 +124,7 @@ public:
 
 	virtual bool can_export(String *r_error=NULL) const=0;
 
-
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const=0;
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false)=0;
 
@@ -201,7 +190,6 @@ public:
 
 	EditorExportPlatformPC();
 };
-
 
 class EditorImportExport : public Node {
 	OBJ_TYPE(EditorImportExport,Node);

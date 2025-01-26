@@ -39,7 +39,7 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
-class Camera;
+class Camera3D;
 class SpatialEditor;
 class SpatialEditorGizmos;
 
@@ -55,11 +55,11 @@ public:
 
 	virtual String get_handle_name(int p_idx) const;
 	virtual Variant get_handle_value(int p_idx) const;
-	virtual void set_handle(int p_idx,Camera *p_camera, const Point2& p_point);
+	virtual void set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point);
 	virtual void commit_handle(int p_idx,const Variant& p_restore,bool p_cancel=false);
 
-	virtual bool intersect_frustum(const Camera *p_camera,const Vector<Plane> &p_frustum);
-	virtual bool intersect_ray(const Camera *p_camera,const Point2& p_point,  Vector3& r_pos, Vector3& r_normal,int *r_gizmo_handle=NULL,bool p_sec_first=false);
+	virtual bool intersect_frustum(const Camera3D *p_camera,const Vector<Plane> &p_frustum);
+	virtual bool intersect_ray(const Camera3D *p_camera,const Point2& p_point,  Vector3& r_pos, Vector3& r_normal,int *r_gizmo_handle=NULL,bool p_sec_first=false);
 	SpatialEditorGizmo();
 };
 
@@ -105,7 +105,7 @@ private:
 
 	Control *surface;
 	Viewport *viewport;
-	Camera *camera;
+	Camera3D *camera;
 	bool transforming;
 	bool orthogonal;
 	float gizmo_scale;
@@ -113,12 +113,12 @@ private:
 	void _compute_edit(const Point2& p_point);
 	void _clear_selected();
 	void _select_clicked(bool p_append,bool p_single);
-	void _select(Spatial *p_node, bool p_append,bool p_single);
+	void _select(Node3D *p_node, bool p_append,bool p_single);
 	ObjectID _select_ray(const Point2& p_pos, bool p_append,bool &r_includes_current,int *r_gizmo_handle=NULL,bool p_alt_select=false);
 	Vector3 _get_ray_pos(const Vector2& p_pos) const;
 	Vector3 _get_ray(const Vector2& p_pos);
 	Point2 _point_to_screen(const Vector3& p_point);
-	Transform _get_camera_transform() const;
+	Transform3D _get_camera_transform() const;
 	int get_selected_count() const;
 
 	Vector3 _get_camera_pos() const;
@@ -148,7 +148,8 @@ private:
 		NAVIGATION_NONE,
 		NAVIGATION_PAN,
 		NAVIGATION_ZOOM,
-		NAVIGATION_ORBIT
+		NAVIGATION_ORBIT,
+		NAVIGATION_FPS,
 	};
 	enum TransformMode {
 		TRANSFORM_NONE,
@@ -167,7 +168,7 @@ private:
 	struct EditData {
 		TransformMode mode;
 		TransformPlane plane;
-		Transform original;
+		Transform3D original;
 		Vector3 click_ray;
 		Vector3 click_ray_pos;
 		Vector3 center;
@@ -186,15 +187,17 @@ private:
 		Vector3 cursor_pos;
 
 		Vector3 pos;
-		float x_rot,y_rot,distance;
+		float distance;
+		Quat q;
 		bool region_select;
 		Point2 region_begin,region_end;
 
-		Cursor() { x_rot=y_rot=0; distance=4; region_select=false; }
+		Cursor() { q=Quat(); distance=4; region_select=false; }
 	} cursor;
 
 	RID move_gizmo_instance[3], rotate_gizmo_instance[3];
 
+	NavigationMode nav_mode;
 
 	String last_message;
 	String message;
@@ -210,8 +213,8 @@ private:
 	void _sinput(const InputEvent& p_ie);
 	SpatialEditor *spatial_editor;
 
-	Camera* previewing;
-	Camera* preview;
+	Camera3D* previewing;
+	Camera3D* preview;
 
 	void _preview_exited_scene();
 	void _toggle_camera_preview(bool);
@@ -226,7 +229,7 @@ public:
 
 	void update_transform_gizmo_view();
 
-	void set_can_preview(Camera* p_preview);
+	void set_can_preview(Camera3D* p_preview);
 	void set_state(const Dictionary& p_state);
 	Dictionary get_state() const;
 	void reset();
@@ -245,9 +248,9 @@ class SpatialEditorSelectedItem : public Object {
 public:
 
 	AABB aabb;
-	Transform original; // original location when moving
-	Transform last_xform; // last transform
-	Spatial *sp;
+	Transform3D original; // original location when moving
+	Transform3D last_xform; // last transform
+	Node3D *sp;
 	RID sbox_instance;
 
 	SpatialEditorSelectedItem() { sp=NULL; }
@@ -290,7 +293,7 @@ private:
 
 	RID light;
 	RID light_instance;
-	Transform light_transform;
+	Transform3D light_transform;
 
 
 	RID origin;
@@ -320,9 +323,9 @@ private:
 /*
 	struct Selected {
 		AABB aabb;
-		Transform original; // original location when moving
-		Transform last_xform; // last transform
-		Spatial *sp;
+		Transform3D original; // original location when moving
+		Transform3D last_xform; // last transform
+		Node3D *sp;
 		RID poly_instance;
 	};
 	
@@ -332,7 +335,7 @@ private:
 
 		bool visible;
 		float scale;
-		Transform transform;
+		Transform3D transform;
 	} gizmo;
 	
 	
@@ -393,9 +396,9 @@ private:
 	SpinBox *settings_fov;
 	SpinBox *settings_znear;
 	SpinBox *settings_zfar;
-	DirectionalLight *settings_dlight;
-	ImmediateGeometry *settings_sphere;
-	Camera *settings_camera;
+	DirectionalLight3D *settings_dlight;
+	ImmediateGeometry3D *settings_sphere;
+	Camera3D *settings_camera;
 	float settings_default_light_rot_x;
 	float settings_default_light_rot_y;
 
@@ -430,7 +433,7 @@ private:
 
 	List<EditorPlugin*> gizmo_plugins;
 
-	Spatial *selected;
+	Node3D *selected;
 
 	void _request_gizmo(Object* p_obj);
 
@@ -464,7 +467,7 @@ public:
 	float get_zfar() const { return settings_zfar->get_val(); }
 	float get_fov() const { return settings_fov->get_val(); }
 
-	Transform get_gizmo_transform() const { return gizmo.transform; }
+	Transform3D get_gizmo_transform() const { return gizmo.transform; }
 	bool is_gizmo_visible() const { return gizmo.visible; }
 
 	ToolMode get_tool_mode() const { return tool_mode; }
@@ -496,15 +499,15 @@ public:
 	VSplitContainer *get_shader_split();
 	HSplitContainer *get_palette_split();
 
-	Spatial *get_selected() { return selected; }
+	Node3D *get_selected() { return selected; }
 
 	int get_over_gizmo_handle() const { return over_gizmo_handle; }
 	void set_over_gizmo_handle(int idx) { over_gizmo_handle=idx; }
 
-	void set_can_preview(Camera* p_preview);
+	void set_can_preview(Camera3D* p_preview);
 
-	Camera *get_camera() { return NULL; }
-	void edit(Spatial *p_spatial);
+	Camera3D *get_camera() { return NULL; }
+	void edit(Node3D *p_spatial);
 	void clear();
 	SpatialEditor(EditorNode *p_editor);
 	~SpatialEditor();

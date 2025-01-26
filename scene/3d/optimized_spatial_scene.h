@@ -31,9 +31,9 @@
 
 #include "scene/3d/spatial.h"
 
-class OptimizedSpatialScene : public Spatial {
+class OptimizedSpatialScene : public Node3D {
 
-	OBJ_TYPE( OptimizedSpatialScene, Spatial );
+	OBJ_TYPE( OptimizedSpatialScene, Node3D );
 public:
 	OptimizedSpatialScene();
 };

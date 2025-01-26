@@ -170,7 +170,7 @@ Particles2DEditorPlugin::Particles2DEditorPlugin(EditorNode *p_node) {
 	menu = memnew( MenuButton );
 	menu->get_popup()->add_item("Load Emission Mask",MENU_LOAD_EMISSION_MASK);
 	menu->get_popup()->add_item("Clear Emission Mask",MENU_CLEAR_EMISSION_MASK);
-	menu->set_text("Particles");
+	menu->set_text("Particles3D");
 
 	file = memnew(FileDialog);
 	add_child(file);

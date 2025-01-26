@@ -44,8 +44,8 @@ public:
 
 
 	real_t m_appliedImpulse;
-	Transform m_rbAFrame;
-	Transform m_rbBFrame;
+	Transform3D m_rbAFrame;
+	Transform3D m_rbBFrame;
 
 	real_t	m_limitSoftness;
 	real_t	m_biasFactor;
@@ -80,7 +80,7 @@ public:
 	virtual bool setup(float p_step);
 	virtual void solve(float p_step);
 
-	ConeTwistJointSW(BodySW* rbA,BodySW* rbB,const Transform& rbAFrame, const Transform& rbBFrame);
+	ConeTwistJointSW(BodySW* rbA,BodySW* rbB,const Transform3D& rbAFrame, const Transform3D& rbBFrame);
 
 
 	void	setAngularOnly(bool angularOnly)

@@ -742,7 +742,7 @@ int VP8LGetBackwardReferences(int width, int height,
                                    &refs_lz77)) {
     goto End;
   }
-  // Backward Reference using RLE only.
+  // Backward RefCounted using RLE only.
   BackwardReferencesRle(width, height, argb, &refs_rle);
 
   {

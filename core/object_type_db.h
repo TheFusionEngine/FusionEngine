@@ -501,6 +501,15 @@ public:
 
 #endif
 
+#define REGISTER_OBJECT(m_class)                    \
+	if (!OBJ_IS_DEFINED(ObjectTypeDB_Disable_##m_class)) { \
+		ObjectTypeDB::register_type<m_class>();          \
+	}
+#define REGISTER_VIRTUAL_OBJECT(m_class)            \
+	if (!OBJ_IS_DEFINED(ObjectTypeDB_Disable_##m_class)) { \
+		ObjectTypeDB::register_virtual_type<m_class>();  \
+	}
 
+#include "disabled_object_types.gen.h"
 
 #endif

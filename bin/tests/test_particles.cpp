@@ -47,7 +47,7 @@ class TestMainLoop : public MainLoop {
 	struct InstanceInfo {
 	
 		RID instance;
-		Transform base;
+		Transform3D base;
 		Vector3 rot_axis;
 	};
 	
@@ -78,7 +78,7 @@ public:
 // 		vs->camera_set_perspective( camera, 60.0,0.1, 100.0 );
 		viewport = vs->viewport_create();
 		vs->viewport_attach_camera( viewport, camera );
-		vs->camera_set_transform(camera, Transform( Matrix3(), Vector3(0,0,20 ) ) );
+		vs->camera_set_transform(camera, Transform3D( Basis(), Vector3(0,0,20 ) ) );
 		/*
 		RID lightaux = vs->light_create( VisualServer::LIGHT_OMNI );
 		vs->light_set_var( lightaux, VisualServer::LIGHT_VAR_RADIUS, 80 );

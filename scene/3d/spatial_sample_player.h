@@ -33,9 +33,9 @@
 #include "scene/resources/sample_library.h"
 #include "servers/spatial_sound_server.h"
 
-class SpatialSamplePlayer : public SpatialPlayer {
+class SamplePlayer3D : public SoundPlayer3D {
 
-	OBJ_TYPE(SpatialSamplePlayer,SpatialPlayer);
+	OBJ_TYPE(SamplePlayer3D,SoundPlayer3D);
 public:
 
 	enum {
@@ -79,8 +79,8 @@ public:
 	void stop_all();
 
 
-	SpatialSamplePlayer();
-	~SpatialSamplePlayer();
+	SamplePlayer3D();
+	~SamplePlayer3D();
 
 
 };

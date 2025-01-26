@@ -31,6 +31,7 @@
 #include "script_language.h"
 #include "globals.h"
 #include "os/file_access.h"
+#include "core/io/file_access_pack.h"
 #include "os/dir_access.h"
 #include "tools/editor/editor_file_system.h"
 #include "io/resource_loader.h"
@@ -117,7 +118,6 @@ Vector<uint8_t> EditorImportPlugin::custom_export(const String& p_path, const Re
 }
 
 EditorImportPlugin::EditorImportPlugin() {
-
 
 }
 
@@ -256,70 +256,58 @@ static void _add_filter_to_list(Set<StringName>& r_list,const String& p_filter) 
 
 
 Vector<uint8_t> EditorExportPlatform::get_exported_file(String& p_fname) const {
+	Ref<EditorExportPlatform> ep = EditorImportExport::get_singleton()->get_export_platform(get_name());
 
-	Ref<EditorExportPlatform> ep=EditorImportExport::get_singleton()->get_export_platform(get_name());
-
-	for(int i=0;i<EditorImportExport::get_singleton()->get_export_plugin_count();i++) {
-
+	for(int i = 0; i<EditorImportExport::get_singleton()->get_export_plugin_count();i++) {
 		Vector<uint8_t> data = EditorImportExport::get_singleton()->get_export_plugin(i)->custom_export(p_fname,ep);
 		if (data.size())
 			return data;
-
 	}
-
 
 	FileAccess *f = FileAccess::open(p_fname,FileAccess::READ);
 	ERR_FAIL_COND_V(!f,Vector<uint8_t>());
 	Vector<uint8_t> ret;
 	ret.resize(f->get_len());
-	int rbs = f->get_buffer(ret.ptr(),ret.size());
+	f->get_buffer(ret.ptr(), ret.size());
 	memdelete(f);
 	return ret;
 }
 
 Vector<StringName> EditorExportPlatform::get_dependencies(bool p_bundles) const {
-
-
 	Set<StringName> exported;
 
-	if (FileAccess::exists("res://engine.cfg"))
-		exported.insert("res://engine.cfg");
+	if (FileAccess::exists(Globals::engine_config_path)){
+		exported.insert(Globals::engine_config_path);
+	}
 
-	if (EditorImportExport::get_singleton()->get_export_filter()!=EditorImportExport::EXPORT_SELECTED) {
-
+	if (EditorImportExport::get_singleton()->get_export_filter() != EditorImportExport::EXPORT_SELECTED) {
 		String filter;
-		if (EditorImportExport::get_singleton()->get_export_filter()==EditorImportExport::EXPORT_ALL) {
-			_add_filter_to_list(exported,"*");
+
+		if (EditorImportExport::get_singleton()->get_export_filter() == EditorImportExport::EXPORT_ALL) {
+			_add_filter_to_list(exported, "*");
 		} else {
-			_add_to_list(EditorFileSystem::get_singleton()->get_filesystem(),exported);
-			_add_filter_to_list(exported,EditorImportExport::get_singleton()->get_export_custom_filter());
-
+			_add_to_list(EditorFileSystem::get_singleton()->get_filesystem(), exported);
+			_add_filter_to_list(exported, EditorImportExport::get_singleton()->get_export_custom_filter());
 		}
-
-
 	} else {
-
 
 		Map<String,Map<String,String> > remapped_paths;
 
-		Set<String> scene_extensions;
-		Set<String> resource_extensions;
-
-		{
-
-			List<String> l;
-	//		SceneLoader::get_recognized_extensions(&l);
-	//		for(List<String>::Element *E=l.front();E;E=E->next()) {
-	//
-	//			scene_extensions.insert(E->get());
-	//		}
-			ResourceLoader::get_recognized_extensions_for_type("",&l);
-			for(List<String>::Element *E=l.front();E;E=E->next()) {
-
-				resource_extensions.insert(E->get());
-			}
-		}
-
+// 		Set<String> scene_extensions;
+// 		Set<String> resource_extensions;
+//
+// 		{
+// 			List<String> l;
+// 			SceneLoader::get_recognized_extensions(&l);
+// 			for(List<String>::Element *E=l.front();E;E=E->next()) {
+// 				scene_extensions.insert(E->get());
+// 			}
+// 			ResourceLoader::get_recognized_extensions_for_type("",&l);
+// 			for(List<String>::Element *E=l.front(); E; E=E->next()) {
+//
+// 				resource_extensions.insert(E->get());
+// 			}
+// 		}
 
 		List<StringName> toexport;
 
@@ -327,32 +315,32 @@ Vector<StringName> EditorExportPlatform::get_dependencies(bool p_bundles) const 
 
 		print_line("TO EXPORT: "+itos(toexport.size()));
 
+		for (List<StringName>::Element *E = toexport.front(); E; E=E->next()) {
+			StringName exported_file = E->get();
 
-		for (List<StringName>::Element *E=toexport.front();E;E=E->next()) {
-
-			print_line("DEP: "+String(E->get()));
-			exported.insert(E->get());
-			if (p_bundles && EditorImportExport::get_singleton()->get_export_file_action(E->get())==EditorImportExport::ACTION_BUNDLE) {
+			print_line("DEP: "+String(exported_file));
+			exported.insert(exported_file);
+			if (p_bundles and EditorImportExport::get_singleton()->get_export_file_action(exported_file) == EditorImportExport::ACTION_BUNDLE) {
 				print_line("NO BECAUSE OF BUNDLE!");
 				continue; //no dependencies needed to be copied
 			}
 
 			List<String> testsubs;
-			testsubs.push_back(E->get());
+			testsubs.push_back(exported_file);
 
 			while(testsubs.size()) {
 				//recursive subdep search!
 				List<String> deplist;
-				ResourceLoader::get_dependencies(testsubs.front()->get(),&deplist);
+				ResourceLoader::get_dependencies(testsubs.front()->get(), &deplist);
 				testsubs.pop_front();
 
 				List<String> subdeps;
 
-				for (List<String>::Element *F=deplist.front();F;F=F->next()) {
+				for (List<String>::Element *F = deplist.front();F; F = F->next()) {
 
 					StringName dep = F->get();
 
-					if (exported.has(dep) || EditorImportExport::get_singleton()->get_export_file_action(dep)!=EditorImportExport::ACTION_NONE)
+					if (exported.has(dep) or EditorImportExport::get_singleton()->get_export_file_action(dep) != EditorImportExport::ACTION_NONE)
 						continue; //dependency added or to be added
 					print_line(" SUBDEP: "+String(dep));
 
@@ -362,7 +350,7 @@ Vector<StringName> EditorExportPlatform::get_dependencies(bool p_bundles) const 
 			}
 		}
 
-		_add_filter_to_list(exported,EditorImportExport::get_singleton()->get_export_custom_filter());
+		_add_filter_to_list(exported, EditorImportExport::get_singleton()->get_export_custom_filter());
 
 	}
 
@@ -371,25 +359,17 @@ Vector<StringName> EditorExportPlatform::get_dependencies(bool p_bundles) const 
 
 
 	int idx=0;
-	for(Set<StringName>::Element *E=exported.front();E;E=E->next()) {
-
+	for(Set<StringName>::Element *E=exported.front(); E; E=E->next()) {
 		ret[idx++]=E->get();
-
 	}
 
 	SortArray<StringName,__EESortDepCmp> sort; //some platforms work better if this is sorted
 	sort.sort(ret.ptr(),ret.size());
 
 	return ret;
-
 }
 
 ///////////////////////////////////////
-
-
-
-
-
 
 bool EditorExportPlatformPC::_set(const StringName& p_name, const Variant& p_value) {
 
@@ -419,16 +399,12 @@ bool EditorExportPlatformPC::_get(const StringName& p_name,Variant &r_ret) const
 	String n = p_name;
 
 	if (n=="custom_binary/release") {
-
 		r_ret=custom_release_binary;
 	} else if (n=="custom_binary/debug") {
-
 		r_ret=custom_debug_binary;
 	} else if (n=="resources/pack_mode") {
-
 		r_ret=export_mode;
 	} else if (n=="binary/64_bits") {
-
 		r_ret=use64;
 	} else
 		return false;
@@ -445,10 +421,7 @@ void EditorExportPlatformPC::_get_property_list( List<PropertyInfo> *p_list) con
 	p_list->push_back( PropertyInfo( Variant::BOOL, "binary/64_bits"));
 }
 
-
-
 static void _exp_add_dep(Map<StringName,List<StringName> > &deps,const StringName& p_path) {
-
 
 	if (deps.has(p_path))
 		return; //already done
@@ -464,12 +437,10 @@ static void _exp_add_dep(Map<StringName,List<StringName> > &deps,const StringNam
 	//added in order so child dependencies are always added bfore parent dependencies
 	for (List<String>::Element *E=dl.front();E;E=E->next()) {
 
-
 		if (!deps.has(E->get()))
 			_exp_add_dep(deps,E->get());
 
 		for(List<StringName>::Element *F=deps[E->get()].front();F;F=F->next()) {
-
 
 			if (!depset.has(F->get())) {
 				depset.insert(F->get());
@@ -481,96 +452,74 @@ static void _exp_add_dep(Map<StringName,List<StringName> > &deps,const StringNam
 			depset.insert(E->get());
 			deplist.push_back(E->get());
 		}
-
 	}
 }
 
-
-
-Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func, void* p_udata,bool p_make_bundles) {
-
+Error EditorExportPlatform::get_project_files(Vector<FileExportData> &ret_file_list, bool p_make_bundles){
 /* ALL FILES AND DEPENDENCIES */
 
-	Vector<StringName> files=get_dependencies(p_make_bundles);
+	Vector<StringName> files = get_dependencies(p_make_bundles);
 
 	Map<StringName,List<StringName> > deps;
 
 	if (false) {
 		for(int i=0;i<files.size();i++) {
-
 			_exp_add_dep(deps,files[i]);
-
 		}
 	}
-
-
-
-/* GROUP ATLAS */
-
+	/* GROUP ATLAS */
 
 	List<StringName> groups;
+	FileAccess *temp_file = NULL;
+
 
 	EditorImportExport::get_singleton()->image_export_get_groups(&groups);
 
 	Map<StringName,StringName> remap_files;
-	Set<StringName> saved;
 
-	int counter=0;
+	for(List<StringName>::Element *E = groups.front(); E; E = E->next()) {
+		StringName current_group = E->get();
 
-	for(List<StringName>::Element *E=groups.front();E;E=E->next()) {
-
-		if (!EditorImportExport::get_singleton()->image_export_group_get_make_atlas(E->get()))
+		if (!EditorImportExport::get_singleton()->image_export_group_get_make_atlas(current_group))
 			continue; //uninterested, only process for atlas!
 
 		List<StringName> atlas_images;
-		EditorImportExport::get_singleton()->image_export_get_images_in_group(E->get(),&atlas_images);
+		EditorImportExport::get_singleton()->image_export_get_images_in_group(current_group, &atlas_images);
 		atlas_images.sort_custom<StringName::AlphCompare>();
 
-		for (List<StringName>::Element *F=atlas_images.front();F;) {
-
-			List<StringName>::Element *N=F->next();
-
-			if (!FileAccess::exists(F->get())) {
-				atlas_images.erase(F);
-			}
-
-			F=N;
-
+		for (List<StringName>::Element *F = atlas_images.front(); F; F = F->next()) {
+			if (not FileAccess::exists(F->get())) { atlas_images.erase(F); }
 		}
 
-		if (atlas_images.size()<=1)
+		if (atlas_images.size() <= 1){
 			continue;
-
+		}
 		int group_format=0;
-		float group_lossy_quality=EditorImportExport::get_singleton()->image_export_group_get_lossy_quality(E->get());
-		int group_shrink=EditorImportExport::get_singleton()->image_export_group_get_shrink(E->get());
-		group_shrink*=EditorImportExport::get_singleton()->get_export_image_shrink();
+		float group_lossy_quality = EditorImportExport::get_singleton()->image_export_group_get_lossy_quality(current_group);
+		int group_shrink = EditorImportExport::get_singleton()->image_export_group_get_shrink(current_group);
+		group_shrink *= EditorImportExport::get_singleton()->get_export_image_shrink();
 
-		switch(EditorImportExport::get_singleton()->image_export_group_get_image_action(E->get())) {
+		switch(EditorImportExport::get_singleton()->image_export_group_get_image_action(current_group)) {
 			case EditorImportExport::IMAGE_ACTION_NONE: {
-
-				switch(EditorImportExport::get_singleton()->get_export_image_action()) {
+				switch (EditorImportExport::get_singleton()->get_export_image_action()) {
 					case EditorImportExport::IMAGE_ACTION_NONE: {
-
-						group_format=EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_DISK_LOSSLESS; //?
-
+						group_format = EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_DISK_LOSSLESS; //?
 					} break; //use default
 					case EditorImportExport::IMAGE_ACTION_COMPRESS_DISK: {
-						group_format=EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_DISK_LOSSY;
+						group_format = EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_DISK_LOSSY;
 					} break; //use default
 					case EditorImportExport::IMAGE_ACTION_COMPRESS_RAM: {
-						group_format=EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_RAM;
+						group_format = EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_RAM;
 					} break; //use default
 				}
-
 				group_lossy_quality=EditorImportExport::get_singleton()->get_export_image_quality();
 
 			} break; //use default
 			case EditorImportExport::IMAGE_ACTION_COMPRESS_DISK: {
-				group_format=EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_DISK_LOSSY;
+				group_format = EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_DISK_LOSSY;
 			} break; //use default
 			case EditorImportExport::IMAGE_ACTION_COMPRESS_RAM: {
-				group_format=EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_RAM;
+				group_format = EditorTextureImportPlugin::IMAGE_FORMAT_COMPRESS_RAM;
 			} break; //use default
 		}
 
@@ -579,165 +528,156 @@ Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func
 		{
 			MD5_CTX ctx;
 			MD5Init(&ctx);
-			for (List<StringName>::Element *F=atlas_images.front();F;F=F->next()) {
-
+			for (List<StringName>::Element *F=atlas_images.front(); F; F=F->next()) {
 				String p = F->get();
 				MD5Update(&ctx,(unsigned char*)p.utf8().get_data(),p.utf8().length());
-
 			}
 
 			MD5Final(&ctx);
-			image_list_md5=String::md5(ctx.digest);
+			image_list_md5 = String::md5(ctx.digest);
 		}
 		//ok see if cached
 		String md5;
-		bool atlas_valid=true;
+		bool atlas_valid = true;
 		String atlas_name;
 
 		{
 			MD5_CTX ctx;
 			MD5Init(&ctx);
-			String path = Globals::get_singleton()->get_resource_path()+"::"+String(E->get())+"::"+get_name();
+			String path = Globals::get_singleton()->get_resource_path()+"::"+String(current_group)+"::"+get_name();
 			MD5Update(&ctx,(unsigned char*)path.utf8().get_data(),path.utf8().length());
 			MD5Final(&ctx);
 			md5 = String::md5(ctx.digest);
 		}
 
-		FileAccess *f=NULL;
-
-		if (!FileAccess::exists(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5)) {
-			print_line("NO MD5 INVALID");
-			atlas_valid=false;
-		}
-
-		if (atlas_valid)
-			f=FileAccess::open(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5,FileAccess::READ);
-
-		if (atlas_valid) {
-			//compare options
-			Dictionary options;
-			options.parse_json(f->get_line());
-			if (!options.has("lossy_quality") || float(options["lossy_quality"])!=group_lossy_quality)
-				atlas_valid=false;
-			else if (!options.has("shrink") || int(options["shrink"])!=group_shrink)
-				atlas_valid=false;
-			else if (!options.has("image_format") || int(options["image_format"])!=group_format)
-				atlas_valid=false;
-
-			if (!atlas_valid)
-				print_line("JSON INVALID");
-
-		}
-
-
-		if (atlas_valid) {
-			//check md5 of list of image /names/
-			if (f->get_line().strip_edges()!=image_list_md5) {
-				atlas_valid=false;
-				print_line("IMAGE MD5 INVALID!");
-			}
-
-		}
-
 		Vector<Rect2> rects;
 		bool resave_deps=false;
+		Dictionary options;
 
-		if (atlas_valid) {
+		String temp_atlas_path = EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5;
 
-			//check if images were not modified
-			for (List<StringName>::Element *F=atlas_images.front();F;F=F->next()) {
+		if (!FileAccess::exists(temp_atlas_path)){
+			print_line("NO MD5 INVALID");
+			atlas_valid = false;
+			goto ATLAS_NOT_VALID;
+		}
 
-				Vector<String> slices = f->get_line().strip_edges().split("::");
+		temp_file = FileAccess::open(temp_atlas_path, FileAccess::READ);
 
-				if (slices.size()!=10) {
-					atlas_valid=false;
-					print_line("CANT SLICE IN 10");
+		//compare options
+
+		options.parse_json(temp_file->get_line());
+		if (not options.has("lossy_quality") or float(options["lossy_quality"]) != group_lossy_quality){
+			atlas_valid = false;
+		} else if (not options.has("shrink") or int(options["shrink"]) != group_shrink){
+			atlas_valid = false;
+		} else if (not options.has("image_format") or int(options["image_format"]) != group_format){
+			atlas_valid = false;
+		}
+
+		if (not atlas_valid){
+			print_line("JSON INVALID");
+			goto ATLAS_NOT_VALID;
+		}
+
+
+		//check md5 of list of image /names/
+		if (temp_file->get_line().strip_edges() != image_list_md5) {
+			print_line("IMAGE MD5 INVALID!");
+			atlas_valid = false;
+			goto ATLAS_NOT_VALID;
+		}
+
+
+		//check if images were not modified
+		for (List<StringName>::Element *F = atlas_images.front(); F; F=F->next()) {
+			Vector<String> slices = temp_file->get_line().strip_edges().split("::");
+
+			if (slices.size() != 10) {
+				print_line("CANT SLICE IN 10");
+				atlas_valid = false;
+				goto ATLAS_NOT_VALID;
+				break;
+			}
+
+			uint64_t mod_time = slices[0].to_int64();
+			uint64_t file_mod_time = FileAccess::get_modified_time(F->get());
+
+			if (mod_time != file_mod_time) {
+				String image_md5 = slices[1];
+				String file_md5 = FileAccess::get_md5(F->get());
+
+				if (image_md5 != file_md5) {
+					print_line("IMAGE INVALID "+slices[0]);
+					atlas_valid = false;
+					goto ATLAS_NOT_VALID;
 					break;
-				}
-				uint64_t mod_time = slices[0].to_int64();
-				uint64_t file_mod_time = FileAccess::get_modified_time(F->get());
-				if (mod_time!=file_mod_time) {
-
-					String image_md5 = slices[1];
-					String file_md5 = FileAccess::get_md5(F->get());
-
-					if (image_md5!=file_md5) {
-						atlas_valid=false;
-						print_line("IMAGE INVALID "+slices[0]);
-						break;
-					} else {
-						resave_deps=true;
-					}
-				}
-
-				if (atlas_valid) {
-					//push back region and margin
-					rects.push_back(Rect2(slices[2].to_float(),slices[3].to_float(),slices[4].to_float(),slices[5].to_float()));
-					rects.push_back(Rect2(slices[6].to_float(),slices[7].to_float(),slices[8].to_float(),slices[9].to_float()));
+				} else {
+					resave_deps=true;
 				}
 			}
 
+			//push back region and margin
+			rects.push_back(Rect2(slices[2].to_float(),slices[3].to_float(),slices[4].to_float(),slices[5].to_float()));
+			rects.push_back(Rect2(slices[6].to_float(),slices[7].to_float(),slices[8].to_float(),slices[9].to_float()));
 		}
 
-		if (f) {
-			memdelete(f);
-			f=NULL;
+		if (temp_file) {
+			memdelete(temp_file);
+			temp_file=NULL;
 		}
+
+		ATLAS_NOT_VALID:
 
 		print_line("ATLAS VALID? "+itos(atlas_valid)+" RESAVE DEPS? "+itos(resave_deps));
-		if (!atlas_valid) {
+		if (not atlas_valid) {
 			rects.clear();
 			//oh well, atlas is not valid. need to make new one....
 
-			String dst_file = EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5+".tex";
+			String dst_file = temp_atlas_path + ".tex";
 			Ref<ResourceImportMetadata> imd = memnew( ResourceImportMetadata );
 			//imd->set_editor();
 
 			for (List<StringName>::Element *F=atlas_images.front();F;F=F->next()) {
-
 				imd->add_source(EditorImportPlugin::validate_source_path(F->get()),FileAccess::get_md5(F->get()));
 			}
 
-
-			imd->set_option("format",group_format);
-
+			imd->set_option("format", group_format);
 
 			int flags=0;
 
-			if (Globals::get_singleton()->get("image_loader/filter"))
-				flags|=EditorTextureImportPlugin::IMAGE_FLAG_FILTER;
-			if (!Globals::get_singleton()->get("image_loader/gen_mipmaps"))
-				flags|=EditorTextureImportPlugin::IMAGE_FLAG_NO_MIPMAPS;
-			if (!Globals::get_singleton()->get("image_loader/repeat"))
-				flags|=EditorTextureImportPlugin::IMAGE_FLAG_REPEAT;
+			if (Globals::get_singleton()->get("image_loader/filter")){
+				flags |= EditorTextureImportPlugin::IMAGE_FLAG_FILTER;
+			}
+			if (not Globals::get_singleton()->get("image_loader/gen_mipmaps")){
+				flags |= EditorTextureImportPlugin::IMAGE_FLAG_NO_MIPMAPS;
+			}
+			if (not Globals::get_singleton()->get("image_loader/repeat")){
+				flags |= EditorTextureImportPlugin::IMAGE_FLAG_REPEAT;
+			}
+			flags |= EditorTextureImportPlugin::IMAGE_FLAG_FIX_BORDER_ALPHA;
 
-			flags|=EditorTextureImportPlugin::IMAGE_FLAG_FIX_BORDER_ALPHA;
-
-			imd->set_option("flags",flags);
-			imd->set_option("quality",group_lossy_quality);
-			imd->set_option("atlas",true);
-			imd->set_option("crop",true);
-			imd->set_option("shrink",group_shrink);
-
-
+			imd->set_option("flags", flags);
+			imd->set_option("quality", group_lossy_quality);
+			imd->set_option("atlas", true);
+			imd->set_option("crop", true);
+			imd->set_option("shrink", group_shrink);
 
 			Ref<EditorTextureImportPlugin> plugin = EditorImportExport::get_singleton()->get_import_plugin_by_name("texture_atlas");
-			Error err = plugin->import2(dst_file,imd,get_image_compression(),true);
+			Error err = plugin->import2(dst_file,imd,get_image_compression(), true);
 			if (err) {
-
 				EditorNode::add_io_error("Error saving atlas! "+dst_file.get_file());
 				return ERR_CANT_CREATE;
 			}
 
-			ERR_FAIL_COND_V(imd->get_option("rects")==Variant(),ERR_BUG);
+			ERR_FAIL_COND_V(imd->get_option("rects") == Variant(),ERR_BUG);
 
 			Array r_rects=imd->get_option("rects");
 			rects.resize(r_rects.size());
-			for(int i=0;i<r_rects.size();i++) {
+			for(int i = 0; i < r_rects.size(); i++) {
 				//get back region and margins
 				rects[i]=r_rects[i];
 			}
-
 
 			resave_deps=true;
 		}
@@ -746,23 +686,23 @@ Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func
 		//atlas is valid (or it was just saved i guess), create the atex files and save them
 
 		if (resave_deps) {
-			f=FileAccess::open(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5,FileAccess::WRITE);
+			temp_file = FileAccess::open(temp_atlas_path, FileAccess::WRITE);
 			Dictionary options;
-			options["lossy_quality"]=group_lossy_quality;
-			options["shrink"]=EditorImportExport::get_singleton()->image_export_group_get_shrink(E->get());
-			options["image_format"]=group_format;
-			f->store_line(options.to_json());
-			f->store_line(image_list_md5);
+			options["lossy_quality"] = group_lossy_quality;
+			options["shrink"] = EditorImportExport::get_singleton()->image_export_group_get_shrink(E->get());
+			options["image_format"] = group_format;
+			temp_file->store_line(options.to_json());
+			temp_file->store_line(image_list_md5);
 		}
 
 		//go through all ATEX files
 
 		{
 			Ref<ImageTexture> atlas = memnew( ImageTexture ); //fake atlas!
-			String atlas_path="res://atlas-"+md5+".tex";
+			String atlas_path = "res://atlas-"+md5+".tex";
 			atlas->set_path(atlas_path);
 			int idx=0;
-			for (List<StringName>::Element *F=atlas_images.front();F;F=F->next()) {
+			for (List<StringName>::Element *F=atlas_images.front(); F; F=F->next()) {
 
 				String p = F->get();
 				Ref<AtlasTexture> atex = memnew(AtlasTexture);
@@ -772,92 +712,80 @@ Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func
 				atex->set_region(region);
 				atex->set_margin(margin);
 
-				String path = EditorSettings::get_singleton()->get_settings_path()+"/tmp/tmpatlas.atex";
+				String path = EditorSettings::get_singleton()->get_settings_path() + "/tmp/tmpatlas-" + p.get_file() + ".atex";
 				Error err = ResourceSaver::save(path,atex);
-				if (err!=OK) {
+				if (err != OK){
 					EditorNode::add_io_error("Could not save atlas subtexture: "+path);
 					return ERR_CANT_CREATE;
 				}
 				Vector<uint8_t> data = FileAccess::get_file_as_array(path);
 				String dst_path = F->get().operator String().basename()+".atex";
-				err = p_func(p_udata,dst_path,data,counter++,files.size());
-				saved.insert(dst_path);
-				if (err)
-					return err;
 
-				if (f) {
+				FileExportData atex_paths(dst_path, path);
+				ret_file_list.push_back(atex_paths);
+
+				if (temp_file){
 					//recreating deps..
 					String depline;
-//					depline=String(F->get())+"::"+itos(FileAccess::get_modified_time(F->get()))+"::"+FileAccess::get_md5(F->get()); name unneccesary by top md5
 					depline=itos(FileAccess::get_modified_time(F->get()))+"::"+FileAccess::get_md5(F->get());
 					depline+="::"+itos(region.pos.x)+"::"+itos(region.pos.y)+"::"+itos(region.size.x)+"::"+itos(region.size.y);
 					depline+="::"+itos(margin.pos.x)+"::"+itos(margin.pos.y)+"::"+itos(margin.size.x)+"::"+itos(margin.size.y);
-					f->store_line(depline);
+					temp_file->store_line(depline);
 				}
 
-				remap_files[F->get()]=dst_path;
+				remap_files[F->get()] = dst_path;
 			}
 
-			Vector<uint8_t> atlas_data = FileAccess::get_file_as_array(EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5+".tex");
-			Error err = p_func(p_udata,atlas_path,atlas_data,counter,files.size());
-			saved.insert(atlas_path);
-			if (err)
-				return err;
+			FileExportData atlas_paths(atlas_path, EditorSettings::get_singleton()->get_settings_path()+"/tmp/atlas-"+md5+".tex");
 
+			ret_file_list.push_back(atlas_paths);
 		}
 
-
-		if (f) {
-			memdelete(f);
+		if (temp_file){
+			memdelete(temp_file);
 		}
-
 	}
 
+	const StringName engine_cfg = Globals::engine_config_path;
 
-	StringName engine_cfg="res://engine.cfg";
-
-	for(int i=0;i<files.size();i++) {
-
-		if (remap_files.has(files[i]) || files[i]==engine_cfg) //gonna be remapped (happened before!)
+	for(int i = 0; i < files.size(); i++) {
+		StringName current_file = files[i];
+		if (remap_files.has(current_file) or current_file == engine_cfg){ //gonna be remapped (happened before!)
 			continue; //from atlas?
-		String src=files[i];
-		Vector<uint8_t> buf = get_exported_file(src);
+		}
+		String src = current_file;
+		Vector<uint8_t> buf = get_exported_file(src); //this function can modify src
 
-		ERR_CONTINUE( saved.has(src) );
+		if (src not_eq String(current_file)){
+			remap_files[current_file] = src;
+			current_file = src + ".temp";
+			temp_file = FileAccess::open(current_file, FileAccess::WRITE);
+			temp_file->store_buffer(buf.ptr(), buf.size());
+			temp_file->close();
+		}
 
-		Error err = p_func(p_udata,src,buf,counter++,files.size());
-		if (err)
-			return err;
-
-		saved.insert(src);
-		if (src!=String(files[i]))
-			remap_files[files[i]]=src;
-
+		ret_file_list.push_back(FileExportData(src, current_file));
 	}
-
 
 	{
-
 		//make binary engine.cfg config
 		Map<String,Variant> custom;
 
-
 		if (remap_files.size()) {
 			Vector<String> remapsprop;
-			for(Map<StringName,StringName>::Element *E=remap_files.front();E;E=E->next()) {
+			for(Map<StringName,StringName>::Element *E = remap_files.front(); E; E = E->next()) {
 				print_line("REMAP: "+String(E->key())+" -> "+E->get());
 				remapsprop.push_back(E->key());
 				remapsprop.push_back(E->get());
 			}
 
-			custom["remap/all"]=remapsprop;
+			custom["remap/all"] = remapsprop;
 		}
 
 		//add presaved dependencies
-		for(Map<StringName,List<StringName> >::Element *E=deps.front();E;E=E->next()) {
+		for(Map<StringName,List<StringName> >::Element *E = deps.front(); E; E=E->next()) {
 
-			if (E->get().size()==0)
-				continue; //no deps
+			if (E->get().size()==0){ continue;} //no deps
 			String key;
 			Vector<StringName> deps;
 			//if bundle continue (when bundles supported obviously)
@@ -879,59 +807,38 @@ Error EditorExportPlatform::export_project_files(EditorExportSaveFunction p_func
 			NodePath prop(deps,true,String()); //seems best to use this for performance
 
 			custom["deps/"+key.md5_text()]=prop;
-
 		}
 
-		String remap_file="engine.cfb";
-		String engine_cfb =EditorSettings::get_singleton()->get_settings_path()+"/tmp/tmp"+remap_file;
+		String engine_cfb =EditorSettings::get_singleton()->get_settings_path()+"/tmp/tmpengine.cfb";
 		Globals::get_singleton()->save_custom(engine_cfb,custom);
 		Vector<uint8_t> data = FileAccess::get_file_as_array(engine_cfb);
 
-		Error err = p_func(p_udata,"res://"+remap_file,data,counter,files.size());
-		if (err)
-			return err;
-
+		FileExportData remap_file_paths(Globals::engine_remap_path, engine_cfb);
+		ret_file_list.push_back(remap_file_paths);
 	}
 
 	return OK;
 }
 
+EditorProgress *EditorExportPlatform::progress_callback = NULL;
 
-Error EditorExportPlatform::save_pack_file(void *p_userdata,const String& p_path, const Vector<uint8_t>& p_data,int p_file,int p_total) {
-
-
-	PackData *pd = (PackData*)p_userdata;
-
-	CharString cs=p_path.utf8();
-	pd->f->store_32(cs.length());
-	pd->f->store_buffer((uint8_t*)cs.get_data(),cs.length());
-	TempData td;
-	td.pos=pd->f->get_pos();;
-	td.ofs=pd->ftmp->get_pos();
-	td.size=p_data.size();
-	pd->file_ofs.push_back(td);
-	pd->f->store_64(0); //ofs
-	pd->f->store_64(0); //size
-	{
-		MD5_CTX ctx;
-		MD5Init(&ctx);
-		MD5Update(&ctx,(unsigned char*)p_data.ptr(),p_data.size());
-		MD5Final(&ctx);
-		pd->f->store_buffer(ctx.digest,16);
+static void packing_progress(const String& p_state, int p_step){
+	if (EditorExportPlatform::progress_callback != NULL){
+		EditorExportPlatform::progress_callback->step(p_state, p_step);
 	}
-	pd->ep->step("Storing File: "+p_path,2+p_file*100/p_total);
-	pd->count++;
-	pd->ftmp->store_buffer(p_data.ptr(),p_data.size());
-	return OK;
-
 }
 
-Error EditorExportPlatform::save_pack(FileAccess *dst,bool p_make_bundles) {
+Error EditorExportPlatform::save_pack(FileAccess *dst, PackSource *p_source, bool p_make_bundles) {
+	if (not p_source){
+		//TODO: Print warning here
+		return ERR_INVALID_DATA;
+	}
 
-	EditorProgress ep("savepack","Packing",102);
+	EditorProgress editor_progress("savepack","Packing",102);
 
-	String tmppath = EditorSettings::get_singleton()->get_settings_path()+"/tmp/packtmp";
-	FileAccess *tmp = FileAccess::open(tmppath,FileAccess::WRITE);
+	/*
+	String temp_pck_path = EditorSettings::get_singleton()->get_settings_path()+"/tmp/packtmp";
+	FileAccess *temp_pck_access = FileAccess::open(temp_pck_path,FileAccess::WRITE);
 	uint64_t ofs_begin = dst->get_pos();
 
 	dst->store_32(0x43504447); //GDPK
@@ -944,65 +851,69 @@ Error EditorExportPlatform::save_pack(FileAccess *dst,bool p_make_bundles) {
 		dst->store_32(0);
 	}
 
-
 	size_t fcountpos = dst->get_pos();
 	dst->store_32(0);
 
-	PackData pd;
-	pd.ep=&ep;
-	pd.f=dst;
-	pd.ftmp=tmp;
-	pd.count=0;
-	Error err = export_project_files(save_pack_file,&pd,p_make_bundles);
-	memdelete(tmp);
+	PackData pack_data;
+	pack_data.editor_progress= &editor_progress;
+	pack_data.file=dst;
+	pack_data.fileaccess_temp=temp_pck_access;
+	pack_data.count=0;
+	Error err = export_project_files(save_pack_file, &pack_data, p_make_bundles);
+	memdelete(temp_pck_access);
 	if (err)
 		return err;
 
 	size_t ofsplus = dst->get_pos();
 	//append file
 
-	tmp = FileAccess::open(tmppath,FileAccess::READ);
+	temp_pck_access = FileAccess::open(temp_pck_path,FileAccess::READ);
 
-	ERR_FAIL_COND_V(!tmp,ERR_CANT_OPEN;)
+	ERR_FAIL_COND_V(!temp_pck_access,ERR_CANT_OPEN;)
 	const int bufsize=16384;
 	uint8_t buf[bufsize];
 
 	while(true) {
 
-		int got = tmp->get_buffer(buf,bufsize);
+		int got = temp_pck_access->get_buffer(buf,bufsize);
 		if (got<=0)
 			break;
 		dst->store_buffer(buf,got);
 	}
 
-	memdelete(tmp);
+	memdelete(temp_pck_access);
 
-	dst->store_64(dst->get_pos()-ofs_begin);
+	dst->store_64(dst->get_pos() - ofs_begin);
 	dst->store_32(0x43504447); //GDPK
 
 	//fix offsets
 
 	dst->seek(fcountpos);
-	dst->store_32(pd.count);
-	for(int i=0;i<pd.file_ofs.size();i++) {
-
-		dst->seek(pd.file_ofs[i].pos);
-		dst->store_64(pd.file_ofs[i].ofs+ofsplus);
-		dst->store_64(pd.file_ofs[i].size);
+	dst->store_32(pack_data.count);
+	for(int i=0; i < pack_data.file_offsets.size(); i++) {
+		dst->seek(pack_data.file_offsets[i].file_pos);
+		dst->store_64(pack_data.file_offsets[i].pck_offset+ofsplus);
+		dst->store_64(pack_data.file_offsets[i].size);
 	}
+	*/
+	Vector<FileExportData> exported_files;
 
-	return OK;
+	get_project_files(exported_files, p_make_bundles);
+
+	progress_callback = &editor_progress;
+
+
+	Error export_err = p_source->export_pack(dst, exported_files, packing_progress);
+
+	return export_err;
+
 }
 
 Error EditorExportPlatformPC::export_project(const String& p_path, bool p_debug, bool p_dumb) {
 
-
-
 	EditorProgress ep("export","Exporting for "+get_name(),102);
 
 	const int BUFSIZE = 32768;
-
-
 
 	ep.step("Setting Up..",0);
 
@@ -1023,14 +934,12 @@ Error EditorExportPlatformPC::export_project(const String& p_path, bool p_debug,
 
 	FileAccess *src_exe=FileAccess::open(exe_path,FileAccess::READ);
 	if (!src_exe) {
-
 		EditorNode::add_io_error("Couldn't read source executable at:\n "+exe_path);
 		return ERR_FILE_CANT_READ;
 	}
 
 	FileAccess *dst=FileAccess::open(p_path,FileAccess::WRITE);
 	if (!dst) {
-
 		EditorNode::add_io_error("Can't copy executable file to:\n "+p_path);
 		return ERR_FILE_CANT_WRITE;
 	}
@@ -1038,28 +947,26 @@ Error EditorExportPlatformPC::export_project(const String& p_path, bool p_debug,
 	uint8_t buff[32768];
 
 	while(true) {
-
 		int c = src_exe->get_buffer(buff,BUFSIZE);
-		if (c>0) {
-
+		if (c > 0){
 			dst->store_buffer(buff,c);
 		} else {
 			break;
 		}
 	}
 
-	if (export_mode!=EXPORT_EXE) {
+	PackSource *source = PackedData::get_singleton()->get_source(0);
 
+	if (export_mode != EXPORT_EXE) {
 		String dstfile=p_path.replace_first("res://","").replace("\\","/");
 		if (dstfile.find("/")!=-1)
-			dstfile=dstfile.get_base_dir()+"/data.pck";
+			dstfile=dstfile.get_base_dir()+"/data." + source->get_pack_extension();
 		else
-			dstfile="data.pck";
+			dstfile="data." + source->get_pack_extension();
 
 		memdelete(dst);
-		dst=FileAccess::open(dstfile,FileAccess::WRITE);
+		dst = FileAccess::open(dstfile,FileAccess::WRITE);
 		if (!dst) {
-
 			EditorNode::add_io_error("Can't write data pack to:\n "+p_path);
 			return ERR_FILE_CANT_WRITE;
 		}
@@ -1067,7 +974,7 @@ Error EditorExportPlatformPC::export_project(const String& p_path, bool p_debug,
 
 	memdelete(src_exe);
 
-	Error err = save_pack(dst,export_mode==EXPORT_BUNDLES);
+	Error err = save_pack(dst, source, export_mode == EXPORT_BUNDLES);
 	memdelete(dst);
 	return err;
 }
@@ -1104,30 +1011,19 @@ bool EditorExportPlatformPC::can_export(String *r_error) const {
 		err+="Custom release binary not found.\n";
 	}
 
-	if (r_error)
+	if (r_error){
 		*r_error=err;
+	}
 	return valid;
-
 }
 
 
 EditorExportPlatformPC::EditorExportPlatformPC() {
-
 	export_mode=EXPORT_PACK;
 	use64=true;
 }
 
-
-
-
-
-
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 EditorImportExport* EditorImportExport::singleton=NULL;
 
@@ -1375,11 +1271,9 @@ StringName EditorImportExport::image_get_export_group(const StringName& p_image)
 		return image_group_files[p_image];
 	else
 		return StringName();
-
 }
 
 void EditorImportExport::image_add_to_export_group(const StringName& p_image,const StringName& p_export_group) {
-
 
 	bool emptygroup = String(p_export_group)==String();
 	ERR_FAIL_COND(!emptygroup && !image_groups.has(p_export_group));
@@ -1529,7 +1423,6 @@ void EditorImportExport::load_config() {
 				}
 			}
 		}
-
 	}
 
 
@@ -1552,12 +1445,7 @@ void EditorImportExport::load_config() {
 			script_key = cf->get_value("script","encrypt_key");
 		}
 	}
-
 }
-
-
-
-
 
 void EditorImportExport::save_config() {
 

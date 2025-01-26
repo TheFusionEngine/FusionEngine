@@ -84,14 +84,14 @@ Variant PathSpatialGizmo::get_handle_value(int p_idx) const{
 	return ofs;
 
 }
-void PathSpatialGizmo::set_handle(int p_idx,Camera *p_camera, const Point2& p_point){
+void PathSpatialGizmo::set_handle(int p_idx,Camera3D *p_camera, const Point2& p_point){
 
 	Ref<Curve3D> c = path->get_curve();
 	if (c.is_null())
 		return;
 
-	Transform gt = path->get_global_transform();
-	Transform gi = gt.affine_inverse();
+	Transform3D gt = path->get_global_transform();
+	Transform3D gi = gt.affine_inverse();
 	Vector3 ray_from = p_camera->project_ray_origin(p_point);
 	Vector3 ray_dir = p_camera->project_ray_normal(p_point);
 
@@ -209,14 +209,14 @@ void PathSpatialGizmo::redraw(){
 	if (c.is_null())
 		return;
 
-	Vector3Array v3a=c->tesselate();
-	//Vector3Array v3a=c->get_baked_points();
+	PackedVector3Array v3a=c->tesselate();
+	//PackedVector3Array v3a=c->get_baked_points();
 
 	int v3s = v3a.size();
 	if (v3s==0)
 		return;
 	Vector<Vector3> v3p;
-	Vector3Array::Read r = v3a.read();
+	PackedVector3Array::Read r = v3a.read();
 
 	for(int i=0;i<v3s-1;i++) {
 
@@ -258,7 +258,7 @@ void PathSpatialGizmo::redraw(){
 
 }
 
-PathSpatialGizmo::PathSpatialGizmo(Path* p_path){
+PathSpatialGizmo::PathSpatialGizmo(Path3D* p_path){
 
 	path=p_path;
 	set_spatial_node(p_path);
@@ -267,12 +267,12 @@ PathSpatialGizmo::PathSpatialGizmo(Path* p_path){
 
 }
 
-bool PathEditorPlugin::create_spatial_gizmo(Spatial* p_spatial) {
+bool PathEditorPlugin::create_spatial_gizmo(Node3D* p_spatial) {
 
-	if (p_spatial->cast_to<Path>()) {
+	if (p_spatial->cast_to<Path3D>()) {
 
 
-		Ref<PathSpatialGizmo> psg = memnew( PathSpatialGizmo(p_spatial->cast_to<Path>()));
+		Ref<PathSpatialGizmo> psg = memnew( PathSpatialGizmo(p_spatial->cast_to<Path3D>()));
 		p_spatial->set_gizmo(psg);
 		return true;
 	}
@@ -280,15 +280,15 @@ bool PathEditorPlugin::create_spatial_gizmo(Spatial* p_spatial) {
 	return false;
 }
 
-bool PathEditorPlugin::forward_spatial_input_event(Camera* p_camera,const InputEvent& p_event) {
+bool PathEditorPlugin::forward_spatial_input_event(Camera3D* p_camera,const InputEvent& p_event) {
 
 	if (!path)
 		return false;
 	Ref<Curve3D> c=path->get_curve();
 	if (c.is_null())
 		return false;
-	Transform gt = path->get_global_transform();
-	Transform it = gt.affine_inverse();
+	Transform3D gt = path->get_global_transform();
+	Transform3D it = gt.affine_inverse();
 
 	static const int click_dist = 10; //should make global
 
@@ -300,7 +300,7 @@ bool PathEditorPlugin::forward_spatial_input_event(Camera* p_camera,const InputE
 
 		if (mb.pressed && mb.button_index==BUTTON_LEFT && (curve_create->is_pressed() || (curve_edit->is_pressed() && mb.mod.control))) {
 			//click into curve, break it down
-			Vector3Array v3a = c->tesselate();
+			PackedVector3Array v3a = c->tesselate();
 			int idx=0;
 			int rc=v3a.size();
 			int closest_seg=-1;
@@ -308,7 +308,7 @@ bool PathEditorPlugin::forward_spatial_input_event(Camera* p_camera,const InputE
 			float closest_d=1e20;
 
 			if (rc>=2) {
-				Vector3Array::Read r = v3a.read();
+				PackedVector3Array::Read r = v3a.read();
 
 				if (p_camera->unproject_position(gt.xform(c->get_point_pos(0))).distance_to(mbpos)<click_dist)
 					return false; //nope, existing
@@ -430,7 +430,7 @@ bool PathEditorPlugin::forward_spatial_input_event(Camera* p_camera,const InputE
 void PathEditorPlugin::edit(Object *p_object) {
 
 	if (p_object) {
-		path=p_object->cast_to<Path>();
+		path=p_object->cast_to<Path3D>();
 		if (path) {
 
 			if (path->get_curve().is_valid()) {
@@ -438,7 +438,7 @@ void PathEditorPlugin::edit(Object *p_object) {
 			}
 		}
 	} else {
-		Path *pre=path;
+		Path3D *pre=path;
 		path=NULL;
 		if (pre) {
 			pre->get_curve()->emit_signal("changed");
@@ -470,7 +470,7 @@ void PathEditorPlugin::make_visible(bool p_visible) {
         sep->hide();
 
 		{
-			Path *pre=path;
+			Path3D *pre=path;
 			path=NULL;
 			if (pre && pre->get_curve().is_valid()) {
 				pre->get_curve()->emit_signal("changed");

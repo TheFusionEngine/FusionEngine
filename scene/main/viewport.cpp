@@ -97,14 +97,14 @@ void Viewport::_update_stretch_transform() {
 
 		//print_line("sive override size "+size_override_size);
 		//print_line("rect size "+rect.size);
-		stretch_transform=Matrix32();
+		stretch_transform=Transform2D();
 		Size2 scale = rect.size/(size_override_size+size_override_margin*2);
 		stretch_transform.scale(scale);
 		stretch_transform.elements[2]=size_override_margin*scale;
 
 	} else {
 
-		stretch_transform=Matrix32();
+		stretch_transform=Transform2D();
 	}
 
 	_update_global_transform();
@@ -249,7 +249,7 @@ void Viewport::_test_new_mouseover(ObjectID new_collider) {
 		if (physics_object_over) {
 			Object *obj = ObjectDB::get_instance(physics_object_over);
 			if (obj) {
-				CollisionObject *co = obj->cast_to<CollisionObject>();
+				CollisionObject3D *co = obj->cast_to<CollisionObject3D>();
 				if (co) {
 					co->_mouse_exit();
 				}
@@ -259,7 +259,7 @@ void Viewport::_test_new_mouseover(ObjectID new_collider) {
 		if (new_collider) {
 			Object *obj = ObjectDB::get_instance(new_collider);
 			if (obj) {
-				CollisionObject *co = obj->cast_to<CollisionObject>();
+				CollisionObject3D *co = obj->cast_to<CollisionObject3D>();
 				if (co) {
 					co->_mouse_enter();
 
@@ -321,8 +321,8 @@ void Viewport::_notification(int p_what) {
 #ifndef _3D_DISABLED
 			if (cameras.size() && !camera) {
 				//there are cameras but no current camera, pick first in tree and make it current
-				Camera *first=NULL;
-				for(Set<Camera*>::Element *E=cameras.front();E;E=E->next()) {
+				Camera3D *first=NULL;
+				for(Set<Camera3D*>::Element *E=cameras.front();E;E=E->next()) {
 
 					if (first==NULL || first->is_greater_than(E->get())) {
 						first=E->get();
@@ -355,7 +355,7 @@ void Viewport::_notification(int p_what) {
 			if (physics_object_picking) {
 #ifndef _3D_DISABLED
 				Vector2 last_pos(1e20,1e20);
-				CollisionObject *last_object;
+				CollisionObject3D *last_object;
 				ObjectID last_id=0;
 				PhysicsDirectSpaceState::RayResult result;
 
@@ -397,7 +397,7 @@ void Viewport::_notification(int p_what) {
 
 						Object *obj = ObjectDB::get_instance(physics_object_capture);
 						if (obj) {
-							CollisionObject *co = obj->cast_to<CollisionObject>();
+							CollisionObject3D *co = obj->cast_to<CollisionObject3D>();
 							if (co) {
 								co->_input_event(camera,ev,Vector3(),Vector3(),0);
 								captured=true;
@@ -448,7 +448,7 @@ void Viewport::_notification(int p_what) {
 
 									if (result.collider) {
 
-										CollisionObject *co = result.collider->cast_to<CollisionObject>();
+										CollisionObject3D *co = result.collider->cast_to<CollisionObject3D>();
 										if (co) {
 
 											co->_input_event(camera,ev,result.position,result.normal,result.shape);
@@ -486,7 +486,7 @@ void Viewport::_notification(int p_what) {
 						ObjectID new_collider=0;
 						if (col) {
 							if (result.collider) {
-								CollisionObject *co = result.collider->cast_to<CollisionObject>();
+								CollisionObject3D *co = result.collider->cast_to<CollisionObject3D>();
 								if (co) {
 									new_collider=result.collider_id;
 
@@ -602,14 +602,14 @@ bool Viewport::is_audio_listener_2d() const {
 	return  audio_listener_2d;
 }
 
-void Viewport::set_canvas_transform(const Matrix32& p_transform) {
+void Viewport::set_canvas_transform(const Transform2D& p_transform) {
 
 	canvas_transform=p_transform;
 	VisualServer::get_singleton()->viewport_set_canvas_transform(viewport,find_world_2d()->get_canvas(),canvas_transform);
 
-	Matrix32 xform = (global_canvas_transform * canvas_transform).affine_inverse();
+	Transform2D xform = (global_canvas_transform * canvas_transform).affine_inverse();
 	Size2 ss = get_visible_rect().size;
-	SpatialSound2DServer::get_singleton()->listener_set_transform(listener_2d,Matrix32(0,xform.xform(ss*0.5)));
+	SpatialSound2DServer::get_singleton()->listener_set_transform(listener_2d,Transform2D(0,xform.xform(ss*0.5)));
 	Vector2 ss2 = ss*xform.get_scale();
 	float panrange = MAX(ss2.x,ss2.y);
 
@@ -618,7 +618,7 @@ void Viewport::set_canvas_transform(const Matrix32& p_transform) {
 
 }
 
-Matrix32 Viewport::get_canvas_transform() const{
+Transform2D Viewport::get_canvas_transform() const{
 
 	return canvas_transform;
 }
@@ -628,13 +628,13 @@ Matrix32 Viewport::get_canvas_transform() const{
 void Viewport::_update_global_transform() {
 
 
-	Matrix32 sxform = stretch_transform * global_canvas_transform;
+	Transform2D sxform = stretch_transform * global_canvas_transform;
 
 	VisualServer::get_singleton()->viewport_set_global_canvas_transform(viewport,sxform);
 
-	Matrix32 xform = (sxform * canvas_transform).affine_inverse();
+	Transform2D xform = (sxform * canvas_transform).affine_inverse();
 	Size2 ss = get_visible_rect().size;
-	SpatialSound2DServer::get_singleton()->listener_set_transform(listener_2d,Matrix32(0,xform.xform(ss*0.5)));
+	SpatialSound2DServer::get_singleton()->listener_set_transform(listener_2d,Transform2D(0,xform.xform(ss*0.5)));
 	Vector2 ss2 = ss*xform.get_scale();
 	float panrange = MAX(ss2.x,ss2.y);
 
@@ -643,7 +643,7 @@ void Viewport::_update_global_transform() {
 }
 
 
-void Viewport::set_global_canvas_transform(const Matrix32& p_transform) {
+void Viewport::set_global_canvas_transform(const Transform2D& p_transform) {
 
 	global_canvas_transform=p_transform;
 
@@ -652,7 +652,7 @@ void Viewport::set_global_canvas_transform(const Matrix32& p_transform) {
 
 }
 
-Matrix32 Viewport::get_global_canvas_transform() const{
+Transform2D Viewport::get_global_canvas_transform() const{
 
 	return global_canvas_transform;
 }
@@ -666,7 +666,7 @@ void Viewport::_camera_transform_changed_notify() {
 #endif
 }
 
-void Viewport::_set_camera(Camera* p_camera) {
+void Viewport::_set_camera(Camera3D* p_camera) {
 
 #ifndef _3D_DISABLED
 
@@ -674,7 +674,7 @@ void Viewport::_set_camera(Camera* p_camera) {
 		return;
 
 	if (camera && find_world().is_valid()) {
-		camera->notification(Camera::NOTIFICATION_LOST_CURRENT);
+		camera->notification(Camera3D::NOTIFICATION_LOST_CURRENT);
 	}
 	camera=p_camera;
 	if (camera)
@@ -683,7 +683,7 @@ void Viewport::_set_camera(Camera* p_camera) {
 		VisualServer::get_singleton()->viewport_attach_camera(viewport,RID());
 
 	if (camera && find_world().is_valid()) {
-		camera->notification(Camera::NOTIFICATION_BECAME_CURRENT);
+		camera->notification(Camera3D::NOTIFICATION_BECAME_CURRENT);
 	}
 
 	_update_listener();
@@ -744,10 +744,10 @@ void Viewport::_propagate_enter_world(Node *p_node) {
 		if (!p_node->is_inside_tree()) //may not have entered scene yet
 			return;
 
-		Spatial *s = p_node->cast_to<Spatial>();
+		Node3D *s = p_node->cast_to<Node3D>();
 		if (s) {
 
-			s->notification(Spatial::NOTIFICATION_ENTER_WORLD);
+			s->notification(Node3D::NOTIFICATION_ENTER_WORLD);
 		} else {
 			Viewport *v = p_node->cast_to<Viewport>();
 			if (v) {
@@ -773,10 +773,10 @@ void Viewport::_propagate_exit_world(Node *p_node) {
 		if (!p_node->is_inside_tree()) //may have exited scene already
 			return;
 
-		Spatial *s = p_node->cast_to<Spatial>();
+		Node3D *s = p_node->cast_to<Node3D>();
 		if (s) {
 
-			s->notification(Spatial::NOTIFICATION_EXIT_WORLD,false);
+			s->notification(Node3D::NOTIFICATION_EXIT_WORLD,false);
 		} else {
 			Viewport *v = p_node->cast_to<Viewport>();
 			if (v) {
@@ -796,7 +796,7 @@ void Viewport::_propagate_exit_world(Node *p_node) {
 }
 
 
-void Viewport::set_world(const Ref<World>& p_world) {
+void Viewport::set_world(const Ref<World3D>& p_world) {
 
 	if (world==p_world)
 		return;
@@ -806,7 +806,7 @@ void Viewport::set_world(const Ref<World>& p_world) {
 
 #ifndef _3D_DISABLED
 	if (find_world().is_valid() && camera)
-		camera->notification(Camera::NOTIFICATION_LOST_CURRENT);
+		camera->notification(Camera3D::NOTIFICATION_LOST_CURRENT);
 #endif
 
 	world=p_world;
@@ -816,7 +816,7 @@ void Viewport::set_world(const Ref<World>& p_world) {
 
 #ifndef _3D_DISABLED
 	if (find_world().is_valid() && camera)
-		camera->notification(Camera::NOTIFICATION_BECAME_CURRENT);
+		camera->notification(Camera3D::NOTIFICATION_BECAME_CURRENT);
 #endif
 
 	//propagate exit
@@ -829,12 +829,12 @@ void Viewport::set_world(const Ref<World>& p_world) {
 
 }
 
-Ref<World> Viewport::get_world() const{
+Ref<World3D> Viewport::get_world() const{
 
 	return world;
 }
 
-Ref<World> Viewport::find_world() const{
+Ref<World3D> Viewport::find_world() const{
 
 	if (own_world.is_valid())
 		return own_world;
@@ -843,16 +843,16 @@ Ref<World> Viewport::find_world() const{
 	else if (parent)
 		return parent->find_world();
 	else
-		return Ref<World>();
+		return Ref<World3D>();
 }
 
-Camera* Viewport::get_camera() const {
+Camera3D* Viewport::get_camera() const {
 
 	return camera;
 }
 
 
-Matrix32 Viewport::get_final_transform() const {
+Transform2D Viewport::get_final_transform() const {
 
 	return stretch_transform * global_canvas_transform;
 }
@@ -996,9 +996,9 @@ bool Viewport::get_render_target_gen_mipmaps() const{
 }
 
 
-Matrix32 Viewport::_get_input_pre_xform() const {
+Transform2D Viewport::_get_input_pre_xform() const {
 
-	Matrix32 pre_xf;
+	Transform2D pre_xf;
 	if (render_target) {
 
 		ERR_FAIL_COND_V(to_screen_rect.size.x==0,pre_xf);
@@ -1019,7 +1019,7 @@ void Viewport::_make_input_local(InputEvent& ev) {
 
 		case InputEvent::MOUSE_BUTTON: {
 
-			Matrix32 ai = get_final_transform().affine_inverse() * _get_input_pre_xform();
+			Transform2D ai = get_final_transform().affine_inverse() * _get_input_pre_xform();
 			Vector2 g = ai.xform(Vector2(ev.mouse_button.global_x,ev.mouse_button.global_y));
 			Vector2 l = ai.xform(Vector2(ev.mouse_button.x,ev.mouse_button.y));
 			ev.mouse_button.x=l.x;
@@ -1030,7 +1030,7 @@ void Viewport::_make_input_local(InputEvent& ev) {
 		} break;
 		case InputEvent::MOUSE_MOTION: {
 
-			Matrix32 ai = get_final_transform().affine_inverse() * _get_input_pre_xform();
+			Transform2D ai = get_final_transform().affine_inverse() * _get_input_pre_xform();
 			Vector2 g = ai.xform(Vector2(ev.mouse_motion.global_x,ev.mouse_motion.global_y));
 			Vector2 l = ai.xform(Vector2(ev.mouse_motion.x,ev.mouse_motion.y));
 			Vector2 r = ai.basis_xform(Vector2(ev.mouse_motion.relative_x,ev.mouse_motion.relative_y));
@@ -1047,7 +1047,7 @@ void Viewport::_make_input_local(InputEvent& ev) {
 		} break;
 		case InputEvent::SCREEN_TOUCH: {
 
-			Matrix32 ai = get_final_transform().affine_inverse() * _get_input_pre_xform();
+			Transform2D ai = get_final_transform().affine_inverse() * _get_input_pre_xform();
 			Vector2 t = ai.xform(Vector2(ev.screen_touch.x,ev.screen_touch.y));
 			ev.screen_touch.x=t.x;
 			ev.screen_touch.y=t.y;
@@ -1055,7 +1055,7 @@ void Viewport::_make_input_local(InputEvent& ev) {
 		} break;
 		case InputEvent::SCREEN_DRAG: {
 
-			Matrix32 ai = get_final_transform().affine_inverse() * _get_input_pre_xform();
+			Transform2D ai = get_final_transform().affine_inverse() * _get_input_pre_xform();
 			Vector2 t = ai.xform(Vector2(ev.screen_drag.x,ev.screen_drag.y));
 			Vector2 r = ai.basis_xform(Vector2(ev.screen_drag.relative_x,ev.screen_drag.relative_y));
 			Vector2 s = ai.basis_xform(Vector2(ev.screen_drag.speed_x,ev.screen_drag.speed_y));
@@ -1139,20 +1139,20 @@ void Viewport::set_use_own_world(bool p_world) {
 
 #ifndef _3D_DISABLED
 	if (find_world().is_valid() && camera)
-		camera->notification(Camera::NOTIFICATION_LOST_CURRENT);
+		camera->notification(Camera3D::NOTIFICATION_LOST_CURRENT);
 #endif
 
 	if (!p_world)
-		own_world=Ref<World>();
+		own_world=Ref<World3D>();
 	else
-		own_world=Ref<World>( memnew( World ));
+		own_world=Ref<World3D>( memnew( World3D ));
 
 	if (is_inside_tree())
 		_propagate_enter_world(this);
 
 #ifndef _3D_DISABLED
 	if (find_world().is_valid() && camera)
-		camera->notification(Camera::NOTIFICATION_BECAME_CURRENT);
+		camera->notification(Camera3D::NOTIFICATION_BECAME_CURRENT);
 #endif
 
 	//propagate exit
@@ -1195,7 +1195,7 @@ void Viewport::set_physics_object_picking(bool p_enable) {
 
 Vector2 Viewport::get_camera_coords(const Vector2 &p_viewport_coords) const {
 
-	Matrix32 xf = get_final_transform();
+	Transform2D xf = get_final_transform();
 	return xf.xform(p_viewport_coords);
 
 
@@ -1222,9 +1222,9 @@ void Viewport::_bind_methods() {
 	//ObjectTypeDB::bind_method(_MD("set_world_2d","world_2d:World2D"), &Viewport::set_world_2d);
 	//ObjectTypeDB::bind_method(_MD("get_world_2d:World2D"), &Viewport::get_world_2d);
 	ObjectTypeDB::bind_method(_MD("find_world_2d:World2D"), &Viewport::find_world_2d);
-	ObjectTypeDB::bind_method(_MD("set_world","world:World"), &Viewport::set_world);
-	ObjectTypeDB::bind_method(_MD("get_world:World"), &Viewport::get_world);
-	ObjectTypeDB::bind_method(_MD("find_world:World"), &Viewport::find_world);
+	ObjectTypeDB::bind_method(_MD("set_world","world:World3D"), &Viewport::set_world);
+	ObjectTypeDB::bind_method(_MD("get_world:World3D"), &Viewport::get_world);
+	ObjectTypeDB::bind_method(_MD("find_world:World3D"), &Viewport::find_world);
 
 	ObjectTypeDB::bind_method(_MD("set_canvas_transform","xform"), &Viewport::set_canvas_transform);
 	ObjectTypeDB::bind_method(_MD("get_canvas_transform"), &Viewport::get_canvas_transform);
@@ -1280,7 +1280,7 @@ void Viewport::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("set_use_own_world","enable"), &Viewport::set_use_own_world);
 	ObjectTypeDB::bind_method(_MD("is_using_own_world"), &Viewport::is_using_own_world);
 
-	ObjectTypeDB::bind_method(_MD("get_camera:Camera"), &Viewport::get_camera);
+	ObjectTypeDB::bind_method(_MD("get_camera:Camera3D"), &Viewport::get_camera);
 
 	ObjectTypeDB::bind_method(_MD("set_as_audio_listener","enable"), &Viewport::set_as_audio_listener);
 	ObjectTypeDB::bind_method(_MD("is_audio_listener","enable"), &Viewport::is_audio_listener);
@@ -1292,7 +1292,7 @@ void Viewport::_bind_methods() {
 
 	ADD_PROPERTY( PropertyInfo(Variant::RECT2,"rect"), _SCS("set_rect"), _SCS("get_rect") );
 	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"own_world"), _SCS("set_use_own_world"), _SCS("is_using_own_world") );
-	ADD_PROPERTY( PropertyInfo(Variant::OBJECT,"world",PROPERTY_HINT_RESOURCE_TYPE,"World"), _SCS("set_world"), _SCS("get_world") );
+	ADD_PROPERTY( PropertyInfo(Variant::OBJECT,"world",PROPERTY_HINT_RESOURCE_TYPE,"World3D"), _SCS("set_world"), _SCS("get_world") );
 //	ADD_PROPERTY( PropertyInfo(Variant::OBJECT,"world_2d",PROPERTY_HINT_RESOURCE_TYPE,"World2D"), _SCS("set_world_2d"), _SCS("get_world_2d") );
 	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"transparent_bg"), _SCS("set_transparent_background"), _SCS("has_transparent_background") );
 	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"render_target/enabled"), _SCS("set_as_render_target"), _SCS("is_set_as_render_target") );

@@ -11,7 +11,7 @@
 package com.adobe.flascc
 {
   import flash.display.DisplayObjectContainer;
-  import flash.display.Sprite;
+  import flash.display.Sprite2D;
   import flash.display.StageScaleMode;
   import flash.events.Event;
   import flash.net.LocalConnection;
@@ -31,7 +31,7 @@ package com.adobe.flascc
   * The PlayerKernel class delegates to this for things like read/write,
   * so that console output can be displayed in a TextField on the Stage.
   */
-  public class Console extends Sprite implements ISpecialFile
+  public class Console extends Sprite2D implements ISpecialFile
   {
 	private var enableConsole:Boolean = true;
     private var _tf:TextField
@@ -109,7 +109,7 @@ package com.adobe.flascc
     */
     protected function init(e:Event):void
     {
-      inputContainer = new Sprite()
+      inputContainer = new Sprite2D()
       addChild(inputContainer)
 
       addEventListener(Event.ENTER_FRAME, enterFrame)

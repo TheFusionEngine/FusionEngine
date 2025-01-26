@@ -33,9 +33,9 @@
 #include "io/ip.h"
 #include "stream_peer_tcp.h"
 
-class TCP_Server : public Reference {
+class TCP_Server : public RefCounted {
 
-	OBJ_TYPE( TCP_Server, Reference );
+	OBJ_TYPE( TCP_Server, RefCounted );
 protected:
 
 	static TCP_Server* (*_create)();
