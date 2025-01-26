@@ -7,11 +7,8 @@
 class EditorExportPlatformFlash : public EditorExportPlatform {
     OBJ_TYPE(EditorExportPlatformFlash, EditorExportPlatform);
 private:
-    Ref<Texture> logo;
 
 public:
-    EditorExportPlatformFlash();
-
 	virtual String get_name() const;
 	virtual ImageCompression get_image_compression() const;
 	virtual Ref<Texture> get_logo() const;
@@ -24,7 +21,7 @@ public:
 
 	virtual bool can_export(String *r_error=NULL) const;
 
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const;
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 };
@@ -37,7 +34,10 @@ EditorExportPlatform::ImageCompression EditorExportPlatformFlash::get_image_comp
     return ImageCompression::IMAGE_COMPRESSION_NONE;
 }
 
-Ref<Texture> EditorExportPlatformFlash::get_logo() const{
+Ref<Texture> EditorExportPlatformFlash::get_logo() const {
+	Image img(_flash_logo);
+	Ref<ImageTexture> logo = memnew(ImageTexture);
+	logo->create_from_image(img);
     return logo;
 }
 
@@ -51,12 +51,6 @@ String EditorExportPlatformFlash::get_binary_extension() const {
 
 Error EditorExportPlatformFlash::export_project(const String& p_path,bool p_debug,bool p_dumb){
     return Error::ERR_DOES_NOT_EXIST;
-};
-
-EditorExportPlatformFlash::EditorExportPlatformFlash(){
-	Image img(_flash_logo);
-	Ref<ImageTexture> logo = memnew(ImageTexture);
-	logo->create_from_image(img);
 };
 
 void register_flash_exporter(){

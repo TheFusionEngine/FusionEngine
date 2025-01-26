@@ -30,7 +30,7 @@
 
 #include "export.h"
 #include "editor/editor_import_export.h"
-#include "platform/wiiu/logo.gen.h"
+#include "platform/wiiu/logo.h"
 #include "scene/resources/texture.h"
 
 void register_wiiu_exporter() {
@@ -43,7 +43,7 @@ void register_wiiu_exporter() {
 		Ref<EditorExportPlatformPC> exporter = Ref<EditorExportPlatformPC>(memnew(EditorExportPlatformPC));
 		exporter->set_binary_extension("rpx");
 		exporter->set_release_binary32("FusionEngine.rpx");
-		exporter->set_name("Wii U");
+		exporter->set_name("Nintendo Wii U");
 		exporter->set_logo(logo);
 		// exporter->set_chmod_flags(0755);
 		EditorImportExport::get_singleton()->add_export_platform(exporter);

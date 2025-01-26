@@ -8,7 +8,7 @@ def is_active():
 
 
 def get_name():
-	return "Server"
+	return "psp"
 
 
 def can_build():

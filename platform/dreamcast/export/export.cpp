@@ -5,10 +5,8 @@
 
 class EditorExportPlatformDC : public EditorExportPlatform {
     OBJ_TYPE(EditorExportPlatformDC, EditorExportPlatform);
-    Ref<Texture> logo;
 
 public:
-    EditorExportPlatformDC();
 
 	virtual String get_name() const;
 	virtual ImageCompression get_image_compression() const;
@@ -22,22 +20,24 @@ public:
 
 	virtual bool can_export(String *r_error=NULL) const;
 
-        //someday we gotta fix this typo lol
-	virtual bool requieres_password(bool p_debug) const {return false;}
+	virtual bool requires_password(bool p_debug) const {return false;}
 	virtual String get_binary_extension() const;
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 };
 
 String EditorExportPlatformDC::get_name() const {
-	return "Dreamcast";
+	return "Sega Dreamcast";
 };
 
 EditorExportPlatform::ImageCompression EditorExportPlatformDC::get_image_compression() const{
     return ImageCompression::IMAGE_COMPRESSION_PVRTC;
 };
 
-Ref<Texture> EditorExportPlatformDC::get_logo() const{
-    return logo;
+Ref<Texture> EditorExportPlatformDC::get_logo() const {
+	Image img(_dreamcast_logo);
+	Ref<ImageTexture> logo = memnew(ImageTexture);
+	logo->create_from_image(img);
+	return logo;
 }
 
 Error EditorExportPlatformDC::run(int p_device,bool p_dumb){
@@ -54,12 +54,6 @@ String EditorExportPlatformDC::get_binary_extension() const {
 
 Error EditorExportPlatformDC::export_project(const String& p_path,bool p_debug,bool p_dumb){
     return OK;
-};
-
-EditorExportPlatformDC::EditorExportPlatformDC(){
-	Image img(_dreamcast_logo);
-	Ref<ImageTexture> logo = memnew(ImageTexture);
-	logo->create_from_image(img);
 };
 
 void register_dreamcast_exporter() {

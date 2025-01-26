@@ -24,7 +24,7 @@ public:
 
 	virtual bool can_export(String *r_error=NULL) const;
 
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const;
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 };

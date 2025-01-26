@@ -7,10 +7,8 @@
 class EditorExportPlatformIPhone : public EditorExportPlatform {
     OBJ_TYPE(EditorExportPlatformIPhone, EditorExportPlatform);
 private:
-    Ref<Texture> logo;
 
 public:
-    EditorExportPlatformIPhone();
 
 	virtual String get_name() const;
 	virtual ImageCompression get_image_compression() const;
@@ -24,13 +22,13 @@ public:
 
 	virtual bool can_export(String *r_error=NULL) const;
 
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const;
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 };
 
 String EditorExportPlatformIPhone::get_name() const {
-    return "iPhone";
+    return "Apple iPhone";
 }
 
 EditorExportPlatform::ImageCompression EditorExportPlatformIPhone::get_image_compression() const{
@@ -38,6 +36,9 @@ EditorExportPlatform::ImageCompression EditorExportPlatformIPhone::get_image_com
 }
 
 Ref<Texture> EditorExportPlatformIPhone::get_logo() const{
+	Image img(_iphone_logo);
+	Ref<ImageTexture> logo = memnew(ImageTexture);
+	logo->create_from_image(img);
     return logo;
 }
 
@@ -51,12 +52,6 @@ String EditorExportPlatformIPhone::get_binary_extension() const {
 
 Error EditorExportPlatformIPhone::export_project(const String& p_path,bool p_debug,bool p_dumb){
     return Error::ERR_DOES_NOT_EXIST;
-};
-
-EditorExportPlatformIPhone::EditorExportPlatformIPhone(){
-	Image img(_iphone_logo);
-	Ref<ImageTexture> logo = memnew(ImageTexture);
-	logo->create_from_image(img);
 };
 
 void register_iphone_exporter(){

@@ -8,7 +8,7 @@ def is_active():
 
 
 def get_name():
-	return "Server"
+	return "3ds"
 
 
 def can_build():

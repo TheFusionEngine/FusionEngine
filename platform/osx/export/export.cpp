@@ -48,7 +48,7 @@ protected:
 
 public:
 
-	virtual String get_name() const { return "Mac OSX"; }
+	virtual String get_name() const { return "Apple Mac OSX"; }
 	virtual ImageCompression get_image_compression() const { return IMAGE_COMPRESSION_BC; }
 	virtual Ref<Texture> get_logo() const { return logo; }
 

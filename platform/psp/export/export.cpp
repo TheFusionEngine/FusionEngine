@@ -7,10 +7,10 @@
 class EditorExportPlatformPSP : public EditorExportPlatform {
     OBJ_TYPE(EditorExportPlatformPSP, EditorExportPlatform);
 private:
-    Ref<Texture> logo;
 
 public:
-    EditorExportPlatformPSP();
+
+	void _get_property_list( List<PropertyInfo> *p_list) const;
 
 	virtual String get_name() const;
 	virtual ImageCompression get_image_compression() const;
@@ -24,10 +24,17 @@ public:
 
 	virtual bool can_export(String *r_error=NULL) const;
 
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const;
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
 };
+
+void EditorExportPlatformPSP::_get_property_list( List<PropertyInfo> *p_list) const{
+	p_list->push_back(PropertyInfo(Variant::BOOL, "data/embed_pck"));
+	p_list->push_back(PropertyInfo(Variant::STRING, "launcher/background", PROPERTY_HINT_FILE, "png"));
+	p_list->push_back(PropertyInfo(Variant::STRING, "launcher/icon", PROPERTY_HINT_FILE, "png"));
+	p_list->push_back(PropertyInfo(Variant::STRING, "launcher/sound", PROPERTY_HINT_FILE, "mp3"));
+}
 
 String EditorExportPlatformPSP::get_name() const {
     return "Playstation Portable";
@@ -37,7 +44,10 @@ EditorExportPlatform::ImageCompression EditorExportPlatformPSP::get_image_compre
     return ImageCompression::IMAGE_COMPRESSION_NONE;
 }
 
-Ref<Texture> EditorExportPlatformPSP::get_logo() const{
+Ref<Texture> EditorExportPlatformPSP::get_logo() const {
+	Image img(_psp_logo);
+	Ref<ImageTexture> logo = memnew(ImageTexture);
+	logo->create_from_image(img);
     return logo;
 }
 
@@ -51,12 +61,6 @@ String EditorExportPlatformPSP::get_binary_extension() const {
 
 Error EditorExportPlatformPSP::export_project(const String& p_path,bool p_debug,bool p_dumb){
     return Error::ERR_DOES_NOT_EXIST;
-};
-
-EditorExportPlatformPSP::EditorExportPlatformPSP(){
-	Image img(_psp_logo);
-	Ref<ImageTexture> logo = memnew(ImageTexture);
-	logo->create_from_image(img);
 };
 
 void register_psp_exporter(){

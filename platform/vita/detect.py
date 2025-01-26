@@ -8,7 +8,7 @@ def is_active():
 
 
 def get_name():
-	return "Server"
+	return "vita"
 
 
 def can_build():

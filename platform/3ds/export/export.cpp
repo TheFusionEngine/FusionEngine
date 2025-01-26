@@ -7,10 +7,8 @@
 class EditorExportPlatform3DS : public EditorExportPlatform {
     OBJ_TYPE(EditorExportPlatform3DS, EditorExportPlatform);
 private:
-    Ref<Texture> logo;
 
 public:
-    EditorExportPlatform3DS();
 
 	virtual String get_name() const;
 	virtual ImageCompression get_image_compression() const;
@@ -24,13 +22,19 @@ public:
 
 	virtual bool can_export(String *r_error=NULL) const;
 
-	virtual bool requieres_password(bool p_debug) const { return false; }
+	virtual bool requires_password(bool p_debug) const { return false; }
 	virtual String get_binary_extension() const;
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
+
+	void _get_property_list( List<PropertyInfo> *p_list) const;
 };
 
+void EditorExportPlatform3DS::_get_property_list( List<PropertyInfo> *p_list) const{
+
+}
+
 String EditorExportPlatform3DS::get_name() const {
-    return "3DS";
+    return "Nintendo 3DS";
 }
 
 EditorExportPlatform::ImageCompression EditorExportPlatform3DS::get_image_compression() const{
@@ -38,6 +42,9 @@ EditorExportPlatform::ImageCompression EditorExportPlatform3DS::get_image_compre
 }
 
 Ref<Texture> EditorExportPlatform3DS::get_logo() const{
+	Image img(_3ds_logo);
+	Ref<ImageTexture> logo = memnew(ImageTexture);
+	logo->create_from_image(img);
     return logo;
 }
 
@@ -53,15 +60,9 @@ Error EditorExportPlatform3DS::export_project(const String& p_path,bool p_debug,
     return Error::ERR_DOES_NOT_EXIST;
 };
 
-EditorExportPlatform3DS::EditorExportPlatform3DS(){
-	Image img(_3ds_logo);
-	Ref<ImageTexture> logo = memnew(ImageTexture);
-	logo->create_from_image(img);
-}
-
-
 void register_3ds_exporter(){
     EDITOR_DEF("3ds/embed_pck", ""); //embed pck in the cia
-    Ref<EditorExportPlatform3DS> exporter = Ref<EditorExportPlatform3DS>(memnew(EditorExportPlatform3DS));
+    Ref<EditorExportPlatform3DS> exporter = memnew(EditorExportPlatform3DS);
+
 	EditorImportExport::get_singleton()->add_export_platform(exporter);
 }

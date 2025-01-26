@@ -1823,7 +1823,7 @@ void EditorNode::_menu_option_confirm(int p_option,bool p_confirmed) {
 
 			String extension = exporter->get_binary_extension();
 			print_line("for target: "+target+" extension: "+extension);
-			file_export_password->set_editable( exporter->requieres_password(file_export_check->is_pressed()));
+			file_export_password->set_editable( exporter->requires_password(file_export_check->is_pressed()));
 
 			file_export->clear_filters();
 			if (extension!="") {

@@ -82,20 +82,6 @@ protected:
 	virtual Vector<uint8_t> get_exported_file(String& p_fname) const;
 	virtual Vector<StringName> get_dependencies(bool p_bundles) const;
 
-	struct TempData {
-		uint64_t file_pos;
-		uint64_t pck_offset;
-		uint64_t size;
-	};
-
-	struct PackData {
-		FileAccess *fileaccess_temp; //ftmp
-		FileAccess *file; //f
-		Vector<TempData> file_offsets; //file_ofs
-		EditorProgress *editor_progress; //ep
-		int count;
-	};
-
 public:
 	static EditorProgress *progress_callback;
 
@@ -132,7 +118,6 @@ public:
 };
 
 class EditorExportPlatformPC : public EditorExportPlatform {
-
 	OBJ_TYPE( EditorExportPlatformPC,EditorExportPlatform );
 
 public:
