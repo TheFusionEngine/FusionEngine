@@ -58,7 +58,7 @@ def configure(env):
 		env.Append(CCFLAGS=['-g2', '-Wall','-DDEBUG_ENABLED','-DDEBUG_MEMORY_ENABLED'])
 
 	env.Append(CPPFLAGS=['-DNEED_LONG_INT', '-D__psp2__', '-DVITA_ENABLED', '', '-DNO_SAFE_CAST', '-fno-rtti']) #'-DGLES2_ENABLED'
-	env.Append(LIBS=['z', "SceCtrl_stub", "SceAudio_stub","SceMotion_stub","SceCamera_stub","liblibIMGEGL_stub", "liblibgpu_es4_ext_stub","liblibGLESv1_CM_stub"])
+	env.Append(LIBS=['z', "SceCtrl_stub", "SceAudio_stub","SceMotion_stub","SceCamera_stub","SceAppMgr_stub","taihen_stub","liblibIMGEGL_stub", "liblibgpu_es4_ext_stub","liblibGLESv1_CM_stub"])
 	# env.Append(LIBS=['z', "SceCtrl_stub", "SceAudio_stub","liblibGLESv2_stub","liblibIMGEGL_stub", "liblibgpu_es4_ext_stub"])
 	env.Append(LINKFLAGS=["-Wl,-q,-whole-archive", "-lpthread", "-Wl,-q,-no-whole-archive"])
 

@@ -375,7 +375,7 @@ void FixedMaterial::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("set_point_size","size"),&FixedMaterial::set_point_size);
 	ObjectTypeDB::bind_method(_MD("get_point_size"),&FixedMaterial::get_point_size);
 
-
+	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "fixed_flags/use_reflection" ), _SCS("set_fixed_flag"), _SCS("get_fixed_flag"), FLAG_USE_REFLECTION);
 	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "fixed_flags/use_alpha" ), _SCS("set_fixed_flag"), _SCS("get_fixed_flag"), FLAG_USE_ALPHA);
 	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "fixed_flags/use_color_array" ), _SCS("set_fixed_flag"), _SCS("get_fixed_flag"), FLAG_USE_COLOR_ARRAY);
 	ADD_PROPERTYI( PropertyInfo( Variant::BOOL, "fixed_flags/use_point_size" ), _SCS("set_fixed_flag"), _SCS("get_fixed_flag"), FLAG_USE_POINT_SIZE);
@@ -416,6 +416,7 @@ void FixedMaterial::_bind_methods() {
 	BIND_CONSTANT( TEXCOORD_UV_TRANSFORM );
 	BIND_CONSTANT( TEXCOORD_UV2 );
 
+	BIND_CONSTANT( FLAG_USE_REFLECTION );
 	BIND_CONSTANT( FLAG_USE_ALPHA );
 	BIND_CONSTANT( FLAG_USE_COLOR_ARRAY );
 	BIND_CONSTANT( FLAG_USE_POINT_SIZE );
@@ -439,6 +440,7 @@ FixedMaterial::FixedMaterial() : Material(VS::get_singleton()->fixed_material_cr
 
 	set_flag(FLAG_COLOR_ARRAY_SRGB,true);
 
+	fixed_flags[FLAG_USE_REFLECTION]=false;
 	fixed_flags[FLAG_USE_ALPHA]=false;
 	fixed_flags[FLAG_USE_COLOR_ARRAY]=false;
 	fixed_flags[FLAG_USE_POINT_SIZE]=false;

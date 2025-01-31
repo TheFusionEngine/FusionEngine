@@ -3389,11 +3389,11 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 
 		Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE] );
 		ERR_FAIL_COND(!texture);
-		glEnable(GL_TEXTURE_2D);
 		glActiveTexture(GL_TEXTURE0);
+		glEnable(GL_TEXTURE_2D);
 		glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 	} else {
-
+		glActiveTexture(GL_TEXTURE0);
 		glDisable(GL_TEXTURE_2D);
 	}
 
@@ -3988,7 +3988,7 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 				}
 
 				if (gl_texcoord_index[i] != -1) {
-					glClientActiveTexture(GL_TEXTURE0+gl_texcoord_index[i]);
+					glClientActiveTexture(GL_TEXTURE0+client_tex_index);
 				}
 
 				glEnableClientState(gl_client_states[i]);
@@ -4331,6 +4331,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		
 		bool bind_baked_light_octree=false;
 		bool bind_baked_lightmap=false;
+		bool normal_map = false;
 
 		if (e->instance->sampled_light.is_valid()) {
 
@@ -4352,14 +4353,14 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 					Texture *tex=texture_owner.get(baked_light->octree_texture);
 					if (tex) {
 
-						glActiveTexture(GL_TEXTURE0);
-						glBindTexture(tex->target,tex->tex_id); //bind the texture
+						// glActiveTexture(GL_TEXTURE0);
+						// glBindTexture(tex->target,tex->tex_id); //bind the texture
 					}
 					if (baked_light->light_texture.is_valid()) {
 						Texture *texl=texture_owner.get(baked_light->light_texture);
 						if (texl) {
-							glActiveTexture(GL_TEXTURE0);
-							glBindTexture(texl->target,texl->tex_id); //bind the light texture
+							// glActiveTexture(GL_TEXTURE0);
+							// glBindTexture(texl->target,texl->tex_id); //bind the light texture
 						}
 					}
 
@@ -4402,6 +4403,10 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		
 		if (material!=prev_material || geometry->type!=prev_geometry_type) {
 			_setup_material(e->geometry,material);
+			if(material->textures[VS::FIXED_MATERIAL_PARAM_NORMAL].is_valid() && material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE].is_valid()) {
+				normal_map = true;
+				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+			}
 			_rinfo.mat_change_count++;
 			//_setup_material_overrides(e->material,NULL,material_overrides);
 			//_setup_material_skeleton(material,skeleton);
@@ -4412,11 +4417,28 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 			};
 		}
 
-
+		client_tex_index = 0;
 		if (geometry!=prev_geometry || geometry->type!=prev_geometry_type  || prev_skeleton!=skeleton) {
 
 			_setup_geometry(geometry, material,e->skeleton,e->instance->morph_values.ptr());
 		};
+		if(normal_map) {
+			Texture *normal = texture_owner.get( material->textures[VS::FIXED_MATERIAL_PARAM_NORMAL] );
+			ERR_FAIL_COND(!normal);
+		
+			
+		
+			glActiveTexture(GL_TEXTURE1);
+			
+			glClientActiveTexture(GL_TEXTURE1);
+			glEnable(GL_TEXTURE_2D);
+
+			// _render(e->geometry, material, skeleton,e->owner);
+			client_tex_index = 1;
+			_setup_geometry(e->geometry, material,e->skeleton,e->instance->morph_values.ptr());
+			glBindTexture( GL_TEXTURE_2D,normal->tex_id );
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		}
 
 		// if (i==0 || light_key!=prev_light_key)
 		_setup_lights(e->lights,e->light_count);

@@ -59,6 +59,8 @@ extern "C" {
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <taihen.h>
+#include <psp2/appmgr.h>
 #include <psp2/kernel/modulemgr.h>
 #include <psp2/kernel/processmgr.h>
 
@@ -118,6 +120,21 @@ void OS_VITA::initialize_core() {
 	
 	sceKernelLoadStartModule("vs0:sys/external/libfios2.suprx", 0, NULL, 0, NULL, NULL);
 	sceKernelLoadStartModule("vs0:sys/external/libc.suprx", 0, NULL, 0, NULL, NULL);
+	
+	char title_id[0xA];
+	char app_dir_path[0x100];
+	char app_kernel_module_path[0x100];
+	SceUID pid = -1;
+    pid = sceKernelGetProcessId();
+	sceAppMgrAppParamGetString(pid, 12, title_id, sizeof(title_id));
+	snprintf(app_dir_path, sizeof(app_dir_path), "ux0:app/%s", title_id);
+	snprintf(app_kernel_module_path, sizeof(app_kernel_module_path), "%s/module/libgpu_es4_kernel_ext.skprx", app_dir_path);
+
+	SceUID res = taiLoadStartKernelModule(app_kernel_module_path, 0, NULL, 0);
+	if (res < 0) {
+		printf("Failed to load kernel module: %08x\n", res);
+	}
+	
 	sceKernelLoadStartModule("app0:module/libgpu_es4_ext.suprx", 0, NULL, 0, NULL, NULL);
   	sceKernelLoadStartModule("app0:module/libIMGEGL.suprx", 0, NULL, 0, NULL, NULL);
 	

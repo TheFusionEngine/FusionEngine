@@ -6656,17 +6656,13 @@ void RasterizerGLES1::init() {
 	s3tc_supported=false;
 	_rinfo.texture_mem=0;
 
-	unsigned int* data;
-
-	data = (GLuint *)calloc( 1, ((256 * 256)* 4 * sizeof(GLuint)) );
 
 	glGenTextures(1, &BlurTexture);
 	glBindTexture(GL_TEXTURE_2D, BlurTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, 256, 256, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, data);
+		GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	// free(data); TODO
 }
 
 void RasterizerGLES1::finish() {

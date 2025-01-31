@@ -70,6 +70,7 @@ class RasterizerGLES1 : public Rasterizer {
 	#endif
 
 	GLuint BlurTexture;
+	GLuint reflect_texture;
 
 	uint8_t *skinned_buffer;
 	int skinned_buffer_size;
@@ -81,7 +82,7 @@ class RasterizerGLES1 : public Rasterizer {
 	bool use_reload_hooks;
 	bool is_editor;
 	uint8_t client_tex_index = 0;
-	
+	bool reflect = false;
 
 	Image _get_gl_image_and_format(const Image& p_image, Image::Format p_format, uint32_t p_flags,GLenum& r_gl_format,int &r_gl_components,bool &r_has_alpha_cache,bool &r_compressed);
 
@@ -753,7 +754,8 @@ class RasterizerGLES1 : public Rasterizer {
 
 	RenderList opaque_render_list;
 	RenderList alpha_render_list;
-
+	// RenderList reflection_render_list;
+	
 	RID default_material;
 
 	struct FX {
