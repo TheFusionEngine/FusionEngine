@@ -3575,6 +3575,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 
 		// glDisable(GL_TEXTURE_GEN_S);
 		// glDisable(GL_TEXTURE_GEN_T);
+
 	} else {
 		 glDisable(GL_TEXTURE_GEN_S);
 		 glDisable(GL_TEXTURE_GEN_T);
@@ -3583,13 +3584,14 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 
 			Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE] );
 			ERR_FAIL_COND(!texture);
-			glEnable(GL_TEXTURE_2D);
+			
 			glActiveTexture(GL_TEXTURE0);
+			glEnable(GL_TEXTURE_2D);
 			glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 			
 			// tc0_id_cache = texture->tex_id;
 		} else {
-
+			glActiveTexture(GL_TEXTURE0);
 			glDisable(GL_TEXTURE_2D);
 		}
 	}
@@ -4205,7 +4207,7 @@ Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Materia
 				}
 
 				if (gl_texcoord_index[i] != -1) {
-					glClientActiveTexture(GL_TEXTURE0+gl_texcoord_index[i]);
+					glClientActiveTexture(GL_TEXTURE0+client_tex_index);
 				}
 
 				glEnableClientState(gl_client_states[i]);
@@ -4623,6 +4625,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		
 		bool bind_baked_light_octree=false;
 		bool bind_baked_lightmap=false;
+		bool normal_map = false;
 
 		if (e->instance->sampled_light.is_valid()) {
 
@@ -4677,9 +4680,9 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 						Texture *tex = texture_owner.get(texid);
 						if (tex) {
-							glEnable(GL_TEXTURE_2D);
+							// glEnable(GL_TEXTURE_2D);
 							// glActiveTexture(GL_TEXTURE1);
-							glBindTexture(tex->target,tex->tex_id); //bind the texture
+							// glBindTexture(tex->target,tex->tex_id); //bind the texture
 							// glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 						} 
 
@@ -4694,11 +4697,25 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 			}
 		} else {
 					
-			glDisable(GL_TEXTURE_2D);
+			// glDisable(GL_TEXTURE_2D);
 		}
-		
+
+// 		if(!normal_map) {
+// 			
+// 			// glActiveTexture(GL_TEXTURE1);
+// 			// glClientActiveTexture(GL_TEXTURE1);
+// 			glDisable(GL_TEXTURE_2D);
+// 		}
 		if (material!=prev_material || geometry_cmp!=prev_geometry_cmp) {
-			_setup_material(e->geometry,material);/*
+
+
+		// glDisable(GL_TEXTURE_2D);
+			_setup_material(e->geometry,material);
+			if(material->textures[VS::FIXED_MATERIAL_PARAM_NORMAL].is_valid() && material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE].is_valid()) {
+				normal_map = true;
+				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+			}
+			/*
 			if(bind_baked_lightmap) {
 				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
@@ -4719,12 +4736,28 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 			};
 		}
 
-
+		client_tex_index = 0;
 		if (geometry_cmp!=prev_geometry_cmp  || prev_skeleton!=skeleton) {
 
 			_setup_geometry(e->geometry, material,e->skeleton,e->instance->morph_values.ptr());
 		};
+		if(normal_map) {
+			Texture *normal = texture_owner.get( material->textures[VS::FIXED_MATERIAL_PARAM_NORMAL] );
+			ERR_FAIL_COND(!normal);
+		
+			
+		
+			glActiveTexture(GL_TEXTURE1);
+			
+			glClientActiveTexture(GL_TEXTURE1);
+			glEnable(GL_TEXTURE_2D);
 
+			// _render(e->geometry, material, skeleton,e->owner);
+			client_tex_index = 1;
+			_setup_geometry(e->geometry, material,e->skeleton,e->instance->morph_values.ptr());
+			glBindTexture( GL_TEXTURE_2D,normal->tex_id );
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		}
 		// if (i==0 || light_key!=prev_light_key) {
 			// printf("setup\n");
 			_setup_lights(e->lights,e->light_count); //dunno how inefficent is but it fixes lights
@@ -4773,8 +4806,8 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 		//bool changed_shader = material_shader.bind();
 		//if ( changed_shader && material->shader_cache && !material->shader_cache->params.empty())
 		//	_setup_shader_params(material);
-
 		_render(e->geometry, material, skeleton,e->owner);
+
 
 
 
