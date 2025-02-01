@@ -3620,7 +3620,6 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_TEXTURE_GEN_STR_OES);
 
-
 		glTexGeniOES(GL_TEXTURE_GEN_STR_OES, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
 		glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 
