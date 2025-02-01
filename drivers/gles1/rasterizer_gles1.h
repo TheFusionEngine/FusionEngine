@@ -68,6 +68,12 @@ class RasterizerGLES1 : public Rasterizer {
 		MAX_HW_LIGHTS = 4,
 #endif
 	};
+	
+#ifdef __psp2__
+	typedef void (*PFNGLTEXGENIOESPROC)(GLenum coord, GLenum pname, GLint param);
+	PFNGLTEXGENIOESPROC glTexGeniOES = NULL;
+#endif
+	
 	#ifdef PSP
 	void glActiveTexture(int a1) { };
 	void glClientActiveTexture(int a1) { };

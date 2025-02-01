@@ -38,6 +38,27 @@
 #include "gl_context/context_gl.h"
 #include <string.h>
 
+#ifndef GL_TEXTURE_CUBE_MAP_NEGATIVE_X_OES
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_X_OES GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_Y_OES GL_TEXTURE_CUBE_MAP_POSITIVE_Y_EXT
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_Z_OES GL_TEXTURE_CUBE_MAP_POSITIVE_Z_EXT
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_X_OES GL_TEXTURE_CUBE_MAP_NEGATIVE_X_EXT
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_OES GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_EXT
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_OES GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_EXT
+#define GL_TEXTURE_CUBE_MAP_OES GL_TEXTURE_CUBE_MAP_EXT
+#endif
+
+#ifdef __psp2__
+#include <EGL/egl.h>
+#include <GLES/glext.h>
+#endif
+
+#ifndef GL_TEXTURE_GEN_MODE_OES
+#define GL_TEXTURE_GEN_MODE_OES GL_TEXTURE_GEN_MODE
+#define GL_REFLECTION_MAP_OES GL_REFLECTION_MAP_ARB
+#define glTexGeniOES glTexGeni
+#endif
+
 _FORCE_INLINE_ static void _gl_load_transform(const Transform& tr) {
 
 	GLfloat matrix[16]={ /* build a 16x16 matrix */
@@ -3563,13 +3584,17 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		
 		Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_ENVMAP] );
 		ERR_FAIL_COND(!texture);
-		glEnable(GL_TEXTURE_2D);
 
-		glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-		glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+		glActiveTexture(GL_TEXTURE0);
+		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_TEXTURE_GEN_S);
 		glEnable(GL_TEXTURE_GEN_T);
-		glActiveTexture(GL_TEXTURE0);
+
+
+		glTexGeniOES(GL_S, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
+		glTexGeniOES(GL_T, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
+		glTexGeniOES(GL_R, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
+
 		glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 
 
@@ -3577,8 +3602,31 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		// glDisable(GL_TEXTURE_GEN_T);
 
 	} else {
+		 // glDisable(GL_TEXTURE_CUBE_MAP_OES);
+		 glActiveTexture(GL_TEXTURE0);
 		 glDisable(GL_TEXTURE_GEN_S);
 		 glDisable(GL_TEXTURE_GEN_T);
+		 glDisable(GL_TEXTURE_GEN_R);
+		 glDisable(GL_TEXTURE_2D);
+		 
+#else
+		 
+	if(p_material->fixed_flags[VS::FIXED_MATERIAL_FLAG_USE_ENVMAP] && p_material->textures[VS::FIXED_MATERIAL_PARAM_ENVMAP].is_valid()) {
+		
+		Texture *texture = texture_owner.get( p_material->textures[VS::FIXED_MATERIAL_PARAM_ENVMAP] );
+		ERR_FAIL_COND(!texture);
+
+		glActiveTexture(GL_TEXTURE0);
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_TEXTURE_GEN_STR_OES);
+
+
+		glTexGeniOES(GL_TEXTURE_GEN_STR_OES, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
+		glBindTexture( GL_TEXTURE_2D,texture->tex_id );
+
+	} else {
+		 glActiveTexture(GL_TEXTURE0);
+		 glDisable(GL_TEXTURE_GEN_STR_OES);
 		 glDisable(GL_TEXTURE_2D);
 #endif
 		if (p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE].is_valid()) {
@@ -3591,13 +3639,20 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 			glBindTexture( GL_TEXTURE_2D,texture->tex_id );
 			
 			// tc0_id_cache = texture->tex_id;
+		} else if(p_material->fixed_flags[VS::FIXED_MATERIAL_FLAG_USE_REFLECTION]) {
+			glActiveTexture(GL_TEXTURE0);
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, reflect_texture);
+			reflect = true;
 		} else {
+			// glDisable(GL_TEXTURE_2D);
 			glActiveTexture(GL_TEXTURE0);
 			glDisable(GL_TEXTURE_2D);
+			
 		}
-#ifndef __psp2__
+// #ifndef __psp2__
 	}
-#endif
+// #endif
 
 
 }
@@ -4701,17 +4756,15 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 					
 			// glDisable(GL_TEXTURE_2D);
 		}
-
-// 		if(!normal_map) {
-// 			
-// 			// glActiveTexture(GL_TEXTURE1);
-// 			// glClientActiveTexture(GL_TEXTURE1);
-// 			glDisable(GL_TEXTURE_2D);
-// 		}
+		
+		
+ 		if(!normal_map) {
+ 			
+ 			glActiveTexture(GL_TEXTURE1);
+ 			glClientActiveTexture(GL_TEXTURE1);
+ 			glDisable(GL_TEXTURE_2D);
+ 		}
 		if (material!=prev_material || geometry_cmp!=prev_geometry_cmp) {
-
-
-		// glDisable(GL_TEXTURE_2D);
 			_setup_material(e->geometry,material);
 			if(material->textures[VS::FIXED_MATERIAL_PARAM_NORMAL].is_valid() && material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE].is_valid()) {
 				normal_map = true;
@@ -5115,8 +5168,16 @@ void RasterizerGLES1::end_scene() {
 //	material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,false);
 	if(current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor)
 		_process_blur(current_env->fx_param[VS::ENV_FX_PARAM_ES1_BLUR_TIMES], current_env->fx_param[VS::ENV_FX_PARAM_ES1_BLUR_ALPHA]);
-	
-	
+	if(!is_editor && reflect) {
+		// glEnable(GL_TEXTURE_CUBE_MAP_OES);
+		glViewport(0,0,256,256);
+		glBindTexture(GL_TEXTURE_2D, reflect_texture);
+		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 256, 256, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glViewport( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
+		
+	}
+	reflect = false;
 	
 	// _debug_shadows();
 }
@@ -5375,6 +5436,7 @@ void RasterizerGLES1::end_frame() {
 	*/
 
 	//print_line("VTX: "+itos(_rinfo.vertex_count)+" OBJ: "+itos(_rinfo.object_count)+" MAT: "+itos(_rinfo.mat_change_count)+" SHD: "+itos(_rinfo.shader_change_count));
+	
 
 	OS::get_singleton()->swap_buffers();
 }
@@ -6593,7 +6655,13 @@ void RasterizerGLES1::init() {
 	glewInit();
 #endif
 
-
+#ifdef __psp2__
+    glTexGeniOES = (PFNGLTEXGENIOESPROC)eglGetProcAddress("glTexGeniOES");
+    
+    if (!glTexGeniOES) {
+        printf("Failed to load glTexGeniOES\n");
+    }
+#endif
 	
 
 	scene_pass=1;
@@ -6667,6 +6735,48 @@ void RasterizerGLES1::init() {
 		GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	
+	glGenTextures(1, &reflect_texture);
+	glBindTexture(GL_TEXTURE_2D, reflect_texture);
+/*
+	
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X_OES, 0, 4, 256, 256, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y_OES, 0, 4, 256, 256, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z_OES, 0, 4, 256, 256, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X_OES, 0, 4, 256, 256, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_OES, 0, 4, 256, 256, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_OES, 0, 4, 256, 256, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, 0);*/
+	
+
+#ifdef __psp2__
+	glEnable(GL_TEXTURE_GEN_STR_OES);
+	glTexGeniOES(GL_TEXTURE_GEN_STR_OES, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
+#else
+	glEnable(GL_TEXTURE_GEN_S);
+	glEnable(GL_TEXTURE_GEN_T);
+	glEnable(GL_TEXTURE_GEN_R);
+	glTexGeniOES(GL_S, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
+	glTexGeniOES(GL_T, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
+	glTexGeniOES(GL_R, GL_TEXTURE_GEN_MODE_OES, GL_REFLECTION_MAP_OES);
+
+#endif
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+#ifdef __psp2__
+	glDisable(GL_TEXTURE_GEN_STR_OES);
+#else
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+	glDisable(GL_TEXTURE_GEN_R);
+#endif
 }
 
 void RasterizerGLES1::finish() {

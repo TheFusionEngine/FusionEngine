@@ -13,7 +13,7 @@ if env["platform"] in ("x11", "vita", "javascript"):
 	SConscript('gles2/SCsub');
 if env["platform"] in ("x11soft", "windows"):
 	SConscript('gl11/SCsub');
-elif env["platform"] != "vita":
+else:
 
 	SConscript('gles1/SCsub');
 SConscript('gl_context/SCsub');
