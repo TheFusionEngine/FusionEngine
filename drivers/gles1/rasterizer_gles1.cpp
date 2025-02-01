@@ -3608,6 +3608,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		 glDisable(GL_TEXTURE_GEN_T);
 		 glDisable(GL_TEXTURE_GEN_R);
 		 glDisable(GL_TEXTURE_2D);
+<<<<<<< HEAD
 		 
 #else
 		 
@@ -3627,6 +3628,8 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 		 glActiveTexture(GL_TEXTURE0);
 		 glDisable(GL_TEXTURE_GEN_STR_OES);
 		 glDisable(GL_TEXTURE_2D);
+=======
+>>>>>>> 2f243fa7ee88cb0c9ca9b35a9c0a5e838ee8fbd1
 #endif
 		if (p_material->textures[VS::FIXED_MATERIAL_PARAM_DIFFUSE].is_valid()) {
 
@@ -3649,9 +3652,15 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 			glDisable(GL_TEXTURE_2D);
 			
 		}
+<<<<<<< HEAD
 // #ifndef __psp2__
 	}
 // #endif
+=======
+#ifndef __psp2__
+	}
+#endif
+>>>>>>> 2f243fa7ee88cb0c9ca9b35a9c0a5e838ee8fbd1
 
 
 }
