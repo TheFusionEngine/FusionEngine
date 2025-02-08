@@ -248,12 +248,7 @@ static void _add_filter_to_list(Set<StringName>& r_list,const String& p_filter) 
 	DirAccess *da = DirAccess::open("res://");
 	_add_files_with_filter(da,filters,r_list);
 	memdelete(da);
-
-
-
 }
-
-
 
 Vector<uint8_t> EditorExportPlatform::get_exported_file(String& p_fname) const {
 	Ref<EditorExportPlatform> ep = EditorImportExport::get_singleton()->get_export_platform(get_name());
@@ -369,40 +364,56 @@ Vector<StringName> EditorExportPlatform::get_dependencies(bool p_bundles) const 
 	return ret;
 }
 
-///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool EditorExportPlatformConsole::_set(const StringName& p_name, const Variant& p_value){
+	if (p_name == "custom_binary/release") {
+		custom_release_binary=p_value;
+	} else if (p_name == "custom_binary/debug") {
+		custom_debug_binary=p_value;
+	} else {
+		return false;
+	}
+
+	return true;
+}
+
+bool EditorExportPlatformConsole::_get(const StringName& p_name,Variant &r_ret) const {
+	if (p_name == "custom_binary/release") {
+		r_ret=custom_release_binary;
+	} else if (p_name == "custom_binary/debug") {
+		r_ret=custom_debug_binary;
+	} else
+		return false;
+
+	return true;
+}
+
+void EditorExportPlatformConsole::_get_property_list( List<PropertyInfo> *p_list) const{
+	p_list->push_back( PropertyInfo( Variant::STRING, "custom_binary/debug", PROPERTY_HINT_GLOBAL_FILE, binary_extension));
+	p_list->push_back( PropertyInfo( Variant::STRING, "custom_binary/release", PROPERTY_HINT_GLOBAL_FILE, binary_extension));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool EditorExportPlatformPC::_set(const StringName& p_name, const Variant& p_value) {
-
 	String n = p_name;
 
-	if (n=="custom_binary/release") {
-
-		custom_release_binary=p_value;
-	} else if (n=="custom_binary/debug") {
-
-		custom_debug_binary=p_value;
-	} else if (n=="resources/pack_mode") {
-
+	if (n=="resources/pack_mode") {
 		export_mode=ExportMode(int(p_value));
 	} else if (n=="binary/64_bits") {
-
 		use64=p_value;
 	} else
 		return false;
 
 	return true;
-
 }
 
 bool EditorExportPlatformPC::_get(const StringName& p_name,Variant &r_ret) const {
 
 	String n = p_name;
 
-	if (n=="custom_binary/release") {
-		r_ret=custom_release_binary;
-	} else if (n=="custom_binary/debug") {
-		r_ret=custom_debug_binary;
-	} else if (n=="resources/pack_mode") {
+	if (n=="resources/pack_mode") {
 		r_ret=export_mode;
 	} else if (n=="binary/64_bits") {
 		r_ret=use64;
@@ -410,13 +421,9 @@ bool EditorExportPlatformPC::_get(const StringName& p_name,Variant &r_ret) const
 		return false;
 
 	return true;
-
 }
 
 void EditorExportPlatformPC::_get_property_list( List<PropertyInfo> *p_list) const {
-
-	p_list->push_back( PropertyInfo( Variant::STRING, "custom_binary/debug", PROPERTY_HINT_GLOBAL_FILE,binary_extension));
-	p_list->push_back( PropertyInfo( Variant::STRING, "custom_binary/release", PROPERTY_HINT_GLOBAL_FILE,binary_extension));
 	p_list->push_back( PropertyInfo( Variant::INT, "resources/pack_mode", PROPERTY_HINT_ENUM,"Single Exec.,Exec+Pack (.pck),Copy,Bundles (Optical)"));
 	p_list->push_back( PropertyInfo( Variant::BOOL, "binary/64_bits"));
 }
@@ -926,9 +933,9 @@ Error EditorExportPlatformPC::export_project(const String& p_path, bool p_debug,
 	} else {
 
 		if (p_debug)
-			exe_path=custom_debug_binary!=""?custom_debug_binary:exe_path+debug_binary32;
+			exe_path=custom_debug_binary!=""?custom_debug_binary:exe_path+debug_binary;
 		else
-			exe_path=custom_release_binary!=""?custom_release_binary:exe_path+release_binary32;
+			exe_path=custom_release_binary!=""?custom_release_binary:exe_path+release_binary;
 
 	}
 
@@ -979,11 +986,6 @@ Error EditorExportPlatformPC::export_project(const String& p_path, bool p_debug,
 	return err;
 }
 
-void EditorExportPlatformPC::set_binary_extension(const String& p_extension) {
-
-	binary_extension=p_extension;
-}
-
 bool EditorExportPlatformPC::can_export(String *r_error) const {
 
 	String err;
@@ -991,7 +993,7 @@ bool EditorExportPlatformPC::can_export(String *r_error) const {
 
 	String exe_path = EditorSettings::get_singleton()->get_settings_path()+"/templates/";
 
-	if (!FileAccess::exists(exe_path+debug_binary32) || !FileAccess::exists(exe_path+release_binary32)) {
+	if (!FileAccess::exists(exe_path+debug_binary) || !FileAccess::exists(exe_path+release_binary)) {
 		valid=false;
 		err="No 32 bits export templates found.\nDownload and install export templates.\n";
 	}

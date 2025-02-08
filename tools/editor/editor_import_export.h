@@ -117,11 +117,43 @@ public:
 	EditorExportPlatform() {};
 };
 
-class EditorExportPlatformPC : public EditorExportPlatform {
-	OBJ_TYPE( EditorExportPlatformPC,EditorExportPlatform );
+class EditorExportPlatformConsole : public EditorExportPlatform {
+	OBJ_TYPE(EditorExportPlatformConsole, EditorExportPlatform);
+
+protected:
+	Ref<Texture> logo;
+
+	String binary_extension;
+	String platform;
+	String name;
+
+	String custom_release_binary;
+	String custom_debug_binary;
+	String release_binary;
+	String debug_binary;
+
+	bool _set(const StringName& p_name, const Variant& p_value);
+	bool _get(const StringName& p_name,Variant &r_ret) const;
+	void _get_property_list( List<PropertyInfo> *p_list) const;
 
 public:
+	virtual String get_name() const final { return name; }
+	void set_name(const String& p_name) { name=p_name; }
 
+	Ref<Texture> get_logo() const final { return logo; }
+	void set_logo(const Ref<Texture>& p_logo) { logo=p_logo; }
+
+	String get_binary_extension() const final { return binary_extension; }
+	void set_binary_extension(const String& p_extension){binary_extension = p_extension;};
+
+	String get_exporting_binary(bool p_debug);
+
+};
+
+class EditorExportPlatformPC : public EditorExportPlatformConsole {
+	OBJ_TYPE( EditorExportPlatformPC,EditorExportPlatformConsole );
+
+public:
 	enum ExportMode {
 		EXPORT_EXE,
 		EXPORT_PACK,
@@ -129,49 +161,28 @@ public:
 		EXPORT_BUNDLES
 	};
 
-
 private:
-
-
-	String binary_extension;
-	String platform;
-
-	String custom_release_binary;
-	String custom_debug_binary;
-	String release_binary32;
-	String debug_binary32;
 	String release_binary64;
 	String debug_binary64;
-	String name;
-	bool use64;
-
-	Ref<Texture> logo;
 
 	ExportMode export_mode;
-protected:
+	bool use64;
 
+protected:
 	bool _set(const StringName& p_name, const Variant& p_value);
 	bool _get(const StringName& p_name,Variant &r_ret) const;
 	void _get_property_list( List<PropertyInfo> *p_list) const;
 
 public:
-
-	virtual String get_name() const { return name; }
-	virtual Ref<Texture> get_logo() const { return logo; }
 	virtual ImageCompression get_image_compression() const { return IMAGE_COMPRESSION_BC; }
 
-	virtual String get_binary_extension() const { return binary_extension; }
 	virtual Error export_project(const String& p_path,bool p_debug,bool p_dumb=false);
-	virtual void set_release_binary32(const String& p_binary) { release_binary32=p_binary; }
-	virtual void set_debug_binary32(const String& p_binary) { debug_binary32=p_binary; }
+	virtual void set_release_binary32(const String& p_binary) { release_binary=p_binary; }
+ 	virtual void set_debug_binary32(const String& p_binary) { debug_binary=p_binary; }
 	virtual void set_release_binary64(const String& p_binary) { release_binary64=p_binary; }
 	virtual void set_debug_binary64(const String& p_binary) { debug_binary64=p_binary; }
-	virtual void set_name(const String& p_name) { name=p_name; }
-	virtual void set_logo(const Ref<Texture>& p_logo) { logo=p_logo; }
 
 	virtual bool can_export(String *r_error=NULL) const;
-
-	void set_binary_extension(const String& p_extension);
 
 	EditorExportPlatformPC();
 };
