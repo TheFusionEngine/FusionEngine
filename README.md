@@ -13,7 +13,7 @@ Fusion Engine is based on Godot 1.0, with new features and fixed bugs.
 Get scons and python, choose a platform from the platform directory and then run 
 `scons platform=name target=release tools=no -j#` (Replace "name" with the desired platform)(Replace # in "-j#" with your processors core count).
 
-If you're building on Linux make sure to install libraries for alsa as well an opengl.
+If you're building on Linux make sure to install libraries for alsa as well as opengl.
 
 If you are on Fedora or a Fedora based distro you can install said required libraries with `sudo dnf install alsa-lib-devel glfw-devel`.
 If you are on Debian or Debian based distro you can install said required libraries with `sudo apt install alsa-lib libglfw3-dev`.
