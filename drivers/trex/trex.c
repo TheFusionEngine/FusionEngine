@@ -534,7 +534,7 @@ TRex *trex_compile(const TRexChar *pattern,const TRexChar **error)
 	TRex *exp = (TRex *)malloc(sizeof(TRex));
 	exp->_eol = exp->_bol = NULL;
 	exp->_p = pattern;
-	exp->_nallocated = (int)scstrlen((TRexChar *) pattern) * sizeof(TRexChar);
+	exp->_nallocated = (int)scstrlen((char *) pattern) * sizeof(TRexChar);
 	exp->_nodes = (TRexNode *)malloc(exp->_nallocated * sizeof(TRexNode));
 	exp->_nsize = 0;
 	exp->_matches = 0;
@@ -627,7 +627,7 @@ TRexBool trex_searchrange(TRex* exp,const TRexChar* text_begin,const TRexChar* t
 
 TRexBool trex_search(TRex* exp,const TRexChar* text, const TRexChar** out_begin, const TRexChar** out_end)
 {
-	return trex_searchrange(exp,text,text + scstrlen((TRexChar *) text),out_begin,out_end);
+	return trex_searchrange(exp,text,text + scstrlen((char *) text),out_begin,out_end);
 }
 
 int trex_getsubexpcount(TRex* exp)
