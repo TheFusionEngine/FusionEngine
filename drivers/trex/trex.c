@@ -588,7 +588,7 @@ TRexBool trex_match(TRex* exp,const TRexChar* text)
 {
 	const TRexChar* res = NULL;
 	exp->_bol = text;
-	exp->_eol = text + scstrlen(text);
+	exp->_eol = text + scstrlen((char *) text);
 	exp->_currsubexp = 0;
 	res = trex_matchnode(exp,exp->_nodes,text,NULL);
 	if(res == NULL || res != exp->_eol)
