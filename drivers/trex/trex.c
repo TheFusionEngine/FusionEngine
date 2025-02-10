@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <setjmp.h>
+#include <wchar.h>
 #include "trex.h"
 
 #ifdef _UICODE
