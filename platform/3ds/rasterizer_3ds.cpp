@@ -799,7 +799,7 @@ void Rasterizer3DS::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,co
 
 		if (i==VS::ARRAY_VERTEX) {
 
-			array_len=Vector3Array(p_arrays[i]).size();
+			array_len=PackedVector3Array(p_arrays[i]).size();
 			ERR_FAIL_COND(array_len==0);
 		} else if (i==VS::ARRAY_INDEX) {
 
@@ -1095,7 +1095,7 @@ int Rasterizer3DS::mesh_surface_get_array_len(RID p_mesh, int p_surface) const {
 	Surface *surface = mesh->surfaces[p_surface];
 	ERR_FAIL_COND_V( !surface, -1 );
 
-	Vector3Array arr = surface->data[VS::ARRAY_VERTEX];
+	PackedVector3Array arr = surface->data[VS::ARRAY_VERTEX];
 	return arr.size();
 
 }
