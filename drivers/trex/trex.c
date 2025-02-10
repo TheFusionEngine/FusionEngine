@@ -106,7 +106,7 @@ static void trex_error(TRex *exp,const TRexChar *error)
 
 static void trex_expect(TRex *exp, int n){
 	if((*exp->_p) != n) 
-		trex_error(exp, _SC("expected paren"));
+		trex_error(exp, (TRexChar *) _SC("expected paren"));
 	exp->_p++;
 }
 
@@ -122,7 +122,7 @@ static TRexChar trex_escapechar(TRex *exp)
 		case 'f': exp->_p++; return '\f';
 		default: return (*exp->_p++);
 		}
-	} else if(!scisprint(*exp->_p)) trex_error(exp,_SC("letter expected"));
+	} else if(!scisprint(*exp->_p)) trex_error(exp, (TRexChar *) _SC("letter expected"));
 	return (*exp->_p++);
 }
 
@@ -166,7 +166,7 @@ static int trex_charnode(TRex *exp,TRexBool isclass)
 	}
 	else if(!scisprint(*exp->_p)) {
 		
-		trex_error(exp,_SC("letter expected"));
+		trex_error(exp,(TRexChar *) _SC("letter expected"));
 	}
 	t = *exp->_p; exp->_p++; 
 	return trex_newnode(exp,t);
@@ -180,7 +180,7 @@ static int trex_class(TRex *exp)
 		exp->_p++;
 	}else ret = trex_newnode(exp,OP_CLASS);
 	
-	if(*exp->_p == ']') trex_error(exp,_SC("empty class"));
+	if(*exp->_p == ']') trex_error(exp, (TRexChar *) _SC("empty class"));
 	chain = ret;
 	while(*exp->_p != ']' && exp->_p != exp->_eol) {
 		if(*exp->_p == '-' && first != -1){ 
@@ -188,7 +188,7 @@ static int trex_class(TRex *exp)
 			if(*exp->_p++ == ']') trex_error(exp,_SC("unfinished range"));
 			r = trex_newnode(exp,OP_RANGE);
 			if(first>*exp->_p) trex_error(exp,_SC("invalid range"));
-			if(exp->_nodes[first].type == OP_CCLASS) trex_error(exp,_SC("cannot use character classes in ranges"));
+			if(exp->_nodes[first].type == OP_CCLASS) trex_error(exp, (TRexChar *) _SC("cannot use character classes in ranges"));
 			exp->_nodes[r].left = exp->_nodes[first].type;
 			t = trex_escapechar(exp);
 			exp->_nodes[r].right = t;
@@ -227,7 +227,7 @@ static int trex_parsenumber(TRex *exp)
 	exp->_p++;
 	while(isdigit(*exp->_p)) {
 		ret = ret*10+(*exp->_p++-'0');
-		if(positions==1000000000) trex_error(exp,_SC("overflow in numeric constant"));
+		if(positions==1000000000) trex_error(exp, (TRexChar *) _SC("overflow in numeric constant"));
 		positions *= 10;
 	};
 	return ret;
@@ -278,7 +278,7 @@ static int trex_element(TRex *exp)
 			case TREX_SYMBOL_GREEDY_ZERO_OR_ONE: p0 = 0; p1 = 1; exp->_p++; isgreedy = TRex_True; break;
 			case '{':
 				exp->_p++;
-				if(!isdigit(*exp->_p)) trex_error(exp,_SC("number expected"));
+				if(!isdigit(*exp->_p)) trex_error(exp, (TRexChar *) _SC("number expected"));
 				p0 = (unsigned short)trex_parsenumber(exp);
 				/*******************************/
 				switch(*exp->_p) {
@@ -294,7 +294,7 @@ static int trex_element(TRex *exp)
 				trex_expect(exp,'}');
 				break;
 			default:
-				trex_error(exp,_SC(", or } expected"));
+				trex_error(exp, (TRexChar *) _SC(", or } expected"));
 		}
 		/*******************************/
 		isgreedy = TRex_True; 
@@ -545,7 +545,7 @@ TRex *trex_compile(const TRexChar *pattern,const TRexChar **error)
 		int res = trex_list(exp);
 		exp->_nodes[exp->_first].left = res;
 		if(*exp->_p!='\0')
-			trex_error(exp,_SC("unexpected character"));
+			trex_error(exp, (TRexChar *) _SC("unexpected character"));
 #ifdef _DEBUG
 		{
 			int nsize,i;
