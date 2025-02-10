@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <setjmp.h>
-#include <wchar.h>
 #include "trex.h"
 
-#ifdef _UICODE
+#ifdef _UNICODE
+#include <wchar.h>
 #define scisprint iswprint
 #define scstrlen wcslen
 #define scprintf wprintf
