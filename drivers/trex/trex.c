@@ -185,7 +185,7 @@ static int trex_class(TRex *exp)
 	while(*exp->_p != ']' && exp->_p != exp->_eol) {
 		if(*exp->_p == '-' && first != -1){ 
 			int r,t;
-			if(*exp->_p++ == ']') trex_error(exp,_SC("unfinished range"));
+			if(*exp->_p++ == ']') trex_error(exp, (TRexChar *) _SC("unfinished range"));
 			r = trex_newnode(exp,OP_RANGE);
 			if(first>*exp->_p) trex_error(exp,_SC("invalid range"));
 			if(exp->_nodes[first].type == OP_CCLASS) trex_error(exp, (TRexChar *) _SC("cannot use character classes in ranges"));
@@ -533,7 +533,7 @@ TRex *trex_compile(const TRexChar *pattern,const TRexChar **error)
 	TRex *exp = (TRex *)malloc(sizeof(TRex));
 	exp->_eol = exp->_bol = NULL;
 	exp->_p = pattern;
-	exp->_nallocated = (int)scstrlen(pattern) * sizeof(TRexChar);
+	exp->_nallocated = (int)scstrlen((TRexChar *) pattern) * sizeof(TRexChar);
 	exp->_nodes = (TRexNode *)malloc(exp->_nallocated * sizeof(TRexNode));
 	exp->_nsize = 0;
 	exp->_matches = 0;
@@ -626,7 +626,7 @@ TRexBool trex_searchrange(TRex* exp,const TRexChar* text_begin,const TRexChar* t
 
 TRexBool trex_search(TRex* exp,const TRexChar* text, const TRexChar** out_begin, const TRexChar** out_end)
 {
-	return trex_searchrange(exp,text,text + scstrlen(text),out_begin,out_end);
+	return trex_searchrange(exp,text,text + scstrlen((TRexChar *) text),out_begin,out_end);
 }
 
 int trex_getsubexpcount(TRex* exp)
