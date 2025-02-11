@@ -30,7 +30,7 @@ String EditorExportPlatformDC::get_name() const {
 };
 
 EditorExportPlatform::ImageCompression EditorExportPlatformDC::get_image_compression() const{
-    return ImageCompression::IMAGE_COMPRESSION_PVRTC;
+    return IMAGE_COMPRESSION_PVRTC;
 };
 
 Ref<Texture> EditorExportPlatformDC::get_logo() const {
@@ -41,7 +41,7 @@ Ref<Texture> EditorExportPlatformDC::get_logo() const {
 }
 
 Error EditorExportPlatformDC::run(int p_device,bool p_dumb){
-    return Error::OK;
+    return OK;
 }
 
 bool EditorExportPlatformDC::can_export(String *r_error) const {

@@ -32,7 +32,7 @@ String EditorExportPlatformVita::get_name() const {
 }
 
 EditorExportPlatform::ImageCompression EditorExportPlatformVita::get_image_compression() const{
-    return ImageCompression::IMAGE_COMPRESSION_NONE;
+    return IMAGE_COMPRESSION_NONE;
 }
 
 Ref<Texture> EditorExportPlatformVita::get_logo() const {
@@ -51,7 +51,7 @@ String EditorExportPlatformVita::get_binary_extension() const {
 };
 
 Error EditorExportPlatformVita::export_project(const String& p_path,bool p_debug,bool p_dumb){
-    return Error::ERR_DOES_NOT_EXIST;
+    return ERR_DOES_NOT_EXIST;
 };
 
 void register_vita_exporter(){
