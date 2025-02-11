@@ -6,11 +6,11 @@
 #include <wchar.h>
 #include "trex.h"
 
-#ifdef _UICODE
+#ifdef _UNICODE
 #define scisprint iswprint
 #define scstrlen wcslen
 #define scprintf wprintf
-#define _SC(x) L##c
+#define _SC(x) L##x
 #else
 #define scisprint isprint
 #define scstrlen strlen
