@@ -25,11 +25,11 @@ public:
 };
 
 EditorExportPlatform::ImageCompression EditorExportPlatformWii::get_image_compression() const{
-    return ImageCompression::IMAGE_COMPRESSION_NONE;
+    return IMAGE_COMPRESSION_NONE;
 };
 
 Error EditorExportPlatformWii::run(int p_device,bool p_dumb){
-    return Error::OK;
+    return OK;
 }
 
 bool EditorExportPlatformWii::can_export(String *r_error) const {

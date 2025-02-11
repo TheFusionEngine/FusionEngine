@@ -31,7 +31,7 @@ void EditorExportPlatform3DS::_get_property_list( List<PropertyInfo> *p_list) co
 }
 
 EditorExportPlatform::ImageCompression EditorExportPlatform3DS::get_image_compression() const{
-    return ImageCompression::IMAGE_COMPRESSION_NONE;
+    return IMAGE_COMPRESSION_NONE;
 }
 
 bool EditorExportPlatform3DS::can_export(String *r_error) const {
@@ -39,7 +39,7 @@ bool EditorExportPlatform3DS::can_export(String *r_error) const {
 };
 
 Error EditorExportPlatform3DS::export_project(const String& p_path,bool p_debug,bool p_dumb){
-    return Error::ERR_DOES_NOT_EXIST;
+    return ERR_DOES_NOT_EXIST;
 };
 
 void register_3ds_exporter(){

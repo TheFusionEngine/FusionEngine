@@ -153,7 +153,7 @@ bool ZipArchive::try_open_pack(const String& p_name, bool p_replace_files) {
 };
 
 PackSource::FileStatus ZipArchive::has_file(const String& p_path) const {
-	return files.has(p_path) ? FileStatus::HAS_FILE : FileStatus::NOT_HAS_FILE;
+	return files.has(p_path) ? HAS_FILE : NOT_HAS_FILE;
 }
 
 FileAccess* ZipArchive::get_file(const String& p_path) const {

@@ -1077,11 +1077,11 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 		if (i==VS::ARRAY_VERTEX) {
 
-			array_len=Vector3Array(p_arrays[i]).size();
+			array_len=PackedVector3Array(p_arrays[i]).size();
 			ERR_FAIL_COND(array_len==0);
 		} else if (i==VS::ARRAY_INDEX) {
 
-			index_array_len=IntArray(p_arrays[i]).size();
+			index_array_len=PackedIntArray(p_arrays[i]).size();
 		}
 	}
 

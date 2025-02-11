@@ -32,7 +32,7 @@ String EditorExportPlatformSymbian::get_name() const {
 };
 
 EditorExportPlatform::ImageCompression EditorExportPlatformSymbian::get_image_compression() const{
-    return ImageCompression::IMAGE_COMPRESSION_NONE;
+    return IMAGE_COMPRESSION_NONE;
 };
 
 Ref<Texture> EditorExportPlatformSymbian::get_logo() const {
@@ -43,7 +43,7 @@ Ref<Texture> EditorExportPlatformSymbian::get_logo() const {
 }
 
 Error EditorExportPlatformSymbian::run(int p_device,bool p_dumb){
-    return Error::OK;
+    return OK;
 }
 
 bool EditorExportPlatformSymbian::can_export(String *r_error) const {

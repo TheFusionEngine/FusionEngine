@@ -23,11 +23,11 @@ public:
 };
 
 EditorExportPlatform::ImageCompression EditorExportPlatformDC::get_image_compression() const{
-    return ImageCompression::IMAGE_COMPRESSION_PVRTC;
+    return IMAGE_COMPRESSION_PVRTC;
 };
 
 Error EditorExportPlatformDC::run(int p_device,bool p_dumb){
-    return Error::OK;
+    return OK;
 }
 
 bool EditorExportPlatformDC::can_export(String *r_error) const {

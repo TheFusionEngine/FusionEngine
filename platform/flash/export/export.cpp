@@ -31,7 +31,7 @@ String EditorExportPlatformFlash::get_name() const {
 }
 
 EditorExportPlatform::ImageCompression EditorExportPlatformFlash::get_image_compression() const{
-    return ImageCompression::IMAGE_COMPRESSION_NONE;
+    return IMAGE_COMPRESSION_NONE;
 }
 
 Ref<Texture> EditorExportPlatformFlash::get_logo() const {
@@ -50,7 +50,7 @@ String EditorExportPlatformFlash::get_binary_extension() const {
 };
 
 Error EditorExportPlatformFlash::export_project(const String& p_path,bool p_debug,bool p_dumb){
-    return Error::ERR_DOES_NOT_EXIST;
+    return ERR_DOES_NOT_EXIST;
 };
 
 void register_flash_exporter(){

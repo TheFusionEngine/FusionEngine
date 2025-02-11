@@ -41,7 +41,7 @@ String EditorExportPlatformPSP::get_name() const {
 }
 
 EditorExportPlatform::ImageCompression EditorExportPlatformPSP::get_image_compression() const{
-    return ImageCompression::IMAGE_COMPRESSION_NONE;
+    return IMAGE_COMPRESSION_NONE;
 }
 
 Ref<Texture> EditorExportPlatformPSP::get_logo() const {
@@ -60,7 +60,7 @@ String EditorExportPlatformPSP::get_binary_extension() const {
 };
 
 Error EditorExportPlatformPSP::export_project(const String& p_path,bool p_debug,bool p_dumb){
-    return Error::ERR_DOES_NOT_EXIST;
+    return ERR_DOES_NOT_EXIST;
 };
 
 void register_psp_exporter(){

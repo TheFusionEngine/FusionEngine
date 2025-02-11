@@ -92,10 +92,10 @@ FileAccess *PackedData::try_open_path(const String& p_path) {
 
 	for (int i = 0; i < sources.size(); i++) {
 		PackSource::FileStatus status = sources[i]->has_file(p_path);
-		if (status == PackSource::FileStatus::NOT_HAS_FILE){
+		if (status == PackSource::NOT_HAS_FILE){
 			continue;
 		} else {
-			if (status == PackSource::FileStatus::HAS_FILE){
+			if (status == PackSource::HAS_FILE){
 				if (sources[i]->load_presedence > load_presedence) {ret_source = sources[i];}
 			} else { //file removed
 				//The file could be re-introduced later, but if it's not, ret_source will be null

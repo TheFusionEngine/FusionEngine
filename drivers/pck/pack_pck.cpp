@@ -125,9 +125,9 @@ bool PackedSourcePCK::try_open_pack(const String& p_path, bool p_replace_files) 
 
 PackSource::FileStatus PackedSourcePCK::has_file(const String &p_path) const {
 	if (files.has(PathMD5(p_path.md5_buffer()))){
-		return FileStatus::HAS_FILE;
+		return HAS_FILE;
 	}
-	return FileStatus::NOT_HAS_FILE;
+	return NOT_HAS_FILE;
 }
 
 FileAccess* PackedSourcePCK::get_file(const String &p_path) const {
