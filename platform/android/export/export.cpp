@@ -1162,7 +1162,7 @@ Error EditorExportPlatformAndroid::export_project(const String& p_path, bool p_d
 				formatted.export_path = formatted.export_path.replace_first("res://","assets/");
 				files.set(i, formatted);
 			}
-			FileAccess *zip_pack = FileAccess::open(p_path, FileAccess::ModeFlags::WRITE);
+			FileAccess *zip_pack = FileAccess::open(p_path, FileAccess::WRITE);
 
 			PackedData::get_singleton()->get_source(0)->export_pack(zip_pack, files, NULL);
 		}
