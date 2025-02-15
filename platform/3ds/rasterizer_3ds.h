@@ -107,7 +107,7 @@ class Rasterizer3DS : public Rasterizer {
 			shaderProgramSetVsh(&program, &dvlb->DVLE[0]);
 			location_projection = shaderInstanceGetUniformLocation(program.vertexShader, "projection");
 			location_modelview = shaderInstanceGetUniformLocation(program.vertexShader, "modelView");
-			location_worldTransform3D = shaderInstanceGetUniformLocation(program.vertexShader, "worldTransform");
+			location_worldTransform = shaderInstanceGetUniformLocation(program.vertexShader, "worldTransform");
 			location_extra = shaderInstanceGetUniformLocation(program.vertexShader, "extra");
 		}
 		
@@ -117,7 +117,7 @@ class Rasterizer3DS : public Rasterizer {
 			shaderProgramSetVsh(&program, &dvlb->DVLE[0]);
 			location_projection = shaderInstanceGetUniformLocation(program.vertexShader, "projection");
 			location_modelview = shaderInstanceGetUniformLocation(program.vertexShader, "modelView");
-			location_worldTransform3D = shaderInstanceGetUniformLocation(program.vertexShader, "worldTransform");
+			location_worldTransform = shaderInstanceGetUniformLocation(program.vertexShader, "worldTransform");
 			location_extra = shaderInstanceGetUniformLocation(program.vertexShader, "extra");
 			
 			uLoc_lightVec     = shaderInstanceGetUniformLocation(program.vertexShader, "lightVec");
@@ -394,7 +394,7 @@ class Rasterizer3DS : public Rasterizer {
 
 	struct Skeleton {
 
-		Vector<Transform> bones;
+		Vector<Transform3D> bones;
 
 	};
 
@@ -823,7 +823,7 @@ class Rasterizer3DS : public Rasterizer {
 	
 	float canvas_opacity;
 	VS::MaterialBlendMode canvas_blend_mode;
-	Matrix32 canvas_transform;
+	Transform2D canvas_transform;
 	
 	float last_time = 0.0;
 	float time_delta = 0.0;

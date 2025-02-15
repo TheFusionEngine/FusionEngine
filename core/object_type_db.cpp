@@ -816,13 +816,13 @@ void ObjectTypeDB::get_virtual_methods(const StringName& p_type,List<MethodInfo>
 }
 
 void ObjectTypeDB::set_type_enabled(StringName p_type,bool p_enable) {
-
+	ERR_EXPLAIN("Type " + p_type + " does not exist!");
 	ERR_FAIL_COND(!types.has(p_type));
 	types[p_type].disabled=!p_enable;
 }
 
 bool ObjectTypeDB::is_type_enabled(StringName p_type) {
-
+	ERR_EXPLAIN("Type " + p_type + " does not exist!");
 	ERR_FAIL_COND_V(!types.has(p_type),false);
 	return !types[p_type].disabled;
 }

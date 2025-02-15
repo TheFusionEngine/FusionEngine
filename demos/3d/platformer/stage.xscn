@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resource_file type="PackedScene" subresource_count="7" version="1.0" version_name="Fusion Engine v1.0.stable.custom_build">
 	<ext_resource path="res://sb.cube" type="CubeMap"></ext_resource>
-	<ext_resource path="res://tiles.res" type="MeshLibrary"></ext_resource>
-	<ext_resource path="res://enemy.scn" type="PackedScene"></ext_resource>
-	<ext_resource path="res://player.xml" type="PackedScene"></ext_resource>
-	<ext_resource path="res://coin.scn" type="PackedScene"></ext_resource>
+	<ext_resource path="res://tiles.xgt" type="MeshLibrary"></ext_resource>
+	<ext_resource path="res://enemy.xscn" type="PackedScene"></ext_resource>
+	<ext_resource path="res://player.xscn" type="PackedScene"></ext_resource>
+	<ext_resource path="res://coin.xscn" type="PackedScene"></ext_resource>
 	<resource type="Environment" path="local://0">
 		<bool name="ambient_light/enabled"> True </bool>
 		<color name="ambient_light/color"> 0, 0.409429, 0.596681, 1 </color>
@@ -60,7 +60,7 @@
 			<string> "names" </string>
 			<string_array  len="94">
 				<string> "world" </string>
-				<string> "Spatial" </string>
+				<string> "Node3D" </string>
 				<string> "_import_path" </string>
 				<string> "_import_transform" </string>
 				<string> "visibility/visible" </string>
@@ -76,7 +76,7 @@
 				<string> "cell/center_z" </string>
 				<string> "cell/scale" </string>
 				<string> "data" </string>
-				<string> "DirectionalLight" </string>
+				<string> "DirectionalLight3D" </string>
 				<string> "transform/local" </string>
 				<string> "layers" </string>
 				<string> "params/enabled" </string>
@@ -102,7 +102,7 @@
 				<string> "coins" </string>
 				<string> "Node" </string>
 				<string> "coin" </string>
-				<string> "Area" </string>
+				<string> "Area3D" </string>
 				<string> "coin 2" </string>
 				<string> "coin 3" </string>
 				<string> "coin 3 2" </string>
@@ -148,7 +148,7 @@
 				<string> "coin 4 5 4 4" </string>
 				<string> "enemies" </string>
 				<string> "enemy" </string>
-				<string> "RigidBody" </string>
+				<string> "RigidBody3D" </string>
 				<string> "enemy 2" </string>
 				<string> "enemy 3" </string>
 				<string> "enemy 4" </string>
@@ -284,7 +284,7 @@
 					<string> "__editor_plugin_screen__" </string>
 					<string> "3D" </string>
 				</dictionary>
-				<resource  resource_type="MeshLibrary" path="res://tiles.res">  </resource>
+				<resource  resource_type="MeshLibrary" path="res://tiles.xgt">  </resource>
 				<bool> False </bool>
 				<real> 2 </real>
 				<int> 4 </int>
@@ -317,7 +317,7 @@
 					<string> "_editor_collapsed" </string>
 					<bool> True </bool>
 				</dictionary>
-				<resource  resource_type="PackedScene" path="res://coin.scn">  </resource>
+				<resource  resource_type="PackedScene" path="res://coin.xscn">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.5311, 2.85075, 5.24675 </transform>
 				<dictionary  shared="false">
 					<string> "__editor_plugin_states__" </string>
@@ -468,7 +468,7 @@
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 51.5614, 4.60515, 23.1836 </transform>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 53.5614, 2.98252, 25.1775 </transform>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 51.5614, 4.60515, 25.1836 </transform>
-				<resource  resource_type="PackedScene" path="res://enemy.scn">  </resource>
+				<resource  resource_type="PackedScene" path="res://enemy.xscn">  </resource>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3062, 5.40827, 5.96938 </transform>
 				<dictionary  shared="false">
 					<string> "__editor_plugin_states__" </string>
@@ -580,7 +580,7 @@
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 64.1292, 5.40827, 17.1396 </transform>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 64.1292, 5.40827, 32.6128 </transform>
 				<transform> 1, 0, 0, 0, 1, 0, 0, 0, 1, 55.5702, 5.40827, 32.6128 </transform>
-				<resource  resource_type="PackedScene" path="res://player.xml">  </resource>
+				<resource  resource_type="PackedScene" path="res://player.xscn">  </resource>
 				<transform> 0.0160676, 0, -0.999871, 0, 1, 0, 0.999871, 0, 0.0160676, 8.50167, 4.15811, 15.9334 </transform>
 				<dictionary  shared="false">
 					<string> "__editor_plugin_states__" </string>

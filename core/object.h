@@ -476,8 +476,6 @@ public:
 #ifndef NO_SAFE_CAST
 		return SAFE_CAST<T*>(this);
 #else
-		if (!this)
-			return NULL;
 		if (is_type_ptr(T::get_type_ptr_static()))
 			return static_cast<T*>(this);
 		else
@@ -491,8 +489,6 @@ public:
 #ifndef NO_SAFE_CAST
 		return SAFE_CAST<const T*>(this);
 #else
-		if (!this)
-			return NULL;
 		if (is_type_ptr(T::get_type_ptr_static()))
 			return static_cast<const T*>(this);
 		else

@@ -639,7 +639,7 @@
 				<string> "sphere 4" </string>
 				<string> "sphere 5" </string>
 				<string> "sound" </string>
-				<string> "SpatialSamplePlayer" </string>
+				<string> "SamplePlayer3D" </string>
 				<string> "params/volume_db" </string>
 				<string> "params/pitch_scale" </string>
 				<string> "params/attenuation/min_distance" </string>

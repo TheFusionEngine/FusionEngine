@@ -232,7 +232,7 @@
 				<string> "CollisionShape3D" </string>
 				<string> "shape" </string>
 				<string> "trigger" </string>
-				<string> "VisibilityEnabler" </string>
+				<string> "VisibilityEnabler3D" </string>
 				<string> "aabb" </string>
 				<string> "enabler/pause_animations" </string>
 				<string> "enabler/freeze_bodies" </string>
@@ -286,7 +286,7 @@
 				<string> "phase_3/pos" </string>
 				<string> "phase_3/color" </string>
 				<string> "sfx" </string>
-				<string> "SpatialSamplePlayer" </string>
+				<string> "SamplePlayer3D" </string>
 				<string> "params/volume_db" </string>
 				<string> "params/pitch_scale" </string>
 				<string> "params/attenuation/min_distance" </string>
