@@ -803,7 +803,7 @@ void Rasterizer3DS::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,co
 			ERR_FAIL_COND(array_len==0);
 		} else if (i==VS::ARRAY_INDEX) {
 
-			index_array_len=IntArray(p_arrays[i]).size();
+			index_array_len=PackedIntArray(p_arrays[i]).size();
 		}
 	}
 
@@ -1108,7 +1108,7 @@ int Rasterizer3DS::mesh_surface_get_array_index_len(RID p_mesh, int p_surface) c
 	Surface *surface = mesh->surfaces[p_surface];
 	ERR_FAIL_COND_V( !surface, -1 );
 
-	IntArray arr = surface->data[VS::ARRAY_INDEX];
+	PackedIntArray arr = surface->data[VS::ARRAY_INDEX];
 	return arr.size();
 
 }
@@ -1260,9 +1260,9 @@ AABB Rasterizer3DS::multimesh_get_aabb(RID p_multimesh) const {
 Transform3D Rasterizer3DS::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
-	ERR_FAIL_COND_V(!multimesh,Transform());
+	ERR_FAIL_COND_V(!multimesh,Transform3D());
 
-	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform());
+	ERR_FAIL_INDEX_V(p_index,multimesh->elements.size(),Transform3D());
 
 	return multimesh->elements[p_index].xform;
 
@@ -1719,8 +1719,8 @@ void Rasterizer3DS::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const
 Transform3D Rasterizer3DS::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
-	ERR_FAIL_COND_V(!skeleton, Transform());
-	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform() );
+	ERR_FAIL_COND_V(!skeleton, Transform3D());
+	ERR_FAIL_INDEX_V( p_bone, skeleton->bones.size(), Transform3D() );
 
 	// something
 	return skeleton->bones[p_bone];
@@ -2146,8 +2146,8 @@ void Rasterizer3DS::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugM
 	C3D_TexBind(0, NULL);
 
 	C3D_BindProgram(&scene_shader->program);
-	_set_uniform(scene_shader->location_modelview, Matrix32());
-	_set_uniform(scene_shader->location_extra, Matrix32());
+	_set_uniform(scene_shader->location_modelview, Transform2D());
+	_set_uniform(scene_shader->location_extra, Transform2D());
 };
 
 void Rasterizer3DS::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) {
@@ -2185,8 +2185,8 @@ void Rasterizer3DS::set_camera(const Transform3D& p_world, const CameraMatrix& p
 // 	for (int i = 0; i < 4; ++i)
 // 		print("%f %f %f %f\n", m[i*4], m[i*4+1], m[i*4+2], m[i*4+3]);
 
-	_set_uniform(scene_shader->location_modelview, Matrix32());
-// 	_set_uniform(scene_shader->location_worldTransform, Matrix32());
+	_set_uniform(scene_shader->location_modelview, Transform2D());
+// 	_set_uniform(scene_shader->location_worldTransform, Transform2D());
 	_set_uniform(scene_shader->location_worldTransform, camera_transform_inverse);
 	_set_uniform(scene_shader->location_projection, camera_projection);
 		
@@ -2513,8 +2513,8 @@ void Rasterizer3DS::canvas_begin()
 	C3D_BindProgram(&canvas_shader->program);
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, canvas_shader->location_projection, &projection);
 	
-	_set_uniform(canvas_shader->location_modelview, Matrix32());
-	_set_uniform(canvas_shader->location_extra, Matrix32());
+	_set_uniform(canvas_shader->location_modelview, Transform2D());
+	_set_uniform(canvas_shader->location_extra, Transform2D());
 	
 	C3D_AttrInfo* attrInfo = C3D_GetAttrInfo();
 	AttrInfo_Init(attrInfo);
@@ -2578,7 +2578,7 @@ void Rasterizer3DS::canvas_set_blend_mode(VS::MaterialBlendMode p_mode)
 void Rasterizer3DS::canvas_begin_rect(const Transform2D& p_transform)
 {
 	_set_uniform(canvas_shader->location_modelview, p_transform);
-	_set_uniform(canvas_shader->location_extra, Matrix32());
+	_set_uniform(canvas_shader->location_extra, Transform2D());
 // 	canvas_transform = p_transform;
 }
 
@@ -3098,7 +3098,7 @@ void Rasterizer3DS::canvas_render_items(CanvasItem *p_item_list,int p_z,const Co
 		CanvasItemMaterial *material = material_owner->material;
 		
 		_set_uniform(canvas_shader->location_modelview,ci->final_transform);
-		_set_uniform(canvas_shader->location_extra, Matrix32());
+		_set_uniform(canvas_shader->location_extra, Transform2D());
 		
 		bool unshaded = (material && material->shading_mode==VS::CANVAS_ITEM_SHADING_UNSHADED) || ci->blend_mode!=VS::MATERIAL_BLEND_MODE_MIX;
 		

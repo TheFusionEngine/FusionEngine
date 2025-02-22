@@ -55,7 +55,7 @@ class OS_PSP : public OS {
 	List<String> args;
 	MainLoop *main_loop;	
 
-	AudioDriverPSP driver_dummy;
+	AudioDriverPSP driver_psp;
 
 	bool grab;
 	uint64_t ticks_start;
