@@ -65,6 +65,7 @@ static const char* locale_list[]={
 "de_CH", //  German (Switzerland)
 "de_DE", //  German (Germany)
 "de_LU", //  German (Luxembourg)
+"egy", // Egyptian (Ancient)
 "el", //  Greek
 "el_CY", //  Greek (Cyprus)
 "el_GR", //  Greek (Greece)
@@ -80,6 +81,7 @@ static const char* locale_list[]={
 "en_SG", //  English (Singapore)
 "en_US", //  English (United States)
 "en_ZA", //  English (South Africa)
+"eo",	 // Esperanto
 "es", //  Spanish
 "es_AR", //  Spanish (Argentina)
 "es_BO", //  Spanish (Bolivia)
@@ -174,6 +176,7 @@ static const char* locale_list[]={
 "th", //  Thai
 "th_TH", //  Thai (Thailand)
 "th_TH_TH", //  Thai (Thailand,TH)
+"tok", // Toki Pona
 "tr", //  Turkish
 "tr_TR", //  Turkish (Turkey)
 "uk", //  Ukrainian
@@ -185,6 +188,16 @@ static const char* locale_list[]={
 "zh_HK", //  Chinese (Hong Kong)
 "zh_SG", //  Chinese (Singapore)
 "zh_TW", //  Chinese (Taiwan)
+"custom_1", // Custom Locales
+"custom_2", 
+"custom_3", 
+"custom_4", 
+"custom_5", 
+"custom_6", 
+"custom_7", 
+"custom_8", 
+"custom_9", 
+"custom_10", 
 0
 };
 
@@ -222,6 +235,7 @@ static const char* locale_names[]={
 "German (Switzerland)",
 "German (Germany)",
 "German (Luxembourg)",
+"Egyptian (Ancient)",
 "Greek",
 "Greek (Cyprus)",
 "Greek (Greece)",
@@ -237,6 +251,7 @@ static const char* locale_names[]={
 "English (Singapore)",
 "English (United States)",
 "English (South Africa)",
+"Esperanto",
 "Spanish",
 "Spanish (Argentina)",
 "Spanish (Bolivia)",
@@ -331,6 +346,7 @@ static const char* locale_names[]={
 "Thai",
 "Thai (Thailand)",
 "Thai (Thailand TH)",
+"Toki Pona",
 "Turkish",
 "Turkish (Turkey)",
 "Ukrainian",
@@ -342,6 +358,16 @@ static const char* locale_names[]={
 "Chinese (Hong Kong)",
 "Chinese (Singapore)",
 "Chinese (Taiwan)",
+"Undefined Locale #1",  // Custom Locales
+"Undefined Locale #2", 
+"Undefined Locale #3", 
+"Undefined Locale #4", 
+"Undefined Locale #5", 
+"Undefined Locale #6", 
+"Undefined Locale #7", 
+"Undefined Locale #8", 
+"Undefined Locale #9", 
+"Undefined Locale #10", 
 0
 };
 
