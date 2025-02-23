@@ -84,11 +84,6 @@ bool EditorExportPlatformPSP::_get(const StringName& p_name,Variant &r_ret) cons
 	return true;
 }
 
-
-String EditorExportPlatformPSP::get_name() const {
-    return "Playstation Portable";
-}
-
 EditorExportPlatform::ImageCompression EditorExportPlatformPSP::get_image_compression() const{
     return IMAGE_COMPRESSION_NONE;
 }
