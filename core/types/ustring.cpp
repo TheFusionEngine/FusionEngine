@@ -134,7 +134,7 @@ bool String::operator==(const String& p_str) const {
 		return false;
 	if (empty())
 		return true;
-		
+
 	int l=length();
 	
 	const CharType *src = c_str();

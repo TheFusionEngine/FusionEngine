@@ -96,7 +96,7 @@ public:
 
 	bool operator==(const String& p_str) const;
 	bool operator!=(const String& p_str) const;
-	String operator+(const String & p_str) const;
+	String operator+(const String& p_str) const;
 	//String operator+(CharType p_char) const;
 
 	String& operator+=(const String &);
@@ -236,7 +236,7 @@ public:
 #endif
 	} /* hash the string */
 	uint32_t hash() const; /* hash the string */
-	uint64_t hash64() const; /* hash the string */	
+	uint64_t hash64() const; /* hash the string */
 	String md5_text() const;
 	Vector<uint8_t> md5_buffer() const;
 
@@ -282,9 +282,7 @@ public:
 	String(const CharType *p_str,int p_clip_to_len=-1);
 	String(const StrRange& p_range);
 
-
 };
-
 
 bool operator==(const char *p_chr, const String &p_str);
 
@@ -304,7 +302,7 @@ struct NoCaseComparator {
 	}
 };
 
- /* end of namespace */
+/* end of namespace */
 
 
 #endif

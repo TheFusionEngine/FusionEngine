@@ -119,10 +119,10 @@ opts.Add('pvr','PVR (PowerVR) Texture loader support (yes/no)','yes')
 opts.Add('builtin_zlib','Use built-in zlib (yes/no)','yes')
 opts.Add('openssl','Use OpenSSL (yes/no/builtin)','no')
 opts.Add('musepack','Musepack Audio (yes/no)','yes')
-opts.Add("CXX", "Compiler");
-opts.Add("CCFLAGS", "Custom flags for the C++ compiler");
-opts.Add("CFLAGS", "Custom flags for the C compiler");
-opts.Add("LINKFLAGS", "Custom flags for the linker");
+opts.Add("CXX", "Compiler")
+opts.Add("CCFLAGS", "Custom flags for the C++ compiler")
+opts.Add("CFLAGS", "Custom flags for the C compiler")
+opts.Add("LINKFLAGS", "Custom flags for the linker")
 opts.Add('disable_3d', 'Disable 3D nodes for smaller executable (yes/no)', "no")
 opts.Add('disable_advanced_gui', 'Disable advance 3D gui nodes and behaviors (yes/no)', "no")
 opts.Add("disable_classes", "Disable given classes (comma separated)", "")
