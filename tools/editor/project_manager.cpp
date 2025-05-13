@@ -837,7 +837,7 @@ ProjectManager::ProjectManager() {
 	l->set_align(Label::ALIGN_CENTER);
 	vb->add_child(l);
 	l = memnew( Label );
-	l->set_text("v"VERSION_MKSTRING);
+	l->set_text("v" VERSION_MKSTRING);
 	//l->add_font_override("font",get_font("bold","Fonts"));
 	l->set_align(Label::ALIGN_CENTER);
 	vb->add_child(l);

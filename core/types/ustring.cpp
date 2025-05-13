@@ -3443,7 +3443,7 @@ String String::percent_encode() const {
 		uint8_t c = cs[i];
 		if ( (c>='A' && c<='Z') || (c>='a' && c<='z') || (c>='0' && c<='9') || c=='-' || c=='_' || c=='~' || c=='.') {
 
-			char p[2]={c,0};
+			char p[2]={static_cast<char>(c),0};
 			encoded+=p;
 		} else {
 			char p[4]={'%',0,0,0};

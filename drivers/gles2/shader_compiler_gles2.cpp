@@ -133,12 +133,12 @@ String ShaderCompilerGLES2::dump_node_code(SL::Node *p_node,int p_level,bool p_a
 			//variables
 			for(Map<StringName,SL::DataType>::Element *E=bnode->variables.front();E;E=E->next()) {
 
-				code+=_mktab(p_level)+_typestr(E->value())+" "+replace_string(E->key())+";"ENDL;
+				code+=_mktab(p_level)+_typestr(E->value())+" "+replace_string(E->key())+";" ENDL;
 			}
 
 			for(int i=0;i<bnode->statements.size();i++) {
 
-				code+=_mktab(p_level)+dump_node_code(bnode->statements[i],p_level)+";"ENDL;
+				code+=_mktab(p_level)+dump_node_code(bnode->statements[i],p_level)+";" ENDL;
 			}
 
 
@@ -389,15 +389,15 @@ String ShaderCompilerGLES2::dump_node_code(SL::Node *p_node,int p_level,bool p_a
 			SL::ControlFlowNode *cfnode=(SL::ControlFlowNode*)p_node;
 			if (cfnode->flow_op==SL::FLOW_OP_IF) {
 
-				code+="if ("+dump_node_code(cfnode->statements[0],p_level)+") {"ENDL;
+				code+="if ("+dump_node_code(cfnode->statements[0],p_level)+") {" ENDL;
 				code+=dump_node_code(cfnode->statements[1],p_level+1);
 				if (cfnode->statements.size()==3) {
 
-					code+="} else {"ENDL;
+					code+="} else {" ENDL;
 					code+=dump_node_code(cfnode->statements[2],p_level+1);
 				}
 
-				code+="}"ENDL;
+				code+="}" ENDL;
 
 			} else if (cfnode->flow_op==SL::FLOW_OP_RETURN) {
 
@@ -455,7 +455,7 @@ Error ShaderCompilerGLES2::compile_node(SL::ProgramNode *p_program) {
 		ubase=uniforms->size();
 	for(Map<StringName,SL::Uniform>::Element *E=p_program->uniforms.front();E;E=E->next()) {
 
-		String uline="uniform "+_typestr(E->get().type)+" _"+E->key().operator String()+";"ENDL;
+		String uline="uniform "+_typestr(E->get().type)+" _"+E->key().operator String()+";" ENDL;
 
 		global_code+=uline;
 		if (uniforms) {

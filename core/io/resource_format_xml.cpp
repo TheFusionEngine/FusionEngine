@@ -1851,7 +1851,7 @@ void ResourceFormatSaverXMLInstance::escape(String& p_str) {
 	p_str=p_str.replace("\"","&quot;");
 	for (int i=1;i<32;i++) {
 
-		char chr[2]={i,0};
+		char chr[2]={static_cast<char>(i),0};
 		const char hexn[16]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 		const char hex[8]={'&','#','0','0',hexn[i>>4],hexn[i&0xf],';',0};
 

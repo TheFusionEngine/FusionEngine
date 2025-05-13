@@ -91,7 +91,7 @@
 
 static RasterizerGLES2* _singleton = NULL;
 
-static const GLenum prim_type[]={GL_POINTS,GL_LINES,GL_TRIANGLES,GL_TRIANGLE_FAN};
+//static const GLenum prim_type[]={GL_POINTS,GL_LINES,GL_TRIANGLES,GL_TRIANGLE_FAN};
 
 _FORCE_INLINE_ static void _set_color_attrib(const Color& p_color) {
 
@@ -1409,6 +1409,8 @@ void RasterizerGLES2::shader_set_mode(RID p_shader,VS::ShaderMode p_mode) {
 			case VS::SHADER_MATERIAL: {
 				material_shader.free_custom_shader(shader->custom_code_id);
 			} break;
+			case VS::SHADER_CANVAS_ITEM: break;
+			case VS::SHADER_POST_PROCESS: break;
 		}
 
 		shader->custom_code_id=0;
@@ -1420,6 +1422,8 @@ void RasterizerGLES2::shader_set_mode(RID p_shader,VS::ShaderMode p_mode) {
 		case VS::SHADER_MATERIAL: {
 			shader->custom_code_id=material_shader.create_custom_shader();
 		} break;
+		case VS::SHADER_CANVAS_ITEM: break;
+		case VS::SHADER_POST_PROCESS: break;
 	}
 	_shader_make_dirty(shader);
 
@@ -2126,9 +2130,9 @@ Error RasterizerGLES2::_surface_set_arrays(Surface *p_surface, uint8_t *p_mem,ui
 					for (int i=0;i<p_surface->array_len;i++) {
 
 						GLbyte vector[4]={
-							CLAMP(src[i].x*127,-128,127),
-							CLAMP(src[i].y*127,-128,127),
-							CLAMP(src[i].z*127,-128,127),
+							static_cast<GLbyte>(CLAMP(src[i].x*127,-128,127)),
+							static_cast<GLbyte>(CLAMP(src[i].y*127,-128,127)),
+							static_cast<GLbyte>(CLAMP(src[i].z*127,-128,127)),
 							0,
 						};
 
@@ -2165,10 +2169,10 @@ Error RasterizerGLES2::_surface_set_arrays(Surface *p_surface, uint8_t *p_mem,ui
 					for (int i=0;i<p_surface->array_len;i++) {
 
 						GLbyte xyzw[4]={
-							CLAMP(src[i*4+0]*127,-128,127),
-							CLAMP(src[i*4+1]*127,-128,127),
-							CLAMP(src[i*4+2]*127,-128,127),
-							CLAMP(src[i*4+3]*127,-128,127)
+							static_cast<GLbyte>(CLAMP(src[i*4+0]*127,-128,127)),
+							static_cast<GLbyte>(CLAMP(src[i*4+1]*127,-128,127)),
+							static_cast<GLbyte>(CLAMP(src[i*4+2]*127,-128,127)),
+							static_cast<GLbyte>(CLAMP(src[i*4+3]*127,-128,127))
 						};
 
 						copymem(&p_mem[a.ofs+i*stride], xyzw, a.size);
