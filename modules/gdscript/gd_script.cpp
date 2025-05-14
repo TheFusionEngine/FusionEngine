@@ -1118,9 +1118,9 @@ Variant GDFunction::call(GDInstance *p_instance, const Variant **p_args, int p_a
 		break;
 	}
 
-    if (ScriptDebugger::get_singleton())
+    if (ScriptDebugger::get_singleton()){
         GDScriptLanguage::get_singleton()->exit_function();
-
+	}
 
 	if (_stack_size) {
 		//free stack

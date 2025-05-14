@@ -1017,7 +1017,7 @@ Error GDScriptLanguage::complete_keyword(const String& p_code, int p_line, const
 
 
 	GDParser p;
-	Error err = p.parse(p_code,p_base_path);
+	p.parse(p_code,p_base_path);
 	// don't care much about error I guess
 	const GDParser::Node* root = p.get_parse_tree();
 	ERR_FAIL_COND_V(root->type!=GDParser::Node::TYPE_CLASS,ERR_INVALID_DATA);

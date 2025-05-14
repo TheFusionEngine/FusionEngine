@@ -1138,7 +1138,7 @@ Vector<uint8_t> GDTokenizerBuffer::parse_code_string(const String& p_code) {
 	GDTokenizerText tt;
 	tt.set_code(p_code);
 	int line=-1;
-	int col=0;
+	//int col=0;
 
 	while(true) {
 
@@ -1355,14 +1355,14 @@ int GDTokenizerBuffer::get_token_column(int p_offset) const{
 int GDTokenizerBuffer::get_token_line_indent(int p_offset) const{
 
 	int offset = token+p_offset;
-	ERR_FAIL_INDEX_V(offset,tokens.size(),0);
+	ERR_FAIL_INDEX_V(offset, tokens.size(), 0);
 	return tokens[offset]>>TOKEN_BITS;
 }
 const Variant& GDTokenizerBuffer::get_token_constant(int p_offset) const{
 
 
 	int offset = token+p_offset;
-	ERR_FAIL_INDEX_V(offset,tokens.size(),nil);
+	ERR_FAIL_INDEX_V(offset, (int) tokens.size(),nil);
 	uint32_t constant = tokens[offset]>>TOKEN_BITS;
 	ERR_FAIL_INDEX_V(constant,constants.size(),nil);
 	return constants[constant];

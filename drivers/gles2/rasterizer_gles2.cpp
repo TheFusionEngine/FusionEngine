@@ -2064,9 +2064,6 @@ Error RasterizerGLES2::_surface_set_arrays(Surface *p_surface, uint8_t *p_mem,ui
 				AABB aabb;
 
 				float scale=1;
-				float max=0;
-
-
 
 				if (p_surface->array[VS::ARRAY_VERTEX].datatype==_GL_HALF_FLOAT_OES) {
 
@@ -4062,7 +4059,7 @@ void RasterizerGLES2::begin_frame() {
 
 	window_size = Size2( OS::get_singleton()->get_video_mode().width, OS::get_singleton()->get_video_mode().height );
 
-	double time = (OS::get_singleton()->get_ticks_usec()/1000); // get msec
+	double time = (OS::get_singleton()->get_ticks_usec()/1000.0); // get msec
 	time/=1000.0; // make secs
 	time_delta=time-last_time;
 	last_time=time;
@@ -5645,7 +5642,6 @@ Error RasterizerGLES2::_setup_geometry(const Geometry *p_geometry, const Materia
 					base = skinned_buffer;
 					//copy stuff and get it ready for the skeleton
 
-					int src_stride = surf->stride;
 						int dst_stride = surf->stride - ( surf->array[VS::ARRAY_BONES].size + surf->array[VS::ARRAY_WEIGHTS].size );
 					const uint8_t *src_weights=&surf->array_local[surf->array[VS::ARRAY_WEIGHTS].ofs];
 					const uint8_t *src_bones=&surf->array_local[surf->array[VS::ARRAY_BONES].ofs];
@@ -6043,10 +6039,10 @@ void RasterizerGLES2::_render(const Geometry *p_geometry,const Material *p_mater
 };
 
 void RasterizerGLES2::_setup_shader_params(const Material *p_material) {
-
+#if 0
 	int idx=0;
 	int tex_idx=0;
-#if 0
+
 	for(Map<StringName,Variant>::Element *E=p_material->shader_cache->params.front();E;E=E->next(),idx++) {
 
 		Variant v; //
@@ -6274,6 +6270,7 @@ void RasterizerGLES2::_render_list_forward(RenderList *p_render_list,const Trans
 						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 					} break;
+					case VS::MATERIAL_BLEND_MODE_PREMULT_ALPHA: break;
 
 				}
 
@@ -8395,6 +8392,7 @@ void RasterizerGLES2::free(const RID& p_rid) {
 			case VS::SHADER_POST_PROCESS: {
 				//postprocess_shader.free_custom_shader(shader->custom_code_id);
 			} break;
+			case VS::SHADER_CANVAS_ITEM: {} break;
 		}
 
 		if (shader->dirty_list.in_list())
@@ -8807,7 +8805,7 @@ void RasterizerGLES2::_update_framebuffer() {
 
 //	GLuint format_rgba = use_fp16_fb?_GL_RGBA16F_EXT:GL_RGBA;
 	GLuint format_rgba = GL_RGBA;
-	GLuint format_rgb = use_fp16_fb?_GL_RGB16F_EXT:GL_RGB;
+	//GLuint format_rgb = use_fp16_fb?_GL_RGB16F_EXT:GL_RGB;
 	GLuint format_type = use_fp16_fb?_GL_HALF_FLOAT_OES:GL_UNSIGNED_BYTE;
 	/*GLuint format_luminance = use_fp16_fb?GL_RGB16F:GL_RGBA;
 	GLuint format_luminance_type = use_fp16_fb?(use_fu_GL_HALF_FLOAT_OES):GL_UNSIGNED_BYTE;
@@ -9232,7 +9230,7 @@ void RasterizerGLES2::init() {
 
 	{
 		//shadowmaps
-		OS::VideoMode vm=OS::get_singleton()->get_video_mode();
+		//OS::VideoMode vm=OS::get_singleton()->get_video_mode();
 
 		//don't use a shadowbuffer too big in GLES, this should be the maximum
 		int max_shadow_size = GLOBAL_DEF("rasterizer/max_shadow_buffer_size",1024);//nearest_power_of_2(MIN(vm.width,vm.height))/2;

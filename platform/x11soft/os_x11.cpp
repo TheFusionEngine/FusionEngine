@@ -106,7 +106,7 @@ void OS_X11::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 
 	if (xim == NULL) {
 		WARN_PRINT("XOpenIM failed");
-		xim_style=NULL;
+		xim_style=static_cast<XIMStyle>(NULL);
 	} else {
 		::XIMStyles *xim_styles=NULL;
 		xim_style=0;
@@ -506,7 +506,6 @@ OS::VideoMode OS_X11::get_video_mode(int p_screen) const {
 }
 void OS_X11::get_fullscreen_mode_list(List<VideoMode> *p_list,int p_screen) const {
 
-
 }
 
 
@@ -583,11 +582,11 @@ void OS_X11::handle_key_event(XKeyEvent *p_event, bool p_echo) {
 	KeySym keysym_keycode=0; // keysym used to find a keycode
 	KeySym keysym_unicode=0; // keysym used to find unicode
 					
-	int nbytes=0; // bytes the string takes
+	//int nbytes=0; // bytes the string takes
 						 
 	// XLookupString returns keysyms usable as nice scancodes/
 	char str[256+1];
-	nbytes=XLookupString(xkeyevent, str, 256, &keysym_keycode, NULL);
+	/*nbytes=*/XLookupString(xkeyevent, str, 256, &keysym_keycode, NULL);
 						 
  	// Meanwhile, XLookupString returns keysyms useful for unicode.
 	
@@ -684,7 +683,7 @@ void OS_X11::handle_key_event(XKeyEvent *p_event, bool p_echo) {
 			::Time tresh=ABS(peek_event.xkey.time-xkeyevent->time);
 			if (peek_event.type == KeyPress && tresh<5 ) {
 				KeySym rk;
-				nbytes=XLookupString((XKeyEvent*)&peek_event, str, 256, &rk, NULL);
+				/*nbytes=*/XLookupString((XKeyEvent*)&peek_event, str, 256, &rk, NULL);
 				if (rk==keysym_keycode) {
 					XEvent event;
 					XNextEvent(x11_display, &event); //erase next event
@@ -729,11 +728,10 @@ void OS_X11::handle_key_event(XKeyEvent *p_event, bool p_echo) {
 }
 
 void OS_X11::process_xevents() {
-
-	//printf("checking events %i\n", XPending(x11_display));
+#if 0
+	printf("checking events %i\n", XPending(x11_display));
 
 	bool do_mouse_warp=false;
-#if 0		
 	while (XPending(x11_display) > 0) {
 		XEvent event;
 		XNextEvent(x11_display, &event);
@@ -1454,7 +1452,7 @@ OS_X11::OS_X11() {
 #endif
 
 	minimized = false;
-	xim_style=NULL;
+	xim_style=static_cast<XIMStyle>(NULL);
 	mouse_mode=MOUSE_MODE_VISIBLE;
 
 
