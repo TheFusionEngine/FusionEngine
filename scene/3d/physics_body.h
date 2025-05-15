@@ -30,9 +30,8 @@
 #define PHYSICS_BODY__H
 
 #include "scene/3d/collision_object.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "vset.h"
-
 
 class PhysicsBody3D : public CollisionObject3D {
 
@@ -43,7 +42,7 @@ protected:
 
 	static void _bind_methods();
 	void _notification(int p_what);
-	PhysicsBody3D(PhysicsServer::BodyMode p_mode);
+	PhysicsBody3D(PhysicsServer3D::BodyMode p_mode);
 public:
 
 	virtual Vector3 get_linear_velocity() const;
@@ -118,7 +117,7 @@ public:
 private:
 
 	bool can_sleep;
-	PhysicsDirectBodyState *state;
+	Physics3DDirectBodyState *state;
 	Mode mode;
 
 	real_t bounce;
@@ -273,7 +272,7 @@ class CharacterBody3D : public PhysicsBody3D {
 
 	Variant _get_collider() const;
 
-	_FORCE_INLINE_ bool _ignores_mode(PhysicsServer::BodyMode) const;
+	_FORCE_INLINE_ bool _ignores_mode(PhysicsServer3D::BodyMode) const;
 protected:
 
 	static void _bind_methods();

@@ -27,12 +27,12 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 #include "sphere_shape.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 
 
 void SphereShape3D::_update_shape() {
 
-	PhysicsServer::get_singleton()->shape_set_data(get_shape(),radius);
+	PHYSICS_3D(shape_set_data, get_shape(),radius);
 }
 
 void SphereShape3D::set_radius(float p_radius) {
@@ -58,7 +58,7 @@ void SphereShape3D::_bind_methods() {
 
 }
 
-SphereShape3D::SphereShape3D() : Shape3D( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_SPHERE)) {
+SphereShape3D::SphereShape3D() : Shape3D( PHYSICS_3D(shape_create, PhysicsServer3D::SHAPE_SPHERE)) {
 
 	set_radius(1.0);
 }

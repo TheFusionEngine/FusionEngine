@@ -29,6 +29,8 @@
 #ifndef TEST_PHYSICS_H
 #define TEST_PHYSICS_H
 
+#ifndef PHYSICS_3D_DISABLED
+
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
@@ -40,5 +42,7 @@ namespace TestPhysics {
 MainLoop* test();
 
 }
+
+#endif
 
 #endif

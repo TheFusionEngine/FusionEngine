@@ -110,7 +110,7 @@ void Volume::_get_property_list( List<PropertyInfo> *p_list) const {
 
 void Volume::add_shape(ShapeType p_shape_type, const Variant& p_data, const Transform3D& p_transform) {
 
-	PhysicsServer::get_singleton()->volume_add_shape(volume,(PhysicsServer::ShapeType)p_shape_type,p_data,p_transform);
+	PHYSICS_3D(volume_add_shape, volume,(PhysicsServer3D::ShapeType)p_shape_type,p_data,p_transform);
 	_change_notify();
 }
 
@@ -149,22 +149,22 @@ void Volume::add_capsule_shape(float p_radius, float p_height,const Transform3D&
 
 int Volume::get_shape_count() const {
 
-	return PhysicsServer::get_singleton()->volume_get_shape_count(volume);
+	return PHYSICS_3D(volume_get_shape_count, volume);
 }
 
 Volume::ShapeType Volume::get_shape_type(int p_shape) const {
 
-	return (ShapeType)PhysicsServer::get_singleton()->volume_get_shape_type(volume,p_shape);
+	return (ShapeType)PHYSICS_3D(volume_get_shape_type, volume,p_shape);
 }
 
 Transform3D Volume::get_shape_transform(int p_shape) const {
 
-	return PhysicsServer::get_singleton()->volume_get_shape_transform(volume,p_shape);
+	return PHYSICS_3D(volume_get_shape_transform, volume,p_shape);
 }
 
 Variant Volume::get_shape(int p_shape) const {
 
-	return PhysicsServer::get_singleton()->volume_get_shape(volume,p_shape);
+	return PHYSICS_3D(volume_get_shape, volume,p_shape);
 }
 
 void Volume::_bind_methods() {
@@ -197,14 +197,14 @@ RID Volume::get_rid() {
 
 Volume::Volume() {
 
-	volume= PhysicsServer::get_singleton()->volume_create();
+	volume= PHYSICS_3D(volume_create);
 	
 }
 
 
 Volume::~Volume() {
 
-	PhysicsServer::get_singleton()->free(volume);
+	PHYSICS_3D(free, volume);
 }
 
 

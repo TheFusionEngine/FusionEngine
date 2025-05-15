@@ -1,0 +1,10 @@
+Import('env')
+
+
+if env['disable_3d_physics'] == 'no':
+    env.add_source_files(env.modules_sources,"*.cpp")
+    SConscript("joints/SCsub")
+
+Export('env')
+
+

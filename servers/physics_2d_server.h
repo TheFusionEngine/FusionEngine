@@ -29,15 +29,23 @@
 #ifndef PHYSICS_2D_SERVER_H
 #define PHYSICS_2D_SERVER_H
 
+#ifndef PHYSICS_2D_DISABLED
+#define PHYSICS_2D(func, ...) PhysicsServer2D::get_singleton()->func(__VA_ARGS__)
+#else
+#define PHYSICS_2D(func, ...) NULL
+#endif
+
 #include "object.h"
 #include "reference.h"
 #include "resource.h"
 
 class Physics2DDirectSpaceState;
+class Physics2DShapeQueryResult;
+
 
 class Physics2DDirectBodyState : public Object {
-
 	OBJ_TYPE( Physics2DDirectBodyState, Object );
+#ifndef PHYSICS_2D_DISABLED
 protected:
 	static void _bind_methods();
 public:
@@ -80,11 +88,8 @@ public:
 	virtual Physics2DDirectSpaceState* get_space_state()=0;
 
 	Physics2DDirectBodyState();
+#endif
 };
-
-
-class Physics2DShapeQueryResult;
-
 
 //used for script
 class Physics2DShapeQueryParameters : public RefCounted {
@@ -129,20 +134,8 @@ public:
 
 };
 
-
 class Physics2DDirectSpaceState : public Object {
-
 	OBJ_TYPE( Physics2DDirectSpaceState, Object );
-
-	Dictionary _intersect_ray(const Vector2& p_from, const Vector2& p_to,const Vector<RID>& p_exclude=Vector<RID>(),uint32_t p_layers=0,uint32_t p_object_type_mask=TYPE_MASK_COLLISION);
-
-	Array _intersect_shape(const Ref<Physics2DShapeQueryParameters> &p_shape_query,int p_max_results=32);
-	Array _cast_motion(const Ref<Physics2DShapeQueryParameters> &p_shape_query);
-	Array _collide_shape(const Ref<Physics2DShapeQueryParameters> &p_shape_query,int p_max_results=32);
-	Dictionary _get_rest_info(const Ref<Physics2DShapeQueryParameters> &p_shape_query);
-
-protected:
-	static void _bind_methods();
 
 public:
 
@@ -157,7 +150,6 @@ public:
 	};
 
 	struct RayResult {
-
 		Vector2 position;
 		Vector2 normal;
 		RID rid;
@@ -167,27 +159,15 @@ public:
 		Variant metadata;
 	};
 
-	virtual bool intersect_ray(const Vector2& p_from, const Vector2& p_to,RayResult &r_result,const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
-
 	struct ShapeResult {
-
 		RID rid;
 		ObjectID collider_id;
 		Object *collider;
 		int shape;
 		Variant metadata;
-
-
 	};
 
-	virtual int intersect_shape(const RID& p_shape, const Transform2D& p_xform,const Vector2& p_motion,float p_margin,ShapeResult *r_results,int p_result_max,const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
-
-	virtual bool cast_motion(const RID& p_shape, const Transform2D& p_xform,const Vector2& p_motion,float p_margin,float &p_closest_safe,float &p_closest_unsafe, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
-
-	virtual bool collide_shape(RID p_shape, const Transform2D& p_shape_xform,const Vector2& p_motion,float p_margin,Vector2 *r_results,int p_result_max,int &r_result_count, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
-
 	struct ShapeRestInfo {
-
 		Vector2 point;
 		Vector2 normal;
 		RID rid;
@@ -195,18 +175,37 @@ public:
 		int shape;
 		Vector2 linear_velocity; //velocity at contact point
 		Variant metadata;
-
 	};
+
+#ifndef PHYSICS_2D_DISABLED
+private:
+	Dictionary _intersect_ray(const Vector2& p_from, const Vector2& p_to,const Vector<RID>& p_exclude=Vector<RID>(),uint32_t p_layers=0,uint32_t p_object_type_mask=TYPE_MASK_COLLISION);
+
+	Array _intersect_shape(const Ref<Physics2DShapeQueryParameters> &p_shape_query,int p_max_results=32);
+	Array _cast_motion(const Ref<Physics2DShapeQueryParameters> &p_shape_query);
+	Array _collide_shape(const Ref<Physics2DShapeQueryParameters> &p_shape_query,int p_max_results=32);
+	Dictionary _get_rest_info(const Ref<Physics2DShapeQueryParameters> &p_shape_query);
+
+protected:
+	static void _bind_methods();
+
+public:
+	virtual bool intersect_ray(const Vector2& p_from, const Vector2& p_to,RayResult &r_result,const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
+
+	virtual int intersect_shape(const RID& p_shape, const Transform2D& p_xform,const Vector2& p_motion,float p_margin,ShapeResult *r_results,int p_result_max,const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
+
+	virtual bool cast_motion(const RID& p_shape, const Transform2D& p_xform,const Vector2& p_motion,float p_margin,float &p_closest_safe,float &p_closest_unsafe, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
+
+	virtual bool collide_shape(RID p_shape, const Transform2D& p_shape_xform,const Vector2& p_motion,float p_margin,Vector2 *r_results,int p_result_max,int &r_result_count, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
 
 	virtual bool rest_info(RID p_shape, const Transform2D& p_shape_xform,const Vector2& p_motion,float p_margin,ShapeRestInfo *r_info, const Set<RID>& p_exclude=Set<RID>(),uint32_t p_layer_mask=0xFFFFFFFF,uint32_t p_object_type_mask=TYPE_MASK_COLLISION)=0;
 
-
 	Physics2DDirectSpaceState();
+#endif
 };
 
 
 class Physics2DShapeQueryResult : public RefCounted {
-
 	OBJ_TYPE( Physics2DShapeQueryResult, RefCounted );
 
 	Vector<Physics2DDirectSpaceState::ShapeResult> result;
@@ -227,19 +226,9 @@ public:
 };
 
 
-class Physics2DServer : public Object {
-
-	OBJ_TYPE( Physics2DServer, Object );
-
-	static Physics2DServer * singleton;
-
-protected:
-	static void _bind_methods();
-
+class PhysicsServer2D : public Object {
+	OBJ_TYPE( PhysicsServer2D, Object );
 public:
-
-	static Physics2DServer * get_singleton();
-
 	enum ShapeType {
 		SHAPE_LINE, ///< plane:"plane"
 		SHAPE_RAY, ///< float:"length"
@@ -251,6 +240,100 @@ public:
 		SHAPE_CONCAVE_POLYGON, ///< Vector2 array:"triangles" , or Dictionary with "indices" (int array) and "triangles" (Vector2 array)
 		SHAPE_CUSTOM, ///< Server-Implementation based custom shape, calling shape_create() with this value will result in an error
 	};
+
+	enum SpaceParameter {
+		SPACE_PARAM_CONTACT_RECYCLE_RADIUS,
+		SPACE_PARAM_CONTACT_MAX_SEPARATION,
+		SPACE_PARAM_BODY_MAX_ALLOWED_PENETRATION,
+		SPACE_PARAM_BODY_LINEAR_VELOCITY_SLEEP_TRESHOLD,
+		SPACE_PARAM_BODY_ANGULAR_VELOCITY_SLEEP_TRESHOLD,
+		SPACE_PARAM_BODY_TIME_TO_SLEEP,
+		SPACE_PARAM_BODY_ANGULAR_VELOCITY_DAMP_RATIO,
+		SPACE_PARAM_CONSTRAINT_DEFAULT_BIAS,
+	};
+
+	enum AreaParameter {
+		AREA_PARAM_GRAVITY,
+		AREA_PARAM_GRAVITY_VECTOR,
+		AREA_PARAM_GRAVITY_IS_POINT,
+		AREA_PARAM_GRAVITY_POINT_ATTENUATION,
+		AREA_PARAM_DENSITY,
+		AREA_PARAM_PRIORITY
+	};
+
+	enum AreaSpaceOverrideMode {
+		AREA_SPACE_OVERRIDE_DISABLED,
+		AREA_SPACE_OVERRIDE_COMBINE,
+		AREA_SPACE_OVERRIDE_REPLACE,
+	};
+
+	enum BodyMode {
+		BODY_MODE_STATIC,
+		BODY_MODE_KINEMATIC,
+		BODY_MODE_RIGID,
+		BODY_MODE_CHARACTER
+		//BODY_MODE_SOFT ??
+	};
+
+	enum CCDMode {
+		CCD_MODE_DISABLED,
+		CCD_MODE_CAST_RAY,
+		CCD_MODE_CAST_SHAPE,
+	};
+
+	enum BodyParameter {
+		BODY_PARAM_BOUNCE,
+		BODY_PARAM_FRICTION,
+		BODY_PARAM_MASS, ///< unused for static, always infinite
+		BODY_PARAM_MAX,
+	};
+
+	enum BodyState {
+		BODY_STATE_TRANSFORM,
+		BODY_STATE_LINEAR_VELOCITY,
+		BODY_STATE_ANGULAR_VELOCITY,
+		BODY_STATE_SLEEPING,
+		BODY_STATE_CAN_SLEEP
+	};
+
+	enum JointType {
+		JOINT_PIN,
+		JOINT_GROOVE,
+		JOINT_DAMPED_SPRING
+	};
+
+	enum JointParam {
+		JOINT_PARAM_BIAS,
+		JOINT_PARAM_MAX_BIAS,
+		JOINT_PARAM_MAX_FORCE,
+	};
+
+	enum DampedStringParam {
+		DAMPED_STRING_REST_LENGTH,
+		DAMPED_STRING_STIFFNESS,
+		DAMPED_STRING_DAMPING
+	};
+
+	enum AreaBodyStatus {
+		AREA_BODY_ADDED,
+		AREA_BODY_REMOVED
+	};
+
+	enum ProcessInfo {
+		INFO_ACTIVE_OBJECTS,
+		INFO_COLLISION_PAIRS,
+		INFO_ISLAND_COUNT
+	};
+#ifndef PHYSICS_2D_DISABLED
+private:
+	static PhysicsServer2D * singleton;
+
+protected:
+	static void _bind_methods();
+
+public:
+	_FORCE_INLINE_ static PhysicsServer2D * get_singleton(){return singleton;};
+	static void set_singleton(PhysicsServer2D *server);
 
 	virtual RID shape_create(ShapeType p_shape)=0;
 	virtual void shape_set_data(RID p_shape, const Variant& p_data)=0;
@@ -269,24 +352,11 @@ public:
 	virtual void space_set_active(RID p_space,bool p_active)=0;
 	virtual bool space_is_active(RID p_space) const=0;
 
-	enum SpaceParameter {
-
-		SPACE_PARAM_CONTACT_RECYCLE_RADIUS,
-		SPACE_PARAM_CONTACT_MAX_SEPARATION,
-		SPACE_PARAM_BODY_MAX_ALLOWED_PENETRATION,
-		SPACE_PARAM_BODY_LINEAR_VELOCITY_SLEEP_TRESHOLD,
-		SPACE_PARAM_BODY_ANGULAR_VELOCITY_SLEEP_TRESHOLD,
-		SPACE_PARAM_BODY_TIME_TO_SLEEP,
-		SPACE_PARAM_BODY_ANGULAR_VELOCITY_DAMP_RATIO,
-		SPACE_PARAM_CONSTRAINT_DEFAULT_BIAS,
-	};
-
 	virtual void space_set_param(RID p_space,SpaceParameter p_param, real_t p_value)=0;
 	virtual real_t space_get_param(RID p_space,SpaceParameter p_param) const=0;
 
 	// this function only works on fixed process, errors and returns null otherwise
 	virtual Physics2DDirectSpaceState* space_get_direct_state(RID p_space)=0;
-
 
 	//missing space parameters
 
@@ -294,28 +364,10 @@ public:
 
 	//missing attenuation? missing better override?
 
-
-
-	enum AreaParameter {
-		AREA_PARAM_GRAVITY,
-		AREA_PARAM_GRAVITY_VECTOR,
-		AREA_PARAM_GRAVITY_IS_POINT,
-		AREA_PARAM_GRAVITY_POINT_ATTENUATION,
-		AREA_PARAM_DENSITY,
-		AREA_PARAM_PRIORITY
-	};
-
 	virtual RID area_create()=0;
 
 	virtual void area_set_space(RID p_area, RID p_space)=0;
 	virtual RID area_get_space(RID p_area) const=0;
-
-
-	enum AreaSpaceOverrideMode {
-		AREA_SPACE_OVERRIDE_DISABLED,
-		AREA_SPACE_OVERRIDE_COMBINE,
-		AREA_SPACE_OVERRIDE_REPLACE,
-	};
 
 	virtual void area_set_space_override_mode(RID p_area, AreaSpaceOverrideMode p_mode)=0;
 	virtual AreaSpaceOverrideMode area_get_space_override_mode(RID p_area) const=0;
@@ -346,14 +398,6 @@ public:
 
 	//missing ccd?
 
-	enum BodyMode {
-		BODY_MODE_STATIC,
-		BODY_MODE_KINEMATIC,
-		BODY_MODE_RIGID,
-		BODY_MODE_CHARACTER
-		//BODY_MODE_SOFT ??
-	};
-
 	virtual RID body_create(BodyMode p_mode=BODY_MODE_RIGID,bool p_init_sleeping=false)=0;
 
 	virtual void body_set_space(RID p_body, RID p_space)=0;
@@ -381,12 +425,6 @@ public:
 	virtual void body_attach_object_instance_ID(RID p_body,uint32_t p_ID)=0;
 	virtual uint32_t body_get_object_instance_ID(RID p_body) const=0;
 
-	enum CCDMode {
-		CCD_MODE_DISABLED,
-		CCD_MODE_CAST_RAY,
-		CCD_MODE_CAST_SHAPE,
-	};
-
 	virtual void body_set_continuous_collision_detection_mode(RID p_body,CCDMode p_mode)=0;
 	virtual CCDMode body_get_continuous_collision_detection_mode(RID p_body) const=0;
 
@@ -397,25 +435,11 @@ public:
 	virtual uint32_t body_get_user_mask(RID p_body, uint32_t p_mask) const=0;
 
 	// common body variables
-	enum BodyParameter {
-		BODY_PARAM_BOUNCE,
-		BODY_PARAM_FRICTION,
-		BODY_PARAM_MASS, ///< unused for static, always infinite
-		BODY_PARAM_MAX,
-	};
 
 	virtual void body_set_param(RID p_body, BodyParameter p_param, float p_value)=0;
 	virtual float body_get_param(RID p_body, BodyParameter p_param) const=0;
 
-
 	//state
-	enum BodyState {
-		BODY_STATE_TRANSFORM,
-		BODY_STATE_LINEAR_VELOCITY,
-		BODY_STATE_ANGULAR_VELOCITY,
-		BODY_STATE_SLEEPING,
-		BODY_STATE_CAN_SLEEP
-	};
 
 	virtual void body_set_state(RID p_body, BodyState p_state, const Variant& p_variant)=0;
 	virtual Variant body_get_state(RID p_body, BodyState p_state) const=0;
@@ -451,19 +475,6 @@ public:
 
 	/* JOINT API */
 
-	enum JointType {
-
-		JOINT_PIN,
-		JOINT_GROOVE,
-		JOINT_DAMPED_SPRING
-	};
-
-	enum JointParam {
-		JOINT_PARAM_BIAS,
-		JOINT_PARAM_MAX_BIAS,
-		JOINT_PARAM_MAX_FORCE,
-	};
-
 	virtual void joint_set_param(RID p_joint, JointParam p_param, real_t p_value)=0;
 	virtual real_t joint_get_param(RID p_joint,JointParam p_param) const=0;
 
@@ -471,23 +482,13 @@ public:
 	virtual RID groove_joint_create(const Vector2& p_a_groove1,const Vector2& p_a_groove2, const Vector2& p_b_anchor, RID p_body_a,RID p_body_b)=0;
 	virtual RID damped_spring_joint_create(const Vector2& p_anchor_a,const Vector2& p_anchor_b,RID p_body_a,RID p_body_b=RID())=0;
 
-	enum DampedStringParam {
-		DAMPED_STRING_REST_LENGTH,
-		DAMPED_STRING_STIFFNESS,
-		DAMPED_STRING_DAMPING
-	};
+
 	virtual void damped_string_joint_set_param(RID p_joint, DampedStringParam p_param, real_t p_value)=0;
 	virtual real_t damped_string_joint_get_param(RID p_joint, DampedStringParam p_param) const=0;
 
 	virtual JointType joint_get_type(RID p_joint) const=0;	
 
 	/* QUERY API */
-
-	enum AreaBodyStatus {
-		AREA_BODY_ADDED,
-		AREA_BODY_REMOVED
-	};
-
 
 	/* MISC */
 
@@ -500,32 +501,24 @@ public:
 	virtual void flush_queries()=0;
 	virtual void finish()=0;
 
-	enum ProcessInfo {
-
-		INFO_ACTIVE_OBJECTS,
-		INFO_COLLISION_PAIRS,
-		INFO_ISLAND_COUNT
-	};
-
 	virtual int get_process_info(ProcessInfo p_info)=0;
 
-	Physics2DServer();
-	~Physics2DServer();
+#endif //PHYSICS_2D_DISABLED
 };
 
-VARIANT_ENUM_CAST( Physics2DServer::ShapeType );
-VARIANT_ENUM_CAST( Physics2DServer::SpaceParameter );
-VARIANT_ENUM_CAST( Physics2DServer::AreaParameter );
-VARIANT_ENUM_CAST( Physics2DServer::AreaSpaceOverrideMode );
-VARIANT_ENUM_CAST( Physics2DServer::BodyMode );
-VARIANT_ENUM_CAST( Physics2DServer::BodyParameter );
-VARIANT_ENUM_CAST( Physics2DServer::BodyState );
-VARIANT_ENUM_CAST( Physics2DServer::CCDMode );
-VARIANT_ENUM_CAST( Physics2DServer::JointParam );
-VARIANT_ENUM_CAST( Physics2DServer::JointType );
-VARIANT_ENUM_CAST( Physics2DServer::DampedStringParam );
-//VARIANT_ENUM_CAST( Physics2DServer::ObjectType );
-VARIANT_ENUM_CAST( Physics2DServer::AreaBodyStatus );
-VARIANT_ENUM_CAST( Physics2DServer::ProcessInfo );
+VARIANT_ENUM_CAST( PhysicsServer2D::ShapeType );
+VARIANT_ENUM_CAST( PhysicsServer2D::SpaceParameter );
+VARIANT_ENUM_CAST( PhysicsServer2D::AreaParameter );
+VARIANT_ENUM_CAST( PhysicsServer2D::AreaSpaceOverrideMode );
+VARIANT_ENUM_CAST( PhysicsServer2D::BodyMode );
+VARIANT_ENUM_CAST( PhysicsServer2D::BodyParameter );
+VARIANT_ENUM_CAST( PhysicsServer2D::BodyState );
+VARIANT_ENUM_CAST( PhysicsServer2D::CCDMode );
+VARIANT_ENUM_CAST( PhysicsServer2D::JointParam );
+VARIANT_ENUM_CAST( PhysicsServer2D::JointType );
+VARIANT_ENUM_CAST( PhysicsServer2D::DampedStringParam );
+//VARIANT_ENUM_CAST( PhysicsServer2D::ObjectType );
+VARIANT_ENUM_CAST( PhysicsServer2D::AreaBodyStatus );
+VARIANT_ENUM_CAST( PhysicsServer2D::ProcessInfo );
 
 #endif

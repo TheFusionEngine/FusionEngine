@@ -161,9 +161,9 @@ void OS_Android::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 	spatial_sound_2d_server->init();
 
 	//
-	physics_server = memnew( PhysicsServerSW );
+	physics_server = memnew( PhysicsServer3DSW );
 	physics_server->init();
-	physics_2d_server = memnew( Physics2DServerSW );
+	physics_2d_server = memnew( PhysicsServer2DSW );
 	physics_2d_server->init();
 
 	input = memnew( InputDefault );

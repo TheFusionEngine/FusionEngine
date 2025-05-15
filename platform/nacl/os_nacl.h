@@ -33,7 +33,7 @@
 
 #include "servers/visual_server.h"
 #include "servers/visual/rasterizer.h"
-#include "servers/physics/physics_server_sw.h"
+#include "servers/physics_3d_server.h"
 #include "servers/spatial_sound/spatial_sound_server_sw.h"
 #include "servers/spatial_sound_2d/spatial_sound_2d_server_sw.h"
 #include "servers/audio/audio_server_sw.h"
@@ -64,7 +64,7 @@ protected:
 	AudioServerSW *audio_server;
 	SampleManagerMallocSW *sample_manager;
 	SpatialSound2DServerSW *spatial_sound_2d_server;
-	Physics2DServer *physics_2d_server;
+	PhysicsServer2D *physics_2d_server;
 	AudioDriverNacl* audio_driver;
 
 

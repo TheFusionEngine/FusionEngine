@@ -52,4 +52,4 @@ public:
 	CapsuleShape2D();
 };
 
-#endif // CAPSULE_SHAPE_2D_H
+#endif

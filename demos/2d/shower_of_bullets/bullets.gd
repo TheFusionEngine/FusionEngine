@@ -34,28 +34,28 @@ func _process(delta):
 			b.pos.x+=width
 		mat.o=b.pos		
 		
-		Physics2DServer.body_set_state(b.body,Physics2DServer.BODY_STATE_TRANSFORM,mat)
+		PhysicsServer2D.body_set_state(b.body,PhysicsServer2D.BODY_STATE_TRANSFORM,mat)
 		
 	update()
 		
 			
 func _ready():
 
-	shape = Physics2DServer.shape_create(Physics2DServer.SHAPE_CIRCLE)
-	Physics2DServer.shape_set_data(shape,8) #radius
+	shape = PhysicsServer2D.shape_create(PhysicsServer2D.SHAPE_CIRCLE)
+	PhysicsServer2D.shape_set_data(shape,8) #radius
 
 	for i in range(BULLET_COUNT):
 		var b = Bullet.new()
 		b.speed=rand_range(SPEED_MIN,SPEED_MAX)
-		b.body = Physics2DServer.body_create(Physics2DServer.BODY_MODE_KINEMATIC)
-		Physics2DServer.body_set_space(b.body,get_world_2d().get_space())
-		Physics2DServer.body_add_shape(b.body,shape)
+		b.body = PhysicsServer2D.body_create(PhysicsServer2D.BODY_MODE_KINEMATIC)
+		PhysicsServer2D.body_set_space(b.body,get_world_2d().get_space())
+		PhysicsServer2D.body_add_shape(b.body,shape)
 		
 		b.pos = Vector2( get_viewport_rect().size * Vector2(randf()*2.0,randf()) ) #twice as long
 		b.pos.x += get_viewport_rect().size.x # start outside
 		var mat = Transform2D()
 		mat.o=b.pos
-		Physics2DServer.body_set_state(b.body,Physics2DServer.BODY_STATE_TRANSFORM,mat)
+		PhysicsServer2D.body_set_state(b.body,PhysicsServer2D.BODY_STATE_TRANSFORM,mat)
 		
 		bullets.append(b)
 		
@@ -65,9 +65,9 @@ func _ready():
 	
 func _exit_tree():
 	for b in bullets:
-		Physics2DServer.free_rid(b.body)
+		PhysicsServer2D.free_rid(b.body)
 	
-	Physics2DServer.free_rid(shape)
+	PhysicsServer2D.free_rid(shape)
 	# Initalization here
 	bullets.clear()
 	

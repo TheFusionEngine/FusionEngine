@@ -27,8 +27,15 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 #include "rid.h"
+#include "core/variant.h"
 
 static SafeRefCount current_id;
+
+void RID::operator=(const Variant p_var){
+	if (p_var.get_type() == Variant::Type::INT or p_var.can_convert(p_var.get_type(), Variant::Type::INT)){
+		_id = p_var;
+	}
+}
 
 
 void RID_OwnerBase::init_rid() {

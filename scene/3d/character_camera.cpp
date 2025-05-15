@@ -325,8 +325,8 @@ void CharacterCamera::_compute_camera() {
 
 	for(int i=0;i<3;i++) {
 
-		PhysicsServer::get_singleton()->query_intersection(clip_ray[i].query,get_world().get_space(),exclude);
-		PhysicsServer::get_singleton()->query_intersection_segment(clip_ray[i].query,target,target+Basis(Vector3(0,1,0),Math::deg2rad(autoturn_tolerance*(i-1.0))).xform(rel));
+		PHYSICS_3D(query_intersection, clip_ray[i].query,get_world().get_space(),exclude);
+		PHYSICS_3D(query_intersection_segment, clip_ray[i].query,target,target+Basis(Vector3(0,1,0),Math::deg2rad(autoturn_tolerance*(i-1.0))).xform(rel));
 		clip_ray[i].clipped=false;
 		clip_ray[i].clip_pos=Vector3();
 	}
@@ -700,7 +700,7 @@ CharacterCamera::CharacterCamera() {
 	use_lookat_target = false;
 
 	for(int i=0;i<3;i++) {
-		clip_ray[i].query=PhysicsServer::get_singleton()->query_create(this, "_ray_collision", i, true);
+		clip_ray[i].query=PHYSICS_3D(query_create, this, "_ray_collision", i, true);
 		clip_ray[i].clipped=false;
 	}
 
@@ -710,7 +710,7 @@ CharacterCamera::CharacterCamera() {
 CharacterCamera::~CharacterCamera() {
 
 	for(int i=0;i<3;i++) {
-		PhysicsServer::get_singleton()->free(clip_ray[i].query);
+		PHYSICS_3D(free, clip_ray[i].query);
 	}
 
 

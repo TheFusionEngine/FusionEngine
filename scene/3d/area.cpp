@@ -28,11 +28,11 @@
 /*************************************************************************/
 #include "area.h"
 #include "scene/scene_string_names.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 void Area3D::set_space_override_mode(SpaceOverride p_mode) {
 
 	space_override=p_mode;
-	PhysicsServer::get_singleton()->area_set_space_override_mode(get_rid(),PhysicsServer::AreaSpaceOverrideMode(p_mode));
+	PHYSICS_3D(area_set_space_override_mode, get_rid(),PhysicsServer3D::AreaSpaceOverrideMode(p_mode));
 
 
 }
@@ -44,7 +44,7 @@ Area3D::SpaceOverride Area3D::get_space_override_mode() const{
 void Area3D::set_gravity_is_point(bool p_enabled){
 
 	gravity_is_point=p_enabled;
-	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_GRAVITY_IS_POINT,p_enabled);
+	PHYSICS_3D(area_set_param, get_rid(),PhysicsServer3D::AREA_PARAM_GRAVITY_IS_POINT,p_enabled);
 
 }
 bool Area3D::is_gravity_a_point() const{
@@ -55,7 +55,7 @@ bool Area3D::is_gravity_a_point() const{
 void Area3D::set_gravity_vector(const Vector3& p_vec){
 
 	gravity_vec=p_vec;
-	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_GRAVITY_VECTOR,p_vec);
+	PHYSICS_3D(area_set_param, get_rid(),PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR,p_vec);
 
 }
 Vector3 Area3D::get_gravity_vector() const{
@@ -66,7 +66,7 @@ Vector3 Area3D::get_gravity_vector() const{
 void Area3D::set_gravity(real_t p_gravity){
 
 	gravity=p_gravity;
-	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_GRAVITY,p_gravity);
+	PHYSICS_3D(area_set_param, get_rid(),PhysicsServer3D::AREA_PARAM_GRAVITY,p_gravity);
 }
 real_t Area3D::get_gravity() const{
 
@@ -76,7 +76,7 @@ real_t Area3D::get_gravity() const{
 void Area3D::set_density(real_t p_density){
 
 	density=p_density;
-	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_DENSITY,p_density);
+	PHYSICS_3D(area_set_param, get_rid(),PhysicsServer3D::AREA_PARAM_DENSITY,p_density);
 }
 real_t Area3D::get_density() const{
 
@@ -86,7 +86,7 @@ real_t Area3D::get_density() const{
 void Area3D::set_priority(real_t p_priority){
 
 	priority=p_priority;
-	PhysicsServer::get_singleton()->area_set_param(get_rid(),PhysicsServer::AREA_PARAM_PRIORITY,p_priority);
+	PHYSICS_3D(area_set_param, get_rid(),PhysicsServer3D::AREA_PARAM_PRIORITY,p_priority);
 }
 real_t Area3D::get_priority() const{
 
@@ -134,7 +134,7 @@ void Area3D::_body_exit_tree(ObjectID p_id) {
 void Area3D::_body_inout(int p_status,const RID& p_body, int p_instance, int p_body_shape,int p_area_shape) {
 
 
-	bool body_in = p_status==PhysicsServer::AREA_BODY_ADDED;
+	bool body_in = p_status==PhysicsServer3D::AREA_BODY_ADDED;
 	ObjectID objid=p_instance;
 
 	Object *obj = ObjectDB::get_instance(objid);
@@ -289,11 +289,11 @@ void Area3D::set_enable_monitoring(bool p_enable) {
 
 	if (monitoring) {
 
-		PhysicsServer::get_singleton()->area_set_monitor_callback(get_rid(),this,"_body_inout");
-		PhysicsServer::get_singleton()->area_set_area_monitor_callback(get_rid(),this,"_area_inout");
+		PHYSICS_3D(area_set_monitor_callback, get_rid(),this,"_body_inout");
+		PHYSICS_3D(area_set_area_monitor_callback, get_rid(),this,"_area_inout");
 	} else {
-		PhysicsServer::get_singleton()->area_set_monitor_callback(get_rid(),NULL,StringName());
-		PhysicsServer::get_singleton()->area_set_area_monitor_callback(get_rid(),NULL,StringName());
+		PHYSICS_3D(area_set_monitor_callback, get_rid(),NULL,StringName());
+		PHYSICS_3D(area_set_area_monitor_callback, get_rid(),NULL,StringName());
 		_clear_monitoring();
 	}
 }
@@ -342,7 +342,7 @@ void Area3D::_area_exit_tree(ObjectID p_id) {
 void Area3D::_area_inout(int p_status,const RID& p_area, int p_instance, int p_area_shape,int p_self_shape) {
 
 
-	bool area_in = p_status==PhysicsServer::AREA_BODY_ADDED;
+	bool area_in = p_status==PhysicsServer3D::AREA_BODY_ADDED;
 	ObjectID objid=p_instance;
 
 	Object *obj = ObjectDB::get_instance(objid);
@@ -428,7 +428,7 @@ void Area3D::set_monitorable(bool p_enable) {
 
 	monitorable=p_enable;
 
-	PhysicsServer::get_singleton()->area_set_monitorable(get_rid(),monitorable);
+	PHYSICS_3D(area_set_monitorable, get_rid(),monitorable);
 }
 
 bool Area3D::is_monitorable() const {
@@ -559,7 +559,7 @@ void Area3D::_bind_methods() {
 
 }
 
-Area3D::Area3D() : CollisionObject3D(PhysicsServer::get_singleton()->area_create(),true) {
+Area3D::Area3D() : CollisionObject3D(PHYSICS_3D(area_create),true) {
 
 	space_override=SPACE_OVERRIDE_DISABLED;
 	set_gravity(9.8);;

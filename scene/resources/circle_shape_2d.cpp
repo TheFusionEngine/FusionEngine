@@ -26,13 +26,14 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
+
 #include "circle_shape_2d.h"
 
 #include "servers/physics_2d_server.h"
 
 void CircleShape2D::_update_shape() {
 
-	Physics2DServer::get_singleton()->shape_set_data(get_rid(),radius);
+	PHYSICS_2D(shape_set_data, get_rid(),radius);
 	emit_changed();
 }
 
@@ -58,7 +59,7 @@ void CircleShape2D::_bind_methods() {
 
 }
 
-CircleShape2D::CircleShape2D() : Shape2D( Physics2DServer::get_singleton()->shape_create(Physics2DServer::SHAPE_CIRCLE)) {
+CircleShape2D::CircleShape2D() : Shape2D( PHYSICS_2D(shape_create, PhysicsServer2D::SHAPE_CIRCLE)) {
 
 	radius=10;
 	_update_shape();

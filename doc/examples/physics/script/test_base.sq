@@ -17,13 +17,13 @@ class PhysicsTestBase extends MainLoopScripted {
 	function create_body(p_shape, p_body_mode, p_location, p_active=true) {
 
 		local mesh_instance = VisualServer.instance_create( type_mesh_map[p_shape] )
-		local body = PhysicsServer.body_create(RID(),p_body_mode,!p_active)
-		PhysicsServer.body_add_shape(body,type_shape_map[p_shape])
+		local body = PhysicsServer3D.body_create(RID(),p_body_mode,!p_active)
+		PhysicsServer3D.body_add_shape(body,type_shape_map[p_shape])
 
-		local query = PhysicsServer.query_create(this,"body_changed_transform",mesh_instance)
-		PhysicsServer.query_body_state(query, body)
+		local query = PhysicsServer3D.query_create(this,"body_changed_transform",mesh_instance)
+		PhysicsServer3D.query_body_state(query, body)
 
-		PhysicsServer.body_set_state( body, PhysicsServer.BODY_STATE_TRANSFORM, p_location )
+		PhysicsServer3D.body_set_state( body, PhysicsServer3D.BODY_STATE_TRANSFORM, p_location )
 		bodies.append( body )
 		return body
 
@@ -32,19 +32,19 @@ class PhysicsTestBase extends MainLoopScripted {
 
 	function create_static_plane(p_plane) {
 
-		local plane_shape = PhysicsServer.shape_create(PhysicsServer.SHAPE_PLANE)
-		PhysicsServer.shape_set_data( plane_shape, p_plane );
+		local plane_shape = PhysicsServer3D.shape_create(PhysicsServer3D.SHAPE_PLANE)
+		PhysicsServer3D.shape_set_data( plane_shape, p_plane );
 
-		local b = PhysicsServer.body_create(RID(), PhysicsServer.BODY_MODE_STATIC );
-		PhysicsServer.body_add_shape(b, plane_shape);
+		local b = PhysicsServer3D.body_create(RID(), PhysicsServer3D.BODY_MODE_STATIC );
+		PhysicsServer3D.body_add_shape(b, plane_shape);
 		return b;
 	}
 
 	function configure_body( p_body, p_mass, p_friction, p_bounce) {
 
-		PhysicsServer.body_set_param( p_body, PhysicsServer.BODY_PARAM_MASS, p_mass );
-		PhysicsServer.body_set_param( p_body, PhysicsServer.BODY_PARAM_FRICTION, p_friction );
-		PhysicsServer.body_set_param( p_body, PhysicsServer.BODY_PARAM_BOUNCE, p_bounce );
+		PhysicsServer3D.body_set_param( p_body, PhysicsServer3D.BODY_PARAM_MASS, p_mass );
+		PhysicsServer3D.body_set_param( p_body, PhysicsServer3D.BODY_PARAM_FRICTION, p_friction );
+		PhysicsServer3D.body_set_param( p_body, PhysicsServer3D.BODY_PARAM_BOUNCE, p_bounce );
 
 	}
 
@@ -57,11 +57,11 @@ class PhysicsTestBase extends MainLoopScripted {
 		//VisualServer.material_set_flag( sphere_material, VisualServer.MATERIAL_FLAG_WIREFRAME, true );
 		VisualServer.fixed_material_set_parameter( sphere_material, VisualServer.FIXED_MATERIAL_PARAM_DIFFUSE, Color(0.7,0.8,3.0) );
 		VisualServer.mesh_surface_set_material( sphere_mesh, 0, sphere_material );
-		type_mesh_map[PhysicsServer.SHAPE_SPHERE] <- sphere_mesh;
+		type_mesh_map[PhysicsServer3D.SHAPE_SPHERE] <- sphere_mesh;
 
-		local sphere_shape=PhysicsServer.shape_create(PhysicsServer.SHAPE_SPHERE);
-		PhysicsServer.shape_set_data( sphere_shape, 1.0 );
-		type_shape_map[PhysicsServer.SHAPE_SPHERE] <- sphere_shape;
+		local sphere_shape=PhysicsServer3D.shape_create(PhysicsServer3D.SHAPE_SPHERE);
+		PhysicsServer3D.shape_set_data( sphere_shape, 1.0 );
+		type_shape_map[PhysicsServer3D.SHAPE_SPHERE] <- sphere_shape;
 
 		/* BOX SHAPE */
 
@@ -72,11 +72,11 @@ class PhysicsTestBase extends MainLoopScripted {
 
 		VisualServer.mesh_add_surface_from_planes(box_mesh,box_planes);
 		VisualServer.mesh_surface_set_material( box_mesh, 0, box_material );
-		type_mesh_map[PhysicsServer.SHAPE_BOX]<- box_mesh;
+		type_mesh_map[PhysicsServer3D.SHAPE_BOX]<- box_mesh;
 
-		local box_shape=PhysicsServer.shape_create(PhysicsServer.SHAPE_BOX);
-		PhysicsServer.shape_set_data( box_shape, Vector3(0.5,0.5,0.5) );
-		type_shape_map[PhysicsServer.SHAPE_BOX]<- box_shape;
+		local box_shape=PhysicsServer3D.shape_create(PhysicsServer3D.SHAPE_BOX);
+		PhysicsServer3D.shape_set_data( box_shape, Vector3(0.5,0.5,0.5) );
+		type_shape_map[PhysicsServer3D.SHAPE_BOX]<- box_shape;
 
 		/* CYLINDER SHAPE */
 
@@ -88,14 +88,14 @@ class PhysicsTestBase extends MainLoopScripted {
 
 		VisualServer.mesh_add_surface_from_planes(cylinder_mesh,cylinder_planes);
 		VisualServer.mesh_surface_set_material( cylinder_mesh, 0, cylinder_material );
-		type_mesh_map[PhysicsServer.SHAPE_CYLINDER]<- cylinder_mesh;
+		type_mesh_map[PhysicsServer3D.SHAPE_CYLINDER]<- cylinder_mesh;
 
-		local cylinder_shape=PhysicsServer.shape_create(PhysicsServer.SHAPE_CYLINDER);
+		local cylinder_shape=PhysicsServer3D.shape_create(PhysicsServer3D.SHAPE_CYLINDER);
 		local cylinder_params={}
 		cylinder_params["radius"]<- 0.5;
 		cylinder_params["height"]<- 2;
-		PhysicsServer.shape_set_data( cylinder_shape, cylinder_params );
-		type_shape_map[PhysicsServer.SHAPE_CYLINDER]<- cylinder_shape;
+		PhysicsServer3D.shape_set_data( cylinder_shape, cylinder_params );
+		type_shape_map[PhysicsServer3D.SHAPE_CYLINDER]<- cylinder_shape;
 
 		/* CAPSULE SHAPE */
 
@@ -107,14 +107,14 @@ class PhysicsTestBase extends MainLoopScripted {
 
 		VisualServer.mesh_add_surface_from_planes(capsule_mesh,capsule_planes);
 		VisualServer.mesh_surface_set_material( capsule_mesh, 0, capsule_material );
-		type_mesh_map[PhysicsServer.SHAPE_CAPSULE]<-capsule_mesh;
+		type_mesh_map[PhysicsServer3D.SHAPE_CAPSULE]<-capsule_mesh;
 
-		local capsule_shape=PhysicsServer.shape_create(PhysicsServer.SHAPE_CAPSULE);
+		local capsule_shape=PhysicsServer3D.shape_create(PhysicsServer3D.SHAPE_CAPSULE);
 		local capsule_params={}
 		capsule_params["radius"]<- 0.5;
 		capsule_params["height"]<- 1.4;
-		PhysicsServer.shape_set_data( capsule_shape, capsule_params );
-		type_shape_map[PhysicsServer.SHAPE_CAPSULE]<- capsule_shape;
+		PhysicsServer3D.shape_set_data( capsule_shape, capsule_params );
+		type_shape_map[PhysicsServer3D.SHAPE_CAPSULE]<- capsule_shape;
 
 		/* CONVEX SHAPE */
 
@@ -125,19 +125,19 @@ class PhysicsTestBase extends MainLoopScripted {
 		local convex_mesh = VisualServer.mesh_create();
 		VisualServer.mesh_add_surface_from_planes(convex_mesh,convex_planes);
 		VisualServer.mesh_surface_set_material( convex_mesh, 0, convex_material );
-		type_mesh_map[PhysicsServer.SHAPE_CONVEX_POLYGON]<- convex_mesh;
+		type_mesh_map[PhysicsServer3D.SHAPE_CONVEX_POLYGON]<- convex_mesh;
 
-		local convex_shape=PhysicsServer.shape_create(PhysicsServer.SHAPE_CONVEX_POLYGON);
-		PhysicsServer.shape_set_data( convex_shape, convex_planes );
-		type_shape_map[PhysicsServer.SHAPE_CONVEX_POLYGON]<- convex_shape;
+		local convex_shape=PhysicsServer3D.shape_create(PhysicsServer3D.SHAPE_CONVEX_POLYGON);
+		PhysicsServer3D.shape_set_data( convex_shape, convex_planes );
+		type_shape_map[PhysicsServer3D.SHAPE_CONVEX_POLYGON]<- convex_shape;
 
 	}
 
 	function make_trimesh(p_faces,p_xform=Transform3D()) {
 
-		local trimesh_shape = PhysicsServer.shape_create(PhysicsServer.SHAPE_CONCAVE_POLYGON);
-		PhysicsServer.shape_set_data(trimesh_shape, p_faces);
-		p_faces=PhysicsServer.shape_get_data(trimesh_shape); // optimized one
+		local trimesh_shape = PhysicsServer3D.shape_create(PhysicsServer3D.SHAPE_CONCAVE_POLYGON);
+		PhysicsServer3D.shape_set_data(trimesh_shape, p_faces);
+		p_faces=PhysicsServer3D.shape_get_data(trimesh_shape); // optimized one
 		normals=[]
 
 		for (i=0;i<p_faces.length()/3;i++) {
@@ -160,10 +160,10 @@ class PhysicsTestBase extends MainLoopScripted {
 		local triins = VisualServer.instance_create(trimesh_mesh);
 
 
-		local tribody = PhysicsServer.body_create(RID(), PhysicsServer.BODY_MODE_STATIC);
-		PhysicsServer.body_add_shape(tribody, trimesh_shape);
+		local tribody = PhysicsServer3D.body_create(RID(), PhysicsServer3D.BODY_MODE_STATIC);
+		PhysicsServer3D.body_add_shape(tribody, trimesh_shape);
 		tritrans = p_xform;
-		PhysicsServer.body_set_state( tribody, PhysicsServer.BODY_STATE_TRANSFORM, tritrans );
+		PhysicsServer3D.body_set_state( tribody, PhysicsServer3D.BODY_STATE_TRANSFORM, tritrans );
 		VisualServer.instance_set_transform( triins, tritrans );
 		//RID trimesh_material = VisualServer.fixed_material_create();
 		//VisualServer.material_generate( trimesh_material, Color(0.2,0.4,0.6) );
