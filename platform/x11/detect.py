@@ -82,6 +82,11 @@ def configure(env):
 		else:
 			env.extra_suffix=".llvm"
 
+		env.Append(CXXFLAGS=["-std=c++11"])
+	else:
+		env.Append(CXXFLAGS=["-std=gnu++11"]) #to match Windows
+
+
 
 
 
@@ -114,6 +119,8 @@ def configure(env):
 	
 	env.Append(CPPFLAGS=['-DOPENGL_ENABLED','-DGLEW_ENABLED'])
 	env.Append(CPPFLAGS=["-DALSA_ENABLED"])
+
+	#-DULTRA is a depreciated flag for disabling a bunch of classes from the engine
 	#env.Append(CPPFLAGS=['-DX11_ENABLED','-DUNIX_ENABLED','-DGLES2_ENABLED','-DGLES1_ENABLED','-DGLES_OVER_GL', '-DULTRA'])
 	env.Append(CPPFLAGS=['-DX11_ENABLED','-DUNIX_ENABLED','-DGLES2_ENABLED','-DGLES1_ENABLED','-DGLES_OVER_GL','-DRESOURCE_FORMAT_TEXT'])
 	env.Append(LIBS=['GL', 'GLU', 'pthread','asound','z']) #TODO detect linux/BSD!

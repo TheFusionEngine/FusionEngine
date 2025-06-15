@@ -42,7 +42,7 @@
 #include "servers/spatial_sound/spatial_sound_server_sw.h"
 #include "servers/spatial_sound_2d/spatial_sound_2d_server_sw.h"
 #include "drivers/rtaudio/audio_driver_rtaudio.h"
-#include "servers/physics_2d/physics_2d_server_sw.h"
+//#include "servers/physics_2d/physics_2d_server_sw.h"
 #include <pspctrl.h>
 
 #undef CursorShape
@@ -59,9 +59,6 @@ class OS_PSP : public OS {
 
 	bool grab;
 	uint64_t ticks_start;
-	
-	PhysicsServer *physics_server;
-	PhysicsServer2D *physics_2d_server;
 
 	virtual void delete_main_loop();
 	// IP_Unix *ip_unix;

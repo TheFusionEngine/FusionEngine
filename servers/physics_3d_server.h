@@ -29,18 +29,22 @@
 #ifndef PHYSICS_SERVER_3D_H
 #define PHYSICS_SERVER_3D_H
 
+#include <type_traits>
+#include <utility>
+#include "object.h"
+#include "resource.h"
+
 //The layout of PHYSICS_3D_DISABLED sections here is explictly designed so that
 //enums and other type definitions can be kept for compatibility without keeping
 //actual physics code
 
 #ifndef PHYSICS_3D_DISABLED
 #define PHYSICS_3D(func, ...) PhysicsServer3D::get_singleton()->func(__VA_ARGS__)
+#define PHYSICS_3D_OBJ(obj, func, ...) obj->func(__VA_ARGS__)
 #else
-#define PHYSICS_3D(func, ...) NULL
+#define PHYSICS_3D(func, ...) static_cast<decltype((std::declval<PhysicsServer3D>().func(__VA_ARGS__)))>(nullptr)
+#define PHYSICS_3D_OBJ(obj, func, ...) decltype((obj->func(__VA_ARGS__)))(nullptr)
 #endif
-
-#include "object.h"
-#include "resource.h"
 
 class Physics3DDirectBodyState;
 class Physics3DShapeQueryParameters;
@@ -227,8 +231,6 @@ public:
 
 	Physics3DShapeQueryResult();
 };
-
-
 
 class PhysicsServer3D : public Object {
 	OBJ_TYPE( PhysicsServer3D, Object );

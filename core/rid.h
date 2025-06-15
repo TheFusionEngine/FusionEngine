@@ -62,7 +62,6 @@ public:
 		_id = (ID) p_int;
 	}
 
-
 	void operator=(const Variant p_var);
 
 	_FORCE_INLINE_ bool operator<(const RID& p_rid) const {

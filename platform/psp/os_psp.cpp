@@ -135,11 +135,6 @@ void OS_PSP::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	ERR_FAIL_COND(!visual_server);
 
 	visual_server->init();
-	//
-	physics_server = memnew( PhysicsServer3DSW );
-	physics_server->init();
-	physics_2d_server = memnew( PhysicsServer2DSW );
-	physics_2d_server->init();
 
 	input = memnew( InputDefault );
 
@@ -167,12 +162,6 @@ void OS_PSP::finalize() {
 	memdelete(visual_server);
 	memdelete(rasterizer);
 	
-	physics_server->finish();
-	memdelete(physics_server);
-
-	physics_2d_server->finish();
-	memdelete(physics_2d_server);
-
 	memdelete(input);
 
 	args.clear();
