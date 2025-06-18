@@ -50,4 +50,4 @@ public:
 	ConvexPolygonShape3D();
 };
 
-#endif // CONVEX_POLYGON_SHAPE_H
+#endif

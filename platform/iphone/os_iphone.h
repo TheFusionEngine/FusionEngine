@@ -36,7 +36,7 @@
 
 #include "servers/visual_server.h"
 #include "servers/visual/rasterizer.h"
-#include "servers/physics/physics_server_sw.h"
+#include "servers/physics_3d_server.h"
 #include "servers/physics_2d/physics_2d_server_sw.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
@@ -73,7 +73,7 @@ private:
 
 	VisualServer *visual_server;
 	PhysicsServer* physics_server;
-	Physics2DServer *physics_2d_server;
+	PhysicsServer2D *physics_2d_server;
 
 	AudioServerSW *audio_server;
 	SampleManagerMallocSW *sample_manager;

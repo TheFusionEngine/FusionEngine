@@ -392,7 +392,7 @@ void GridMap::set_cell_item(int p_x,int p_y,int p_z, int p_item,int p_rot){
 		}
 		if (g.items.empty()) {
 
-			PhysicsServer::get_singleton()->free(g.static_body);
+			PHYSICS_3D(free,g.static_body);
 
 			memdelete(&g);
 			octant_map.erase(octantkey);
@@ -417,9 +417,9 @@ void GridMap::set_cell_item(int p_x,int p_y,int p_z, int p_item,int p_rot){
 
 		Octant *g = memnew( Octant );
 		g->dirty=true;
-		g->static_body = PhysicsServer::get_singleton()->body_create(PhysicsServer::BODY_MODE_STATIC);
+		g->static_body = PHYSICS_3D(body_create, PhysicsServer3D::BODY_MODE_STATIC);
 		if (is_inside_world())
-			PhysicsServer::get_singleton()->body_set_space(g->static_body,get_world()->get_space());
+			PHYSICS_3D(body_set_space, g->static_body,get_world()->get_space());
 
 		octant_map[octantkey]=g;
 	}
@@ -506,8 +506,8 @@ void GridMap::_octant_enter_world(const OctantKey &p_key) {
 
 	ERR_FAIL_COND(!octant_map.has(p_key));
 	Octant&g = *octant_map[p_key];
-	PhysicsServer::get_singleton()->body_set_state(g.static_body,PhysicsServer::BODY_STATE_TRANSFORM,get_global_transform());
-	PhysicsServer::get_singleton()->body_set_space(g.static_body,get_world()->get_space());
+	PHYSICS_3D(body_set_state, g.static_body,PhysicsServer3D::BODY_STATE_TRANSFORM,get_global_transform());
+	PHYSICS_3D(body_set_space, g.static_body,get_world()->get_space());
 	//print_line("BODYPOS: "+get_global_transform());
 
 
@@ -542,7 +542,7 @@ void GridMap::_octant_transform(const OctantKey &p_key) {
 
 	ERR_FAIL_COND(!octant_map.has(p_key));
 	Octant&g = *octant_map[p_key];
-	PhysicsServer::get_singleton()->body_set_state(g.static_body,PhysicsServer::BODY_STATE_TRANSFORM,get_global_transform());
+	PHYSICS_3D(body_set_state, g.static_body,PhysicsServer3D::BODY_STATE_TRANSFORM,get_global_transform());
 
 	if (g.baked.is_valid()) {
 
@@ -569,7 +569,7 @@ void GridMap::_octant_update(const OctantKey &p_key) {
 
 	Ref<Mesh> mesh;
 
-	PhysicsServer::get_singleton()->body_clear_shapes(g.static_body);
+	PHYSICS_3D(body_clear_shapes, g.static_body);
 
 	for(Map<int,Octant::ItemInstances>::Element *E=g.items.front();E;E=E->next()) {
 
@@ -622,7 +622,7 @@ void GridMap::_octant_update(const OctantKey &p_key) {
 
 			if (ii.shape.is_valid()) {
 
-				PhysicsServer::get_singleton()->body_add_shape(g.static_body,ii.shape->get_rid(),xform);
+				PHYSICS_3D(body_add_shape, g.static_body,ii.shape->get_rid(),xform);
 			//	print_line("PHIS x: "+xform);
 
 			}
@@ -644,8 +644,8 @@ void GridMap::_octant_exit_world(const OctantKey &p_key) {
 
 	ERR_FAIL_COND(!octant_map.has(p_key));
 	Octant&g = *octant_map[p_key];
-	PhysicsServer::get_singleton()->body_set_state(g.static_body,PhysicsServer::BODY_STATE_TRANSFORM,get_global_transform());
-	PhysicsServer::get_singleton()->body_set_space(g.static_body,RID());
+	PHYSICS_3D(body_set_state, g.static_body,PhysicsServer3D::BODY_STATE_TRANSFORM,get_global_transform());
+	PHYSICS_3D(body_set_space, g.static_body,RID());
 
 
 	if (g.baked.is_valid()) {
@@ -962,7 +962,7 @@ void GridMap::_clear_internal(bool p_keep_areas) {
 		if (E->get()->bake_instance.is_valid())
 			VS::get_singleton()->free(E->get()->bake_instance);
 
-		PhysicsServer::get_singleton()->free(E->get()->static_body);
+		PHYSICS_3D(free, E->get()->static_body);
 		memdelete(E->get());
 
 	}

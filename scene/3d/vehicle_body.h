@@ -63,7 +63,7 @@ friend class VehicleBody3D;
 		PhysicsBody3D* m_groundObject; //could be general void* ptr
 	} m_raycastInfo;
 
-	void _update(PhysicsDirectBodyState *s);
+	void _update(Physics3DDirectBodyState *s);
 
 protected:
 	void _notification(int p_what);
@@ -132,7 +132,7 @@ class VehicleBody3D : public PhysicsBody3D {
 	Vector<real_t>	m_sideImpulse;
 
 	struct btVehicleWheelContactPoint {
-		PhysicsDirectBodyState *m_s;
+		Physics3DDirectBodyState *m_s;
 		PhysicsBody3D* m_body1;
 		Vector3	m_frictionPositionWorld;
 		Vector3	m_frictionDirectionWorld;
@@ -140,17 +140,17 @@ class VehicleBody3D : public PhysicsBody3D {
 		real_t	m_maxImpulse;
 
 
-		btVehicleWheelContactPoint(PhysicsDirectBodyState *s,PhysicsBody3D* body1,const Vector3& frictionPosWorld,const Vector3& frictionDirectionWorld, real_t maxImpulse);
+		btVehicleWheelContactPoint(Physics3DDirectBodyState *s,PhysicsBody3D* body1,const Vector3& frictionPosWorld,const Vector3& frictionDirectionWorld, real_t maxImpulse);
 	};
 
-	void _resolve_single_bilateral(PhysicsDirectBodyState *s, const Vector3& pos1, PhysicsBody3D* body2, const Vector3& pos2, const Vector3& normal, real_t& impulse);
+	void _resolve_single_bilateral(Physics3DDirectBodyState *s, const Vector3& pos1, PhysicsBody3D* body2, const Vector3& pos2, const Vector3& normal, real_t& impulse);
 	real_t _calc_rolling_friction(btVehicleWheelContactPoint& contactPoint);
 
-	void _update_friction(PhysicsDirectBodyState *s);
-	void _update_suspension(PhysicsDirectBodyState *s);
-	real_t _ray_cast(int p_idx,PhysicsDirectBodyState *s);
-	void _update_wheel_transform(VehicleWheel3D& wheel ,PhysicsDirectBodyState *s);
-	void _update_wheel(int p_idx,PhysicsDirectBodyState *s);
+	void _update_friction(Physics3DDirectBodyState *s);
+	void _update_suspension(Physics3DDirectBodyState *s);
+	real_t _ray_cast(int p_idx,Physics3DDirectBodyState *s);
+	void _update_wheel_transform(VehicleWheel3D& wheel ,Physics3DDirectBodyState *s);
+	void _update_wheel(int p_idx,Physics3DDirectBodyState *s);
 
 
 

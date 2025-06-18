@@ -35,7 +35,7 @@
 #include "servers/visual_server.h"
 #include "servers/visual/rasterizer.h"
 #include "servers/audio/audio_driver_dummy.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
 #include "servers/spatial_sound/spatial_sound_server_sw.h"
@@ -61,7 +61,7 @@ class OS_Server : public OS_Unix {
 	bool grab;
 	
 	PhysicsServer *physics_server;
-	Physics2DServer *physics_2d_server;
+	PhysicsServer2D *physics_2d_server;
 
 	virtual void delete_main_loop();
 	IP_Unix *ip_unix;

@@ -54,6 +54,8 @@
 #include "dictionary.h"
 #include "array.h"
 
+#include <type_traits>
+
 class RefPtr;
 class Object;
 class Node; // helper
@@ -145,7 +147,7 @@ private:
 		Transform2D *_matrix32;
 		AABB* _aabb;
 		Basis *_matrix3;
-		Transform3D *_transform;	
+		Transform3D *_transform;
 		RefPtr *_resource;
 		InputEvent *_input_event;
 		Image *_image;

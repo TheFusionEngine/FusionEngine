@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "print_string.h"
-#include "servers/physics/physics_server_sw.h"
+#include "servers/physics_3d_server.h"
 
 #include "X11/Xutil.h"
 #include "main/main.h"
@@ -367,11 +367,6 @@ void OS_X11::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 
 
 	visual_server->init();
-	//
-	physics_server = memnew( PhysicsServerSW );
-	physics_server->init();
-	physics_2d_server = memnew( Physics2DServerSW );
-	physics_2d_server->init();
 
 	input = memnew( InputDefault );
 
@@ -407,12 +402,15 @@ void OS_X11::finalize() {
 	visual_server->finish();
 	memdelete(visual_server);
 	memdelete(rasterizer);
-	
+
+#ifndef PHYSICS_3D_DISABLED
 	physics_server->finish();
 	memdelete(physics_server);
-
+#endif
+#ifndef PHYSICS_2D_DISABLED
 	physics_2d_server->finish();
 	memdelete(physics_2d_server);
+#endif
 
 	memdelete(input);
 

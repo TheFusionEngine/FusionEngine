@@ -29,6 +29,7 @@
 #ifndef TEST_PHYSICS_2D_H
 #define TEST_PHYSICS_2D_H
 
+#ifndef PHYSICS_2D_DISABLED
 
 #include "os/main_loop.h"
 
@@ -37,5 +38,7 @@ namespace TestPhysics2D {
 MainLoop* test();
 
 }
+
+#endif //PHYSICS_2D_DISABLED
 
 #endif // TEST_PHYSICS_2D_H

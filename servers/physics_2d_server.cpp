@@ -28,7 +28,10 @@
 /*************************************************************************/
 #include "physics_2d_server.h"
 #include "print_string.h"
-Physics2DServer * Physics2DServer::singleton=NULL;
+
+#ifndef PHYSICS_2D_DISABLED
+
+PhysicsServer2D * PhysicsServer2D::singleton=NULL;
 
 
 void Physics2DDirectBodyState::integrate_forces() {
@@ -60,11 +63,6 @@ Object* Physics2DDirectBodyState::get_contact_collider_object(int p_contact_idx)
 	ObjectID objid = get_contact_collider_id(p_contact_idx);
 	Object *obj = ObjectDB::get_instance( objid );
 	return obj;
-}
-
-Physics2DServer * Physics2DServer::get_singleton() {
-
-	return singleton;
 }
 
 void Physics2DDirectBodyState::_bind_methods() {
@@ -385,145 +383,152 @@ void Physics2DShapeQueryResult::_bind_methods() {
 
 }
 
-
-
-
-
-
 ///////////////////////////////////////
 
-void Physics2DServer::_bind_methods() {
+// PhysicsServer2D * PhysicsServer2D::get_singleton() {
+//
+// 	return singleton;
+// }
+
+void PhysicsServer2D::set_singleton(PhysicsServer2D *server){
+	if (!singleton){
+		singleton = server;
+	}
+}
 
 
-	ObjectTypeDB::bind_method(_MD("shape_create","type"),&Physics2DServer::shape_create);
-	ObjectTypeDB::bind_method(_MD("shape_set_data","shape","data"),&Physics2DServer::shape_set_data);
-
-	ObjectTypeDB::bind_method(_MD("shape_get_type","shape"),&Physics2DServer::shape_get_type);
-	ObjectTypeDB::bind_method(_MD("shape_get_data","shape"),&Physics2DServer::shape_get_data);
+void PhysicsServer2D::_bind_methods() {
 
 
-	ObjectTypeDB::bind_method(_MD("space_create"),&Physics2DServer::space_create);
-	ObjectTypeDB::bind_method(_MD("space_set_active","space","active"),&Physics2DServer::space_set_active);
-	ObjectTypeDB::bind_method(_MD("space_is_active","space"),&Physics2DServer::space_is_active);
-	ObjectTypeDB::bind_method(_MD("space_set_param","space","param","value"),&Physics2DServer::space_set_param);
-	ObjectTypeDB::bind_method(_MD("space_get_param","space","param"),&Physics2DServer::space_get_param);
-	ObjectTypeDB::bind_method(_MD("space_get_direct_state:Physics2DDirectSpaceState","space"),&Physics2DServer::space_get_direct_state);
+	ObjectTypeDB::bind_method(_MD("shape_create","type"),&PhysicsServer2D::shape_create);
+	ObjectTypeDB::bind_method(_MD("shape_set_data","shape","data"),&PhysicsServer2D::shape_set_data);
 
-	ObjectTypeDB::bind_method(_MD("area_create"),&Physics2DServer::area_create);
-	ObjectTypeDB::bind_method(_MD("area_set_space","area","space"),&Physics2DServer::area_set_space);
-	ObjectTypeDB::bind_method(_MD("area_get_space","area"),&Physics2DServer::area_get_space);
-
-	ObjectTypeDB::bind_method(_MD("area_set_space_override_mode","area","mode"),&Physics2DServer::area_set_space_override_mode);
-	ObjectTypeDB::bind_method(_MD("area_get_space_override_mode","area"),&Physics2DServer::area_get_space_override_mode);
-
-	ObjectTypeDB::bind_method(_MD("area_add_shape","area","shape","transform"),&Physics2DServer::area_add_shape,DEFVAL(Transform2D()));
-	ObjectTypeDB::bind_method(_MD("area_set_shape","area","shape_idx","shape"),&Physics2DServer::area_set_shape);
-	ObjectTypeDB::bind_method(_MD("area_set_shape_transform","area","shape_idx","transform"),&Physics2DServer::area_set_shape_transform);
-
-	ObjectTypeDB::bind_method(_MD("area_get_shape_count","area"),&Physics2DServer::area_get_shape_count);
-	ObjectTypeDB::bind_method(_MD("area_get_shape","area","shape_idx"),&Physics2DServer::area_get_shape);
-	ObjectTypeDB::bind_method(_MD("area_get_shape_transform","area","shape_idx"),&Physics2DServer::area_get_shape_transform);
-
-	ObjectTypeDB::bind_method(_MD("area_remove_shape","area","shape_idx"),&Physics2DServer::area_remove_shape);
-	ObjectTypeDB::bind_method(_MD("area_clear_shapes","area"),&Physics2DServer::area_clear_shapes);
+	ObjectTypeDB::bind_method(_MD("shape_get_type","shape"),&PhysicsServer2D::shape_get_type);
+	ObjectTypeDB::bind_method(_MD("shape_get_data","shape"),&PhysicsServer2D::shape_get_data);
 
 
-	ObjectTypeDB::bind_method(_MD("area_set_param","area","param","value"),&Physics2DServer::area_set_param);
-	ObjectTypeDB::bind_method(_MD("area_set_transform","area","transform"),&Physics2DServer::area_set_transform);
+	ObjectTypeDB::bind_method(_MD("space_create"),&PhysicsServer2D::space_create);
+	ObjectTypeDB::bind_method(_MD("space_set_active","space","active"),&PhysicsServer2D::space_set_active);
+	ObjectTypeDB::bind_method(_MD("space_is_active","space"),&PhysicsServer2D::space_is_active);
+	ObjectTypeDB::bind_method(_MD("space_set_param","space","param","value"),&PhysicsServer2D::space_set_param);
+	ObjectTypeDB::bind_method(_MD("space_get_param","space","param"),&PhysicsServer2D::space_get_param);
+	ObjectTypeDB::bind_method(_MD("space_get_direct_state:Physics2DDirectSpaceState","space"),&PhysicsServer2D::space_get_direct_state);
 
-	ObjectTypeDB::bind_method(_MD("area_get_param","area","param"),&Physics2DServer::area_get_param);
-	ObjectTypeDB::bind_method(_MD("area_get_transform","area"),&Physics2DServer::area_get_transform);
+	ObjectTypeDB::bind_method(_MD("area_create"),&PhysicsServer2D::area_create);
+	ObjectTypeDB::bind_method(_MD("area_set_space","area","space"),&PhysicsServer2D::area_set_space);
+	ObjectTypeDB::bind_method(_MD("area_get_space","area"),&PhysicsServer2D::area_get_space);
 
-	ObjectTypeDB::bind_method(_MD("area_attach_object_instance_ID","area","id"),&Physics2DServer::area_attach_object_instance_ID);
-	ObjectTypeDB::bind_method(_MD("area_get_object_instance_ID","area"),&Physics2DServer::area_get_object_instance_ID);
+	ObjectTypeDB::bind_method(_MD("area_set_space_override_mode","area","mode"),&PhysicsServer2D::area_set_space_override_mode);
+	ObjectTypeDB::bind_method(_MD("area_get_space_override_mode","area"),&PhysicsServer2D::area_get_space_override_mode);
 
-	ObjectTypeDB::bind_method(_MD("area_set_monitor_callback","receiver","method"),&Physics2DServer::area_set_monitor_callback);
+	ObjectTypeDB::bind_method(_MD("area_add_shape","area","shape","transform"),&PhysicsServer2D::area_add_shape,DEFVAL(Transform2D()));
+	ObjectTypeDB::bind_method(_MD("area_set_shape","area","shape_idx","shape"),&PhysicsServer2D::area_set_shape);
+	ObjectTypeDB::bind_method(_MD("area_set_shape_transform","area","shape_idx","transform"),&PhysicsServer2D::area_set_shape_transform);
 
-	ObjectTypeDB::bind_method(_MD("body_create","mode","init_sleeping"),&Physics2DServer::body_create,DEFVAL(BODY_MODE_RIGID),DEFVAL(false));
+	ObjectTypeDB::bind_method(_MD("area_get_shape_count","area"),&PhysicsServer2D::area_get_shape_count);
+	ObjectTypeDB::bind_method(_MD("area_get_shape","area","shape_idx"),&PhysicsServer2D::area_get_shape);
+	ObjectTypeDB::bind_method(_MD("area_get_shape_transform","area","shape_idx"),&PhysicsServer2D::area_get_shape_transform);
 
-	ObjectTypeDB::bind_method(_MD("body_set_space","body","space"),&Physics2DServer::body_set_space);
-	ObjectTypeDB::bind_method(_MD("body_get_space","body"),&Physics2DServer::body_get_space);
-
-	ObjectTypeDB::bind_method(_MD("body_set_mode","body","mode"),&Physics2DServer::body_set_mode);
-	ObjectTypeDB::bind_method(_MD("body_get_mode","body"),&Physics2DServer::body_get_mode);
-
-	ObjectTypeDB::bind_method(_MD("body_add_shape","body","shape","transform"),&Physics2DServer::body_add_shape,DEFVAL(Transform2D()));
-	ObjectTypeDB::bind_method(_MD("body_set_shape","body","shape_idx","shape"),&Physics2DServer::body_set_shape);
-	ObjectTypeDB::bind_method(_MD("body_set_shape_transform","body","shape_idx","transform"),&Physics2DServer::body_set_shape_transform);
-	ObjectTypeDB::bind_method(_MD("body_set_shape_metadata","body","shape_idx","metadata"),&Physics2DServer::body_set_shape_metadata);
-
-	ObjectTypeDB::bind_method(_MD("body_get_shape_count","body"),&Physics2DServer::body_get_shape_count);
-	ObjectTypeDB::bind_method(_MD("body_get_shape","body","shape_idx"),&Physics2DServer::body_get_shape);
-	ObjectTypeDB::bind_method(_MD("body_get_shape_transform","body","shape_idx"),&Physics2DServer::body_get_shape_transform);
-	ObjectTypeDB::bind_method(_MD("body_get_shape_metadata","body","shape_idx"),&Physics2DServer::body_get_shape_metadata);
-
-	ObjectTypeDB::bind_method(_MD("body_remove_shape","body","shape_idx"),&Physics2DServer::body_remove_shape);
-	ObjectTypeDB::bind_method(_MD("body_clear_shapes","body"),&Physics2DServer::body_clear_shapes);
+	ObjectTypeDB::bind_method(_MD("area_remove_shape","area","shape_idx"),&PhysicsServer2D::area_remove_shape);
+	ObjectTypeDB::bind_method(_MD("area_clear_shapes","area"),&PhysicsServer2D::area_clear_shapes);
 
 
-	ObjectTypeDB::bind_method(_MD("body_set_shape_as_trigger","body","shape_idx","enable"),&Physics2DServer::body_set_shape_as_trigger);
-	ObjectTypeDB::bind_method(_MD("body_is_shape_set_as_trigger","body","shape_idx"),&Physics2DServer::body_is_shape_set_as_trigger);
+	ObjectTypeDB::bind_method(_MD("area_set_param","area","param","value"),&PhysicsServer2D::area_set_param);
+	ObjectTypeDB::bind_method(_MD("area_set_transform","area","transform"),&PhysicsServer2D::area_set_transform);
 
-	ObjectTypeDB::bind_method(_MD("body_attach_object_instance_ID","body","id"),&Physics2DServer::body_attach_object_instance_ID);
-	ObjectTypeDB::bind_method(_MD("body_get_object_instance_ID","body"),&Physics2DServer::body_get_object_instance_ID);
+	ObjectTypeDB::bind_method(_MD("area_get_param","area","param"),&PhysicsServer2D::area_get_param);
+	ObjectTypeDB::bind_method(_MD("area_get_transform","area"),&PhysicsServer2D::area_get_transform);
+
+	ObjectTypeDB::bind_method(_MD("area_attach_object_instance_ID","area","id"),&PhysicsServer2D::area_attach_object_instance_ID);
+	ObjectTypeDB::bind_method(_MD("area_get_object_instance_ID","area"),&PhysicsServer2D::area_get_object_instance_ID);
+
+	ObjectTypeDB::bind_method(_MD("area_set_monitor_callback","receiver","method"),&PhysicsServer2D::area_set_monitor_callback);
+
+	ObjectTypeDB::bind_method(_MD("body_create","mode","init_sleeping"),&PhysicsServer2D::body_create,DEFVAL(BODY_MODE_RIGID),DEFVAL(false));
+
+	ObjectTypeDB::bind_method(_MD("body_set_space","body","space"),&PhysicsServer2D::body_set_space);
+	ObjectTypeDB::bind_method(_MD("body_get_space","body"),&PhysicsServer2D::body_get_space);
+
+	ObjectTypeDB::bind_method(_MD("body_set_mode","body","mode"),&PhysicsServer2D::body_set_mode);
+	ObjectTypeDB::bind_method(_MD("body_get_mode","body"),&PhysicsServer2D::body_get_mode);
+
+	ObjectTypeDB::bind_method(_MD("body_add_shape","body","shape","transform"),&PhysicsServer2D::body_add_shape,DEFVAL(Transform2D()));
+	ObjectTypeDB::bind_method(_MD("body_set_shape","body","shape_idx","shape"),&PhysicsServer2D::body_set_shape);
+	ObjectTypeDB::bind_method(_MD("body_set_shape_transform","body","shape_idx","transform"),&PhysicsServer2D::body_set_shape_transform);
+	ObjectTypeDB::bind_method(_MD("body_set_shape_metadata","body","shape_idx","metadata"),&PhysicsServer2D::body_set_shape_metadata);
+
+	ObjectTypeDB::bind_method(_MD("body_get_shape_count","body"),&PhysicsServer2D::body_get_shape_count);
+	ObjectTypeDB::bind_method(_MD("body_get_shape","body","shape_idx"),&PhysicsServer2D::body_get_shape);
+	ObjectTypeDB::bind_method(_MD("body_get_shape_transform","body","shape_idx"),&PhysicsServer2D::body_get_shape_transform);
+	ObjectTypeDB::bind_method(_MD("body_get_shape_metadata","body","shape_idx"),&PhysicsServer2D::body_get_shape_metadata);
+
+	ObjectTypeDB::bind_method(_MD("body_remove_shape","body","shape_idx"),&PhysicsServer2D::body_remove_shape);
+	ObjectTypeDB::bind_method(_MD("body_clear_shapes","body"),&PhysicsServer2D::body_clear_shapes);
 
 
-	ObjectTypeDB::bind_method(_MD("body_set_continuous_collision_detection_mode","body","mode"),&Physics2DServer::body_set_continuous_collision_detection_mode);
-	ObjectTypeDB::bind_method(_MD("body_get_continuous_collision_detection_mode","body"),&Physics2DServer::body_get_continuous_collision_detection_mode);
+	ObjectTypeDB::bind_method(_MD("body_set_shape_as_trigger","body","shape_idx","enable"),&PhysicsServer2D::body_set_shape_as_trigger);
+	ObjectTypeDB::bind_method(_MD("body_is_shape_set_as_trigger","body","shape_idx"),&PhysicsServer2D::body_is_shape_set_as_trigger);
+
+	ObjectTypeDB::bind_method(_MD("body_attach_object_instance_ID","body","id"),&PhysicsServer2D::body_attach_object_instance_ID);
+	ObjectTypeDB::bind_method(_MD("body_get_object_instance_ID","body"),&PhysicsServer2D::body_get_object_instance_ID);
 
 
-	ObjectTypeDB::bind_method(_MD("body_set_layer_mask","body","mask"),&Physics2DServer::body_set_layer_mask);
-	ObjectTypeDB::bind_method(_MD("body_get_layer_mask","body"),&Physics2DServer::body_get_layer_mask);
-
-	ObjectTypeDB::bind_method(_MD("body_set_user_mask","body","mask"),&Physics2DServer::body_set_user_mask);
-	ObjectTypeDB::bind_method(_MD("body_get_user_mask","body"),&Physics2DServer::body_get_user_mask);
+	ObjectTypeDB::bind_method(_MD("body_set_continuous_collision_detection_mode","body","mode"),&PhysicsServer2D::body_set_continuous_collision_detection_mode);
+	ObjectTypeDB::bind_method(_MD("body_get_continuous_collision_detection_mode","body"),&PhysicsServer2D::body_get_continuous_collision_detection_mode);
 
 
-	ObjectTypeDB::bind_method(_MD("body_set_param","body","param","value"),&Physics2DServer::body_set_param);
-	ObjectTypeDB::bind_method(_MD("body_get_param","body","param"),&Physics2DServer::body_get_param);
+	ObjectTypeDB::bind_method(_MD("body_set_layer_mask","body","mask"),&PhysicsServer2D::body_set_layer_mask);
+	ObjectTypeDB::bind_method(_MD("body_get_layer_mask","body"),&PhysicsServer2D::body_get_layer_mask);
 
-	ObjectTypeDB::bind_method(_MD("body_set_state","body","state","value"),&Physics2DServer::body_set_state);
-	ObjectTypeDB::bind_method(_MD("body_get_state","body","state"),&Physics2DServer::body_get_state);
+	ObjectTypeDB::bind_method(_MD("body_set_user_mask","body","mask"),&PhysicsServer2D::body_set_user_mask);
+	ObjectTypeDB::bind_method(_MD("body_get_user_mask","body"),&PhysicsServer2D::body_get_user_mask);
 
-	ObjectTypeDB::bind_method(_MD("body_apply_impulse","body","pos","impulse"),&Physics2DServer::body_apply_impulse);
-	ObjectTypeDB::bind_method(_MD("body_set_axis_velocity","body","axis_velocity"),&Physics2DServer::body_set_axis_velocity);
 
-	ObjectTypeDB::bind_method(_MD("body_add_collision_exception","body","excepted_body"),&Physics2DServer::body_add_collision_exception);
-	ObjectTypeDB::bind_method(_MD("body_remove_collision_exception","body","excepted_body"),&Physics2DServer::body_remove_collision_exception);
+	ObjectTypeDB::bind_method(_MD("body_set_param","body","param","value"),&PhysicsServer2D::body_set_param);
+	ObjectTypeDB::bind_method(_MD("body_get_param","body","param"),&PhysicsServer2D::body_get_param);
+
+	ObjectTypeDB::bind_method(_MD("body_set_state","body","state","value"),&PhysicsServer2D::body_set_state);
+	ObjectTypeDB::bind_method(_MD("body_get_state","body","state"),&PhysicsServer2D::body_get_state);
+
+	ObjectTypeDB::bind_method(_MD("body_apply_impulse","body","pos","impulse"),&PhysicsServer2D::body_apply_impulse);
+	ObjectTypeDB::bind_method(_MD("body_set_axis_velocity","body","axis_velocity"),&PhysicsServer2D::body_set_axis_velocity);
+
+	ObjectTypeDB::bind_method(_MD("body_add_collision_exception","body","excepted_body"),&PhysicsServer2D::body_add_collision_exception);
+	ObjectTypeDB::bind_method(_MD("body_remove_collision_exception","body","excepted_body"),&PhysicsServer2D::body_remove_collision_exception);
 //	virtual void body_get_collision_exceptions(RID p_body, List<RID> *p_exceptions)=0;
 
-	ObjectTypeDB::bind_method(_MD("body_set_max_contacts_reported","body","amount"),&Physics2DServer::body_set_max_contacts_reported);
-	ObjectTypeDB::bind_method(_MD("body_get_max_contacts_reported","body"),&Physics2DServer::body_get_max_contacts_reported);
+	ObjectTypeDB::bind_method(_MD("body_set_max_contacts_reported","body","amount"),&PhysicsServer2D::body_set_max_contacts_reported);
+	ObjectTypeDB::bind_method(_MD("body_get_max_contacts_reported","body"),&PhysicsServer2D::body_get_max_contacts_reported);
 
-	ObjectTypeDB::bind_method(_MD("body_set_omit_force_integration","body","enable"),&Physics2DServer::body_set_omit_force_integration);
-	ObjectTypeDB::bind_method(_MD("body_is_omitting_force_integration","body"),&Physics2DServer::body_is_omitting_force_integration);
+	ObjectTypeDB::bind_method(_MD("body_set_omit_force_integration","body","enable"),&PhysicsServer2D::body_set_omit_force_integration);
+	ObjectTypeDB::bind_method(_MD("body_is_omitting_force_integration","body"),&PhysicsServer2D::body_is_omitting_force_integration);
 
-	ObjectTypeDB::bind_method(_MD("body_set_force_integration_callback","body","receiver","method"),&Physics2DServer::body_set_force_integration_callback);
+	ObjectTypeDB::bind_method(_MD("body_set_force_integration_callback","body","receiver","method"),&PhysicsServer2D::body_set_force_integration_callback);
 
 	/* JOINT API */
 
-	ObjectTypeDB::bind_method(_MD("joint_set_param","joint","param","value"),&Physics2DServer::joint_set_param);
-	ObjectTypeDB::bind_method(_MD("joint_get_param","joint","param"),&Physics2DServer::joint_get_param);
+	ObjectTypeDB::bind_method(_MD("joint_set_param","joint","param","value"),&PhysicsServer2D::joint_set_param);
+	ObjectTypeDB::bind_method(_MD("joint_get_param","joint","param"),&PhysicsServer2D::joint_get_param);
 
-	ObjectTypeDB::bind_method(_MD("pin_joint_create","anchor","body_a","body_b"),&Physics2DServer::pin_joint_create,DEFVAL(RID()));
-	ObjectTypeDB::bind_method(_MD("groove_joint_create","groove1_a","groove2_a","anchor_b","body_a","body_b"),&Physics2DServer::groove_joint_create,DEFVAL(RID()),DEFVAL(RID()));
-	ObjectTypeDB::bind_method(_MD("damped_spring_joint_create","anchor_a","anchor_b","body_a","body_b"),&Physics2DServer::damped_spring_joint_create,DEFVAL(RID()));
+	ObjectTypeDB::bind_method(_MD("pin_joint_create","anchor","body_a","body_b"),&PhysicsServer2D::pin_joint_create,DEFVAL(RID()));
+	ObjectTypeDB::bind_method(_MD("groove_joint_create","groove1_a","groove2_a","anchor_b","body_a","body_b"),&PhysicsServer2D::groove_joint_create,DEFVAL(RID()),DEFVAL(RID()));
+	ObjectTypeDB::bind_method(_MD("damped_spring_joint_create","anchor_a","anchor_b","body_a","body_b"),&PhysicsServer2D::damped_spring_joint_create,DEFVAL(RID()));
 
-	ObjectTypeDB::bind_method(_MD("damped_string_joint_set_param","joint","param","value"),&Physics2DServer::damped_string_joint_set_param,DEFVAL(RID()));
-	ObjectTypeDB::bind_method(_MD("damped_string_joint_get_param","joint","param"),&Physics2DServer::damped_string_joint_get_param);
+	ObjectTypeDB::bind_method(_MD("damped_string_joint_set_param","joint","param","value"),&PhysicsServer2D::damped_string_joint_set_param,DEFVAL(RID()));
+	ObjectTypeDB::bind_method(_MD("damped_string_joint_get_param","joint","param"),&PhysicsServer2D::damped_string_joint_get_param);
 
-	ObjectTypeDB::bind_method(_MD("joint_get_type","joint"),&Physics2DServer::joint_get_type);
+	ObjectTypeDB::bind_method(_MD("joint_get_type","joint"),&PhysicsServer2D::joint_get_type);
 
-	ObjectTypeDB::bind_method(_MD("free_rid","rid"),&Physics2DServer::free);
+	ObjectTypeDB::bind_method(_MD("free_rid","rid"),&PhysicsServer2D::free);
 
-	ObjectTypeDB::bind_method(_MD("set_active","active"),&Physics2DServer::set_active);
+	ObjectTypeDB::bind_method(_MD("set_active","active"),&PhysicsServer2D::set_active);
 
-	ObjectTypeDB::bind_method(_MD("get_process_info"),&Physics2DServer::get_process_info);
+	ObjectTypeDB::bind_method(_MD("get_process_info"),&PhysicsServer2D::get_process_info);
 
-//	ObjectTypeDB::bind_method(_MD("init"),&Physics2DServer::init);
-//	ObjectTypeDB::bind_method(_MD("step"),&Physics2DServer::step);
-//	ObjectTypeDB::bind_method(_MD("sync"),&Physics2DServer::sync);
-	//ObjectTypeDB::bind_method(_MD("flush_queries"),&Physics2DServer::flush_queries);
+//	ObjectTypeDB::bind_method(_MD("init"),&PhysicsServer2D::init);
+//	ObjectTypeDB::bind_method(_MD("step"),&PhysicsServer2D::step);
+//	ObjectTypeDB::bind_method(_MD("sync"),&PhysicsServer2D::sync);
+	//ObjectTypeDB::bind_method(_MD("flush_queries"),&PhysicsServer2D::flush_queries);
 
 	BIND_CONSTANT( SHAPE_LINE );
 	BIND_CONSTANT( SHAPE_SEGMENT );
@@ -582,19 +587,6 @@ void Physics2DServer::_bind_methods() {
 	BIND_CONSTANT( INFO_ACTIVE_OBJECTS );
 	BIND_CONSTANT( INFO_COLLISION_PAIRS );
 	BIND_CONSTANT( INFO_ISLAND_COUNT );
-
-
 }
 
-
-Physics2DServer::Physics2DServer() {
-
-	ERR_FAIL_COND( singleton!=NULL );
-	singleton=this;
-}
-
-Physics2DServer::~Physics2DServer() {
-
-	singleton=NULL;
-}
-
+#endif

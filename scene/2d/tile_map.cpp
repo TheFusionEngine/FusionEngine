@@ -62,7 +62,7 @@ void TileMap::_update_quadrant_space(const RID& p_space) {
 	for (Map<PosKey,Quadrant>::Element *E=quadrant_map.front();E;E=E->next()) {
 
 		Quadrant &q=E->get();
-		Physics2DServer::get_singleton()->body_set_space(q.static_body,p_space);
+		PHYSICS_2D(body_set_space, q.static_body,p_space);
 	}
 }
 
@@ -79,7 +79,7 @@ void TileMap::_update_quadrant_transform() {
 		Transform2D xform;
 		xform.set_origin( q.pos );
 		xform = global_transform * xform;
-		Physics2DServer::get_singleton()->body_set_state(q.static_body,Physics2DServer::BODY_STATE_TRANSFORM,xform);
+		PHYSICS_2D(body_set_state, q.static_body,PhysicsServer2D::BODY_STATE_TRANSFORM,xform);
 	}
 }
 
@@ -170,7 +170,7 @@ void TileMap::_update_dirty_quadrants() {
 		return;
 
 	VisualServer *vs = VisualServer::get_singleton();
-	Physics2DServer *ps = Physics2DServer::get_singleton();
+	PhysicsServer2D *ps = PhysicsServer2D::get_singleton();
 	Vector2 tofs = get_cell_draw_offset();
 
 	while (dirty_quadrant_list.first()) {
@@ -339,19 +339,19 @@ Map<TileMap::PosKey,TileMap::Quadrant>::Element *TileMap::_create_quadrant(const
 	q.canvas_item = VisualServer::get_singleton()->canvas_item_create();
 	VisualServer::get_singleton()->canvas_item_set_parent( q.canvas_item, get_canvas_item() );
 	VisualServer::get_singleton()->canvas_item_set_transform( q.canvas_item, xform );
-	q.static_body=Physics2DServer::get_singleton()->body_create(Physics2DServer::BODY_MODE_STATIC);
-	Physics2DServer::get_singleton()->body_attach_object_instance_ID(q.static_body,get_instance_ID());
-	Physics2DServer::get_singleton()->body_set_layer_mask(q.static_body,collision_layer);
-	Physics2DServer::get_singleton()->body_set_param(q.static_body,Physics2DServer::BODY_PARAM_FRICTION,friction);
-	Physics2DServer::get_singleton()->body_set_param(q.static_body,Physics2DServer::BODY_PARAM_BOUNCE,bounce);
+	q.static_body=PHYSICS_2D(body_create,PhysicsServer2D::BODY_MODE_STATIC);
+	PHYSICS_2D(body_attach_object_instance_ID, q.static_body,get_instance_ID());
+	PHYSICS_2D(body_set_layer_mask, q.static_body,collision_layer);
+	PHYSICS_2D(body_set_param, q.static_body,PhysicsServer2D::BODY_PARAM_FRICTION,friction);
+	PHYSICS_2D(body_set_param, q.static_body,PhysicsServer2D::BODY_PARAM_BOUNCE,bounce);
 
 	if (is_inside_tree()) {
 		xform = get_global_transform() * xform;
 		RID space = get_world_2d()->get_space();
-		Physics2DServer::get_singleton()->body_set_space(q.static_body,space);
+		PHYSICS_2D(body_set_space, q.static_body,space);
 	}
 
-	Physics2DServer::get_singleton()->body_set_state(q.static_body,Physics2DServer::BODY_STATE_TRANSFORM,xform);
+	PHYSICS_2D(body_set_state, q.static_body,PhysicsServer2D::BODY_STATE_TRANSFORM,xform);
 
 	rect_cache_dirty=true;
 	quadrant_order_dirty=true;
@@ -361,7 +361,7 @@ Map<TileMap::PosKey,TileMap::Quadrant>::Element *TileMap::_create_quadrant(const
 void TileMap::_erase_quadrant(Map<PosKey,Quadrant>::Element *Q) {
 
 	Quadrant &q=Q->get();
-	Physics2DServer::get_singleton()->free(q.static_body);
+	PHYSICS_2D(free, q.static_body);
 	VisualServer::get_singleton()->free(q.canvas_item);
 	if (q.dirty_list.in_list())
 		dirty_quadrant_list.remove(&q.dirty_list);
@@ -586,7 +586,7 @@ void TileMap::set_collision_layer_mask(uint32_t p_layer) {
 	for (Map<PosKey,Quadrant>::Element *E=quadrant_map.front();E;E=E->next()) {
 
 		Quadrant &q=E->get();
-		Physics2DServer::get_singleton()->body_set_layer_mask(q.static_body,collision_layer);
+		PHYSICS_2D(body_set_layer_mask, q.static_body,collision_layer);
 	}
 }
 
@@ -596,7 +596,7 @@ void TileMap::set_collision_friction(float p_friction) {
 	for (Map<PosKey,Quadrant>::Element *E=quadrant_map.front();E;E=E->next()) {
 
 		Quadrant &q=E->get();
-		Physics2DServer::get_singleton()->body_set_param(q.static_body,Physics2DServer::BODY_PARAM_FRICTION,p_friction);
+		PHYSICS_2D(body_set_param, q.static_body,PhysicsServer2D::BODY_PARAM_FRICTION,p_friction);
 	}
 
 }
@@ -612,7 +612,7 @@ void TileMap::set_collision_bounce(float p_bounce){
 	for (Map<PosKey,Quadrant>::Element *E=quadrant_map.front();E;E=E->next()) {
 
 		Quadrant &q=E->get();
-		Physics2DServer::get_singleton()->body_set_param(q.static_body,Physics2DServer::BODY_PARAM_BOUNCE,p_bounce);
+		PHYSICS_2D(body_set_param, q.static_body,PhysicsServer2D::BODY_PARAM_BOUNCE,p_bounce);
 	}
 
 }

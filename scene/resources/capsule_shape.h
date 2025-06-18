@@ -53,4 +53,4 @@ public:
 	CapsuleShape3D();
 };
 
-#endif // CAPSULE_SHAPE_H
+#endif

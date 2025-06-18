@@ -11,21 +11,21 @@ class TestFall extends PhysicsTestBase {
 		for (local i=0;i<10;i++) {
 
 			local shape_idx=[
-				PhysicsServer.SHAPE_SPHERE,
-				PhysicsServer.SHAPE_BOX,
-				PhysicsServer.SHAPE_CAPSULE,
-				PhysicsServer.SHAPE_CYLINDER,
-				PhysicsServer.SHAPE_CONVEX_POLYGON
+				PhysicsServer3D.SHAPE_SPHERE,
+				PhysicsServer3D.SHAPE_BOX,
+				PhysicsServer3D.SHAPE_CAPSULE,
+				PhysicsServer3D.SHAPE_CYLINDER,
+				PhysicsServer3D.SHAPE_CONVEX_POLYGON
 			];
 
 			local stype=shape_idx[i%5];
-//			stype=PhysicsServer.SHAPE_SPHERE;
+//			stype=PhysicsServer3D.SHAPE_SPHERE;
 
 			local t=Transform3D()
 			t.set_origin(Vector3(-0.7+0.0*i,3.5+4.1*i,0))
 			t.rotate_basis(Vector3(1,0,0),Math.PI/4*i)
 
-			local b = create_body(stype,PhysicsServer.BODY_MODE_RIGID,t);
+			local b = create_body(stype,PhysicsServer3D.BODY_MODE_RIGID,t);
 
 		}
 

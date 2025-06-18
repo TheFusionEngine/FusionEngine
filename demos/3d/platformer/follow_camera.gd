@@ -38,7 +38,7 @@ func _fixed_process(dt):
 		
 	#check autoturn
 	
-	var ds = PhysicsServer.space_get_direct_state( get_world().get_space() )
+	var ds = PhysicsServer3D.space_get_direct_state( get_world().get_space() )
 	
 	
 	var col_left = ds.intersect_ray(target,target+Basis(up,deg2rad(autoturn_ray_aperture)).xform(delta),collision_exception)

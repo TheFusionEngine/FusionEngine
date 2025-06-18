@@ -36,7 +36,7 @@
 #include "servers/visual_server.h"
 #include "servers/visual/visual_server_wrap_mt.h"
 #include "servers/visual/rasterizer.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
 #include "servers/spatial_sound/spatial_sound_server_sw.h"
@@ -64,7 +64,7 @@ public:
 	unsigned int event_id;
 
 	PhysicsServer *physics_server;
-	Physics2DServer *physics_2d_server;
+	PhysicsServer2D *physics_2d_server;
 
 	IP_Unix *ip_unix;
 

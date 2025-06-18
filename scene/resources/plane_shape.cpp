@@ -28,13 +28,13 @@
 /*************************************************************************/
 #include "plane_shape.h"
 
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 
 
 
 void PlaneShape3D::_update_shape() {
 
-	PhysicsServer::get_singleton()->shape_set_data(get_shape(),plane);
+	PHYSICS_3D(shape_set_data, get_shape(),plane);
 }
 
 void PlaneShape3D::set_plane(Plane p_plane) {
@@ -60,7 +60,7 @@ void PlaneShape3D::_bind_methods() {
 
 }
 
-PlaneShape3D::PlaneShape3D() : Shape3D( PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_PLANE)) {
+PlaneShape3D::PlaneShape3D() : Shape3D( PHYSICS_3D(shape_create, PhysicsServer3D::SHAPE_PLANE)) {
 
 	set_plane(Plane(0,1,0,0));
 }
