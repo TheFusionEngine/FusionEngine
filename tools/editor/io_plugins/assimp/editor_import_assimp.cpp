@@ -18,14 +18,27 @@ class _EditorMeshImportOptions : public Object {
 	OBJ_TYPE(_EditorMeshImportOptions,Object);
 public:
 
+	//general options
+	float weld_tolerance;
 	bool generate_tangents;
 	bool generate_normals;
+
 	bool flip_faces;
 	bool smooth_shading;
 	bool weld_vertices;
+
+	//import options
 	bool import_material;
 	bool import_textures;
-	float weld_tolerance;
+
+	bool simple_meshes;
+
+	//optimization options
+	bool merge_dup_materials;
+	bool optimize_meshes;
+	bool optimize_scene_tree;
+	bool split_large_meshes;
+
 
 	bool _set(const StringName& p_name, const Variant& p_value) {
 		String n = p_name;
@@ -45,6 +58,16 @@ public:
 			weld_vertices=p_value;
 		else if (n=="force/weld_tolerance")
 			weld_tolerance=p_value;
+		else if (n=="force/simple_meshes")
+			simple_meshes=p_value;
+		else if (n=="optimize/split_large_meshes")
+			split_large_meshes=p_value;
+		else if (n=="optimize/materials")
+			merge_dup_materials=p_value;
+		else if (n=="optimize/meshes")
+			optimize_meshes=p_value;
+		else if (n=="optimize/scene_tree")
+			optimize_scene_tree=p_value;
 		else
 			return false;
 
@@ -70,6 +93,16 @@ public:
 			r_ret=weld_vertices;
 		else if (n=="force/weld_tolerance")
 			r_ret=weld_tolerance;
+		else if (n=="force/simple_meshes")
+			r_ret=simple_meshes;
+		else if (n=="optimize/split_large_meshes")
+			r_ret=split_large_meshes;
+		else if (n=="optimize/materials")
+			r_ret=merge_dup_materials;
+		else if (n=="optimize/meshes")
+			r_ret=optimize_meshes;
+		else if (n=="optimize/scene_tree")
+			r_ret=optimize_scene_tree;
 		else
 			return false;
 
@@ -87,6 +120,15 @@ public:
 		p_list->push_back(PropertyInfo(Variant::BOOL,"force/smooth_shading"));
 		p_list->push_back(PropertyInfo(Variant::BOOL,"force/weld_vertices"));
 		p_list->push_back(PropertyInfo(Variant::REAL,"force/weld_tolerance",PROPERTY_HINT_RANGE,"0.00001,16,0.00001"));
+
+		p_list->push_back(PropertyInfo(Variant::BOOL, "force/simple_meshes"));
+
+		p_list->push_back(PropertyInfo(Variant::BOOL, "optimize/meshes"));
+		p_list->push_back(PropertyInfo(Variant::BOOL, "optimize/materials"));
+		p_list->push_back(PropertyInfo(Variant::BOOL, "optimize/scene_tree"));
+		p_list->push_back(PropertyInfo(Variant::BOOL, "optimize/split_large_meshes"));
+
+
 		//p_list->push_back(PropertyInfo(Variant::BOOL,"compress/enable"));
 		//p_list->push_back(PropertyInfo(Variant::INT,"compress/bitrate",PROPERTY_HINT_ENUM,"64,96,128,192"));
 	}
@@ -104,6 +146,11 @@ public:
 		weld_tolerance=0.0001;
 		import_material=false;
 		import_textures=false;
+
+		optimize_meshes=true;
+		merge_dup_materials=true;
+		optimize_scene_tree=false;
+		split_large_meshes=true;
 	}
 };
 
@@ -156,7 +203,7 @@ public:
 	}
 
 	void popup_import(const String& p_path) {
-		popup_centered(Size2(400,400));
+		popup_centered(Size2(450,450));
 		if (p_path!="") {
 
 			Ref<ResourceImportMetadata> rimd = ResourceLoader::load_import_metadata(p_path);
@@ -245,7 +292,7 @@ public:
 
 
 		HBoxContainer *hbc = memnew( HBoxContainer );
-		vbc->add_margin_child("Source Mesh(es):",hbc);
+		vbc->add_margin_child("Source Files:",hbc);
 
 		import_path = memnew( LineEdit );
 		import_path->set_h_size_flags(SIZE_EXPAND_FILL);
@@ -258,7 +305,7 @@ public:
 		import_choose->connect("pressed", this,"_browse");
 
 		hbc = memnew( HBoxContainer );
-		vbc->add_margin_child("Target Path:",hbc);
+		vbc->add_margin_child("Import Path:",hbc);
 
 		save_path = memnew( LineEdit );
 		save_path->set_h_size_flags(SIZE_EXPAND_FILL);
@@ -366,6 +413,7 @@ Error EditorMeshImportPlugin::old_obj_import(const String& p_path, const Ref<Res
 	force_smooth = from->get_option("force/smooth_shading");
 	weld_vertices = from->get_option("force/weld_vertices");
 	weld_tolerance = from->get_option("force/weld_tolerance");
+
 
 	Vector<Vector3> vertices;
 	Vector<Vector3> normals;
@@ -578,8 +626,28 @@ Error EditorMeshImportPlugin::import_assimp(const String& p_path, const Ref<Reso
 	uint32_t ai_flags = 0;
 	Assimp::Importer importer;
 
-	if (from->get_option("generate/tangents") or from->get_option("generate/normals")){
+	if (from->get_option("generate/tangents")){
 		ai_flags |= aiProcess_RemoveComponent;
+	}
+
+	if (from->get_option("generate/normals")){
+		ai_flags |= aiProcess_ForceGenNormals;
+	}
+
+	if (from->get_option("force/simple_meshes")){
+		ai_flags |= aiProcess_PreTransformVertices;
+	}
+	if (from->get_option("optimize/split_large_meshes")){
+		ai_flags |= aiProcess_SplitLargeMeshes;
+	}
+	if (from->get_option("optimize/materials")){
+		ai_flags |= aiProcess_RemoveRedundantMaterials;
+	}
+	if (from->get_option("optimize/meshes")){
+		ai_flags |= aiProcess_OptimizeMeshes;
+	}
+	if (from->get_option("optimize/scene_tree")){
+		ai_flags |= aiProcess_OptimizeGraph;
 	}
 
 	//TODO: More options, probably everything assimp itself supports
