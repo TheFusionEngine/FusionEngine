@@ -10,9 +10,9 @@
 #include "io/marshalls.h"
 #include "scene/resources/surface_tool.h"
 
-#include "assimp/Importer.hpp"
-#include "assimp/postprocess.h"
-#include "assimp/scene.h"
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 
 class _EditorMeshImportOptions : public Object {
 	OBJ_TYPE(_EditorMeshImportOptions,Object);
@@ -237,7 +237,7 @@ public:
 	EditorMeshImportDialog(EditorMeshImportPlugin *p_plugin) {
 		plugin=p_plugin;
 
-		set_title("Single Mesh Import");
+		set_title("Assimp Mesh Import");
 
 		VBoxContainer *vbc = memnew( VBoxContainer );
 		add_child(vbc);
@@ -275,7 +275,7 @@ public:
 		add_child(file_select);
 		file_select->set_mode(FileDialog::MODE_OPEN_FILES);
 		file_select->connect("files_selected", this,"_choose_files");
-		file_select->add_filter("*.obj ; Wavefront OBJ");
+		//file_select->add_filter("*.obj ; Wavefront OBJ");
 		save_select = memnew(	EditorDirDialog );
 		add_child(save_select);
 
@@ -311,7 +311,7 @@ String EditorMeshImportPlugin::get_name() const {
 }
 
 String EditorMeshImportPlugin::get_visible_name() const{
-	return "3D Mesh";
+	return "3D Mesh/Scene";
 }
 
 void EditorMeshImportPlugin::import_dialog(const String& p_from){
@@ -524,9 +524,12 @@ namespace AssimpToFE {
 
 void convert_texture(aiTexture *in_tex, Ref<Texture> out_tex){
 
+
 }
 
 void convert_material(aiMaterial *in_mat, Ref<FixedMaterial> out_mat){
+	ERR_FAIL_COND(out_mat == NULL);
+
 	out_mat->set_name(String(in_mat->GetName().C_Str()));
 
 	aiColor4D ai_color;
@@ -585,11 +588,11 @@ Error EditorMeshImportPlugin::import_assimp(const String& p_path, const Ref<Reso
 	FileAccessRef f = FileAccess::open(src_path,FileAccess::READ);
 	ERR_FAIL_COND_V(!f,ERR_CANT_OPEN);
 
-	Ref<Mesh> mesh;
+	Ref<Mesh> mesh = memnew(Mesh);
 	Map<String,Ref<Material> > name_map;
 	Vector< Ref<Material> > materials;
 
-	const aiScene *scene = importer.ReadFile(p_path.ascii().ptr(), ai_flags);
+	const aiScene *scene = importer.ReadFile(src_path.ascii().ptr(), ai_flags);
 
 	ERR_EXPLAIN(String("Assimp failed to import the file: ") + importer.GetErrorString());
 	ERR_FAIL_COND_V(!scene, ERR_CANT_OPEN);
@@ -612,7 +615,7 @@ Error EditorMeshImportPlugin::import_assimp(const String& p_path, const Ref<Reso
 		materials.resize(scene->mNumMaterials);
 
 		for (uint32_t i = 0; i < scene->mNumMaterials; i++){
-			Ref<Material> new_material = memnew(Material);
+			Ref<FixedMaterial> new_material = memnew(FixedMaterial);
 			aiMaterial *imp_mat = scene->mMaterials[i];
 
 			AssimpToFE::convert_material(imp_mat, new_material);
