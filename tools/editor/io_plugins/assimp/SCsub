@@ -1,0 +1,14 @@
+Import('env')
+
+env.add_source_files(env.tool_sources, ["editor_import_collada.cpp"])
+
+conf = Configure(env)
+
+if conf.CheckLib('assimp'):
+    env.Append(CPPPATH=['#tools/editor/io_plugins/assimp/include'])
+    env.Append(LIBS=['assimp'])
+    env.add_source_files(env.tool_sources, ["editor_import_assimp.cpp"])
+else:
+    print('You do not have assimp installed! Cannot compile the assimp mesh importer.')
+
+Export('env')

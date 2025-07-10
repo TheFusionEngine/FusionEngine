@@ -1420,7 +1420,7 @@ EditorHelp::~EditorHelp() {
 }
 
 
-void EditorHelpPlugin::edit(Object *p_object) {
+void EditorDocsPlugin::edit(Object *p_object) {
 
 	if (!p_object->cast_to<Script>())
 		return;
@@ -1428,12 +1428,12 @@ void EditorHelpPlugin::edit(Object *p_object) {
 	//editor_help->edit(p_object->cast_to<Script>());
 }
 
-bool EditorHelpPlugin::handles(Object *p_object) const {
+bool EditorDocsPlugin::handles(Object *p_object) const {
 
 	return false;
 }
 
-void EditorHelpPlugin::make_visible(bool p_visible) {
+void EditorDocsPlugin::make_visible(bool p_visible) {
 
 	if (p_visible) {
 		editor_help->show();
@@ -1444,36 +1444,36 @@ void EditorHelpPlugin::make_visible(bool p_visible) {
 
 }
 
-void EditorHelpPlugin::selected_notify() {
+void EditorDocsPlugin::selected_notify() {
 
 	//editor_help->ensure_select_current();
 }
 
-Dictionary EditorHelpPlugin::get_state() const {
+Dictionary EditorDocsPlugin::get_state() const {
 
 	return Dictionary();
 }
 
-void EditorHelpPlugin::set_state(const Dictionary& p_state) {
+void EditorDocsPlugin::set_state(const Dictionary& p_state) {
 
 	//editor_help->set_state(p_state);
 }
-void EditorHelpPlugin::clear() {
+void EditorDocsPlugin::clear() {
 
 	//editor_help->clear();
 }
 
-void EditorHelpPlugin::save_external_data() {
+void EditorDocsPlugin::save_external_data() {
 
 	//editor_help->save_external_data();
 }
 
-void EditorHelpPlugin::apply_changes() {
+void EditorDocsPlugin::apply_changes() {
 
 	//editor_help->apply_helps();
 }
 
-void EditorHelpPlugin::restore_global_state() {
+void EditorDocsPlugin::restore_global_state() {
 
 	//if (bool(EDITOR_DEF("text_editor/restore_helps_on_load",true))) {
 //		editor_help->_load_files_state();
@@ -1481,7 +1481,7 @@ void EditorHelpPlugin::restore_global_state() {
 
 }
 
-void EditorHelpPlugin::save_global_state() {
+void EditorDocsPlugin::save_global_state() {
 
 	//if (bool(EDITOR_DEF("text_editor/restore_helps_on_load",true))) {
 //		editor_help->_save_files_state();
@@ -1490,7 +1490,7 @@ void EditorHelpPlugin::save_global_state() {
 }
 
 
-EditorHelpPlugin::EditorHelpPlugin(EditorNode *p_node) {
+EditorDocsPlugin::EditorDocsPlugin(EditorNode *p_node) {
 
 	editor=p_node;
 	editor_help = memnew( EditorHelp(p_node) );
@@ -1502,6 +1502,6 @@ EditorHelpPlugin::EditorHelpPlugin(EditorNode *p_node) {
 }
 
 
-EditorHelpPlugin::~EditorHelpPlugin()
+EditorDocsPlugin::~EditorDocsPlugin()
 {
 }

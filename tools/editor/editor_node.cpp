@@ -38,8 +38,6 @@
 #include "servers/physics_2d_server.h"
 #include "scene/resources/packed_scene.h"
 #include "editor_settings.h"
-#include "io_plugins/editor_import_collada.h"
-#include "io_plugins/editor_scene_importer_fbxconv.h"
 #include "globals.h"
 #include <stdio.h>
 #include "object_type_db.h"
@@ -88,13 +86,17 @@
 #include "plugins/animation_player_editor_plugin.h"
 #include "plugins/baked_light_editor_plugin.h"
 #include "plugins/polygon_2d_editor_plugin.h"
+#include "plugins/texture_and_atlas_editor_plugin.h"
 // end
 #include "tools/editor/io_plugins/editor_texture_import_plugin.h"
 #include "tools/editor/io_plugins/editor_scene_import_plugin.h"
 #include "tools/editor/io_plugins/editor_font_import_plugin.h"
 #include "tools/editor/io_plugins/editor_sample_import_plugin.h"
 #include "tools/editor/io_plugins/editor_translation_import_plugin.h"
-#include "tools/editor/io_plugins/editor_mesh_import_plugin.h"
+
+#include "io_plugins/assimp/editor_import_collada.h"
+#include "io_plugins/editor_scene_importer_fbxconv.h"
+#include "io_plugins/assimp/editor_import_assimp.h"
 
 #include "tools/pck/pck_packer.h"
 
@@ -354,6 +356,10 @@ Error EditorNode::load_resource(const String& p_scene) {
 	return OK;
 }
 
+
+void EditorNode::add_resource(const Ref<Resource>& p_resource){
+	resources_dock->add_resource(p_resource);
+}
 
 void EditorNode::edit_resource(const Ref<Resource>& p_resource) {
 
@@ -1314,7 +1320,7 @@ void EditorNode::_edit_current() {
 	p->add_separator();
 	p->add_item("Make Resources Unique",OBJECT_UNIQUE_RESOURCES);
 	p->add_separator();
-	p->add_icon_item(gui_base->get_icon("Help","EditorIcons"),"Class RefCounted",OBJECT_REQUEST_HELP);
+	p->add_icon_item(gui_base->get_icon("Help","EditorIcons"),"Class Reference",OBJECT_REQUEST_HELP);
 	List<MethodInfo> methods;
 	current_obj->get_method_list(&methods);
 
@@ -3812,24 +3818,9 @@ EditorNode::EditorNode() {
 	animation_menu->connect("pressed",this,"_animation_visibility_toggle");;
 */
 
-
-
-
-
-
-	
 	call_dialog = memnew( CallDialog );
 	call_dialog->hide();
 	gui_base->add_child( call_dialog );
-
-
-
-
-
-
-
-
-
 
 	confirmation = memnew( ConfirmationDialog  );
 	gui_base->add_child(confirmation);
@@ -3838,10 +3829,6 @@ EditorNode::EditorNode() {
 	accept = memnew( AcceptDialog  );
 	gui_base->add_child(accept);
 	accept->connect("confirmed", this,"_menu_confirm_current");
-
-
-
-
 
 //	optimized_save = memnew( OptimizedSaveDialog(&editor_data) );
 	//gui_base->add_child(optimized_save);
@@ -3999,13 +3986,15 @@ EditorNode::EditorNode() {
 	editor_import_export->add_import_plugin( Ref<EditorTextureImportPlugin>( memnew(EditorTextureImportPlugin(this,EditorTextureImportPlugin::MODE_TEXTURE_3D) )));
 	editor_import_export->add_import_plugin( Ref<EditorTextureImportPlugin>( memnew(EditorTextureImportPlugin(this,EditorTextureImportPlugin::MODE_ATLAS) )));
 	Ref<EditorSceneImportPlugin> _scene_import =  memnew(EditorSceneImportPlugin(this) );
-	Ref<EditorSceneImporterCollada> _collada_import = memnew( EditorSceneImporterCollada);
-	_scene_import->add_importer(_collada_import);
 //	Ref<EditorSceneImporterFBXConv> _fbxconv_import = memnew( EditorSceneImporterFBXConv);
 //	_scene_import->add_importer(_fbxconv_import);
 	editor_import_export->add_import_plugin( _scene_import);
 	editor_import_export->add_import_plugin( Ref<EditorSceneAnimationImportPlugin>( memnew(EditorSceneAnimationImportPlugin(this))));
+
+	Ref<EditorSceneImporterCollada> _collada_import = memnew( EditorSceneImporterCollada);
+	_scene_import->add_importer(_collada_import);
 	editor_import_export->add_import_plugin( Ref<EditorMeshImportPlugin>( memnew(EditorMeshImportPlugin(this))));
+
 	editor_import_export->add_import_plugin( Ref<EditorFontImportPlugin>( memnew(EditorFontImportPlugin(this))));
 	editor_import_export->add_import_plugin( Ref<EditorSampleImportPlugin>( memnew(EditorSampleImportPlugin(this))));
 	editor_import_export->add_import_plugin( Ref<EditorTranslationImportPlugin>( memnew(EditorTranslationImportPlugin(this))));
@@ -4020,7 +4009,9 @@ EditorNode::EditorNode() {
 	add_editor_plugin( memnew( CanvasItemEditorPlugin(this) ) );
 	add_editor_plugin( memnew( SpatialEditorPlugin(this) ) );
 	add_editor_plugin( memnew( ScriptEditorPlugin(this) ) );
-	add_editor_plugin( memnew( EditorHelpPlugin(this) ) );
+	add_editor_plugin( memnew( TextureViewEditorPlugin(this) ) );
+	add_editor_plugin( memnew( EditorDocsPlugin(this) ) );
+
 	add_editor_plugin( memnew( AnimationPlayerEditorPlugin(this) ) );
 	add_editor_plugin( memnew( ShaderEditorPlugin(this) ) );
 	add_editor_plugin( memnew( CameraEditorPlugin(this) ) );

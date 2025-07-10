@@ -240,7 +240,7 @@ void ResourcesDock::remove_resource(const Ref<Resource>& p_resource) {
 
 }
 
-void ResourcesDock::add_resource(const Ref<Resource>& p_resource) {
+void ResourcesDock::add_resource(const Ref<Resource>& p_resource, bool p_silent) {
 
 	if (block_add)
 		return;
