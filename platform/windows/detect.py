@@ -175,12 +175,17 @@ def configure(env):
 			env.Append(CPPPATH=['#tools/freetype'])
 			env.Append(CPPPATH=['#tools/freetype/freetype/include'])
 
-		env["CC"] = gcc_prefix+"gcc.exe"
-		env['AS'] = gcc_prefix+"as.exe"
-		env['CXX'] = gcc_prefix+"g++.exe"
-		env['AR'] = gcc_prefix+"ar.exe"
-		env['RANLIB'] = gcc_prefix+"ranlib.exe"
-		env['LD'] = gcc_prefix+"g++.exe"
+		if (os.name=="posix"):
+			gcc_postfix = ""
+		else:
+			gcc_postfix = ".exe"
+
+		env["CC"] = gcc_prefix+"gcc"+gcc_postfix
+		env['AS'] = gcc_prefix+"as"+gcc_postfix
+		env['CXX'] = gcc_prefix+"g++"+gcc_postfix
+		env['AR'] = gcc_prefix+"ar"+gcc_postfix
+		env['RANLIB'] = gcc_prefix+"gcc-ranlib"+gcc_postfix
+		env['LD'] = gcc_prefix+"g++"+gcc_postfix
 
 		#C++ standard here has to be gnu++11, not c++11, because with the latter it can't find the
 		#right stdlibs and such
