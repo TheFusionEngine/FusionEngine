@@ -215,7 +215,7 @@ class RasterizerGLES1 : public Rasterizer {
 		enum Type {
 			GEOMETRY_INVALID,
 			GEOMETRY_SURFACE,
-			GEOMETRY_POLY,
+			GEOMETRY_IMMEDIATE,
 			GEOMETRY_PARTICLES,
 			GEOMETRY_MULTISURFACE,
 		};
@@ -411,10 +411,27 @@ class RasterizerGLES1 : public Rasterizer {
 	mutable RID_Owner<MultiMesh> multimesh_owner;
 	mutable SelfList<MultiMesh>::List _multimesh_dirty_list;
 
-	struct Immediate {
+	struct Immediate : public Geometry {
 
-		RID material;
-		int empty;
+		struct Chunk {
+
+			RID texture;
+			VS::PrimitiveType primitive;
+			Vector<Vector3> vertices;
+			Vector<Vector3> normals;
+			Vector<Plane> tangents;
+			Vector<Color> colors;
+			Vector<Vector2> uvs;
+			Vector<Vector2> uvs2;
+		};
+
+		List<Chunk> chunks;
+		bool building;
+		int mask;
+		AABB aabb;
+
+		Immediate() { type=GEOMETRY_IMMEDIATE; building=false;}
+
 	};
 
 	mutable RID_Owner<Immediate> immediate_owner;
@@ -887,9 +904,21 @@ class RasterizerGLES1 : public Rasterizer {
 	uint64_t frame;
 	uint64_t scene_pass;
 
-	//void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1);
-	//void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_h_flip=false, bool p_v_flip=false );
-	//void _draw_quad(const Rect2& p_rect);
+	void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector2 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1);
+	void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_h_flip=false, bool p_v_flip=false );
+	void _draw_quad(const Rect2& p_rect);
+	void _copy_screen_quad();
+	void _copy_to_texscreen();
+
+
+	Vector3 chunk_vertex;
+	Vector3 chunk_normal;
+	Plane chunk_tangent;
+	Color chunk_color;
+	Vector2 chunk_uv;
+	Vector2 chunk_uv2;
+	GLuint tc0_id_cache;
+	GLuint tc0_idx;
 	void _process_blur(int times, float inc);
 
 public:
@@ -1195,7 +1224,7 @@ public:
 
 	virtual void add_mesh( const RID& p_mesh, const InstanceData *p_data);
 	virtual void add_multimesh( const RID& p_multimesh, const InstanceData *p_data);
-	virtual void add_immediate( const RID& p_immediate, const InstanceData *p_data) {}
+	virtual void add_immediate( const RID& p_immediate, const InstanceData *p_data);
 	virtual void add_particles( const RID& p_particle_instance, const InstanceData *p_data);
 
 	virtual void end_scene();

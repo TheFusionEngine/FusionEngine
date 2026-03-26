@@ -59,6 +59,8 @@ platform/android/libs/play_licensing/gen/*
 *.creator
 *.files
 *.includes
+*.cflags
+*.cxxflags
 
 # Misc
 .DS_Store

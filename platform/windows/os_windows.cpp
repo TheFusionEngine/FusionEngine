@@ -148,7 +148,7 @@ int OS_Windows::get_video_driver_count() const {
 }
 const char * OS_Windows::get_video_driver_name(int p_driver) const {
 
-	return "GLES1";
+	return "GL11";
 }
 
 OS::VideoMode OS_Windows::get_default_video_mode() const {
@@ -1078,10 +1078,10 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 
 	};
 	
-	if (strcmp(get_video_driver_name(p_video_driver), "GLES1") == 0) {
+	if (strcmp(get_video_driver_name(p_video_driver), "GL11") == 0) {
 		gl_context = memnew( ContextGL_Win(hWnd,false) );
 		gl_context->initialize();
-		rasterizer = memnew( RasterizerGLES1 );
+		rasterizer = memnew( RasterizerGL11 );
 	}
 #ifdef DX9_ENABLED
 	else if (strcmp(get_video_driver_name(p_video_driver), "DX9") == 0) {

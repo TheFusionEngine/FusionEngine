@@ -29,6 +29,7 @@
 #include "servers/visual/visual_server_raster.h"
 #include "drivers/gles2/rasterizer_gles2.h"
 #include "drivers/gles1/rasterizer_gles1.h"
+#include "drivers/gl11/rasterizer_gl11.h"
 #include "os_x11.h"
 #include "key_mapping_x11.h"
 #include <stdio.h>
@@ -63,11 +64,21 @@
 
 int OS_X11::get_video_driver_count() const {
 
-	return 2;
+	return 3;
 }
 const char * OS_X11::get_video_driver_name(int p_driver) const {
 
-	return p_driver==0?"GLES2":"GLES1";
+	switch (p_driver) {
+		case 0:
+			return "GLES2";
+		case 1:
+			return "GLES1";
+		case 2:
+			return "GL11";
+		default:
+			return "";
+	}
+	// return p_driver==0?"GLES2":"GLES1";
 }
 OS::VideoMode OS_X11::get_default_video_mode() const {
 
@@ -154,11 +165,32 @@ void OS_X11::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	context_gl = memnew( ContextGL_X11( x11_display, x11_window,current_videomode, false ) );
 	context_gl->initialize();
 
-	if (p_video_driver == 0) {
-		rasterizer = memnew( RasterizerGLES2 );
-	} else {
-		rasterizer = memnew( RasterizerGLES1 );
-	};
+	// prefer older GL if the other is disabled
+	switch (p_video_driver) {
+		case 0:
+#ifdef GLES2_ENABLED
+			rasterizer = memnew( RasterizerGLES2 );
+			break;
+#endif
+			;
+		case 1:
+#ifdef GLES1_ENABLED
+			rasterizer = memnew( RasterizerGLES1 );
+			break;
+#endif
+			;
+		case 2:
+#ifdef GL11_ENABLED
+			rasterizer = memnew( RasterizerGL11 );
+			break;
+#elif GLES1_ENABLED
+			rasterizer = memnew( RasterizerGLES1 );
+			break;
+#else
+			rasterizer = memnew( RasterizerGLES2 );
+			break;
+#endif
+	}
 
 #endif
 	visual_server = memnew( VisualServerRaster(rasterizer) );
@@ -938,7 +970,7 @@ void OS_X11::process_xevents() {
 				Atom data[2];
 				data[0] = XInternAtom(x11_display, "UTF8_STRING", 0);
 				data[1] = XA_STRING;
-				XChangeProperty (x11_display, req->requestor, req->property, req->target,
+				XChangeProperty (x11_display, req->requestor, req->property, XA_ATOM,
 						 8, PropModeReplace, (unsigned char *) &data,
 						 sizeof (data));
 				respond.xselection.property=req->property;
@@ -1028,40 +1060,81 @@ static String _get_clipboard(Atom p_source, Window x11_window, ::Display* x11_di
 	};
 
 	if (Sown != None) {
-		XConvertSelection (x11_display, p_source, XA_STRING, selection,
-					 x11_window, CurrentTime);
-		XFlush (x11_display);
+		// Request the list of supported targets
+		XConvertSelection(x11_display, p_source,
+						  XInternAtom(x11_display, "TARGETS", False),
+						  selection, x11_window, CurrentTime);
+		XFlush(x11_display);
 		while (true) {
 			XEvent event;
 			XNextEvent(x11_display, &event);
 			if (event.type == SelectionNotify && event.xselection.requestor == x11_window) {
 				break;
-			};
+			}
+		}
+		XGetWindowProperty(x11_display, x11_window, selection, 0, 32 * sizeof(Atom),
+						   False, XA_ATOM, &type, &format, &len, &bytes_left, &data);
+		enum ClipboardTypes {
+			TYPE_UTF8_STRING = (1 << 0),
+			TYPE_XA_STRING   = (1 << 1)
 		};
+		uint found = false;
+		if (data) {
+			Atom *targets = (Atom *)data;
+			for (int i = 0; i < len; i++) {
+				if (targets[i] == XInternAtom(x11_display, "UTF8_STRING", False))
+						found |= TYPE_UTF8_STRING;
+				if (targets[i] == XA_STRING)
+						found |= TYPE_XA_STRING;
+			}
+			XFree(data);
+		}
 
-		//
-		// Do not get any data, see how much data is there
-		//
-		XGetWindowProperty (x11_display, x11_window,
-			selection, 	  // Tricky..
-			0, 0,	  	  // offset - len
-			0, 	 	  // Delete 0==FALSE
-			AnyPropertyType,  //flag
-			&type,		  // return type
-			&format,	  // return format
-			&len, &bytes_left,  //that
-			&data);
-		// DATA is There
-		if (bytes_left > 0)
-		{
-			result = XGetWindowProperty (x11_display, x11_window,
-				selection, 0,bytes_left,0,
-				AnyPropertyType, &type,&format,
-				&len, &dummy, &data);
-			if (result == Success) {
-				ret.parse_utf8((const char*)data);
-			} else printf ("FAIL\n");
-			XFree (data);
+		// Request supported target
+		if (found & TYPE_UTF8_STRING) {
+			XConvertSelection (x11_display, p_source,
+							   XInternAtom(x11_display, "UTF8_STRING", False),
+							   selection, x11_window, CurrentTime);
+		} else if (found & TYPE_XA_STRING) {
+			XConvertSelection (x11_display, p_source,
+							   XA_STRING, selection,
+							   x11_window, CurrentTime);
+		}
+
+		if (found) {
+			XFlush (x11_display);
+			while (true) {
+				XEvent event;
+				XNextEvent(x11_display, &event);
+				if (event.type == SelectionNotify && event.xselection.requestor == x11_window) {
+					break;
+				};
+			};
+
+			//
+			// Do not get any data, see how much data is there
+			//
+			XGetWindowProperty (x11_display, x11_window,
+				selection, 	  // Tricky..
+				0, 0,	  	  // offset - len
+				0, 	 	  // Delete 0==FALSE
+				AnyPropertyType,  //flag
+				&type,		  // return type
+				&format,	  // return format
+				&len, &bytes_left,  //that
+				&data);
+			// DATA is There
+			if (data)
+			{
+				result = XGetWindowProperty (x11_display, x11_window,
+					selection, 0,bytes_left,0,
+					AnyPropertyType, &type,&format,
+					&len, &dummy, &data);
+				if (result == Success) {
+					ret.parse_utf8((const char*)data);
+				} else printf ("FAIL\n");
+				XFree (data);
+			}
 		}
 	}
 

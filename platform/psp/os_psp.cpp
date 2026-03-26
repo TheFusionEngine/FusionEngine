@@ -188,10 +188,10 @@ PspCtrlButtons buttons[16] = {
 		PSP_CTRL_CIRCLE,
 		PSP_CTRL_SQUARE,
 		PSP_CTRL_TRIANGLE,
-		(PspCtrlButtons)0,
-		(PspCtrlButtons)0,
 		PSP_CTRL_LTRIGGER,
 		PSP_CTRL_RTRIGGER,
+		(PspCtrlButtons)0,
+		(PspCtrlButtons)0,
 		(PspCtrlButtons)0,
 		(PspCtrlButtons)0,
 		PSP_CTRL_SELECT,
@@ -227,11 +227,11 @@ void OS_PSP::process_keys() {
 		}
 	}
 
-	uint8_t lx = (pad.Lx - 128);
-	uint8_t ly = (pad.Ly - 128);
+	int8_t lx = (pad.Lx - 128);
+	int8_t ly = (pad.Ly - 128);
 
-	input->set_joy_axis(0, 0, lx);
-	input->set_joy_axis(0, 1, ly);
+	input->set_joy_axis(0, 0, lx / 128.0);
+	input->set_joy_axis(0, 1, ly / 128.0);
 }
 
 void OS_PSP::set_mouse_grab(bool p_grab) {

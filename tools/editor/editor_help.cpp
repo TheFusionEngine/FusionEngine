@@ -1395,6 +1395,18 @@ EditorHelp::EditorHelp(EditorNode *p_editor) {
 		class_desc = memnew( RichTextLabel );
 		pc->add_child(class_desc);
 		class_desc->connect("meta_clicked",this,"_class_desc_select");
+
+		PanelContainer *class_desc_bg = memnew( PanelContainer );
+		Ref<StyleBoxFlat> class_desc_bg_style = memnew( StyleBoxFlat );
+		class_desc_bg_style->set_bg_color(EditorSettings::get_singleton()->get("text_editor/background_color"));
+		class_desc_bg->add_style_override("panel", class_desc_bg_style);
+		class_desc_bg->set_anchor_and_margin(MARGIN_LEFT,ANCHOR_BEGIN,1);
+		class_desc_bg->set_anchor_and_margin(MARGIN_TOP,ANCHOR_BEGIN,1);
+		class_desc_bg->set_anchor_and_margin(MARGIN_BOTTOM,ANCHOR_END,1);
+		class_desc_bg->set_anchor_and_margin(MARGIN_RIGHT,ANCHOR_END,4);
+		class_desc_bg->set_draw_behind_parent(true);
+		class_desc_bg->set_ignore_mouse(true);
+		class_desc->add_child(class_desc_bg);
 	}
 
 	class_desc->get_v_scroll()->connect("value_changed",this,"_scroll_changed");

@@ -6267,7 +6267,8 @@ void RasterizerGLES2::_render_list_forward(RenderList *p_render_list,const Trans
 					 } break;
 					case VS::MATERIAL_BLEND_MODE_MUL: {
 						glBlendEquation(GL_FUNC_ADD);
-						glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+						//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+						glBlendFunc(GL_DST_COLOR,GL_ZERO);
 
 					} break;
 					case VS::MATERIAL_BLEND_MODE_PREMULT_ALPHA: break;
@@ -7733,7 +7734,8 @@ void RasterizerGLES2::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 		} break;
 		case VS::MATERIAL_BLEND_MODE_PREMULT_ALPHA: {
 			glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+			//glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+			glBlendFunc(GL_DST_COLOR,GL_ZERO);
 		} break;
 
 	}
@@ -9327,7 +9329,7 @@ int RasterizerGLES2::get_render_info(VS::RenderInfo p_info) {
 		} break;
 		case VS::INFO_VERTEX_MEM_USED: {
 
-			return 0;
+			return _rinfo.vertex_count * 12; // assuming it stores 32bit float positions
 		} break;
 	}
 

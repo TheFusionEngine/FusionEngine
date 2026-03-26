@@ -161,7 +161,7 @@ RasterizerGLES1::FX::FX() {
 
 static const GLenum prim_type[]={GL_POINTS,GL_LINES,GL_TRIANGLES,GL_TRIANGLE_FAN};
 
-static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector2 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1) {
+void RasterizerGLES1::_draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector2 *p_uvs,const Plane *p_tangents,int p_instanced) {
 
 	ERR_FAIL_COND(!p_vertices);
 	ERR_FAIL_COND(p_points <1 || p_points>4);
@@ -2210,45 +2210,124 @@ RID RasterizerGLES1::immediate_create() {
 
 void RasterizerGLES1::immediate_begin(RID p_immediate, VS::PrimitiveType p_rimitive, RID p_texture){
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(im->building);
+
+	Immediate::Chunk ic;
+	ic.texture=p_texture;
+	ic.primitive=p_rimitive;
+	im->chunks.push_back(ic);
+	im->mask=0;
+	im->building=true;
+
 
 }
 void RasterizerGLES1::immediate_vertex(RID p_immediate,const Vector3& p_vertex){
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	Immediate::Chunk *c = &im->chunks.back()->get();
+
+
+	if (c->vertices.empty() && im->chunks.size()==1) {
+
+		im->aabb.pos=p_vertex;
+		im->aabb.size=Vector3();
+	} else {
+		im->aabb.expand_to(p_vertex);
+	}
+
+	if (im->mask&VS::ARRAY_FORMAT_NORMAL)
+		c->normals.push_back(chunk_normal);
+	if (im->mask&VS::ARRAY_FORMAT_TANGENT)
+		c->tangents.push_back(chunk_tangent);
+	if (im->mask&VS::ARRAY_FORMAT_COLOR)
+		c->colors.push_back(chunk_color);
+	if (im->mask&VS::ARRAY_FORMAT_TEX_UV)
+		c->uvs.push_back(chunk_uv);
+	if (im->mask&VS::ARRAY_FORMAT_TEX_UV2)
+		c->uvs2.push_back(chunk_uv2);
+	im->mask|=VS::ARRAY_FORMAT_VERTEX;
+	c->vertices.push_back(p_vertex);
 
 }
 void RasterizerGLES1::immediate_normal(RID p_immediate,const Vector3& p_normal){
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_NORMAL;
+	chunk_normal=p_normal;
 
 }
 void RasterizerGLES1::immediate_tangent(RID p_immediate,const Plane& p_tangent){
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_TANGENT;
+	chunk_tangent=p_tangent;
 
 }
 void RasterizerGLES1::immediate_color(RID p_immediate,const Color& p_color){
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_COLOR;
+	chunk_color=p_color;
 
 }
 void RasterizerGLES1::immediate_uv(RID p_immediate,const Vector2& tex_uv){
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_TEX_UV;
+	chunk_uv=tex_uv;
 
 }
 void RasterizerGLES1::immediate_uv2(RID p_immediate,const Vector2& tex_uv){
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_TEX_UV2;
+	chunk_uv2=tex_uv;
 
 }
 
 void RasterizerGLES1::immediate_end(RID p_immediate){
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->building=false;
 
 }
 void RasterizerGLES1::immediate_clear(RID p_immediate) {
 
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(im->building);
 
+	im->chunks.clear();
 }
 
 AABB RasterizerGLES1::immediate_get_aabb(RID p_immediate) const {
 
-	return AABB(Vector3(-1,-1,-1),Vector3(2,2,2));
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND_V(!im,AABB());
+	return im->aabb;
 }
 
 void RasterizerGLES1::immediate_set_material(RID p_immediate,RID p_material) {
@@ -3328,6 +3407,17 @@ void RasterizerGLES1::add_multimesh( const RID& p_multimesh, const InstanceData 
 
 }
 
+void RasterizerGLES1::add_immediate( const RID& p_immediate, const InstanceData *p_data) {
+
+
+	Immediate *immediate = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!immediate);
+
+	_add_geometry(immediate,p_data,immediate,NULL);
+
+}
+
+
 void RasterizerGLES1::add_particles( const RID& p_particle_instance, const InstanceData *p_data){
 
 	//print_line("adding particles");
@@ -3534,7 +3624,8 @@ void RasterizerGLES1::_setup_material(const Geometry *p_geometry,const Material 
 				 } break;
 				case VS::MATERIAL_BLEND_MODE_MUL: {
 					//glBlendEquation(GL_FUNC_ADD);
-					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+					//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+					glBlendFunc(GL_DST_COLOR,GL_ZERO);
 
 				} break;
 
@@ -4279,6 +4370,99 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 
 			 };
 		 } break;
+		case Geometry::GEOMETRY_IMMEDIATE: {
+
+			bool restore_tex=false;
+			const Immediate *im = static_cast<const Immediate*>( p_geometry );
+			if (im->building) {
+				return;
+			}
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			for(const List<Immediate::Chunk>::Element *E=im->chunks.front();E;E=E->next()) {
+
+				const Immediate::Chunk &c=E->get();
+				if (c.vertices.empty()) {
+					continue;
+				}
+				for(int i=0;i<c.vertices.size();i++)
+
+				if (c.texture.is_valid() && texture_owner.owns(c.texture)) {
+
+					glEnable(GL_TEXTURE_2D);
+					const Texture *t = texture_owner.get(c.texture);
+					glActiveTexture(GL_TEXTURE0+tc0_idx);
+					glBindTexture(t->target,t->tex_id);
+					restore_tex=true;
+
+
+				} else if (restore_tex) {
+
+					glEnable(GL_TEXTURE_2D);
+					glActiveTexture(GL_TEXTURE0+tc0_idx);
+					glBindTexture(GL_TEXTURE_2D,tc0_id_cache);
+					restore_tex=false;
+				} else {
+
+					glDisable(GL_TEXTURE_2D);
+				}
+
+				if (!c.normals.empty()) {
+
+					glEnableClientState(GL_NORMAL_ARRAY);
+					glNormalPointer(GL_FLOAT, sizeof(Vector3), c.normals.ptr());
+				} else {
+
+					glDisableClientState(GL_NORMAL_ARRAY);
+				}
+
+				if (!c.colors.empty()) {
+
+					glEnableClientState(GL_COLOR_ARRAY);
+					glColorPointer(4, GL_FLOAT, sizeof(Color), c.colors.ptr());
+				} else {
+
+					glDisableClientState(GL_COLOR_ARRAY);
+					glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+
+				if (!c.uvs.empty()) {
+
+					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+					glTexCoordPointer(2, GL_FLOAT, sizeof(Vector2), c.uvs.ptr());
+				} else {
+
+					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				}
+
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glVertexPointer(3, GL_FLOAT, sizeof(Vector3), c.vertices.ptr());
+				glDrawArrays(gl_primitive[c.primitive], 0, c.vertices.size());
+
+
+			}
+
+			//clear states
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+			glDisableClientState(GL_COLOR_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+			if (restore_tex) {
+
+				glEnable(GL_TEXTURE_2D);
+				glActiveTexture(GL_TEXTURE0+tc0_idx);
+				glBindTexture(GL_TEXTURE_2D,tc0_id_cache);
+				restore_tex=false;
+			}
+			else {
+
+				glDisable(GL_TEXTURE_2D);
+			}
+
+
+		} break;
 		case Geometry::GEOMETRY_PARTICLES: {
 
 
@@ -5235,7 +5419,8 @@ void RasterizerGLES1::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 		 } break;
 		case VS::MATERIAL_BLEND_MODE_MUL: {
 			//glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			glBlendFunc(GL_DST_COLOR,GL_ZERO);
 
 		} break;
 
@@ -5299,7 +5484,7 @@ void RasterizerGLES1::canvas_draw_line(const Point2& p_from, const Point2& p_to,
 
 }
 
-static void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h=false,bool p_flip_v=false ) {
+void RasterizerGLES1::_draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h,bool p_flip_v ) {
 
 
 	Vector2 texcoords[4]= {
@@ -5336,7 +5521,7 @@ static void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, 
 	_draw_primitive(4,coords,0,0,texcoords);
 }
 
-static void _draw_quad(const Rect2& p_rect) {
+void RasterizerGLES1::_draw_quad(const Rect2& p_rect) {
 
 	Vector3 coords[4]= {
 		Vector3( p_rect.pos.x,p_rect.pos.y, 0 ),
@@ -6493,11 +6678,11 @@ int RasterizerGLES1::get_render_info(VS::RenderInfo p_info) {
 		} break;
 		case VS::INFO_TEXTURE_MEM_USED: {
 
-			_rinfo.texture_mem;
+			return _rinfo.texture_mem;
 		} break;
 		case VS::INFO_VERTEX_MEM_USED: {
 
-			return 0;
+			return _rinfo.vertex_count * 12; // assuming it stores 32bit float positions
 		} break;
 	}
 

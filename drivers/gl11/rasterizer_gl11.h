@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  rasterizer_gles1.h                                                   */
+/*  rasterizer_gl11.h                                                    */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -26,12 +26,12 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifndef RASTERIZER_GLES1_H
-#define RASTERIZER_GLES1_H
+#ifndef RASTERIZER_GL11_H
+#define RASTERIZER_GL11_H
 
 #include "servers/visual/rasterizer.h"
 
-#ifdef GLES1_ENABLED
+#if GL11_ENABLED
 
 #include "image.h"
 #include "rid.h"
@@ -42,11 +42,11 @@
 #include "sort.h"
 // #include "tools/editor/scene_tree_editor.h"
 #include "platform_config.h"
-#ifndef GLES1_INCLUDE_H
+#ifndef GL11_INCLUDE_H
 #include <GLES/gl.h>
 
 #else
-#include GLES1_INCLUDE_H
+#include GL11_INCLUDE_H
 #endif
 
 
@@ -55,14 +55,14 @@
 /**
         @author Juan Linietsky <reduzio@gmail.com>
 */
-class RasterizerGLES1 : public Rasterizer {
+class RasterizerGL11 : public Rasterizer {
 
 	enum {
 
 		MAX_SCENE_LIGHTS=2048,
 		LIGHT_SPOT_BIT=0x80,
 		DEFAULT_SKINNED_BUFFER_SIZE = 1024 * 1024, // 10k vertices
-		MAX_HW_LIGHTS = 1,
+		MAX_HW_LIGHTS = 4,
 	};
 
 	GLuint BlurTexture;
@@ -209,7 +209,7 @@ class RasterizerGLES1 : public Rasterizer {
 		enum Type {
 			GEOMETRY_INVALID,
 			GEOMETRY_SURFACE,
-			GEOMETRY_POLY,
+			GEOMETRY_IMMEDIATE,
 			GEOMETRY_PARTICLES,
 			GEOMETRY_MULTISURFACE,
 		};
@@ -405,10 +405,27 @@ class RasterizerGLES1 : public Rasterizer {
 	mutable RID_Owner<MultiMesh> multimesh_owner;
 	mutable SelfList<MultiMesh>::List _multimesh_dirty_list;
 
-	struct Immediate {
+	struct Immediate : public Geometry {
 
-		RID material;
-		int empty;
+		struct Chunk {
+
+			RID texture;
+			VS::PrimitiveType primitive;
+			Vector<Vector3> vertices;
+			Vector<Vector3> normals;
+			Vector<Plane> tangents;
+			Vector<Color> colors;
+			Vector<Vector2> uvs;
+			Vector<Vector2> uvs2;
+		};
+
+		List<Chunk> chunks;
+		bool building;
+		int mask;
+		AABB aabb;
+
+		Immediate() { type=GEOMETRY_IMMEDIATE; building=false;}
+
 	};
 
 	mutable RID_Owner<Immediate> immediate_owner;
@@ -879,9 +896,21 @@ class RasterizerGLES1 : public Rasterizer {
 	uint64_t frame;
 	uint64_t scene_pass;
 
-	//void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1);
-	//void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_h_flip=false, bool p_v_flip=false );
-	//void _draw_quad(const Rect2& p_rect);
+	void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1);
+	void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_h_flip=false, bool p_v_flip=false );
+	void _draw_quad(const Rect2& p_rect);
+	void _copy_screen_quad();
+	void _copy_to_texscreen();
+
+
+	Vector3 chunk_vertex;
+	Vector3 chunk_normal;
+	Plane chunk_tangent;
+	Color chunk_color;
+	Vector2 chunk_uv;
+	Vector2 chunk_uv2;
+	GLuint tc0_id_cache;
+	GLuint tc0_idx;
 	void _process_blur(int times, float inc);
 
 public:
@@ -1187,7 +1216,7 @@ public:
 
 	virtual void add_mesh( const RID& p_mesh, const InstanceData *p_data);
 	virtual void add_multimesh( const RID& p_multimesh, const InstanceData *p_data);
-	virtual void add_immediate( const RID& p_immediate, const InstanceData *p_data) {}
+	virtual void add_immediate( const RID& p_immediate, const InstanceData *p_data);
 	virtual void add_particles( const RID& p_particle_instance, const InstanceData *p_data);
 
 	virtual void end_scene();
@@ -1285,11 +1314,11 @@ public:
 
 
 #ifdef TOOLS_ENABLED
-	RasterizerGLES1(bool p_keep_copies=true,bool p_use_reload_hooks=false);
+	RasterizerGL11(bool p_keep_copies=true,bool p_use_reload_hooks=false);
 #else
-	RasterizerGLES1(bool p_keep_copies=false,bool p_use_reload_hooks=false);
+	RasterizerGL11(bool p_keep_copies=false,bool p_use_reload_hooks=false);
 #endif
-	virtual ~RasterizerGLES1();
+	virtual ~RasterizerGL11();
 };
 
 #endif

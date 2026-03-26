@@ -68,7 +68,7 @@ void Material::set_flag(Flag p_flag,bool p_enabled) {
 
 void Material::set_blend_mode(BlendMode p_blend_mode) {
 
-	ERR_FAIL_INDEX(p_blend_mode,3);
+    ERR_FAIL_INDEX(p_blend_mode,4);
 	blend_mode=p_blend_mode;
 	VisualServer::get_singleton()->material_set_blend_mode(material,(VS::MaterialBlendMode)p_blend_mode);
 	_change_notify();
@@ -125,7 +125,7 @@ void Material::_bind_methods() {
 	for(int i=0;i<FLAG_MAX;i++)
 		ADD_PROPERTYI( PropertyInfo( Variant::BOOL, String()+"flags/"+_flag_names[i] ),_SCS("set_flag"),_SCS("get_flag"),_flag_indices[i]);
 
-	ADD_PROPERTY( PropertyInfo( Variant::INT, "params/blend_mode",PROPERTY_HINT_ENUM,"Mix,Add,Sub,PMAlpha" ), _SCS("set_blend_mode"),_SCS("get_blend_mode"));
+    ADD_PROPERTY( PropertyInfo( Variant::INT, "params/blend_mode",PROPERTY_HINT_ENUM,"Mix,Add,Sub,Mul,PMAlpha" ), _SCS("set_blend_mode"),_SCS("get_blend_mode"));
 	ADD_PROPERTY( PropertyInfo( Variant::INT, "params/depth_draw",PROPERTY_HINT_ENUM,"Always,Opaque Only,Pre-Pass Alpha,Never" ), _SCS("set_depth_draw_mode"),_SCS("get_depth_draw_mode"));
 	ADD_PROPERTY( PropertyInfo( Variant::REAL, "params/line_width",PROPERTY_HINT_RANGE,"0.1,32.0,0.1" ), _SCS("set_line_width"),_SCS("get_line_width"));
 

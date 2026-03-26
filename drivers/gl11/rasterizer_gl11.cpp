@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  rasterizer_gles1.cpp                                                 */
+/*  rasterizer_gl11.cpp                                                  */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -26,7 +26,7 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#ifdef GLES1_ENABLED
+#ifdef GL11_ENABLED
 
 #include "rasterizer_gl11.h"
 #include "os/os.h"
@@ -112,7 +112,7 @@ _FORCE_INLINE_ static void _gl_mult_transform(const Transform2D& tr) {
 };
 
 
-RasterizerGLES1::FX::FX() {
+RasterizerGL11::FX::FX() {
 
 	bgcolor_active=false;
 	bgcolor=Color(0,1,0,1);
@@ -156,7 +156,7 @@ RasterizerGLES1::FX::FX() {
 
 static const GLenum prim_type[]={GL_POINTS,GL_LINES,GL_TRIANGLES,GL_TRIANGLE_FAN};
 
-static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents=NULL,int p_instanced=1) {
+void RasterizerGL11::_draw_primitive(int p_points, const Vector3 *p_vertices, const Vector3 *p_normals, const Color* p_colors, const Vector3 *p_uvs,const Plane *p_tangents,int p_instanced) {
 
 	ERR_FAIL_COND(!p_vertices);
 	ERR_FAIL_COND(p_points <1 || p_points>4);
@@ -215,7 +215,7 @@ static void _draw_primitive(int p_points, const Vector3 *p_vertices, const Vecto
 
 /* TEXTURE API */
 
-Image RasterizerGLES1::_get_gl_image_and_format(const Image& p_image, Image::Format p_format, uint32_t p_flags,GLenum& r_gl_format,int &r_gl_components,bool &r_has_alpha_cache,bool &r_compressed) {
+Image RasterizerGL11::_get_gl_image_and_format(const Image& p_image, Image::Format p_format, uint32_t p_flags,GLenum& r_gl_format,int &r_gl_components,bool &r_has_alpha_cache,bool &r_compressed) {
 
 	r_has_alpha_cache=false;
 	r_compressed=false;
@@ -421,7 +421,7 @@ Image RasterizerGLES1::_get_gl_image_and_format(const Image& p_image, Image::For
 }
 
 
-RID RasterizerGLES1::texture_create() {
+RID RasterizerGL11::texture_create() {
 
 	Texture *texture = memnew(Texture);
 	ERR_FAIL_COND_V(!texture,RID());
@@ -433,7 +433,7 @@ RID RasterizerGLES1::texture_create() {
 
 }
 
-void RasterizerGLES1::texture_allocate(RID p_texture,int p_width, int p_height,Image::Format p_format,uint32_t p_flags) {
+void RasterizerGL11::texture_allocate(RID p_texture,int p_width, int p_height,Image::Format p_format,uint32_t p_flags) {
 
 	bool has_alpha_cache;
 	int components;
@@ -507,7 +507,7 @@ void RasterizerGLES1::texture_allocate(RID p_texture,int p_width, int p_height,I
 	texture->active=true;
 }
 
-void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::CubeMapSide p_cube_side) {
+void RasterizerGL11::texture_set_data(RID p_texture,const Image& p_image,VS::CubeMapSide p_cube_side) {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -582,7 +582,7 @@ void RasterizerGLES1::texture_set_data(RID p_texture,const Image& p_image,VS::Cu
 
 }
 
-Image RasterizerGLES1::texture_get_data(RID p_texture,VS::CubeMapSide p_cube_side) const {
+Image RasterizerGL11::texture_get_data(RID p_texture,VS::CubeMapSide p_cube_side) const {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -592,7 +592,7 @@ Image RasterizerGLES1::texture_get_data(RID p_texture,VS::CubeMapSide p_cube_sid
 	return texture->image[p_cube_side];
 }
 
-void RasterizerGLES1::texture_set_flags(RID p_texture,uint32_t p_flags) {
+void RasterizerGL11::texture_set_flags(RID p_texture,uint32_t p_flags) {
 
 	Texture *texture = texture_owner.get( p_texture );
 	ERR_FAIL_COND(!texture);
@@ -619,9 +619,9 @@ void RasterizerGLES1::texture_set_flags(RID p_texture,uint32_t p_flags) {
 	if (texture->flags&VS::TEXTURE_FLAG_FILTER) {
 
 		glTexParameteri(texture->target,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	// Linear Filtering
-		if (texture->flags&VS::TEXTURE_FLAG_MIPMAPS)
+		/*if (texture->flags&VS::TEXTURE_FLAG_MIPMAPS)
 			glTexParameteri(texture->target,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-		else
+		else*/
 			glTexParameteri(texture->target,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	// Linear Filtering
 
 	} else {
@@ -629,7 +629,7 @@ void RasterizerGLES1::texture_set_flags(RID p_texture,uint32_t p_flags) {
 		glTexParameteri(texture->target,GL_TEXTURE_MAG_FILTER,GL_NEAREST);	// nearest
 	}
 }
-uint32_t RasterizerGLES1::texture_get_flags(RID p_texture) const {
+uint32_t RasterizerGL11::texture_get_flags(RID p_texture) const {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -638,7 +638,7 @@ uint32_t RasterizerGLES1::texture_get_flags(RID p_texture) const {
 	return texture->flags;
 
 }
-Image::Format RasterizerGLES1::texture_get_format(RID p_texture) const {
+Image::Format RasterizerGL11::texture_get_format(RID p_texture) const {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -646,7 +646,7 @@ Image::Format RasterizerGLES1::texture_get_format(RID p_texture) const {
 
 	return texture->format;
 }
-uint32_t RasterizerGLES1::texture_get_width(RID p_texture) const {
+uint32_t RasterizerGL11::texture_get_width(RID p_texture) const {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -654,7 +654,7 @@ uint32_t RasterizerGLES1::texture_get_width(RID p_texture) const {
 
 	return texture->width;
 }
-uint32_t RasterizerGLES1::texture_get_height(RID p_texture) const {
+uint32_t RasterizerGL11::texture_get_height(RID p_texture) const {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -663,7 +663,7 @@ uint32_t RasterizerGLES1::texture_get_height(RID p_texture) const {
 	return texture->height;
 }
 
-bool RasterizerGLES1::texture_has_alpha(RID p_texture) const {
+bool RasterizerGL11::texture_has_alpha(RID p_texture) const {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -673,7 +673,7 @@ bool RasterizerGLES1::texture_has_alpha(RID p_texture) const {
 
 }
 
-void RasterizerGLES1::texture_set_size_override(RID p_texture,int p_width, int p_height) {
+void RasterizerGL11::texture_set_size_override(RID p_texture,int p_width, int p_height) {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -687,7 +687,7 @@ void RasterizerGLES1::texture_set_size_override(RID p_texture,int p_width, int p
 
 }
 
-void RasterizerGLES1::texture_set_reload_hook(RID p_texture,ObjectID p_owner,const StringName& p_function) const {
+void RasterizerGL11::texture_set_reload_hook(RID p_texture,ObjectID p_owner,const StringName& p_function) const {
 
 	Texture * texture = texture_owner.get(p_texture);
 
@@ -708,7 +708,7 @@ void RasterizerGLES1::texture_set_reload_hook(RID p_texture,ObjectID p_owner,con
 
 /* SHADER API */
 
-RID RasterizerGLES1::shader_create(VS::ShaderMode p_mode) {
+RID RasterizerGL11::shader_create(VS::ShaderMode p_mode) {
 
 	Shader *shader = memnew( Shader );
 	shader->mode=p_mode;
@@ -727,7 +727,7 @@ RID RasterizerGLES1::shader_create(VS::ShaderMode p_mode) {
 
 
 
-void RasterizerGLES1::shader_set_mode(RID p_shader,VS::ShaderMode p_mode) {
+void RasterizerGL11::shader_set_mode(RID p_shader,VS::ShaderMode p_mode) {
 
 	ERR_FAIL_INDEX(p_mode,3);
 	Shader *shader=shader_owner.get(p_shader);
@@ -738,7 +738,7 @@ void RasterizerGLES1::shader_set_mode(RID p_shader,VS::ShaderMode p_mode) {
 	shader->mode=p_mode;
 
 }
-VS::ShaderMode RasterizerGLES1::shader_get_mode(RID p_shader) const {
+VS::ShaderMode RasterizerGL11::shader_get_mode(RID p_shader) const {
 
 	Shader *shader=shader_owner.get(p_shader);
 	ERR_FAIL_COND_V(!shader,VS::SHADER_MATERIAL);
@@ -747,7 +747,7 @@ VS::ShaderMode RasterizerGLES1::shader_get_mode(RID p_shader) const {
 
 
 
-void RasterizerGLES1::shader_set_code(RID p_shader, const String& p_vertex, const String& p_fragment,const String& p_light,int p_vertex_ofs,int p_fragment_ofs,int p_light_ofs) {
+void RasterizerGL11::shader_set_code(RID p_shader, const String& p_vertex, const String& p_fragment,const String& p_light,int p_vertex_ofs,int p_fragment_ofs,int p_light_ofs) {
 
 
 	Shader *shader=shader_owner.get(p_shader);
@@ -766,7 +766,7 @@ void RasterizerGLES1::shader_set_code(RID p_shader, const String& p_vertex, cons
 
 }
 
-String RasterizerGLES1::shader_get_vertex_code(RID p_shader) const {
+String RasterizerGL11::shader_get_vertex_code(RID p_shader) const {
 
 	Shader *shader=shader_owner.get(p_shader);
 	ERR_FAIL_COND_V(!shader,String());
@@ -774,7 +774,7 @@ String RasterizerGLES1::shader_get_vertex_code(RID p_shader) const {
 
 }
 
-String RasterizerGLES1::shader_get_fragment_code(RID p_shader) const {
+String RasterizerGL11::shader_get_fragment_code(RID p_shader) const {
 
 	Shader *shader=shader_owner.get(p_shader);
 	ERR_FAIL_COND_V(!shader,String());
@@ -782,7 +782,7 @@ String RasterizerGLES1::shader_get_fragment_code(RID p_shader) const {
 
 }
 
-String RasterizerGLES1::shader_get_light_code(RID p_shader) const {
+String RasterizerGL11::shader_get_light_code(RID p_shader) const {
 
 	Shader *shader=shader_owner.get(p_shader);
 	ERR_FAIL_COND_V(!shader,String());
@@ -790,7 +790,7 @@ String RasterizerGLES1::shader_get_light_code(RID p_shader) const {
 
 }
 
-void RasterizerGLES1::shader_get_param_list(RID p_shader, List<PropertyInfo> *p_param_list) const {
+void RasterizerGL11::shader_get_param_list(RID p_shader, List<PropertyInfo> *p_param_list) const {
 
 	Shader *shader=shader_owner.get(p_shader);
 	ERR_FAIL_COND(!shader);
@@ -800,12 +800,12 @@ void RasterizerGLES1::shader_get_param_list(RID p_shader, List<PropertyInfo> *p_
 /* COMMON MATERIAL API */
 
 
-RID RasterizerGLES1::material_create() {
+RID RasterizerGL11::material_create() {
 
 	return material_owner.make_rid( memnew( Material ) );
 }
 
-void RasterizerGLES1::material_set_shader(RID p_material, RID p_shader) {
+void RasterizerGL11::material_set_shader(RID p_material, RID p_shader) {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND(!material);
@@ -813,7 +813,7 @@ void RasterizerGLES1::material_set_shader(RID p_material, RID p_shader) {
 
 }
 
-RID RasterizerGLES1::material_get_shader(RID p_material) const {
+RID RasterizerGL11::material_get_shader(RID p_material) const {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND_V(!material,RID());
@@ -822,7 +822,7 @@ RID RasterizerGLES1::material_get_shader(RID p_material) const {
 
 #if 0
 
-void RasterizerGLES1::_material_check_alpha(Material *p_material) {
+void RasterizerGL11::_material_check_alpha(Material *p_material) {
 
 	p_material->has_alpha=false;
 	Color diffuse=p_material->parameters[VS::FIXED_MATERIAL_PARAM_DIFFUSE];
@@ -846,7 +846,7 @@ void RasterizerGLES1::_material_check_alpha(Material *p_material) {
 }
 
 #endif
-void RasterizerGLES1::material_set_param(RID p_material, const StringName& p_param, const Variant& p_value) {
+void RasterizerGL11::material_set_param(RID p_material, const StringName& p_param, const Variant& p_value) {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND(!material);
@@ -856,7 +856,7 @@ void RasterizerGLES1::material_set_param(RID p_material, const StringName& p_par
 	else
 		material->shader_params[p_param]=p_value;
 }
-Variant RasterizerGLES1::material_get_param(RID p_material, const StringName& p_param) const {
+Variant RasterizerGL11::material_get_param(RID p_material, const StringName& p_param) const {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND_V(!material,Variant());
@@ -868,7 +868,7 @@ Variant RasterizerGLES1::material_get_param(RID p_material, const StringName& p_
 }
 
 
-void RasterizerGLES1::material_set_flag(RID p_material, VS::MaterialFlag p_flag,bool p_enabled) {
+void RasterizerGL11::material_set_flag(RID p_material, VS::MaterialFlag p_flag,bool p_enabled) {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND(!material);
@@ -876,7 +876,7 @@ void RasterizerGLES1::material_set_flag(RID p_material, VS::MaterialFlag p_flag,
 	material->flags[p_flag]=p_enabled;
 
 }
-bool RasterizerGLES1::material_get_flag(RID p_material,VS::MaterialFlag p_flag) const {
+bool RasterizerGL11::material_get_flag(RID p_material,VS::MaterialFlag p_flag) const {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND_V(!material,false);
@@ -886,14 +886,14 @@ bool RasterizerGLES1::material_get_flag(RID p_material,VS::MaterialFlag p_flag) 
 
 }
 
-void RasterizerGLES1::material_set_depth_draw_mode(RID p_material, VS::MaterialDepthDrawMode p_mode) {
+void RasterizerGL11::material_set_depth_draw_mode(RID p_material, VS::MaterialDepthDrawMode p_mode) {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND(!material);
 	material->depth_draw_mode=p_mode;
 }
 
-VS::MaterialDepthDrawMode RasterizerGLES1::material_get_depth_draw_mode(RID p_material) const{
+VS::MaterialDepthDrawMode RasterizerGL11::material_get_depth_draw_mode(RID p_material) const{
 
 
 	Material *material = material_owner.get(p_material);
@@ -902,28 +902,28 @@ VS::MaterialDepthDrawMode RasterizerGLES1::material_get_depth_draw_mode(RID p_ma
 }
 
 
-void RasterizerGLES1::material_set_blend_mode(RID p_material,VS::MaterialBlendMode p_mode) {
+void RasterizerGL11::material_set_blend_mode(RID p_material,VS::MaterialBlendMode p_mode) {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND(!material);
 	material->blend_mode=p_mode;
 
 }
-VS::MaterialBlendMode RasterizerGLES1::material_get_blend_mode(RID p_material) const {
+VS::MaterialBlendMode RasterizerGL11::material_get_blend_mode(RID p_material) const {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND_V(!material,VS::MATERIAL_BLEND_MODE_ADD);
 	return material->blend_mode;
 }
 
-void RasterizerGLES1::material_set_line_width(RID p_material,float p_line_width) {
+void RasterizerGL11::material_set_line_width(RID p_material,float p_line_width) {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND(!material);
 	material->line_width=p_line_width;
 
 }
-float RasterizerGLES1::material_get_line_width(RID p_material) const {
+float RasterizerGL11::material_get_line_width(RID p_material) const {
 
 	Material *material = material_owner.get(p_material);
 	ERR_FAIL_COND_V(!material,0);
@@ -934,20 +934,20 @@ float RasterizerGLES1::material_get_line_width(RID p_material) const {
 /* FIXED MATERIAL */
 
 
-RID RasterizerGLES1::fixed_material_create() {
+RID RasterizerGL11::fixed_material_create() {
 
 	return material_create();
 }
 
-void RasterizerGLES1::fixed_material_set_flag(RID p_material, VS::FixedMaterialFlags p_flag, bool p_enabled) {
+void RasterizerGL11::fixed_material_set_flag(RID p_material, VS::FixedMaterialFlags p_flag, bool p_enabled) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
-	ERR_FAIL_INDEX(p_flag, 3);
+	ERR_FAIL_INDEX(p_flag, VS::FIXED_MATERIAL_FLAG_MAX);
 	m->fixed_flags[p_flag]=p_enabled;
 }
 
-bool RasterizerGLES1::fixed_material_get_flag(RID p_material, VS::FixedMaterialFlags p_flag) const {
+bool RasterizerGL11::fixed_material_get_flag(RID p_material, VS::FixedMaterialFlags p_flag) const {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND_V(!m,false);
@@ -955,7 +955,7 @@ bool RasterizerGLES1::fixed_material_get_flag(RID p_material, VS::FixedMaterialF
 	return m->fixed_flags[p_flag];
 }
 
-void RasterizerGLES1::fixed_material_set_parameter(RID p_material, VS::FixedMaterialParam p_parameter, const Variant& p_value) {
+void RasterizerGL11::fixed_material_set_parameter(RID p_material, VS::FixedMaterialParam p_parameter, const Variant& p_value) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
@@ -965,7 +965,7 @@ void RasterizerGLES1::fixed_material_set_parameter(RID p_material, VS::FixedMate
 
 }
 
-Variant RasterizerGLES1::fixed_material_get_parameter(RID p_material,VS::FixedMaterialParam p_parameter) const {
+Variant RasterizerGL11::fixed_material_get_parameter(RID p_material,VS::FixedMaterialParam p_parameter) const {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND_V(!m, Variant());
@@ -974,7 +974,7 @@ Variant RasterizerGLES1::fixed_material_get_parameter(RID p_material,VS::FixedMa
 	return m->parameters[p_parameter];
 }
 
-void RasterizerGLES1::fixed_material_set_texture(RID p_material,VS::FixedMaterialParam p_parameter, RID p_texture) {
+void RasterizerGL11::fixed_material_set_texture(RID p_material,VS::FixedMaterialParam p_parameter, RID p_texture) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
@@ -983,7 +983,7 @@ void RasterizerGLES1::fixed_material_set_texture(RID p_material,VS::FixedMateria
 	m->textures[p_parameter] = p_texture;
 
 }
-RID RasterizerGLES1::fixed_material_get_texture(RID p_material,VS::FixedMaterialParam p_parameter) const {
+RID RasterizerGL11::fixed_material_get_texture(RID p_material,VS::FixedMaterialParam p_parameter) const {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND_V(!m, RID());
@@ -993,7 +993,7 @@ RID RasterizerGLES1::fixed_material_get_texture(RID p_material,VS::FixedMaterial
 }
 
 
-void RasterizerGLES1::fixed_material_set_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter, VS::FixedMaterialTexCoordMode p_mode) {
+void RasterizerGL11::fixed_material_set_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter, VS::FixedMaterialTexCoordMode p_mode) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
@@ -1003,7 +1003,7 @@ void RasterizerGLES1::fixed_material_set_texcoord_mode(RID p_material,VS::FixedM
 	m->texcoord_mode[p_parameter] = p_mode;
 }
 
-VS::FixedMaterialTexCoordMode RasterizerGLES1::fixed_material_get_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter) const {
+VS::FixedMaterialTexCoordMode RasterizerGL11::fixed_material_get_texcoord_mode(RID p_material,VS::FixedMaterialParam p_parameter) const {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND_V(!m, VS::FIXED_MATERIAL_TEXCOORD_UV);
@@ -1012,7 +1012,7 @@ VS::FixedMaterialTexCoordMode RasterizerGLES1::fixed_material_get_texcoord_mode(
 	return m->texcoord_mode[p_parameter]; // for now
 }
 
-void RasterizerGLES1::fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform) {
+void RasterizerGL11::fixed_material_set_uv_transform(RID p_material,const Transform3D& p_transform) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
@@ -1020,7 +1020,7 @@ void RasterizerGLES1::fixed_material_set_uv_transform(RID p_material,const Trans
 	m->uv_transform = p_transform;
 }
 
-Transform3D RasterizerGLES1::fixed_material_get_uv_transform(RID p_material) const {
+Transform3D RasterizerGL11::fixed_material_get_uv_transform(RID p_material) const {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND_V(!m, Transform3D());
@@ -1028,14 +1028,14 @@ Transform3D RasterizerGLES1::fixed_material_get_uv_transform(RID p_material) con
 	return m->uv_transform;
 }
 
-void RasterizerGLES1::fixed_material_set_point_size(RID p_material,float p_size) {
+void RasterizerGL11::fixed_material_set_point_size(RID p_material,float p_size) {
 
 	Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND(!m);
 	m->point_size=p_size;
 
 }
-float RasterizerGLES1::fixed_material_get_point_size(RID p_material) const {
+float RasterizerGL11::fixed_material_get_point_size(RID p_material) const {
 
 	const Material *m=material_owner.get( p_material );
 	ERR_FAIL_COND_V(!m, 0);
@@ -1046,7 +1046,7 @@ float RasterizerGLES1::fixed_material_get_point_size(RID p_material) const {
 /* MESH API */
 
 
-RID RasterizerGLES1::mesh_create() {
+RID RasterizerGL11::mesh_create() {
 
 
 	return mesh_owner.make_rid( memnew( Mesh ) );
@@ -1054,7 +1054,7 @@ RID RasterizerGLES1::mesh_create() {
 
 
 
-void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,const Array& p_arrays,const Array& p_blend_shapes,bool p_alpha_sort) {
+void RasterizerGL11::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,const Array& p_arrays,const Array& p_blend_shapes,bool p_alpha_sort) {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND(!mesh);
@@ -1287,7 +1287,7 @@ void RasterizerGLES1::mesh_add_surface(RID p_mesh,VS::PrimitiveType p_primitive,
 
 }
 
-Error RasterizerGLES1::_surface_set_arrays(Surface *p_surface, uint8_t *p_mem,uint8_t *p_index_mem,const Array& p_arrays,bool p_main) {
+Error RasterizerGL11::_surface_set_arrays(Surface *p_surface, uint8_t *p_mem,uint8_t *p_index_mem,const Array& p_arrays,bool p_main) {
 
 	uint32_t stride = p_main ? p_surface->stride : p_surface->local_stride;
 
@@ -1538,13 +1538,13 @@ Error RasterizerGLES1::_surface_set_arrays(Surface *p_surface, uint8_t *p_mem,ui
 
 
 
-void RasterizerGLES1::mesh_add_custom_surface(RID p_mesh,const Variant& p_dat) {
+void RasterizerGL11::mesh_add_custom_surface(RID p_mesh,const Variant& p_dat) {
 
 	ERR_EXPLAIN("OpenGL Rasterizer does not support custom surfaces. Running on wrong platform?");
 	ERR_FAIL_V();
 }
 
-Array RasterizerGLES1::mesh_get_surface_arrays(RID p_mesh,int p_surface) const {
+Array RasterizerGL11::mesh_get_surface_arrays(RID p_mesh,int p_surface) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,Array());
@@ -1556,7 +1556,7 @@ Array RasterizerGLES1::mesh_get_surface_arrays(RID p_mesh,int p_surface) const {
 
 
 }
-Array RasterizerGLES1::mesh_get_surface_morph_arrays(RID p_mesh,int p_surface) const{
+Array RasterizerGL11::mesh_get_surface_morph_arrays(RID p_mesh,int p_surface) const{
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,Array());
@@ -1569,7 +1569,7 @@ Array RasterizerGLES1::mesh_get_surface_morph_arrays(RID p_mesh,int p_surface) c
 }
 
 
-void RasterizerGLES1::mesh_set_morph_target_count(RID p_mesh,int p_amount) {
+void RasterizerGL11::mesh_set_morph_target_count(RID p_mesh,int p_amount) {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND(!mesh);
@@ -1579,7 +1579,7 @@ void RasterizerGLES1::mesh_set_morph_target_count(RID p_mesh,int p_amount) {
 
 }
 
-int RasterizerGLES1::mesh_get_morph_target_count(RID p_mesh) const{
+int RasterizerGL11::mesh_get_morph_target_count(RID p_mesh) const{
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,-1);
@@ -1588,7 +1588,7 @@ int RasterizerGLES1::mesh_get_morph_target_count(RID p_mesh) const{
 
 }
 
-void RasterizerGLES1::mesh_set_morph_target_mode(RID p_mesh,VS::MorphTargetMode p_mode) {
+void RasterizerGL11::mesh_set_morph_target_mode(RID p_mesh,VS::MorphTargetMode p_mode) {
 
 	ERR_FAIL_INDEX(p_mode,2);
 	Mesh *mesh = mesh_owner.get( p_mesh );
@@ -1598,7 +1598,7 @@ void RasterizerGLES1::mesh_set_morph_target_mode(RID p_mesh,VS::MorphTargetMode 
 
 }
 
-VS::MorphTargetMode RasterizerGLES1::mesh_get_morph_target_mode(RID p_mesh) const {
+VS::MorphTargetMode RasterizerGL11::mesh_get_morph_target_mode(RID p_mesh) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,VS::MORPH_MODE_NORMALIZED);
@@ -1609,7 +1609,7 @@ VS::MorphTargetMode RasterizerGLES1::mesh_get_morph_target_mode(RID p_mesh) cons
 
 
 
-void RasterizerGLES1::mesh_surface_set_material(RID p_mesh, int p_surface, RID p_material,bool p_owned) {
+void RasterizerGL11::mesh_surface_set_material(RID p_mesh, int p_surface, RID p_material,bool p_owned) {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND(!mesh);
@@ -1625,7 +1625,7 @@ void RasterizerGLES1::mesh_surface_set_material(RID p_mesh, int p_surface, RID p
 	surface->material=p_material;
 }
 
-RID RasterizerGLES1::mesh_surface_get_material(RID p_mesh, int p_surface) const {
+RID RasterizerGL11::mesh_surface_get_material(RID p_mesh, int p_surface) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,RID());
@@ -1636,7 +1636,7 @@ RID RasterizerGLES1::mesh_surface_get_material(RID p_mesh, int p_surface) const 
 	return surface->material;
 }
 
-int RasterizerGLES1::mesh_surface_get_array_len(RID p_mesh, int p_surface) const {
+int RasterizerGL11::mesh_surface_get_array_len(RID p_mesh, int p_surface) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,-1);
@@ -1646,7 +1646,7 @@ int RasterizerGLES1::mesh_surface_get_array_len(RID p_mesh, int p_surface) const
 
 	return surface->array_len;
 }
-int RasterizerGLES1::mesh_surface_get_array_index_len(RID p_mesh, int p_surface) const {
+int RasterizerGL11::mesh_surface_get_array_index_len(RID p_mesh, int p_surface) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,-1);
@@ -1656,7 +1656,7 @@ int RasterizerGLES1::mesh_surface_get_array_index_len(RID p_mesh, int p_surface)
 
 	return surface->index_array_len;
 }
-uint32_t RasterizerGLES1::mesh_surface_get_format(RID p_mesh, int p_surface) const {
+uint32_t RasterizerGL11::mesh_surface_get_format(RID p_mesh, int p_surface) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,0);
@@ -1666,7 +1666,7 @@ uint32_t RasterizerGLES1::mesh_surface_get_format(RID p_mesh, int p_surface) con
 
 	return surface->format;
 }
-VS::PrimitiveType RasterizerGLES1::mesh_surface_get_primitive_type(RID p_mesh, int p_surface) const {
+VS::PrimitiveType RasterizerGL11::mesh_surface_get_primitive_type(RID p_mesh, int p_surface) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,VS::PRIMITIVE_POINTS);
@@ -1677,7 +1677,7 @@ VS::PrimitiveType RasterizerGLES1::mesh_surface_get_primitive_type(RID p_mesh, i
 	return surface->primitive;
 }
 
-void RasterizerGLES1::mesh_remove_surface(RID p_mesh,int p_index) {
+void RasterizerGL11::mesh_remove_surface(RID p_mesh,int p_index) {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND(!mesh);
@@ -1695,7 +1695,7 @@ void RasterizerGLES1::mesh_remove_surface(RID p_mesh,int p_index) {
 	mesh->surfaces.remove(p_index);
 
 }
-int RasterizerGLES1::mesh_get_surface_count(RID p_mesh) const {
+int RasterizerGL11::mesh_get_surface_count(RID p_mesh) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,-1);
@@ -1703,7 +1703,7 @@ int RasterizerGLES1::mesh_get_surface_count(RID p_mesh) const {
 	return mesh->surfaces.size();
 }
 
-AABB RasterizerGLES1::mesh_get_aabb(RID p_mesh,RID p_skeleton) const {
+AABB RasterizerGL11::mesh_get_aabb(RID p_mesh,RID p_skeleton) const {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,AABB());
@@ -1724,7 +1724,7 @@ AABB RasterizerGLES1::mesh_get_aabb(RID p_mesh,RID p_skeleton) const {
 	return aabb;
 }
 
-void RasterizerGLES1::mesh_set_custom_aabb(RID p_mesh,const AABB& p_aabb) {
+void RasterizerGL11::mesh_set_custom_aabb(RID p_mesh,const AABB& p_aabb) {
 
 	Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND(!mesh);
@@ -1733,7 +1733,7 @@ void RasterizerGLES1::mesh_set_custom_aabb(RID p_mesh,const AABB& p_aabb) {
 
 }
 
-AABB RasterizerGLES1::mesh_get_custom_aabb(RID p_mesh) const {
+AABB RasterizerGL11::mesh_get_custom_aabb(RID p_mesh) const {
 
 	const Mesh *mesh = mesh_owner.get( p_mesh );
 	ERR_FAIL_COND_V(!mesh,AABB());
@@ -1744,12 +1744,12 @@ AABB RasterizerGLES1::mesh_get_custom_aabb(RID p_mesh) const {
 
 /* MULTIMESH API */
 
-RID RasterizerGLES1::multimesh_create() {
+RID RasterizerGL11::multimesh_create() {
 
 	return multimesh_owner.make_rid( memnew( MultiMesh ));
 }
 
-void RasterizerGLES1::multimesh_set_instance_count(RID p_multimesh,int p_count) {
+void RasterizerGL11::multimesh_set_instance_count(RID p_multimesh,int p_count) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -1800,7 +1800,7 @@ void RasterizerGLES1::multimesh_set_instance_count(RID p_multimesh,int p_count) 
 	multimesh->elements.resize(p_count);
 
 }
-int RasterizerGLES1::multimesh_get_instance_count(RID p_multimesh) const {
+int RasterizerGL11::multimesh_get_instance_count(RID p_multimesh) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND_V(!multimesh,-1);
@@ -1808,7 +1808,7 @@ int RasterizerGLES1::multimesh_get_instance_count(RID p_multimesh) const {
 	return multimesh->elements.size();
 }
 
-void RasterizerGLES1::multimesh_set_mesh(RID p_multimesh,RID p_mesh) {
+void RasterizerGL11::multimesh_set_mesh(RID p_multimesh,RID p_mesh) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -1816,13 +1816,13 @@ void RasterizerGLES1::multimesh_set_mesh(RID p_multimesh,RID p_mesh) {
 	multimesh->mesh=p_mesh;
 
 }
-void RasterizerGLES1::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
+void RasterizerGL11::multimesh_set_aabb(RID p_multimesh,const AABB& p_aabb) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
 	multimesh->aabb=p_aabb;
 }
-void RasterizerGLES1::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
+void RasterizerGL11::multimesh_instance_set_transform(RID p_multimesh,int p_index,const Transform3D& p_transform) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -1847,7 +1847,7 @@ void RasterizerGLES1::multimesh_instance_set_transform(RID p_multimesh,int p_ind
 	e.matrix[15]=1;
 
 }
-void RasterizerGLES1::multimesh_instance_set_color(RID p_multimesh,int p_index,const Color& p_color) {
+void RasterizerGL11::multimesh_instance_set_color(RID p_multimesh,int p_index,const Color& p_color) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh)
@@ -1861,14 +1861,14 @@ void RasterizerGLES1::multimesh_instance_set_color(RID p_multimesh,int p_index,c
 
 }
 
-RID RasterizerGLES1::multimesh_get_mesh(RID p_multimesh) const {
+RID RasterizerGL11::multimesh_get_mesh(RID p_multimesh) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND_V(!multimesh,RID());
 
 	return multimesh->mesh;
 }
-AABB RasterizerGLES1::multimesh_get_aabb(RID p_multimesh) const {
+AABB RasterizerGL11::multimesh_get_aabb(RID p_multimesh) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND_V(!multimesh,AABB());
@@ -1876,7 +1876,7 @@ AABB RasterizerGLES1::multimesh_get_aabb(RID p_multimesh) const {
 	return multimesh->aabb;
 }
 
-Transform3D RasterizerGLES1::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
+Transform3D RasterizerGL11::multimesh_instance_get_transform(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND_V(!multimesh,Transform3D());
@@ -1901,7 +1901,7 @@ Transform3D RasterizerGLES1::multimesh_instance_get_transform(RID p_multimesh,in
 
 	return tr;
 }
-Color RasterizerGLES1::multimesh_instance_get_color(RID p_multimesh,int p_index) const {
+Color RasterizerGL11::multimesh_instance_get_color(RID p_multimesh,int p_index) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND_V(!multimesh,Color());
@@ -1917,7 +1917,7 @@ Color RasterizerGLES1::multimesh_instance_get_color(RID p_multimesh,int p_index)
 
 }
 
-void RasterizerGLES1::multimesh_set_visible_instances(RID p_multimesh,int p_visible) {
+void RasterizerGL11::multimesh_set_visible_instances(RID p_multimesh,int p_visible) {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -1925,7 +1925,7 @@ void RasterizerGLES1::multimesh_set_visible_instances(RID p_multimesh,int p_visi
 
 }
 
-int RasterizerGLES1::multimesh_get_visible_instances(RID p_multimesh) const {
+int RasterizerGL11::multimesh_get_visible_instances(RID p_multimesh) const {
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND_V(!multimesh,-1);
@@ -1936,64 +1936,143 @@ int RasterizerGLES1::multimesh_get_visible_instances(RID p_multimesh) const {
 /* IMMEDIATE API */
 
 
-RID RasterizerGLES1::immediate_create() {
+RID RasterizerGL11::immediate_create() {
 
 	Immediate *im = memnew( Immediate );
 	return immediate_owner.make_rid(im);
 
 }
 
-void RasterizerGLES1::immediate_begin(RID p_immediate, VS::PrimitiveType p_rimitive, RID p_texture){
+void RasterizerGL11::immediate_begin(RID p_immediate, VS::PrimitiveType p_rimitive, RID p_texture){
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(im->building);
+
+	Immediate::Chunk ic;
+	ic.texture=p_texture;
+	ic.primitive=p_rimitive;
+	im->chunks.push_back(ic);
+	im->mask=0;
+	im->building=true;
 
 
 }
-void RasterizerGLES1::immediate_vertex(RID p_immediate,const Vector3& p_vertex){
+void RasterizerGL11::immediate_vertex(RID p_immediate,const Vector3& p_vertex){
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	Immediate::Chunk *c = &im->chunks.back()->get();
 
 
-}
-void RasterizerGLES1::immediate_normal(RID p_immediate,const Vector3& p_normal){
+	if (c->vertices.empty() && im->chunks.size()==1) {
 
+		im->aabb.pos=p_vertex;
+		im->aabb.size=Vector3();
+	} else {
+		im->aabb.expand_to(p_vertex);
+	}
 
-}
-void RasterizerGLES1::immediate_tangent(RID p_immediate,const Plane& p_tangent){
-
-
-}
-void RasterizerGLES1::immediate_color(RID p_immediate,const Color& p_color){
-
-
-}
-void RasterizerGLES1::immediate_uv(RID p_immediate,const Vector2& tex_uv){
-
-
-}
-void RasterizerGLES1::immediate_uv2(RID p_immediate,const Vector2& tex_uv){
-
-
-}
-
-void RasterizerGLES1::immediate_end(RID p_immediate){
-
-
-}
-void RasterizerGLES1::immediate_clear(RID p_immediate) {
-
+	if (im->mask&VS::ARRAY_FORMAT_NORMAL)
+		c->normals.push_back(chunk_normal);
+	if (im->mask&VS::ARRAY_FORMAT_TANGENT)
+		c->tangents.push_back(chunk_tangent);
+	if (im->mask&VS::ARRAY_FORMAT_COLOR)
+		c->colors.push_back(chunk_color);
+	if (im->mask&VS::ARRAY_FORMAT_TEX_UV)
+		c->uvs.push_back(chunk_uv);
+	if (im->mask&VS::ARRAY_FORMAT_TEX_UV2)
+		c->uvs2.push_back(chunk_uv2);
+	im->mask|=VS::ARRAY_FORMAT_VERTEX;
+	c->vertices.push_back(p_vertex);
 
 }
+void RasterizerGL11::immediate_normal(RID p_immediate,const Vector3& p_normal){
 
-AABB RasterizerGLES1::immediate_get_aabb(RID p_immediate) const {
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
 
-	return AABB(Vector3(-1,-1,-1),Vector3(2,2,2));
+	im->mask|=VS::ARRAY_FORMAT_NORMAL;
+	chunk_normal=p_normal;
+
+}
+void RasterizerGL11::immediate_tangent(RID p_immediate,const Plane& p_tangent){
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_TANGENT;
+	chunk_tangent=p_tangent;
+
+}
+void RasterizerGL11::immediate_color(RID p_immediate,const Color& p_color){
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_COLOR;
+	chunk_color=p_color;
+
+}
+void RasterizerGL11::immediate_uv(RID p_immediate,const Vector2& tex_uv){
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_TEX_UV;
+	chunk_uv=tex_uv;
+
+}
+void RasterizerGL11::immediate_uv2(RID p_immediate,const Vector2& tex_uv){
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->mask|=VS::ARRAY_FORMAT_TEX_UV2;
+	chunk_uv2=tex_uv;
+
 }
 
-void RasterizerGLES1::immediate_set_material(RID p_immediate,RID p_material) {
+void RasterizerGL11::immediate_end(RID p_immediate){
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(!im->building);
+
+	im->building=false;
+
+}
+void RasterizerGL11::immediate_clear(RID p_immediate) {
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!im);
+	ERR_FAIL_COND(im->building);
+
+	im->chunks.clear();
+}
+
+AABB RasterizerGL11::immediate_get_aabb(RID p_immediate) const {
+
+	Immediate *im = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND_V(!im,AABB());
+	return im->aabb;
+}
+
+void RasterizerGL11::immediate_set_material(RID p_immediate,RID p_material) {
 
 	Immediate *im = immediate_owner.get(p_immediate);
 	ERR_FAIL_COND(!im);
 	im->material=p_material;
 }
 
-RID RasterizerGLES1::immediate_get_material(RID p_immediate) const {
+RID RasterizerGL11::immediate_get_material(RID p_immediate) const {
 
 	const Immediate *im = immediate_owner.get(p_immediate);
 	ERR_FAIL_COND_V(!im,RID());
@@ -2004,14 +2083,14 @@ RID RasterizerGLES1::immediate_get_material(RID p_immediate) const {
 
 /* PARTICLES API */
 
-RID RasterizerGLES1::particles_create() {
+RID RasterizerGL11::particles_create() {
 
 	Particles *particles = memnew( Particles );
 	ERR_FAIL_COND_V(!particles,RID());
 	return particles_owner.make_rid(particles);
 }
 
-void RasterizerGLES1::particles_set_amount(RID p_particles, int p_amount) {
+void RasterizerGL11::particles_set_amount(RID p_particles, int p_amount) {
 
 	ERR_FAIL_COND(p_amount<1);
 	Particles* particles = particles_owner.get( p_particles );
@@ -2020,7 +2099,7 @@ void RasterizerGLES1::particles_set_amount(RID p_particles, int p_amount) {
 
 }
 
-int RasterizerGLES1::particles_get_amount(RID p_particles) const {
+int RasterizerGL11::particles_get_amount(RID p_particles) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
@@ -2028,14 +2107,14 @@ int RasterizerGLES1::particles_get_amount(RID p_particles) const {
 
 }
 
-void RasterizerGLES1::particles_set_emitting(RID p_particles, bool p_emitting) {
+void RasterizerGL11::particles_set_emitting(RID p_particles, bool p_emitting) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.emitting=p_emitting;;
 
 }
-bool RasterizerGLES1::particles_is_emitting(RID p_particles) const {
+bool RasterizerGL11::particles_is_emitting(RID p_particles) const {
 
 	const Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
@@ -2043,7 +2122,7 @@ bool RasterizerGLES1::particles_is_emitting(RID p_particles) const {
 
 }
 
-void RasterizerGLES1::particles_set_visibility_aabb(RID p_particles, const AABB& p_visibility) {
+void RasterizerGL11::particles_set_visibility_aabb(RID p_particles, const AABB& p_visibility) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2051,14 +2130,14 @@ void RasterizerGLES1::particles_set_visibility_aabb(RID p_particles, const AABB&
 
 }
 
-void RasterizerGLES1::particles_set_emission_half_extents(RID p_particles, const Vector3& p_half_extents) {
+void RasterizerGL11::particles_set_emission_half_extents(RID p_particles, const Vector3& p_half_extents) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 
 	particles->data.emission_half_extents=p_half_extents;
 }
-Vector3 RasterizerGLES1::particles_get_emission_half_extents(RID p_particles) const {
+Vector3 RasterizerGL11::particles_get_emission_half_extents(RID p_particles) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
@@ -2066,7 +2145,7 @@ Vector3 RasterizerGLES1::particles_get_emission_half_extents(RID p_particles) co
 	return particles->data.emission_half_extents;
 }
 
-void RasterizerGLES1::particles_set_emission_base_velocity(RID p_particles, const Vector3& p_base_velocity) {
+void RasterizerGL11::particles_set_emission_base_velocity(RID p_particles, const Vector3& p_base_velocity) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2074,7 +2153,7 @@ void RasterizerGLES1::particles_set_emission_base_velocity(RID p_particles, cons
 	particles->data.emission_base_velocity=p_base_velocity;
 }
 
-Vector3 RasterizerGLES1::particles_get_emission_base_velocity(RID p_particles) const {
+Vector3 RasterizerGL11::particles_get_emission_base_velocity(RID p_particles) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
@@ -2083,7 +2162,7 @@ Vector3 RasterizerGLES1::particles_get_emission_base_velocity(RID p_particles) c
 }
 
 
-void RasterizerGLES1::particles_set_emission_points(RID p_particles, const DVector<Vector3>& p_points) {
+void RasterizerGL11::particles_set_emission_points(RID p_particles, const DVector<Vector3>& p_points) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2091,7 +2170,7 @@ void RasterizerGLES1::particles_set_emission_points(RID p_particles, const DVect
 	particles->data.emission_points=p_points;
 }
 
-DVector<Vector3> RasterizerGLES1::particles_get_emission_points(RID p_particles) const {
+DVector<Vector3> RasterizerGL11::particles_get_emission_points(RID p_particles) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,DVector<Vector3>());
@@ -2100,7 +2179,7 @@ DVector<Vector3> RasterizerGLES1::particles_get_emission_points(RID p_particles)
 
 }
 
-void RasterizerGLES1::particles_set_gravity_normal(RID p_particles, const Vector3& p_normal) {
+void RasterizerGL11::particles_set_gravity_normal(RID p_particles, const Vector3& p_normal) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2108,7 +2187,7 @@ void RasterizerGLES1::particles_set_gravity_normal(RID p_particles, const Vector
 	particles->data.gravity_normal=p_normal;
 
 }
-Vector3 RasterizerGLES1::particles_get_gravity_normal(RID p_particles) const {
+Vector3 RasterizerGL11::particles_get_gravity_normal(RID p_particles) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
@@ -2117,7 +2196,7 @@ Vector3 RasterizerGLES1::particles_get_gravity_normal(RID p_particles) const {
 }
 
 
-AABB RasterizerGLES1::particles_get_visibility_aabb(RID p_particles) const {
+AABB RasterizerGL11::particles_get_visibility_aabb(RID p_particles) const {
 
 	const Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,AABB());
@@ -2125,7 +2204,7 @@ AABB RasterizerGLES1::particles_get_visibility_aabb(RID p_particles) const {
 
 }
 
-void RasterizerGLES1::particles_set_variable(RID p_particles, VS::ParticleVariable p_variable,float p_value) {
+void RasterizerGL11::particles_set_variable(RID p_particles, VS::ParticleVariable p_variable,float p_value) {
 
 	ERR_FAIL_INDEX(p_variable,VS::PARTICLE_VAR_MAX);
 
@@ -2134,21 +2213,21 @@ void RasterizerGLES1::particles_set_variable(RID p_particles, VS::ParticleVariab
 	particles->data.particle_vars[p_variable]=p_value;
 
 }
-float RasterizerGLES1::particles_get_variable(RID p_particles, VS::ParticleVariable p_variable) const {
+float RasterizerGL11::particles_get_variable(RID p_particles, VS::ParticleVariable p_variable) const {
 
 	const Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.particle_vars[p_variable];
 }
 
-void RasterizerGLES1::particles_set_randomness(RID p_particles, VS::ParticleVariable p_variable,float p_randomness) {
+void RasterizerGL11::particles_set_randomness(RID p_particles, VS::ParticleVariable p_variable,float p_randomness) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	particles->data.particle_randomness[p_variable]=p_randomness;
 
 }
-float RasterizerGLES1::particles_get_randomness(RID p_particles, VS::ParticleVariable p_variable) const {
+float RasterizerGL11::particles_get_randomness(RID p_particles, VS::ParticleVariable p_variable) const {
 
 	const Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
@@ -2156,7 +2235,7 @@ float RasterizerGLES1::particles_get_randomness(RID p_particles, VS::ParticleVar
 
 }
 
-void RasterizerGLES1::particles_set_color_phases(RID p_particles, int p_phases) {
+void RasterizerGL11::particles_set_color_phases(RID p_particles, int p_phases) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2164,7 +2243,7 @@ void RasterizerGLES1::particles_set_color_phases(RID p_particles, int p_phases) 
 	particles->data.color_phase_count=p_phases;
 
 }
-int RasterizerGLES1::particles_get_color_phases(RID p_particles) const {
+int RasterizerGL11::particles_get_color_phases(RID p_particles) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
@@ -2172,7 +2251,7 @@ int RasterizerGLES1::particles_get_color_phases(RID p_particles) const {
 }
 
 
-void RasterizerGLES1::particles_set_color_phase_pos(RID p_particles, int p_phase, float p_pos) {
+void RasterizerGL11::particles_set_color_phase_pos(RID p_particles, int p_phase, float p_pos) {
 
 	ERR_FAIL_INDEX(p_phase, VS::MAX_PARTICLE_COLOR_PHASES);
 	if (p_pos<0.0)
@@ -2185,7 +2264,7 @@ void RasterizerGLES1::particles_set_color_phase_pos(RID p_particles, int p_phase
 	particles->data.color_phases[p_phase].pos=p_pos;
 
 }
-float RasterizerGLES1::particles_get_color_phase_pos(RID p_particles, int p_phase) const {
+float RasterizerGL11::particles_get_color_phase_pos(RID p_particles, int p_phase) const {
 
 	ERR_FAIL_INDEX_V(p_phase, VS::MAX_PARTICLE_COLOR_PHASES, -1.0);
 
@@ -2195,7 +2274,7 @@ float RasterizerGLES1::particles_get_color_phase_pos(RID p_particles, int p_phas
 
 }
 
-void RasterizerGLES1::particles_set_color_phase_color(RID p_particles, int p_phase, const Color& p_color) {
+void RasterizerGL11::particles_set_color_phase_color(RID p_particles, int p_phase, const Color& p_color) {
 
 	ERR_FAIL_INDEX(p_phase, VS::MAX_PARTICLE_COLOR_PHASES);
 	Particles* particles = particles_owner.get( p_particles );
@@ -2211,7 +2290,7 @@ void RasterizerGLES1::particles_set_color_phase_color(RID p_particles, int p_pha
 
 }
 
-Color RasterizerGLES1::particles_get_color_phase_color(RID p_particles, int p_phase) const {
+Color RasterizerGL11::particles_get_color_phase_color(RID p_particles, int p_phase) const {
 
 	ERR_FAIL_INDEX_V(p_phase, VS::MAX_PARTICLE_COLOR_PHASES, Color());
 
@@ -2221,7 +2300,7 @@ Color RasterizerGLES1::particles_get_color_phase_color(RID p_particles, int p_ph
 
 }
 
-void RasterizerGLES1::particles_set_attractors(RID p_particles, int p_attractors) {
+void RasterizerGL11::particles_set_attractors(RID p_particles, int p_attractors) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2229,21 +2308,21 @@ void RasterizerGLES1::particles_set_attractors(RID p_particles, int p_attractors
 	particles->data.attractor_count=p_attractors;
 
 }
-int RasterizerGLES1::particles_get_attractors(RID p_particles) const {
+int RasterizerGL11::particles_get_attractors(RID p_particles) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,-1);
 	return particles->data.attractor_count;
 }
 
-void RasterizerGLES1::particles_set_attractor_pos(RID p_particles, int p_attractor, const Vector3& p_pos) {
+void RasterizerGL11::particles_set_attractor_pos(RID p_particles, int p_attractor, const Vector3& p_pos) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
 	ERR_FAIL_INDEX(p_attractor,particles->data.attractor_count);
 	particles->data.attractors[p_attractor].pos=p_pos;;
 }
-Vector3 RasterizerGLES1::particles_get_attractor_pos(RID p_particles,int p_attractor) const {
+Vector3 RasterizerGL11::particles_get_attractor_pos(RID p_particles,int p_attractor) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,Vector3());
@@ -2251,7 +2330,7 @@ Vector3 RasterizerGLES1::particles_get_attractor_pos(RID p_particles,int p_attra
 	return particles->data.attractors[p_attractor].pos;
 }
 
-void RasterizerGLES1::particles_set_attractor_strength(RID p_particles, int p_attractor, float p_force) {
+void RasterizerGL11::particles_set_attractor_strength(RID p_particles, int p_attractor, float p_force) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2259,7 +2338,7 @@ void RasterizerGLES1::particles_set_attractor_strength(RID p_particles, int p_at
 	particles->data.attractors[p_attractor].force=p_force;
 }
 
-float RasterizerGLES1::particles_get_attractor_strength(RID p_particles,int p_attractor) const {
+float RasterizerGL11::particles_get_attractor_strength(RID p_particles,int p_attractor) const {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,0);
@@ -2267,7 +2346,7 @@ float RasterizerGLES1::particles_get_attractor_strength(RID p_particles,int p_at
 	return particles->data.attractors[p_attractor].force;
 }
 
-void RasterizerGLES1::particles_set_material(RID p_particles, RID p_material,bool p_owned) {
+void RasterizerGL11::particles_set_material(RID p_particles, RID p_material,bool p_owned) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2279,7 +2358,7 @@ void RasterizerGLES1::particles_set_material(RID p_particles, RID p_material,boo
 	particles->material=p_material;
 
 }
-RID RasterizerGLES1::particles_get_material(RID p_particles) const {
+RID RasterizerGL11::particles_get_material(RID p_particles) const {
 
 	const Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,RID());
@@ -2287,7 +2366,7 @@ RID RasterizerGLES1::particles_get_material(RID p_particles) const {
 
 }
 
-void RasterizerGLES1::particles_set_use_local_coordinates(RID p_particles, bool p_enable) {
+void RasterizerGL11::particles_set_use_local_coordinates(RID p_particles, bool p_enable) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2295,20 +2374,20 @@ void RasterizerGLES1::particles_set_use_local_coordinates(RID p_particles, bool 
 
 }
 
-bool RasterizerGLES1::particles_is_using_local_coordinates(RID p_particles) const {
+bool RasterizerGL11::particles_is_using_local_coordinates(RID p_particles) const {
 
 	const Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
 	return particles->data.local_coordinates;
 }
-bool RasterizerGLES1::particles_has_height_from_velocity(RID p_particles) const {
+bool RasterizerGL11::particles_has_height_from_velocity(RID p_particles) const {
 
 	const Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,false);
 	return particles->data.height_from_velocity;
 }
 
-void RasterizerGLES1::particles_set_height_from_velocity(RID p_particles, bool p_enable) {
+void RasterizerGL11::particles_set_height_from_velocity(RID p_particles, bool p_enable) {
 
 	Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND(!particles);
@@ -2316,7 +2395,7 @@ void RasterizerGLES1::particles_set_height_from_velocity(RID p_particles, bool p
 
 }
 
-AABB RasterizerGLES1::particles_get_aabb(RID p_particles) const {
+AABB RasterizerGL11::particles_get_aabb(RID p_particles) const {
 
 	const Particles* particles = particles_owner.get( p_particles );
 	ERR_FAIL_COND_V(!particles,AABB());
@@ -2325,13 +2404,13 @@ AABB RasterizerGLES1::particles_get_aabb(RID p_particles) const {
 
 /* SKELETON API */
 
-RID RasterizerGLES1::skeleton_create() {
+RID RasterizerGL11::skeleton_create() {
 
 	Skeleton *skeleton = memnew( Skeleton );
 	ERR_FAIL_COND_V(!skeleton,RID());
 	return skeleton_owner.make_rid( skeleton );
 }
-void RasterizerGLES1::skeleton_resize(RID p_skeleton,int p_bones) {
+void RasterizerGL11::skeleton_resize(RID p_skeleton,int p_bones) {
 
 	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
@@ -2342,13 +2421,13 @@ void RasterizerGLES1::skeleton_resize(RID p_skeleton,int p_bones) {
 	skeleton->bones.resize(p_bones);
 
 }
-int RasterizerGLES1::skeleton_get_bone_count(RID p_skeleton) const {
+int RasterizerGL11::skeleton_get_bone_count(RID p_skeleton) const {
 
 	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, -1);
 	return skeleton->bones.size();
 }
-void RasterizerGLES1::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
+void RasterizerGL11::skeleton_bone_set_transform(RID p_skeleton,int p_bone, const Transform3D& p_transform) {
 
 	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND(!skeleton);
@@ -2357,7 +2436,7 @@ void RasterizerGLES1::skeleton_bone_set_transform(RID p_skeleton,int p_bone, con
 	skeleton->bones[p_bone] = p_transform;
 }
 
-Transform3D RasterizerGLES1::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
+Transform3D RasterizerGL11::skeleton_bone_get_transform(RID p_skeleton,int p_bone) {
 
 	Skeleton *skeleton = skeleton_owner.get( p_skeleton );
 	ERR_FAIL_COND_V(!skeleton, Transform3D());
@@ -2370,28 +2449,28 @@ Transform3D RasterizerGLES1::skeleton_bone_get_transform(RID p_skeleton,int p_bo
 
 /* LIGHT API */
 
-RID RasterizerGLES1::light_create(VS::LightType p_type) {
+RID RasterizerGL11::light_create(VS::LightType p_type) {
 
 	Light *light = memnew( Light );
 	light->type=p_type;
 	return light_owner.make_rid(light);
 }
 
-VS::LightType RasterizerGLES1::light_get_type(RID p_light) const {
+VS::LightType RasterizerGL11::light_get_type(RID p_light) const {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND_V(!light,VS::LIGHT_OMNI);
 	return light->type;
 }
 
-void RasterizerGLES1::light_set_color(RID p_light,VS::LightColor p_type, const Color& p_color) {
+void RasterizerGL11::light_set_color(RID p_light,VS::LightColor p_type, const Color& p_color) {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND(!light);
 	ERR_FAIL_INDEX( p_type, 3 );
 	light->colors[p_type]=p_color;
 }
-Color RasterizerGLES1::light_get_color(RID p_light,VS::LightColor p_type) const {
+Color RasterizerGL11::light_get_color(RID p_light,VS::LightColor p_type) const {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND_V(!light, Color());
@@ -2399,48 +2478,48 @@ Color RasterizerGLES1::light_get_color(RID p_light,VS::LightColor p_type) const 
 	return light->colors[p_type];
 }
 
-void RasterizerGLES1::light_set_shadow(RID p_light,bool p_enabled) {
+void RasterizerGL11::light_set_shadow(RID p_light,bool p_enabled) {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND(!light);
 	light->shadow_enabled=p_enabled;
 }
 
-bool RasterizerGLES1::light_has_shadow(RID p_light) const {
+bool RasterizerGL11::light_has_shadow(RID p_light) const {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND_V(!light,false);
 	return light->shadow_enabled;
 }
 
-void RasterizerGLES1::light_set_volumetric(RID p_light,bool p_enabled) {
+void RasterizerGL11::light_set_volumetric(RID p_light,bool p_enabled) {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND(!light);
 	light->volumetric_enabled=p_enabled;
 
 }
-bool RasterizerGLES1::light_is_volumetric(RID p_light) const {
+bool RasterizerGL11::light_is_volumetric(RID p_light) const {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND_V(!light,false);
 	return light->volumetric_enabled;
 }
 
-void RasterizerGLES1::light_set_projector(RID p_light,RID p_texture) {
+void RasterizerGL11::light_set_projector(RID p_light,RID p_texture) {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND(!light);
 	light->projector=p_texture;
 }
-RID RasterizerGLES1::light_get_projector(RID p_light) const {
+RID RasterizerGL11::light_get_projector(RID p_light) const {
 
 	Light *light = light_owner.get(p_light);
 	ERR_FAIL_COND_V(!light,RID());
 	return light->projector;
 }
 
-void RasterizerGLES1::light_set_var(RID p_light, VS::LightParam p_var, float p_value) {
+void RasterizerGL11::light_set_var(RID p_light, VS::LightParam p_var, float p_value) {
 
 	Light * light = light_owner.get( p_light );
 	ERR_FAIL_COND(!light);
@@ -2448,7 +2527,7 @@ void RasterizerGLES1::light_set_var(RID p_light, VS::LightParam p_var, float p_v
 
 	light->vars[p_var]=p_value;
 }
-float RasterizerGLES1::light_get_var(RID p_light, VS::LightParam p_var) const {
+float RasterizerGL11::light_get_var(RID p_light, VS::LightParam p_var) const {
 
 	Light * light = light_owner.get( p_light );
 	ERR_FAIL_COND_V(!light,0);
@@ -2458,7 +2537,7 @@ float RasterizerGLES1::light_get_var(RID p_light, VS::LightParam p_var) const {
 	return light->vars[p_var];
 }
 
-void RasterizerGLES1::light_set_operator(RID p_light,VS::LightOp p_op) {
+void RasterizerGL11::light_set_operator(RID p_light,VS::LightOp p_op) {
 
 	Light * light = light_owner.get( p_light );
 	ERR_FAIL_COND(!light);
@@ -2466,43 +2545,43 @@ void RasterizerGLES1::light_set_operator(RID p_light,VS::LightOp p_op) {
 
 };
 
-VS::LightOp RasterizerGLES1::light_get_operator(RID p_light) const {
+VS::LightOp RasterizerGL11::light_get_operator(RID p_light) const {
 
 	return VS::LightOp(0);
 };
 
-void RasterizerGLES1::light_omni_set_shadow_mode(RID p_light,VS::LightOmniShadowMode p_mode) {
+void RasterizerGL11::light_omni_set_shadow_mode(RID p_light,VS::LightOmniShadowMode p_mode) {
 
 
 }
 
-VS::LightOmniShadowMode RasterizerGLES1::light_omni_get_shadow_mode(RID p_light) const{
+VS::LightOmniShadowMode RasterizerGL11::light_omni_get_shadow_mode(RID p_light) const{
 
 	return VS::LightOmniShadowMode(0);
 }
 
-void RasterizerGLES1::light_directional_set_shadow_mode(RID p_light,VS::LightDirectionalShadowMode p_mode) {
+void RasterizerGL11::light_directional_set_shadow_mode(RID p_light,VS::LightDirectionalShadowMode p_mode) {
 
 
 }
 
-VS::LightDirectionalShadowMode RasterizerGLES1::light_directional_get_shadow_mode(RID p_light) const {
+VS::LightDirectionalShadowMode RasterizerGL11::light_directional_get_shadow_mode(RID p_light) const {
 
 	return VS::LIGHT_DIRECTIONAL_SHADOW_ORTHOGONAL;
 }
 
-void RasterizerGLES1::light_directional_set_shadow_param(RID p_light,VS::LightDirectionalShadowParam p_param, float p_value) {
+void RasterizerGL11::light_directional_set_shadow_param(RID p_light,VS::LightDirectionalShadowParam p_param, float p_value) {
 
 
 }
 
-float RasterizerGLES1::light_directional_get_shadow_param(RID p_light,VS::LightDirectionalShadowParam p_param) const {
+float RasterizerGL11::light_directional_get_shadow_param(RID p_light,VS::LightDirectionalShadowParam p_param) const {
 
 	return 0;
 }
 
 
-AABB RasterizerGLES1::light_get_aabb(RID p_light) const {
+AABB RasterizerGL11::light_get_aabb(RID p_light) const {
 
 	Light *light = light_owner.get( p_light );
 	ERR_FAIL_COND_V(!light,AABB());
@@ -2531,7 +2610,7 @@ AABB RasterizerGLES1::light_get_aabb(RID p_light) const {
 }
 
 
-RID RasterizerGLES1::light_instance_create(RID p_light) {
+RID RasterizerGL11::light_instance_create(RID p_light) {
 
 	Light *light = light_owner.get( p_light );
 	ERR_FAIL_COND_V(!light, RID());
@@ -2544,7 +2623,7 @@ RID RasterizerGLES1::light_instance_create(RID p_light) {
 
 	return light_instance_owner.make_rid( light_instance );
 }
-void RasterizerGLES1::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
+void RasterizerGL11::light_instance_set_transform(RID p_light_instance,const Transform3D& p_transform) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -2552,7 +2631,7 @@ void RasterizerGLES1::light_instance_set_transform(RID p_light_instance,const Tr
 
 }
 
-bool RasterizerGLES1::light_instance_has_shadow(RID p_light_instance) const {
+bool RasterizerGL11::light_instance_has_shadow(RID p_light_instance) const {
 
 	return false;
 
@@ -2579,14 +2658,14 @@ bool RasterizerGLES1::light_instance_has_shadow(RID p_light_instance) const {
 }
 
 
-bool RasterizerGLES1::light_instance_assign_shadow(RID p_light_instance) {
+bool RasterizerGL11::light_instance_assign_shadow(RID p_light_instance) {
 
 	return false;
 
 }
 
 
-Rasterizer::ShadowType RasterizerGLES1::light_instance_get_shadow_type(RID p_light_instance) const {
+Rasterizer::ShadowType RasterizerGL11::light_instance_get_shadow_type(RID p_light_instance) const {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND_V(!lighti,Rasterizer::SHADOW_NONE);
@@ -2601,26 +2680,26 @@ Rasterizer::ShadowType RasterizerGLES1::light_instance_get_shadow_type(RID p_lig
 	return Rasterizer::SHADOW_NONE;
 }
 
-Rasterizer::ShadowType RasterizerGLES1::light_instance_get_shadow_type(RID p_light_instance,bool p_far) const {
+Rasterizer::ShadowType RasterizerGL11::light_instance_get_shadow_type(RID p_light_instance,bool p_far) const {
 
 	return SHADOW_NONE;
 }
-void RasterizerGLES1::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
+void RasterizerGL11::light_instance_set_shadow_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 
 }
 
-int RasterizerGLES1::light_instance_get_shadow_passes(RID p_light_instance) const {
+int RasterizerGL11::light_instance_get_shadow_passes(RID p_light_instance) const {
 
 	return 0;
 }
 
-bool RasterizerGLES1::light_instance_get_pssm_shadow_overlap(RID p_light_instance) const {
+bool RasterizerGL11::light_instance_get_pssm_shadow_overlap(RID p_light_instance) const {
 
 	return false;
 }
 
-void RasterizerGLES1::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
+void RasterizerGL11::light_instance_set_custom_transform(RID p_light_instance, int p_index, const CameraMatrix& p_camera, const Transform3D& p_transform, float p_split_near,float p_split_far) {
 
 	LightInstance *lighti = light_instance_owner.get( p_light_instance );
 	ERR_FAIL_COND(!lighti);
@@ -2632,24 +2711,24 @@ void RasterizerGLES1::light_instance_set_custom_transform(RID p_light_instance, 
 	lighti->custom_transform=p_transform;
 
 }
-void RasterizerGLES1::shadow_clear_near() {
+void RasterizerGL11::shadow_clear_near() {
 
 
 }
 
-bool RasterizerGLES1::shadow_allocate_near(RID p_light) {
+bool RasterizerGL11::shadow_allocate_near(RID p_light) {
 
 	return false;
 }
 
-bool RasterizerGLES1::shadow_allocate_far(RID p_light) {
+bool RasterizerGL11::shadow_allocate_far(RID p_light) {
 
 	return false;
 }
 
 /* PARTICLES INSTANCE */
 
-RID RasterizerGLES1::particles_instance_create(RID p_particles) {
+RID RasterizerGL11::particles_instance_create(RID p_particles) {
 
 	ERR_FAIL_COND_V(!particles_owner.owns(p_particles),RID());
 	ParticlesInstance *particles_instance = memnew( ParticlesInstance );
@@ -2658,7 +2737,7 @@ RID RasterizerGLES1::particles_instance_create(RID p_particles) {
 	return particles_instance_owner.make_rid(particles_instance);
 }
 
-void RasterizerGLES1::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
+void RasterizerGL11::particles_instance_set_transform(RID p_particles_instance,const Transform3D& p_transform) {
 
 	ParticlesInstance *particles_instance=particles_instance_owner.get(p_particles_instance);
 	ERR_FAIL_COND(!particles_instance);
@@ -2670,32 +2749,32 @@ void RasterizerGLES1::particles_instance_set_transform(RID p_particles_instance,
 /* all calls (inside begin/end shadow) are always warranted to be in the following order: */
 
 
-RID RasterizerGLES1::viewport_data_create() {
+RID RasterizerGL11::viewport_data_create() {
 
 	return RID();
 }
 
-RID RasterizerGLES1::render_target_create(){
+RID RasterizerGL11::render_target_create(){
 
 	return RID();
 
 }
-void RasterizerGLES1::render_target_set_size(RID p_render_target, int p_width, int p_height){
+void RasterizerGL11::render_target_set_size(RID p_render_target, int p_width, int p_height){
 
 
 }
-RID RasterizerGLES1::render_target_get_texture(RID p_render_target) const{
+RID RasterizerGL11::render_target_get_texture(RID p_render_target) const{
 
 	return RID();
 
 }
-bool RasterizerGLES1::render_target_renedered_in_frame(RID p_render_target){
+bool RasterizerGL11::render_target_renedered_in_frame(RID p_render_target){
 
 	return false;
 }
 
 
-void RasterizerGLES1::begin_frame() {
+void RasterizerGL11::begin_frame() {
 
 
 	window_size = Size2( OS::get_singleton()->get_video_mode().width, OS::get_singleton()->get_video_mode().height );
@@ -2714,20 +2793,20 @@ void RasterizerGLES1::begin_frame() {
 	_rinfo.shader_change_count=0;
 
 
-//	material_shader.set_uniform_default(MaterialShaderGLES1::SCREENZ_SCALE, Math::fmod(time, 3600.0));
+//	material_shader.set_uniform_default(MaterialShaderGL11::SCREENZ_SCALE, Math::fmod(time, 3600.0));
 	/* nehe ?*/
 
 //	glClearColor(0,0,1,1);
 //	glClear(GL_COLOR_BUFFER_BIT); //should not clear if anything else cleared..
 }
 
-void RasterizerGLES1::capture_viewport(Image* r_capture) {
+void RasterizerGL11::capture_viewport(Image* r_capture) {
 
 
 }
 
 
-void RasterizerGLES1::clear_viewport(const Color& p_color) {
+void RasterizerGL11::clear_viewport(const Color& p_color) {
 
 	glScissor( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
 	glEnable(GL_SCISSOR_TEST);
@@ -2737,7 +2816,7 @@ void RasterizerGLES1::clear_viewport(const Color& p_color) {
 
 };
 
-void RasterizerGLES1::set_viewport(const VS::ViewportRect& p_viewport) {
+void RasterizerGL11::set_viewport(const VS::ViewportRect& p_viewport) {
 
 
 
@@ -2747,13 +2826,13 @@ void RasterizerGLES1::set_viewport(const VS::ViewportRect& p_viewport) {
 	glViewport( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
 }
 
-void RasterizerGLES1::set_render_target(RID p_render_target, bool p_transparent_bg, bool p_vflip) {
+void RasterizerGL11::set_render_target(RID p_render_target, bool p_transparent_bg, bool p_vflip) {
 
 
 }
 
 
-void RasterizerGLES1::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug) {
+void RasterizerGL11::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug) {
 
 
 	opaque_render_list.clear();
@@ -2771,11 +2850,11 @@ void RasterizerGLES1::begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebu
 	cull_front=true;
 };
 
-void RasterizerGLES1::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) {
+void RasterizerGL11::begin_shadow_map( RID p_light_instance, int p_shadow_pass ) {
 
 }
 
-void RasterizerGLES1::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
+void RasterizerGL11::set_camera(const Transform3D& p_world,const CameraMatrix& p_projection) {
 
 	camera_transform=p_world;
 	camera_transform_inverse=camera_transform.inverse();
@@ -2786,7 +2865,7 @@ void RasterizerGLES1::set_camera(const Transform3D& p_world,const CameraMatrix& 
 	camera_projection.get_viewport_size(camera_vp_size.x,camera_vp_size.y);
 }
 
-void RasterizerGLES1::add_light( RID p_light_instance ) {
+void RasterizerGL11::add_light( RID p_light_instance ) {
 
 #define LIGHT_FADE_TRESHOLD 0.05
 
@@ -2860,7 +2939,7 @@ void RasterizerGLES1::add_light( RID p_light_instance ) {
 
 }
 
-void RasterizerGLES1::_add_geometry( const Geometry* p_geometry, const InstanceData *p_instance, const Geometry *p_geometry_cmp, const GeometryOwner *p_owner) {
+void RasterizerGL11::_add_geometry( const Geometry* p_geometry, const InstanceData *p_instance, const Geometry *p_geometry_cmp, const GeometryOwner *p_owner) {
 
 	Material *m=NULL;
 	RID m_src=p_instance->material_override.is_valid() ? p_instance->material_override : p_geometry->material;
@@ -2953,7 +3032,7 @@ void RasterizerGLES1::_add_geometry( const Geometry* p_geometry, const InstanceD
 }
 
 
-void RasterizerGLES1::add_mesh( const RID& p_mesh, const InstanceData *p_data) {
+void RasterizerGL11::add_mesh( const RID& p_mesh, const InstanceData *p_data) {
 
 	Mesh *mesh = mesh_owner.get(p_mesh);
 	ERR_FAIL_COND(!mesh);
@@ -2970,7 +3049,7 @@ void RasterizerGLES1::add_mesh( const RID& p_mesh, const InstanceData *p_data) {
 
 }
 
-void RasterizerGLES1::add_multimesh( const RID& p_multimesh, const InstanceData *p_data){
+void RasterizerGL11::add_multimesh( const RID& p_multimesh, const InstanceData *p_data){
 
 	MultiMesh *multimesh = multimesh_owner.get(p_multimesh);
 	ERR_FAIL_COND(!multimesh);
@@ -3005,7 +3084,18 @@ void RasterizerGLES1::add_multimesh( const RID& p_multimesh, const InstanceData 
 
 }
 
-void RasterizerGLES1::add_particles( const RID& p_particle_instance, const InstanceData *p_data){
+void RasterizerGL11::add_immediate( const RID& p_immediate, const InstanceData *p_data) {
+
+
+	Immediate *immediate = immediate_owner.get(p_immediate);
+	ERR_FAIL_COND(!immediate);
+
+	_add_geometry(immediate,p_data,immediate,NULL);
+
+}
+
+
+void RasterizerGL11::add_particles( const RID& p_particle_instance, const InstanceData *p_data){
 
 	//print_line("adding particles");
 	ParticlesInstance *particles_instance = particles_instance_owner.get(p_particle_instance);
@@ -3018,7 +3108,7 @@ void RasterizerGLES1::add_particles( const RID& p_particle_instance, const Insta
 }
 
 
-void RasterizerGLES1::_set_cull(bool p_front,bool p_reverse_cull) {
+void RasterizerGL11::_set_cull(bool p_front,bool p_reverse_cull) {
 
 	bool front = p_front;
 	if (p_reverse_cull)
@@ -3032,7 +3122,7 @@ void RasterizerGLES1::_set_cull(bool p_front,bool p_reverse_cull) {
 }
 
 
-void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Material *p_material) {
+void RasterizerGL11::_setup_fixed_material(const Geometry *p_geometry,const Material *p_material) {
 
 	if (!shadow) {
 
@@ -3143,7 +3233,7 @@ void RasterizerGLES1::_setup_fixed_material(const Geometry *p_geometry,const Mat
 
 }
 
-void RasterizerGLES1::_setup_material(const Geometry *p_geometry,const Material *p_material) {
+void RasterizerGL11::_setup_material(const Geometry *p_geometry,const Material *p_material) {
 
 	if (p_material->flags[VS::MATERIAL_FLAG_DOUBLE_SIDED])
 		glDisable(GL_CULL_FACE);
@@ -3184,7 +3274,9 @@ void RasterizerGLES1::_setup_material(const Geometry *p_geometry,const Material 
 				 } break;
 				case VS::MATERIAL_BLEND_MODE_MUL: {
 					//glBlendEquation(GL_FUNC_ADD);
-					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+					//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+					//glBlendFunc(GL_DST_COLOR, GL_ZERO);
+					glBlendFunc(GL_DST_COLOR,GL_ZERO);
 
 				} break;
 
@@ -3225,31 +3317,31 @@ void RasterizerGLES1::_setup_material(const Geometry *p_geometry,const Material 
 	}
 }
 /*
-static const MaterialShaderGLES1::Conditionals _gl_light_version[4][3]={
-	{MaterialShaderGLES1::LIGHT_0_DIRECTIONAL,MaterialShaderGLES1::LIGHT_0_OMNI,MaterialShaderGLES1::LIGHT_0_SPOT},
-	{MaterialShaderGLES1::LIGHT_1_DIRECTIONAL,MaterialShaderGLES1::LIGHT_1_OMNI,MaterialShaderGLES1::LIGHT_1_SPOT},
-	{MaterialShaderGLES1::LIGHT_2_DIRECTIONAL,MaterialShaderGLES1::LIGHT_2_OMNI,MaterialShaderGLES1::LIGHT_2_SPOT},
-	{MaterialShaderGLES1::LIGHT_3_DIRECTIONAL,MaterialShaderGLES1::LIGHT_3_OMNI,MaterialShaderGLES1::LIGHT_3_SPOT}
+static const MaterialShaderGL11::Conditionals _gl_light_version[4][3]={
+	{MaterialShaderGL11::LIGHT_0_DIRECTIONAL,MaterialShaderGL11::LIGHT_0_OMNI,MaterialShaderGL11::LIGHT_0_SPOT},
+	{MaterialShaderGL11::LIGHT_1_DIRECTIONAL,MaterialShaderGL11::LIGHT_1_OMNI,MaterialShaderGL11::LIGHT_1_SPOT},
+	{MaterialShaderGL11::LIGHT_2_DIRECTIONAL,MaterialShaderGL11::LIGHT_2_OMNI,MaterialShaderGL11::LIGHT_2_SPOT},
+	{MaterialShaderGL11::LIGHT_3_DIRECTIONAL,MaterialShaderGL11::LIGHT_3_OMNI,MaterialShaderGL11::LIGHT_3_SPOT}
 };
 
-static const MaterialShaderGLES1::Conditionals _gl_light_shadow[4]={
-	MaterialShaderGLES1::LIGHT_0_SHADOW,
-	MaterialShaderGLES1::LIGHT_1_SHADOW,
-	MaterialShaderGLES1::LIGHT_2_SHADOW,
-	MaterialShaderGLES1::LIGHT_3_SHADOW
+static const MaterialShaderGL11::Conditionals _gl_light_shadow[4]={
+	MaterialShaderGL11::LIGHT_0_SHADOW,
+	MaterialShaderGL11::LIGHT_1_SHADOW,
+	MaterialShaderGL11::LIGHT_2_SHADOW,
+	MaterialShaderGL11::LIGHT_3_SHADOW
 };
 */
 
 
-void RasterizerGLES1::_setup_light(LightInstance* p_instance, int p_idx) {
+void RasterizerGL11::_setup_light(LightInstance* p_instance, int p_idx) {
 
 	Light* ld = p_instance->base;
 
-//	material_shader.set_conditional(MaterialShaderGLES1::LIGHT_0_DIRECTIONAL, true);
+//	material_shader.set_conditional(MaterialShaderGL11::LIGHT_0_DIRECTIONAL, true);
 
-	//material_shader.set_uniform_default(MaterialShaderGLES1::LIGHT_0_DIFFUSE, ld->colors[VS::LIGHT_COLOR_DIFFUSE]);
-	//material_shader.set_uniform_default(MaterialShaderGLES1::LIGHT_0_SPECULAR, ld->colors[VS::LIGHT_COLOR_SPECULAR]);
-	//material_shader.set_uniform_default(MaterialShaderGLES1::LIGHT_0_AMBIENT, ld->colors[VS::LIGHT_COLOR_AMBIENT]);
+	//material_shader.set_uniform_default(MaterialShaderGL11::LIGHT_0_DIFFUSE, ld->colors[VS::LIGHT_COLOR_DIFFUSE]);
+	//material_shader.set_uniform_default(MaterialShaderGL11::LIGHT_0_SPECULAR, ld->colors[VS::LIGHT_COLOR_SPECULAR]);
+	//material_shader.set_uniform_default(MaterialShaderGL11::LIGHT_0_AMBIENT, ld->colors[VS::LIGHT_COLOR_AMBIENT]);
 
 	GLenum glid = GL_LIGHT0+p_idx;
 
@@ -3320,7 +3412,7 @@ void RasterizerGLES1::_setup_light(LightInstance* p_instance, int p_idx) {
 
 			glLightfv(glid,GL_SPOT_DIRECTION,sdir); //at modelview
 
-//			material_shader.set_uniform_default(MaterialShaderGLES1::LIGHT_0_DIRECTION, p_instance->light_vector);
+//			material_shader.set_uniform_default(MaterialShaderGL11::LIGHT_0_DIRECTION, p_instance->light_vector);
 			glPopMatrix();
 
 		} break;
@@ -3398,7 +3490,7 @@ void RasterizerGLES1::_setup_light(LightInstance* p_instance, int p_idx) {
 
 
 
-void RasterizerGLES1::_setup_lights(const uint16_t * p_lights,int p_light_count) {
+void RasterizerGL11::_setup_lights(const uint16_t * p_lights,int p_light_count) {
 
 	if (shadow)
 		return;
@@ -3448,7 +3540,7 @@ static const int gl_texcoord_index[VS::ARRAY_MAX-1] = {
 };
 
 
-Error RasterizerGLES1::_setup_geometry(const Geometry *p_geometry, const Material* p_material, const Skeleton *p_skeleton,const float *p_morphs) {
+Error RasterizerGL11::_setup_geometry(const Geometry *p_geometry, const Material* p_material, const Skeleton *p_skeleton,const float *p_morphs) {
 
 
 	switch(p_geometry->type) {
@@ -3803,7 +3895,7 @@ static const GLenum gl_poly_primitive[4]={
 };
 
 
-void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner) {
+void RasterizerGL11::_render(const Geometry *p_geometry,const Material *p_material, const Skeleton* p_skeleton, const GeometryOwner *p_owner) {
 
 
 	_rinfo.object_count++;
@@ -3885,7 +3977,7 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 				// glLoadMatrixf(elements[0].matrix);
 				// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,s->index_id);
 				for(int i=0;i<element_count;i++) {
-					//glUniformMatrix4fv(material_shader.get_uniform_location(MaterialShaderGLES1::INSTANCE_TRANSFORM), 1, false, elements[i].matrix);
+					//glUniformMatrix4fv(material_shader.get_uniform_location(MaterialShaderGL11::INSTANCE_TRANSFORM), 1, false, elements[i].matrix);
 					// glMultMatrixf(elements[i].matrix);
 					
 					glPopMatrix();
@@ -3905,7 +3997,7 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			} else {
 
 				for(int i=0;i<element_count;i++) {
-//					glUniformMatrix4fv(material_shader.get_uniform_location(MaterialShaderGLES1::INSTANCE_TRANSFORM), 1, false, elements[i].matrix);
+//					glUniformMatrix4fv(material_shader.get_uniform_location(MaterialShaderGL11::INSTANCE_TRANSFORM), 1, false, elements[i].matrix);
 					// glLoadMatrixf(elements[i].matrix);
 					glPopMatrix();
 					glPushMatrix();
@@ -3923,6 +4015,99 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 
 			 };
 		 } break;
+		case Geometry::GEOMETRY_IMMEDIATE: {
+
+			bool restore_tex=false;
+			const Immediate *im = static_cast<const Immediate*>( p_geometry );
+			if (im->building) {
+				return;
+			}
+
+			// glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			for(const List<Immediate::Chunk>::Element *E=im->chunks.front();E;E=E->next()) {
+
+				const Immediate::Chunk &c=E->get();
+				if (c.vertices.empty()) {
+					continue;
+				}
+				for(int i=0;i<c.vertices.size();i++)
+
+				if (c.texture.is_valid() && texture_owner.owns(c.texture)) {
+
+					glEnable(GL_TEXTURE_2D);
+					const Texture *t = texture_owner.get(c.texture);
+					// glActiveTexture(GL_TEXTURE0+tc0_idx);
+					glBindTexture(t->target,t->tex_id);
+					restore_tex=true;
+
+
+				} else if (restore_tex) {
+
+					glEnable(GL_TEXTURE_2D);
+					// glActiveTexture(GL_TEXTURE0+tc0_idx);
+					glBindTexture(GL_TEXTURE_2D,tc0_id_cache);
+					restore_tex=false;
+				} else {
+
+					glDisable(GL_TEXTURE_2D);
+				}
+
+				if (!c.normals.empty()) {
+
+					glEnableClientState(GL_NORMAL_ARRAY);
+					glNormalPointer(GL_FLOAT, sizeof(Vector3), c.normals.ptr());
+				} else {
+
+					glDisableClientState(GL_NORMAL_ARRAY);
+				}
+
+				if (!c.colors.empty()) {
+
+					glEnableClientState(GL_COLOR_ARRAY);
+					glColorPointer(4, GL_FLOAT, sizeof(Color), c.colors.ptr());
+				} else {
+
+					glDisableClientState(GL_COLOR_ARRAY);
+					glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+
+				if (!c.uvs.empty()) {
+
+					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+					glTexCoordPointer(2, GL_FLOAT, sizeof(Vector2), c.uvs.ptr());
+				} else {
+
+					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				}
+
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glVertexPointer(3, GL_FLOAT, sizeof(Vector3), c.vertices.ptr());
+				glDrawArrays(gl_primitive[c.primitive], 0, c.vertices.size());
+
+
+			}
+
+			//clear states
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+			glDisableClientState(GL_COLOR_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+			if (restore_tex) {
+
+				glEnable(GL_TEXTURE_2D);
+				// glActiveTexture(GL_TEXTURE0+tc0_idx);
+				glBindTexture(GL_TEXTURE_2D,tc0_id_cache);
+				restore_tex=false;
+			}
+			else {
+
+				glDisable(GL_TEXTURE_2D);
+			}
+
+
+		} break;
 		case Geometry::GEOMETRY_PARTICLES: {
 
 
@@ -4004,7 +4189,7 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 
 };
 
-void RasterizerGLES1::_setup_shader_params(const Material *p_material) {
+void RasterizerGL11::_setup_shader_params(const Material *p_material) {
 
 }
 _FORCE_INLINE_ static void _set_glcoloro(const Color& p_color,const float p_opac) {
@@ -4012,7 +4197,7 @@ _FORCE_INLINE_ static void _set_glcoloro(const Color& p_color,const float p_opac
 	glColor4f(p_color.r, p_color.g, p_color.b, p_color.a*p_opac);
 }
 
-void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reverse_cull) {
+void RasterizerGL11::_render_list_forward(RenderList *p_render_list,bool p_reverse_cull) {
 
 	const Material *prev_material=NULL;
 	uint64_t prev_light_key=0;
@@ -4117,7 +4302,7 @@ void RasterizerGLES1::_render_list_forward(RenderList *p_render_list,bool p_reve
 
 };
 
-void RasterizerGLES1::_process_blur(int times, float inc) {
+void RasterizerGL11::_process_blur(int times, float inc) {
 
 	float spost = 0.0f;
 	float alphainc = 0.9f / times;
@@ -4177,7 +4362,7 @@ void RasterizerGLES1::_process_blur(int times, float inc) {
 }
 	
 
-void RasterizerGLES1::end_scene() {
+void RasterizerGL11::end_scene() {
 
 	glEnable(GL_BLEND);
 	glDepthMask(GL_TRUE);
@@ -4261,7 +4446,7 @@ void RasterizerGLES1::end_scene() {
 		glFogfv(GL_FOG_COLOR, end);
 		glLightfv(GL_LIGHT5,GL_DIFFUSE, begin);
 
-		// material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,true);
+		// material_shader.set_conditional( MaterialShaderGL11::USE_FOG,true);
 	}
 
 
@@ -4274,7 +4459,7 @@ void RasterizerGLES1::end_scene() {
 
 	opaque_render_list.sort_mat_light();
 
-	//material_shader.set_uniform_camera(MaterialShaderGLES1::PROJECTION_MATRIX, camera_projection);
+	//material_shader.set_uniform_camera(MaterialShaderGL11::PROJECTION_MATRIX, camera_projection);
 
 	/*
 	printf("setting projection to ");
@@ -4285,7 +4470,7 @@ void RasterizerGLES1::end_scene() {
 
 	print_line(String("setting camera to ")+camera_transform_inverse);
 	*/
-//	material_shader.set_uniform_default(MaterialShaderGLES1::CAMERA_INVERSE, camera_transform_inverse);
+//	material_shader.set_uniform_default(MaterialShaderGL11::CAMERA_INVERSE, camera_transform_inverse);
 
 	//projection
 	//glEnable(GL_RESCALE_NORMAL);
@@ -4353,7 +4538,7 @@ void RasterizerGLES1::end_scene() {
 		}
 	}*/
 
-//	material_shader.set_conditional( MaterialShaderGLES1::USE_FOG,false);
+//	material_shader.set_conditional( MaterialShaderGL11::USE_FOG,false);
 	if(current_env && current_env->fx_enabled[VS::ENV_FX_ES1_BLUR] && !is_editor)
 		_process_blur(current_env->fx_param[VS::ENV_FX_PARAM_ES1_BLUR_TIMES], current_env->fx_param[VS::ENV_FX_PARAM_ES1_BLUR_ALPHA]);
 	
@@ -4361,7 +4546,7 @@ void RasterizerGLES1::end_scene() {
 	
 	// _debug_shadows();
 }
-void RasterizerGLES1::end_shadow_map() {
+void RasterizerGL11::end_shadow_map() {
 #if 0
 	ERR_FAIL_COND(!shadow);
 	ERR_FAIL_INDEX(shadow_pass,shadow->shadow_buffers.size());
@@ -4407,7 +4592,7 @@ void RasterizerGLES1::end_shadow_map() {
 		} break;
 		case VS::LIGHT_OMNI: {
 
-			material_shader.set_conditional(MaterialShaderGLES1::USE_DUAL_PARABOLOID,true);
+			material_shader.set_conditional(MaterialShaderGL11::USE_DUAL_PARABOLOID,true);
 			dp_direction = shadow_pass?1.0:0.0;
 			flip_facing = (shadow_pass == 1);
 			light_transform=shadow->transform;
@@ -4457,7 +4642,7 @@ void RasterizerGLES1::end_shadow_map() {
 
 	_render_list_forward(&opaque_render_list,flip_facing);
 
-	material_shader.set_conditional(MaterialShaderGLES1::USE_DUAL_PARABOLOID,false);
+	material_shader.set_conditional(MaterialShaderGL11::USE_DUAL_PARABOLOID,false);
 	glViewport( viewport.x, window_size.height-(viewport.height+viewport.y), viewport.width,viewport.height );
 	if (framebuffer.active)
 		glBindFramebufferEXT(GL_FRAMEBUFFER,framebuffer.fbo);
@@ -4471,7 +4656,7 @@ void RasterizerGLES1::end_shadow_map() {
 #endif
 }
 
-void RasterizerGLES1::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
+void RasterizerGL11::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
 
 
 /*
@@ -4479,7 +4664,7 @@ void RasterizerGLES1::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
 	modelview.translate(-(viewport.width / 2.0f), -(viewport.height / 2.0f), 0.0f);
 	modelview.scale( Vector3( 2.0f / viewport.width, -2.0f / viewport.height, 1.0f ) );
 	modelview.translate(p_rect.pos.x, p_rect.pos.y, 0);
-	// material_shader.set_uniform_default(MaterialShaderGLES1::MODELVIEW_TRANSFORM, *e->transform);
+	// material_shader.set_uniform_default(MaterialShaderGL11::MODELVIEW_TRANSFORM, *e->transform);
 	_gl_load_transform(modelview);
 	glBindTexture(GL_TEXTURE_2D,p_buffer->depth);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
@@ -4530,7 +4715,7 @@ void RasterizerGLES1::_debug_draw_shadow(GLuint tex, const Rect2& p_rect) {
 */
 }
 
-void RasterizerGLES1::_debug_draw_shadows_type(Vector<ShadowBuffer>& p_shadows,Point2& ofs) {
+void RasterizerGL11::_debug_draw_shadows_type(Vector<ShadowBuffer>& p_shadows,Point2& ofs) {
 
 
 //	Size2 debug_size(128,128);
@@ -4564,7 +4749,7 @@ void RasterizerGLES1::_debug_draw_shadows_type(Vector<ShadowBuffer>& p_shadows,P
 }
 
 
-void RasterizerGLES1::_debug_shadows() {
+void RasterizerGL11::_debug_shadows() {
 
 	return;
 #if 0
@@ -4588,7 +4773,7 @@ void RasterizerGLES1::_debug_shadows() {
 #endif
 }
 
-void RasterizerGLES1::end_frame() {
+void RasterizerGL11::end_frame() {
 
 	/*
 	if (framebuffer.active) {
@@ -4623,7 +4808,7 @@ void RasterizerGLES1::end_frame() {
 /* CANVAS API */
 
 
-void RasterizerGLES1::reset_state() {
+void RasterizerGL11::reset_state() {
 
 
 	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0); //unbind
@@ -4654,7 +4839,7 @@ void RasterizerGLES1::reset_state() {
 
 
 
-void RasterizerGLES1::canvas_begin() {
+void RasterizerGL11::canvas_begin() {
 
 
 	reset_state();
@@ -4664,17 +4849,17 @@ void RasterizerGLES1::canvas_begin() {
 
 }
 
-void RasterizerGLES1::canvas_disable_blending() {
+void RasterizerGL11::canvas_disable_blending() {
 
 	glDisable(GL_BLEND);
 }
 
-void RasterizerGLES1::canvas_set_opacity(float p_opacity) {
+void RasterizerGL11::canvas_set_opacity(float p_opacity) {
 
 	canvas_opacity = p_opacity;
 }
 
-void RasterizerGLES1::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
+void RasterizerGL11::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 
 	switch(p_mode) {
 
@@ -4696,7 +4881,8 @@ void RasterizerGLES1::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 		 } break;
 		case VS::MATERIAL_BLEND_MODE_MUL: {
 			//glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			glBlendFunc(GL_DST_COLOR,GL_ZERO);
 
 		} break;
 
@@ -4705,7 +4891,7 @@ void RasterizerGLES1::canvas_set_blend_mode(VS::MaterialBlendMode p_mode) {
 }
 
 
-void RasterizerGLES1::canvas_begin_rect(const Transform2D& p_transform) {
+void RasterizerGL11::canvas_begin_rect(const Transform2D& p_transform) {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -4717,7 +4903,7 @@ void RasterizerGLES1::canvas_begin_rect(const Transform2D& p_transform) {
 
 }
 
-void RasterizerGLES1::canvas_set_clip(bool p_clip, const Rect2& p_rect) {
+void RasterizerGL11::canvas_set_clip(bool p_clip, const Rect2& p_rect) {
 
 	if (p_clip) {
 
@@ -4735,12 +4921,12 @@ void RasterizerGLES1::canvas_set_clip(bool p_clip, const Rect2& p_rect) {
 
 }
 
-void RasterizerGLES1::canvas_end_rect() {
+void RasterizerGL11::canvas_end_rect() {
 
 	glPopMatrix();
 }
 
-void RasterizerGLES1::canvas_draw_line(const Point2& p_from, const Point2& p_to,const Color& p_color,float p_width) {
+void RasterizerGL11::canvas_draw_line(const Point2& p_from, const Point2& p_to,const Color& p_color,float p_width) {
 
 	glDisable(GL_TEXTURE_2D);
 	_set_glcoloro( p_color,canvas_opacity );
@@ -4760,7 +4946,7 @@ void RasterizerGLES1::canvas_draw_line(const Point2& p_from, const Point2& p_to,
 
 }
 
-static void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h=false,bool p_flip_v=false ) {
+void RasterizerGL11::_draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, const Size2& p_tex_size,bool p_flip_h,bool p_flip_v ) {
 
 
 	Vector3 texcoords[4]= {
@@ -4797,7 +4983,7 @@ static void _draw_textured_quad(const Rect2& p_rect, const Rect2& p_src_region, 
 	_draw_primitive(4,coords,0,0,texcoords);
 }
 
-static void _draw_quad(const Rect2& p_rect) {
+void RasterizerGL11::_draw_quad(const Rect2& p_rect) {
 
 	Vector3 coords[4]= {
 		Vector3( p_rect.pos.x,p_rect.pos.y, 0 ),
@@ -4811,7 +4997,7 @@ static void _draw_quad(const Rect2& p_rect) {
 }
 
 
-void RasterizerGLES1::canvas_draw_rect(const Rect2& p_rect, int p_flags, const Rect2& p_source,RID p_texture,const Color& p_modulate) {
+void RasterizerGL11::canvas_draw_rect(const Rect2& p_rect, int p_flags, const Rect2& p_source,RID p_texture,const Color& p_modulate) {
 
 	_set_glcoloro( p_modulate,canvas_opacity );
 
@@ -4843,7 +5029,7 @@ void RasterizerGLES1::canvas_draw_rect(const Rect2& p_rect, int p_flags, const R
 
 
 }
-void RasterizerGLES1::canvas_draw_style_box(const Rect2& p_rect, RID p_texture,const float *p_margin, bool p_draw_center,const Color& p_modulate) {
+void RasterizerGL11::canvas_draw_style_box(const Rect2& p_rect, RID p_texture,const float *p_margin, bool p_draw_center,const Color& p_modulate) {
 
 	_set_glcoloro( p_modulate,canvas_opacity );
 
@@ -4913,7 +5099,7 @@ void RasterizerGLES1::canvas_draw_style_box(const Rect2& p_rect, RID p_texture,c
 	}
 
 }
-void RasterizerGLES1::canvas_draw_primitive(const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs, RID p_texture,float p_width) {
+void RasterizerGL11::canvas_draw_primitive(const Vector<Point2>& p_points, const Vector<Color>& p_colors,const Vector<Point2>& p_uvs, RID p_texture,float p_width) {
 
 	ERR_FAIL_COND(p_points.size()<1);
 	Vector3 verts[4];
@@ -4949,7 +5135,7 @@ static const int _max_draw_poly_indices = 8*1024;
 static uint16_t _draw_poly_indices[_max_draw_poly_indices];
 static float _verts3[_max_draw_poly_indices];
 
-void RasterizerGLES1::canvas_draw_polygon(int p_vertex_count, const int* p_indices, const Vector2* p_vertices, const Vector2* p_uvs, const Color* p_colors,const RID& p_texture,bool p_singlecolor) {
+void RasterizerGL11::canvas_draw_polygon(int p_vertex_count, const int* p_indices, const Vector2* p_vertices, const Vector2* p_uvs, const Color* p_colors,const RID& p_texture,bool p_singlecolor) {
 
 	bool do_colors=false;
 
@@ -5013,7 +5199,7 @@ void RasterizerGLES1::canvas_draw_polygon(int p_vertex_count, const int* p_indic
 
 }
 
-void RasterizerGLES1::canvas_set_transform(const Transform2D& p_transform) {
+void RasterizerGL11::canvas_set_transform(const Transform2D& p_transform) {
 
 	//restore
 	glPopMatrix();
@@ -5024,14 +5210,14 @@ void RasterizerGLES1::canvas_set_transform(const Transform2D& p_transform) {
 
 /* FX */
 
-RID RasterizerGLES1::fx_create() {
+RID RasterizerGL11::fx_create() {
 
 	FX *fx = memnew( FX );
 	ERR_FAIL_COND_V(!fx,RID());
 	return fx_owner.make_rid(fx);
 
 }
-void RasterizerGLES1::fx_get_effects(RID p_fx,List<String> *p_effects) const {
+void RasterizerGL11::fx_get_effects(RID p_fx,List<String> *p_effects) const {
 
 	FX *fx = fx_owner.get(p_fx);
 	ERR_FAIL_COND(!fx);
@@ -5049,7 +5235,7 @@ void RasterizerGLES1::fx_get_effects(RID p_fx,List<String> *p_effects) const {
 	p_effects->push_back("edge");
 
 }
-void RasterizerGLES1::fx_set_active(RID p_fx,const String& p_effect, bool p_active) {
+void RasterizerGL11::fx_set_active(RID p_fx,const String& p_effect, bool p_active) {
 
 	FX *fx = fx_owner.get(p_fx);
 	ERR_FAIL_COND(!fx);
@@ -5073,7 +5259,7 @@ void RasterizerGLES1::fx_set_active(RID p_fx,const String& p_effect, bool p_acti
 	else if (p_effect=="edge")
 		fx->edge_active=p_active;
 }
-bool RasterizerGLES1::fx_is_active(RID p_fx,const String& p_effect) const {
+bool RasterizerGL11::fx_is_active(RID p_fx,const String& p_effect) const {
 
 	FX *fx = fx_owner.get(p_fx);
 	ERR_FAIL_COND_V(!fx,false);
@@ -5099,7 +5285,7 @@ bool RasterizerGLES1::fx_is_active(RID p_fx,const String& p_effect) const {
 
 	return false;
 }
-void RasterizerGLES1::fx_get_effect_params(RID p_fx,const String& p_effect,List<PropertyInfo> *p_params) const {
+void RasterizerGL11::fx_get_effect_params(RID p_fx,const String& p_effect,List<PropertyInfo> *p_params) const {
 
 	FX *fx = fx_owner.get(p_fx);
 	ERR_FAIL_COND(!fx);
@@ -5146,7 +5332,7 @@ void RasterizerGLES1::fx_get_effect_params(RID p_fx,const String& p_effect,List<
 
 	}
 }
-Variant RasterizerGLES1::fx_get_effect_param(RID p_fx,const String& p_effect,const String& p_param) const {
+Variant RasterizerGL11::fx_get_effect_param(RID p_fx,const String& p_effect,const String& p_param) const {
 
 	FX *fx = fx_owner.get(p_fx);
 	ERR_FAIL_COND_V(!fx,Variant());
@@ -5212,7 +5398,7 @@ Variant RasterizerGLES1::fx_get_effect_param(RID p_fx,const String& p_effect,con
 	}
 	return Variant();
 }
-void RasterizerGLES1::fx_set_effect_param(RID p_fx,const String& p_effect, const String& p_param, const Variant& p_value) {
+void RasterizerGL11::fx_set_effect_param(RID p_fx,const String& p_effect, const String& p_param, const Variant& p_value) {
 
 	FX *fx = fx_owner.get(p_fx);
 	ERR_FAIL_COND(!fx);
@@ -5283,13 +5469,13 @@ void RasterizerGLES1::fx_set_effect_param(RID p_fx,const String& p_effect, const
 
 /* ENVIRONMENT */
 
-RID RasterizerGLES1::environment_create() {
+RID RasterizerGL11::environment_create() {
 
 	Environment * env = memnew( Environment );
 	return environment_owner.make_rid(env);
 }
 
-void RasterizerGLES1::environment_set_background(RID p_env,VS::EnvironmentBG p_bg) {
+void RasterizerGL11::environment_set_background(RID p_env,VS::EnvironmentBG p_bg) {
 
 	ERR_FAIL_INDEX(p_bg,VS::ENV_BG_MAX);
 	Environment * env = environment_owner.get(p_env);
@@ -5297,14 +5483,14 @@ void RasterizerGLES1::environment_set_background(RID p_env,VS::EnvironmentBG p_b
 	env->bg_mode=p_bg;
 }
 
-VS::EnvironmentBG RasterizerGLES1::environment_get_background(RID p_env) const{
+VS::EnvironmentBG RasterizerGL11::environment_get_background(RID p_env) const{
 
 	const Environment * env = environment_owner.get(p_env);
 	ERR_FAIL_COND_V(!env,VS::ENV_BG_MAX);
 	return env->bg_mode;
 }
 
-void RasterizerGLES1::environment_set_background_param(RID p_env,VS::EnvironmentBGParam p_param, const Variant& p_value){
+void RasterizerGL11::environment_set_background_param(RID p_env,VS::EnvironmentBGParam p_param, const Variant& p_value){
 
 	ERR_FAIL_INDEX(p_param,VS::ENV_BG_PARAM_MAX);
 	Environment * env = environment_owner.get(p_env);
@@ -5312,7 +5498,7 @@ void RasterizerGLES1::environment_set_background_param(RID p_env,VS::Environment
 	env->bg_param[p_param]=p_value;
 
 }
-Variant RasterizerGLES1::environment_get_background_param(RID p_env,VS::EnvironmentBGParam p_param) const{
+Variant RasterizerGL11::environment_get_background_param(RID p_env,VS::EnvironmentBGParam p_param) const{
 
 	ERR_FAIL_INDEX_V(p_param,VS::ENV_BG_PARAM_MAX,Variant());
 	const Environment * env = environment_owner.get(p_env);
@@ -5321,7 +5507,7 @@ Variant RasterizerGLES1::environment_get_background_param(RID p_env,VS::Environm
 
 }
 
-void RasterizerGLES1::environment_set_group(RID p_env,VS::Group p_param, const Variant& p_value){
+void RasterizerGL11::environment_set_group(RID p_env,VS::Group p_param, const Variant& p_value){
 
 	ERR_FAIL_INDEX(p_param,VS::ENV_GROUP_MAX);
 	Environment * env = environment_owner.get(p_env);
@@ -5329,7 +5515,7 @@ void RasterizerGLES1::environment_set_group(RID p_env,VS::Group p_param, const V
 	env->group[p_param]=p_value;
 
 }
-Variant RasterizerGLES1::environment_get_group(RID p_env,VS::Group p_param) const{
+Variant RasterizerGL11::environment_get_group(RID p_env,VS::Group p_param) const{
 
 	ERR_FAIL_INDEX_V(p_param,VS::ENV_GROUP_MAX,Variant());
 	const Environment * env = environment_owner.get(p_env);
@@ -5338,14 +5524,14 @@ Variant RasterizerGLES1::environment_get_group(RID p_env,VS::Group p_param) cons
 
 }
 
-void RasterizerGLES1::environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled){
+void RasterizerGL11::environment_set_enable_fx(RID p_env,VS::EnvironmentFx p_effect,bool p_enabled){
 
 	ERR_FAIL_INDEX(p_effect,VS::ENV_FX_MAX);
 	Environment * env = environment_owner.get(p_env);
 	ERR_FAIL_COND(!env);
 	env->fx_enabled[p_effect]=p_enabled;
 }
-bool RasterizerGLES1::environment_is_fx_enabled(RID p_env,VS::EnvironmentFx p_effect) const{
+bool RasterizerGL11::environment_is_fx_enabled(RID p_env,VS::EnvironmentFx p_effect) const{
 
 	ERR_FAIL_INDEX_V(p_effect,VS::ENV_FX_MAX,false);
 	const Environment * env = environment_owner.get(p_env);
@@ -5354,14 +5540,14 @@ bool RasterizerGLES1::environment_is_fx_enabled(RID p_env,VS::EnvironmentFx p_ef
 
 }
 
-void RasterizerGLES1::environment_fx_set_param(RID p_env,VS::EnvironmentFxParam p_param,const Variant& p_value){
+void RasterizerGL11::environment_fx_set_param(RID p_env,VS::EnvironmentFxParam p_param,const Variant& p_value){
 
 	ERR_FAIL_INDEX(p_param,VS::ENV_FX_PARAM_MAX);
 	Environment * env = environment_owner.get(p_env);
 	ERR_FAIL_COND(!env);
 	env->fx_param[p_param]=p_value;
 }
-Variant RasterizerGLES1::environment_fx_get_param(RID p_env,VS::EnvironmentFxParam p_param) const{
+Variant RasterizerGL11::environment_fx_get_param(RID p_env,VS::EnvironmentFxParam p_param) const{
 
 	ERR_FAIL_INDEX_V(p_param,VS::ENV_FX_PARAM_MAX,Variant());
 	const Environment * env = environment_owner.get(p_env);
@@ -5372,7 +5558,7 @@ Variant RasterizerGLES1::environment_fx_get_param(RID p_env,VS::EnvironmentFxPar
 
 /* SAMPLED LIGHT */
 
-RID RasterizerGLES1::sampled_light_dp_create(int p_width,int p_height) {
+RID RasterizerGL11::sampled_light_dp_create(int p_width,int p_height) {
 
 	SampledLight *slight = memnew(SampledLight);
 	slight->w=p_width;
@@ -5406,7 +5592,7 @@ RID RasterizerGLES1::sampled_light_dp_create(int p_width,int p_height) {
 }/*
 #include "io/resource_saver.h"
 #include "scene/resources/texture.h"*/
-void RasterizerGLES1::sampled_light_dp_update(RID p_sampled_light, const Color *p_data, float p_multiplier) {
+void RasterizerGL11::sampled_light_dp_update(RID p_sampled_light, const Color *p_data, float p_multiplier) {
 
 	SampledLight *slight = sampled_light_owner.get(p_sampled_light);
 	ERR_FAIL_COND(!slight);
@@ -5445,63 +5631,63 @@ void RasterizerGLES1::sampled_light_dp_update(RID p_sampled_light, const Color *
 
 /*MISC*/
 
-bool RasterizerGLES1::is_texture(const RID& p_rid) const {
+bool RasterizerGL11::is_texture(const RID& p_rid) const {
 
 	return texture_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_material(const RID& p_rid) const {
+bool RasterizerGL11::is_material(const RID& p_rid) const {
 
 	return material_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_mesh(const RID& p_rid) const {
+bool RasterizerGL11::is_mesh(const RID& p_rid) const {
 
 	return mesh_owner.owns(p_rid);
 }
 
-bool RasterizerGLES1::is_immediate(const RID& p_rid) const {
+bool RasterizerGL11::is_immediate(const RID& p_rid) const {
 
 	return immediate_owner.owns(p_rid);
 }
 
-bool RasterizerGLES1::is_multimesh(const RID& p_rid) const {
+bool RasterizerGL11::is_multimesh(const RID& p_rid) const {
 
 	return multimesh_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_particles(const RID &p_beam) const {
+bool RasterizerGL11::is_particles(const RID &p_beam) const {
 
 	return particles_owner.owns(p_beam);
 }
 
-bool RasterizerGLES1::is_light(const RID& p_rid) const {
+bool RasterizerGL11::is_light(const RID& p_rid) const {
 
 	return light_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_light_instance(const RID& p_rid) const {
+bool RasterizerGL11::is_light_instance(const RID& p_rid) const {
 
 	return light_instance_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_particles_instance(const RID& p_rid) const {
+bool RasterizerGL11::is_particles_instance(const RID& p_rid) const {
 
 	return particles_instance_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_skeleton(const RID& p_rid) const {
+bool RasterizerGL11::is_skeleton(const RID& p_rid) const {
 
 	return skeleton_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_environment(const RID& p_rid) const {
+bool RasterizerGL11::is_environment(const RID& p_rid) const {
 
 	return environment_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_fx(const RID& p_rid) const {
+bool RasterizerGL11::is_fx(const RID& p_rid) const {
 
 	return fx_owner.owns(p_rid);
 }
-bool RasterizerGLES1::is_shader(const RID& p_rid) const {
+bool RasterizerGL11::is_shader(const RID& p_rid) const {
 
 	return false;
 }
 
-void RasterizerGLES1::free(const RID& p_rid) {
+void RasterizerGL11::free(const RID& p_rid) {
 
 	if (texture_owner.owns(p_rid)) {
 
@@ -5565,7 +5751,7 @@ void RasterizerGLES1::free(const RID& p_rid) {
 
 	} else if (multimesh_owner.owns(p_rid)) {
 
-	       MultiMesh *multimesh = multimesh_owner.get(p_rid);
+		   MultiMesh *multimesh = multimesh_owner.get(p_rid);
 	       ERR_FAIL_COND(!multimesh);
 
 	       multimesh_owner.free(p_rid);
@@ -5643,39 +5829,39 @@ void RasterizerGLES1::free(const RID& p_rid) {
 }
 
 
-void RasterizerGLES1::custom_shade_model_set_shader(int p_model, RID p_shader) {
+void RasterizerGL11::custom_shade_model_set_shader(int p_model, RID p_shader) {
 
 
 };
 
-RID RasterizerGLES1::custom_shade_model_get_shader(int p_model) const {
+RID RasterizerGL11::custom_shade_model_get_shader(int p_model) const {
 
 	return RID();
 };
 
-void RasterizerGLES1::custom_shade_model_set_name(int p_model, const String& p_name) {
+void RasterizerGL11::custom_shade_model_set_name(int p_model, const String& p_name) {
 
 };
 
-String RasterizerGLES1::custom_shade_model_get_name(int p_model) const {
+String RasterizerGL11::custom_shade_model_get_name(int p_model) const {
 
 	return String();
 };
 
-void RasterizerGLES1::custom_shade_model_set_param_info(int p_model, const List<PropertyInfo>& p_info) {
+void RasterizerGL11::custom_shade_model_set_param_info(int p_model, const List<PropertyInfo>& p_info) {
 
 };
 
-void RasterizerGLES1::custom_shade_model_get_param_info(int p_model, List<PropertyInfo>* p_info) const {
+void RasterizerGL11::custom_shade_model_get_param_info(int p_model, List<PropertyInfo>* p_info) const {
 
 };
 
 
-void RasterizerGLES1::ShadowBuffer::init(int p_size) {
+void RasterizerGL11::ShadowBuffer::init(int p_size) {
 
 }
 
-void RasterizerGLES1::_init_shadow_buffers() {
+void RasterizerGL11::_init_shadow_buffers() {
 
 	int near_shadow_size=GLOBAL_DEF("rasterizer/near_shadow_size",512);
 	int far_shadow_size=GLOBAL_DEF("rasterizer/far_shadow_size",64);
@@ -5698,13 +5884,13 @@ void RasterizerGLES1::_init_shadow_buffers() {
 }
 
 
-void RasterizerGLES1::_update_framebuffer() {
+void RasterizerGL11::_update_framebuffer() {
 
 	return;
 
 }
 
-void RasterizerGLES1::init() {
+void RasterizerGL11::init() {
 
 
 
@@ -5774,7 +5960,7 @@ void RasterizerGLES1::init() {
 	_rinfo.texture_mem=0;
 }
 
-void RasterizerGLES1::finish() {
+void RasterizerGL11::finish() {
 
 	if (skinned_buffer) {
 		memdelete_arr(skinned_buffer);
@@ -5782,7 +5968,7 @@ void RasterizerGLES1::finish() {
 	}
 }
 
-int RasterizerGLES1::get_render_info(VS::RenderInfo p_info) {
+int RasterizerGL11::get_render_info(VS::RenderInfo p_info) {
 
 	switch(p_info) {
 
@@ -5812,23 +5998,23 @@ int RasterizerGLES1::get_render_info(VS::RenderInfo p_info) {
 		} break;
 		case VS::INFO_TEXTURE_MEM_USED: {
 
-			_rinfo.texture_mem;
+			return _rinfo.texture_mem;
 		} break;
 		case VS::INFO_VERTEX_MEM_USED: {
 
-			return 0;
+			return _rinfo.vertex_count * 12; // assuming it stores 32bit float positions
 		} break;
 	}
 
 	return false;
 }
 
-bool RasterizerGLES1::needs_to_draw_next_frame() const {
+bool RasterizerGL11::needs_to_draw_next_frame() const {
 
 	return false;
 }
 
-void RasterizerGLES1::reload_vram() {
+void RasterizerGL11::reload_vram() {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -5888,7 +6074,7 @@ void RasterizerGLES1::reload_vram() {
 
 }
 
-bool RasterizerGLES1::has_feature(VS::Features p_feature) const {
+bool RasterizerGL11::has_feature(VS::Features p_feature) const {
 
 	switch( p_feature) {
 		case VS::FEATURE_SHADERS: return false;
@@ -5900,7 +6086,7 @@ bool RasterizerGLES1::has_feature(VS::Features p_feature) const {
 }
 
 
-RasterizerGLES1::RasterizerGLES1(bool p_keep_copies,bool p_use_reload_hooks) {
+RasterizerGL11::RasterizerGL11(bool p_keep_copies,bool p_use_reload_hooks) {
 	keep_copies=p_keep_copies;
 	pack_arrays=false;
 	use_reload_hooks=p_use_reload_hooks;
@@ -5910,7 +6096,7 @@ RasterizerGLES1::RasterizerGLES1(bool p_keep_copies,bool p_use_reload_hooks) {
 	frame = 0;
 };
 
-RasterizerGLES1::~RasterizerGLES1() {
+RasterizerGL11::~RasterizerGL11() {
 
 };
 
