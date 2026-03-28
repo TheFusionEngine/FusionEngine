@@ -191,7 +191,7 @@ def configure(env):
 		#right stdlibs and such
 		env.Append(CCFLAGS=['-DWINDOWS_ENABLED', '-DWIN98_ENABLED', '-D_UNICODE', '-DUNICODE', '-mwindows', '-D__MSVCRT_VERSION__=0x400', '-DWINDOWS_USE_MUTEX=1', '-std=gnu++11'])
 		env.Append(CPPFLAGS=['-DRTAUDIO_ENABLED', '-DWIN98_ENABLED', '-D_UNICODE', '-DUNICODE', '-DMINGW_ENABLED', '-std=gnu++11'])
-		env.Append(CCFLAGS=['-DGLES1_ENABLED', '-DOPENGL_ENABLED', '-DGLES_OVER_GL', '-DGLEW_ENABLED', '-DMINGW_ENABLED', '-DNO_SAFE_CAST', '-fno-rtti'])
+		env.Append(CCFLAGS=['-DGL11_ENABLED', '-DOPENGL_ENABLED', '-DGLES_OVER_GL', '-DGLEW_ENABLED', '-DMINGW_ENABLED', '-DNO_SAFE_CAST', '-fno-rtti'])
 		env.Append(LIBS=['unicows', 'mingw32', 'opengl32', 'dsound', 'ole32', 'winmm', 'gdi32', 'iphlpapi', 'wsock32', 'kernel32', 'comctl32'])
 
 		env.Append(LINKFLAGS=['-Wl,--stack,'+str(16*1024*1024), '-static-libgcc'])
