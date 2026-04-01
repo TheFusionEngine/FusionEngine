@@ -48,7 +48,7 @@ void FileAccessWindows::check_errors() const {
 	}
 
 }
-
+#include <stringapiset.h>
 Error FileAccessWindows::_open(const String& p_filename, int p_mode_flags) {
 
 	String filename=fix_path(p_filename);
@@ -56,6 +56,8 @@ Error FileAccessWindows::_open(const String& p_filename, int p_mode_flags) {
 	if (f)
 		close();
 
+	char file_c_acp[2048];
+	WideCharToMultiByte(CP_ACP, 0, file_c.c_str(), -1, file_c_acp, 2048, NULL, NULL);
 
 	const char* mode_string;
 
@@ -69,7 +71,7 @@ Error FileAccessWindows::_open(const String& p_filename, int p_mode_flags) {
 		return ERR_INVALID_PARAMETER;
 
 	struct stat st;
-	if (stat(file_c.ascii().get_data(), &st) == 0) {
+	if (stat(file_c_acp, &st) == 0) {
 
 		if (!S_ISREG(st.st_mode))
 			return ERR_FILE_CANT_OPEN;
@@ -80,10 +82,13 @@ Error FileAccessWindows::_open(const String& p_filename, int p_mode_flags) {
 		save_path=filename;
 		filename=filename+".tmp";
 		file_c=filename.replace("/", "\\");
+
+		WideCharToMultiByte(CP_ACP, 0, file_c.c_str(), -1, file_c_acp, 2048, NULL, NULL);
+
 		//print_line("saving instead to "+path);
 	}
 
-	f=fopen(file_c.ascii().get_data(), mode_string);
+	f=fopen(file_c_acp, mode_string);
 
 	if (f==NULL) {
 		last_error=ERR_FILE_CANT_OPEN;
@@ -107,9 +112,17 @@ void FileAccessWindows::close() {
 
 		//unlink(save_path.utf8().get_data());
 		//print_line("renaming..");
-		_unlink(save_path.ascii().get_data()); //unlink if exists
+
+		char save_path_acp[2048];
+		WideCharToMultiByte(CP_ACP, 0, save_path.c_str(), -1, save_path_acp, 2048, NULL, NULL);
+
+		unlink(save_path_acp); //unlink if exists
 		String rt = save_path+".tmp";
-		int rename_error = ::rename(rt.ascii().get_data(),save_path.ascii().get_data());
+
+		char rt_acp[2048];
+		WideCharToMultiByte(CP_ACP, 0, rt.c_str(), -1, rt_acp, 2048, NULL, NULL);
+
+		int rename_error = ::rename(rt_acp,save_path_acp);
 		save_path="";
 		ERR_FAIL_COND( rename_error != 0);
 	}
@@ -199,7 +212,11 @@ bool FileAccessWindows::file_exists(const String& p_name) {
 	FILE *g;
 	String filename=fix_path(p_name);
 	String cfname = filename.replace("/", "\\");
-	g=fopen(cfname.ascii().get_data(),"rb");
+
+	char cfname_acp[2048];
+	WideCharToMultiByte(CP_ACP, 0, cfname.c_str(), -1, cfname_acp, 2048, NULL, NULL);
+
+	g=fopen(cfname_acp,"rb");
 
 	if (g==NULL) {
 
@@ -219,7 +236,11 @@ uint64_t FileAccessWindows::_get_modified_time(const String& p_file) {
 
 	struct stat st;
 	String tfile = file.replace("/", "\\");
-	int rv = stat(tfile.ascii().get_data(), &st);
+
+	char tfile_acp[2048];
+	WideCharToMultiByte(CP_ACP, 0, tfile.c_str(), -1, tfile_acp, 2048, NULL, NULL);
+
+	int rv = stat(tfile_acp, &st);
 
 	if (rv == 0) {
 
