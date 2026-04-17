@@ -3561,7 +3561,7 @@ void RasterizerPSP::_setup_material(const Geometry *p_geometry,const Material *p
 		if (lighting!=!p_material->flags[VS::MATERIAL_FLAG_UNSHADED]) {
 			if (p_material->flags[VS::MATERIAL_FLAG_UNSHADED]) {
 				// glDisable(GL_LIGHTING);
-				//sceGuDisable(GU_LIGHTING);
+				sceGuDisable(GU_LIGHTING);
 			} else {
 				// glEnable(GL_LIGHTING);
 				sceGuEnable(GU_LIGHTING);
@@ -3950,101 +3950,55 @@ void RasterizerPSP::_render(const Geometry *p_geometry,const Material *p_materia
 				sceGumDrawArray(gl_primitive[s->primitive], s->psp_vattribs|GU_INDEX_16BIT|GU_TRANSFORM_3D, s->index_array_len, s->index_array_local, s->psp_array_local);
 			}
 		 } break;
-		// TODO: Port this part. This is the only GPU specific code of immediate
-		//       api, everything else is already in place for this rasterizer.
-		/*case Geometry::GEOMETRY_IMMEDIATE: {
+		case Geometry::GEOMETRY_IMMEDIATE: {
 
-			bool restore_tex=false;
 			const Immediate *im = static_cast<const Immediate*>( p_geometry );
 			if (im->building) {
 				return;
 			}
 
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 			for(const List<Immediate::Chunk>::Element *E=im->chunks.front();E;E=E->next()) {
 
 				const Immediate::Chunk &c=E->get();
-				if (c.vertices.empty()) {
+				int vertex_count = c.vertices.size();
+
+				if (vertex_count == 0) {
 					continue;
 				}
-				for(int i=0;i<c.vertices.size();i++)
+				_rinfo.vertex_count+=vertex_count;
 
 				if (c.texture.is_valid() && texture_owner.owns(c.texture)) {
 
-					glEnable(GL_TEXTURE_2D);
-					const Texture *t = texture_owner.get(c.texture);
-					glActiveTexture(GL_TEXTURE0+tc0_idx);
-					glBindTexture(t->target,t->tex_id);
-					restore_tex=true;
-
-
-				} else if (restore_tex) {
-
-					glEnable(GL_TEXTURE_2D);
-					glActiveTexture(GL_TEXTURE0+tc0_idx);
-					glBindTexture(GL_TEXTURE_2D,tc0_id_cache);
-					restore_tex=false;
+					sceGuEnable(GU_TEXTURE_2D);
+					_setup_texture(texture_owner.get(c.texture));
 				} else {
 
-					glDisable(GL_TEXTURE_2D);
+					sceGuDisable(GU_TEXTURE_2D);
 				}
+
+				VertexPool vp(vertex_count);
+				vp.vertex(c.vertices.ptr());
 
 				if (!c.normals.empty()) {
 
-					glEnableClientState(GL_NORMAL_ARRAY);
-					glNormalPointer(GL_FLOAT, sizeof(Vector3), c.normals.ptr());
-				} else {
-
-					glDisableClientState(GL_NORMAL_ARRAY);
+					vp.normal(c.normals.ptr());
 				}
 
 				if (!c.colors.empty()) {
 
-					glEnableClientState(GL_COLOR_ARRAY);
-					glColorPointer(4, GL_FLOAT, sizeof(Color), c.colors.ptr());
-				} else {
-
-					glDisableClientState(GL_COLOR_ARRAY);
-					glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+					vp.color(c.colors.ptr());
 				}
 
 				if (!c.uvs.empty()) {
 
-					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-					glTexCoordPointer(2, GL_FLOAT, sizeof(Vector2), c.uvs.ptr());
-				} else {
-
-					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+					vp.uv(c.uvs.ptr());
 				}
 
-				glEnableClientState(GL_VERTEX_ARRAY);
-				glVertexPointer(3, GL_FLOAT, sizeof(Vector3), c.vertices.ptr());
-				glDrawArrays(gl_primitive[c.primitive], 0, c.vertices.size());
-
-
-			}
-
-			//clear states
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_NORMAL_ARRAY);
-			glDisableClientState(GL_COLOR_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-			if (restore_tex) {
-
-				glEnable(GL_TEXTURE_2D);
-				glActiveTexture(GL_TEXTURE0+tc0_idx);
-				glBindTexture(GL_TEXTURE_2D,tc0_id_cache);
-				restore_tex=false;
-			}
-			else {
-
-				glDisable(GL_TEXTURE_2D);
+				sceGumDrawArray(gl_primitive[c.primitive], vp.attrs() | GU_TRANSFORM_3D, vp.size(), nullptr, vp.pack());
 			}
 
 
-		} break;*/
+		} break;
 		case Geometry::GEOMETRY_PARTICLES: {
 
 

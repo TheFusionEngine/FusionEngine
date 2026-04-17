@@ -30,6 +30,7 @@
 
 #include "file_access_windows.h"
 
+#include <windows.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "print_string.h"
@@ -48,7 +49,7 @@ void FileAccessWindows::check_errors() const {
 	}
 
 }
-#include <stringapiset.h>
+
 Error FileAccessWindows::_open(const String& p_filename, int p_mode_flags) {
 
 	String filename=fix_path(p_filename);

@@ -4383,10 +4383,13 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 			for(const List<Immediate::Chunk>::Element *E=im->chunks.front();E;E=E->next()) {
 
 				const Immediate::Chunk &c=E->get();
-				if (c.vertices.empty()) {
+				int vertex_count = c.vertices.size();
+
+				if (vertex_count== 0) {
 					continue;
 				}
-				for(int i=0;i<c.vertices.size();i++)
+				_rinfo.vertex_count+=vertex_count;
+				// for(int i=0;i<c.vertices.size();i++)
 
 				if (c.texture.is_valid() && texture_owner.owns(c.texture)) {
 
@@ -4438,7 +4441,7 @@ void RasterizerGLES1::_render(const Geometry *p_geometry,const Material *p_mater
 
 				glEnableClientState(GL_VERTEX_ARRAY);
 				glVertexPointer(3, GL_FLOAT, sizeof(Vector3), c.vertices.ptr());
-				glDrawArrays(gl_primitive[c.primitive], 0, c.vertices.size());
+				glDrawArrays(gl_primitive[c.primitive], 0, vertex_count);
 
 
 			}
