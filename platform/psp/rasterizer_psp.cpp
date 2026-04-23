@@ -3151,7 +3151,7 @@ void RasterizerPSP::add_light( RID p_light_instance ) {
 
 		case VisualServer::LIGHT_DIRECTIONAL: {
 
-			li->light_vector = camera_transform_inverse.basis.xform(li->transform.basis.get_axis(2)).normalized();
+			li->light_vector = Transform3D().basis.xform(li->transform.basis.get_axis(2)).normalized();
 			if (directional_light_count<MAX_HW_LIGHTS) {
 
 				directional_lights[directional_light_count++]=li;
@@ -3164,7 +3164,7 @@ void RasterizerPSP::add_light( RID p_light_instance ) {
 			  if (radius==0)
 				  radius=0.0001;
 			  li->linear_att=(LIGHT_FADE_TRESHOLD)/radius;
-			  li->light_vector = camera_transform_inverse.xform(li->transform.origin);
+			  li->light_vector = Transform3D().xform(li->transform.origin);
 
 		} break;
 		case VisualServer::LIGHT_SPOT: {
@@ -3173,8 +3173,8 @@ void RasterizerPSP::add_light( RID p_light_instance ) {
 			if (radius==0)
 				radius=0.0001;
 			li->linear_att=(LIGHT_FADE_TRESHOLD)/radius;
-			li->light_vector = camera_transform_inverse.xform(li->transform.origin);
-			li->spot_vector = -camera_transform_inverse.basis.xform(li->transform.basis.get_axis(2)).normalized();
+			li->light_vector = Transform3D().xform(li->transform.origin);
+			li->spot_vector = -Transform3D().basis.xform(li->transform.basis.get_axis(2)).normalized();
 			//li->sort_key|=LIGHT_SPOT_BIT; // this way, omnis go first, spots go last and less shader versions are generated
 
 			/*
@@ -3397,7 +3397,7 @@ void RasterizerPSP::_setup_texture(const Texture *texture) {
 
 	sceGuEnable(GU_TEXTURE_2D);
 	sceGuTexMode(texture->gu_format_cache, texture->mipmaps.size()-1, 0, texture->swizzle);
-	sceGuTexFunc(GU_TFX_REPLACE,GU_TCC_RGBA);
+	sceGuTexFunc(GU_TFX_MODULATE,GU_TCC_RGBA);
 	if (texture->flags&VS::TEXTURE_FLAG_REPEAT) {
 		sceGuTexWrap(GU_REPEAT, GU_REPEAT);
 	} else {
@@ -3405,7 +3405,7 @@ void RasterizerPSP::_setup_texture(const Texture *texture) {
 	}
 
 	if (texture->mipmaps.size() > 1) {
-		sceGuTexLevelMode(GU_TEXTURE_AUTO, 0.f);
+		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1.f);
 		sceGuTexFilter(GU_LINEAR_MIPMAP_LINEAR, GU_LINEAR);
 	} else {
 		sceGuTexFilter(GU_LINEAR, GU_LINEAR);
@@ -3443,6 +3443,7 @@ void RasterizerPSP::_setup_fixed_material(const Geometry *p_geometry,const Mater
 		sceGuSendCommandi(88, (diffuse_rgba >> 24) & 0xFF);
 
 		sceGuMaterial(GU_DIFFUSE,diffuse_rgba);
+
 		//specular
 
 		const Color specular_color=p_material->parameters[VS::FIXED_MATERIAL_PARAM_SPECULAR];
@@ -3618,10 +3619,10 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 	ERR_FAIL_COND(p_idx > MAX_HW_LIGHTS);
 
 	Color diff_color = ld->colors[VS::LIGHT_COLOR_DIFFUSE];
-	float emult = ld->vars[VS::LIGHT_PARAM_ENERGY];
+	float emult = sqrt(ld->vars[VS::LIGHT_PARAM_ENERGY]); // to roughly match GLES1
 
-	if (ld->type!=VS::LIGHT_DIRECTIONAL)
-		emult*=4.0;
+	// if (ld->type!=VS::LIGHT_DIRECTIONAL)
+	// 	emult*=4.0;
 
 	// sceGuLightMode(GU_SEPARATE_SPECULAR_COLOR);
 	
@@ -3648,7 +3649,7 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 				p_instance->light_vector.z,
 			})); //at modelview
 
-			sceGuLightAtt(p_idx, 0, p_instance->linear_att, 0);
+			sceGuLightAtt(p_idx, 0, p_instance->linear_att * 32.0, 0);
 
 		} break;
 		case VS::LIGHT_SPOT: {
@@ -3665,7 +3666,7 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 					p_instance->spot_vector.z,
 				}), 5.0, 1/ld->vars[VS::LIGHT_PARAM_SPOT_ANGLE]);
 
-			sceGuLightAtt(p_idx, 0, p_instance->linear_att, 0);
+			sceGuLightAtt(p_idx, 0, p_instance->linear_att * 32.0, 0);
 
 		} break;
 
@@ -3673,13 +3674,20 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 	}
 
 	sceGuLightColor(p_idx, GU_DIFFUSE, MK_RGBA_F(
-		diff_color.r*emult,
-		diff_color.g*emult,
-		diff_color.b*emult,
+		CLAMP(diff_color.r * emult, 0, 1.0),
+		CLAMP(diff_color.g * emult, 0, 1.0),
+		CLAMP(diff_color.b * emult, 0, 1.0),
 		1.0
 	));
 
-	sceGuLightColor(p_idx, GU_AMBIENT, MK_RGBA_F(0, 0, 0, 1));
+	sceGuLightColor(p_idx, GU_AMBIENT, MK_RGBA_F(
+		CLAMP(diff_color.r * emult - 1.0, 0, 1.0),
+		CLAMP(diff_color.g * emult - 1.0, 0, 1.0),
+		CLAMP(diff_color.b * emult - 1.0, 0, 1.0),
+		1.0
+	)); // to compensate for clamping diffuse it can bleed in ambient a bit
+
+	// sceGuLightColor(p_idx, GU_AMBIENT, MK_RGBA_F(0,0,0,1));
 
 	Color spec_color = ld->colors[VS::LIGHT_COLOR_SPECULAR];
 	sceGuLightColor(p_idx, GU_SPECULAR, MK_RGBA_F(
@@ -3704,9 +3712,9 @@ void RasterizerPSP::_setup_lights(const uint16_t * p_lights,int p_light_count) {
 	for (int i=directional_light_count; i<MAX_HW_LIGHTS; i++) {
 
 		if (i<(directional_light_count+p_light_count)) {
-			
+
 			sceGuEnable(GU_LIGHT0 + i);
-			_setup_light(light_instances[p_lights[i]], i);
+			_setup_light(light_instances[p_lights[i-directional_light_count]], i);
 
 		} else {
 
@@ -4054,7 +4062,7 @@ void RasterizerPSP::_render(const Geometry *p_geometry,const Material *p_materia
 
 				sceGumMatrixMode(GU_MODEL);
 				sceGumPushMatrix();
-				_gl_load_transform(camera_transform_inverse);
+				_gl_load_transform(Transform3D());
 				for(int i=0;i<particles->data.amount;i++) {
 
 					ParticleSystemDrawInfoSW::ParticleDrawInfo &pinfo=*particle_draw_info.draw_info_order[i];
@@ -4191,7 +4199,7 @@ void RasterizerPSP::end_scene() {
 
 	//sceGuAmbient(MK_RGBA(255, 255, 255, 255));
 	
-	sceGuAmbient(0x00222222);
+	sceGuAmbient(0x00333333);
 
 	if (current_env) {
 

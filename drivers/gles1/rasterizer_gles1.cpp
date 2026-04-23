@@ -3853,7 +3853,7 @@ void RasterizerGLES1::_setup_lights(const uint16_t * p_lights,int p_light_count)
 
 			glEnable(GL_LIGHT0 + i);
 			// printf("enable %d\n", i);
-			_setup_light(light_instances[p_lights[i]], i);
+			_setup_light(light_instances[p_lights[i-directional_light_count]], i);
 
 		} else {
 			glDisable(GL_LIGHT0 + i);
