@@ -3649,7 +3649,7 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 				p_instance->light_vector.z,
 			})); //at modelview
 
-			sceGuLightAtt(p_idx, 0, p_instance->linear_att * 32.0, 0);
+			sceGuLightAtt(p_idx, 0, p_instance->linear_att * (100 / emult), 0);
 
 		} break;
 		case VS::LIGHT_SPOT: {
@@ -3666,7 +3666,7 @@ void RasterizerPSP::_setup_light(LightInstance* p_instance, int p_idx) {
 					p_instance->spot_vector.z,
 				}), 5.0, 1/ld->vars[VS::LIGHT_PARAM_SPOT_ANGLE]);
 
-			sceGuLightAtt(p_idx, 0, p_instance->linear_att * 32.0, 0);
+			sceGuLightAtt(p_idx, 0, p_instance->linear_att * (100 / emult), 0);
 
 		} break;
 
