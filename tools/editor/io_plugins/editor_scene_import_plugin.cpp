@@ -223,8 +223,8 @@ static const char *anim_flag_names[]={
 
 static const char *anim_flag_descript[]={
 	"Set loop flag for animation names that\ncontain 'cycle' or 'loop' in the name.",
-	"When merging an existing aimation,\nkeep the user-created value-tracks.",
-	"Remove redundant keyframes in\n transform tacks.",
+	"When merging an existing animation,\nkeep the user-created value-tracks.",
+	"Remove redundant keyframes in\n transform tracks.",
 	"Some exporters will rely on default pose for some bones.\nThis forces those bones to have at least one animation key.",
 	NULL
 };
@@ -461,7 +461,7 @@ EditorImportAnimationOptions::EditorImportAnimationOptions() {
 		items.push_back(ti);
 		fname++;
 		fdescr++;
-	}	
+	}
 
 
 	TreeItem *fps_base = flags->create_item(root);

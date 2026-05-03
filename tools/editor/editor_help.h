@@ -169,15 +169,15 @@ public:
 
 
 
-class EditorHelpPlugin : public EditorPlugin {
+class EditorDocsPlugin : public EditorPlugin {
 
-	OBJ_TYPE( EditorHelpPlugin, EditorPlugin );
+	OBJ_TYPE( EditorDocsPlugin, EditorPlugin );
 
 	EditorHelp *editor_help;
 	EditorNode *editor;
 public:
 
-	virtual String get_name() const { return "Help"; }
+	virtual String get_name() const { return "Docs"; }
 	bool has_main_screen() const { return true; }
 	virtual void edit(Object *p_node);
 	virtual bool handles(Object *p_node) const;
@@ -194,8 +194,8 @@ public:
 	virtual void restore_global_state();
 	virtual void save_global_state();
 
-	EditorHelpPlugin(EditorNode *p_node);
-	~EditorHelpPlugin();
+	EditorDocsPlugin(EditorNode *p_node);
+	~EditorDocsPlugin();
 
 };
 

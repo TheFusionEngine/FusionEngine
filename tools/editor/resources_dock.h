@@ -94,7 +94,7 @@ protected:
 
 public:
 
-	void add_resource(const Ref<Resource>& p_resource);
+	void add_resource(const Ref<Resource>& p_resource, bool silent=false);
 	void remove_resource(const Ref<Resource>& p_resource);
 	void save_resource(const String& p_path,const Ref<Resource>& p_resource);
 	void save_resource_as(const Ref<Resource>& p_resource);

@@ -314,13 +314,22 @@ void SpriteFramesEditor::_update_library() {
 		ti->set_editable(0,true);
 		ti->set_selectable(0,true);
 
-		if (frames->get_frame(i).is_null()) {
+		Ref<Texture> cur_frame = frames->get_frame(i);
+
+		if (cur_frame.is_null()) {
 
 			ti->set_text(0,"Frame "+itos(i)+" (empty)");
 
 		} else {
-			ti->set_text(0,"Frame "+itos(i));
-			ti->set_icon(0,frames->get_frame(i));
+			if (cur_frame->get_name() != ""){
+				ti->set_text(0,cur_frame->get_name());
+			} else if (cur_frame->get_path() != ""){
+				ti->set_text(0, cur_frame->get_path().get_file());
+			} else {
+				ti->set_text(0,"Frame "+itos(i));
+			}
+
+			ti->set_icon(0,cur_frame);
 		}
 		ti->set_metadata(0,i);
 		ti->set_icon_max_width(0,96);

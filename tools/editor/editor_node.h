@@ -420,6 +420,7 @@ public:
 
 	void edit_node(Node *p_node);
 	void edit_resource(const Ref<Resource>& p_resource);
+	void add_resource(const Ref<Resource>& p_resource);
 	void open_resource(const String& p_type="");
 	void save_resource(const Ref<Resource>& p_resource);
 	void save_resource_as(const Ref<Resource>& p_resource);
