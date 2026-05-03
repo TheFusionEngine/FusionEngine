@@ -32,7 +32,7 @@
 #include "os/input.h"
 #include "drivers/unix/os_unix.h"
 #include "os/main_loop.h"
-#include "servers/physics/physics_server_sw.h"
+#include "servers/physics_3d_server.h"
 #include "servers/spatial_sound/spatial_sound_server_sw.h"
 #include "servers/spatial_sound_2d/spatial_sound_2d_server_sw.h"
 #include "servers/audio/audio_server_sw.h"
@@ -63,7 +63,7 @@ class OSBB10 : public OS_Unix {
 	SpatialSoundServerSW *spatial_sound_server;
 	SpatialSound2DServerSW *spatial_sound_2d_server;
 	PhysicsServer *physics_server;
-	Physics2DServer *physics_2d_server;
+	PhysicsServer2D *physics_2d_server;
 	AudioDriverBB10* audio_driver;
 
 #ifdef PAYMENT_SERVICE_ENABLED

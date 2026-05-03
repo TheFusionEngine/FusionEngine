@@ -42,7 +42,7 @@ class PhysicsBody2D : public CollisionObject2D {
 protected:
 
 	void _notification(int p_what);
-	PhysicsBody2D(Physics2DServer::BodyMode p_mode);
+	PhysicsBody2D(PhysicsServer2D::BodyMode p_mode);
 
 	static void _bind_methods();
 public:
@@ -261,7 +261,7 @@ class CharacterBody2D : public PhysicsBody2D {
 
 	Variant _get_collider() const;
 
-	_FORCE_INLINE_ bool _ignores_mode(Physics2DServer::BodyMode) const;
+	_FORCE_INLINE_ bool _ignores_mode(PhysicsServer2D::BodyMode) const;
 protected:
 
 	static void _bind_methods();
@@ -298,6 +298,5 @@ public:
 	~CharacterBody2D();
 
 };
-
 
 #endif // PHYSICS_BODY_2D_H

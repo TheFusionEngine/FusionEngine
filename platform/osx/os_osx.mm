@@ -40,7 +40,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "print_string.h"
-#include "servers/physics/physics_server_sw.h"
+#include "servers/physics_3d_server.h"
 #include "drivers/gles2/rasterizer_instance_gles2.h"
 #include "servers/visual/visual_server_wrap_mt.h"
 #include "main/main.h"
@@ -994,9 +994,9 @@ void OS_OSX::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	spatial_sound_2d_server->init();
 
 	//
-	physics_server = memnew( PhysicsServerSW );
+	physics_server = memnew( PhysicsServer3DSW );
 	physics_server->init();
-	physics_2d_server = memnew( Physics2DServerSW );
+	physics_2d_server = memnew( PhysicsServer2DSW );
 	physics_2d_server->init();
 
 	input = memnew( InputDefault );

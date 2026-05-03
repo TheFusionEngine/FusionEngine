@@ -30,7 +30,7 @@
 
 #include "scene/main/viewport.h"
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 void SoundRoomParams::_update_sound_room() {
 
 	if (!room.is_valid())

@@ -37,7 +37,7 @@
 #include "os/keyboard.h"
 #include "servers/spatial_sound_2d_server.h"
 #include "servers/physics_2d_server.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "scene/scene_string_names.h"
 #include "io/resource_loader.h"
 #include "viewport.h"
@@ -626,8 +626,9 @@ void SceneTree::set_pause(bool p_enabled) {
 	if (p_enabled==pause)
 		return;
 	pause=p_enabled;
-	PhysicsServer::get_singleton()->set_active(!p_enabled);
-	Physics2DServer::get_singleton()->set_active(!p_enabled);
+	PHYSICS_3D(set_active, !p_enabled);
+	PHYSICS_2D(set_active, !p_enabled);
+
 	if (get_root())
 		get_root()->propagate_notification(p_enabled ? Node::NOTIFICATION_PAUSED : Node::NOTIFICATION_UNPAUSED);
 }
@@ -672,7 +673,6 @@ void SceneTree::_call_input_pause(const StringName& p_group,const StringName& p_
 		if (!n->can_process())
 			continue;
 
-		Variant::CallError ce;
 		n->call_multilevel(p_method,(const Variant**)v,1);
 		//ERR_FAIL_COND(node_count != g.nodes.size());
 	}

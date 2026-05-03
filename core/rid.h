@@ -29,7 +29,6 @@
 #ifndef RID_H
 #define RID_H
 
-
 #include "safe_refcount.h"
 #include "typedefs.h"
 #include "os/memory.h"
@@ -39,6 +38,8 @@
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
+
+class Variant;
 
 class RID_OwnerBase;
 
@@ -55,6 +56,14 @@ public:
 	
 		return _id==p_rid._id;
 	}
+
+	//for = NULL
+	void operator=(const long int p_int) {
+		_id = (ID) p_int;
+	}
+
+	void operator=(const Variant p_var);
+
 	_FORCE_INLINE_ bool operator<(const RID& p_rid) const {
 	
 		return _id < p_rid._id;

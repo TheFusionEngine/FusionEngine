@@ -336,7 +336,7 @@ void VisualServer::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("texture_get_flags"),&VisualServer::texture_get_flags );
 	ObjectTypeDB::bind_method(_MD("texture_get_width"),&VisualServer::texture_get_width );
 	ObjectTypeDB::bind_method(_MD("texture_get_height"),&VisualServer::texture_get_height );
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 
 	ObjectTypeDB::bind_method(_MD("shader_create","mode"),&VisualServer::shader_create,DEFVAL(SHADER_MATERIAL));
 	ObjectTypeDB::bind_method(_MD("shader_set_mode","shader","mode"),&VisualServer::shader_set_mode);

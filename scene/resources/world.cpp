@@ -225,20 +225,20 @@ struct SpatialIndexer {
 
 void World3D::_register_camera(Camera3D* p_camera) {
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 	indexer->_add_camera(p_camera);
 #endif
 }
 
 void World3D::_update_camera(Camera3D* p_camera){
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 	indexer->_update_camera(p_camera);
 #endif
 }
 void World3D::_remove_camera(Camera3D* p_camera){
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 	indexer->_remove_camera(p_camera);
 #endif
 }
@@ -248,21 +248,21 @@ void World3D::_remove_camera(Camera3D* p_camera){
 
 void World3D::_register_notifier(VisibilityNotifier3D* p_notifier,const AABB& p_rect){
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 	indexer->_notifier_add(p_notifier,p_rect);
 #endif
 }
 
 void World3D::_update_notifier(VisibilityNotifier3D* p_notifier,const AABB& p_rect){
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 	indexer->_notifier_update(p_notifier,p_rect);
 #endif
 }
 
 void World3D::_remove_notifier(VisibilityNotifier3D* p_notifier){
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 	indexer->_notifier_remove(p_notifier);
 #endif
 }
@@ -270,7 +270,7 @@ void World3D::_remove_notifier(VisibilityNotifier3D* p_notifier){
 
 void World3D::_update(uint64_t p_frame) {
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 	indexer->_update(p_frame);
 #endif
 }
@@ -321,13 +321,13 @@ void World3D::_bind_methods() {
 
 World3D::World3D() {
 
-	space = PhysicsServer::get_singleton()->space_create();
+	space = PHYSICS_3D(space_create);
 	scenario = VisualServer::get_singleton()->scenario_create();
 	sound_space = SpatialSoundServer::get_singleton()->space_create();
 
-	PhysicsServer::get_singleton()->space_set_active(space,true);
+	PHYSICS_3D(space_set_active, space,true);
 
-#ifdef _3D_DISABLED
+#ifdef NODE_3D_DISABLED
 	indexer = NULL;
 #else
 	indexer =  memnew( SpatialIndexer );
@@ -336,11 +336,11 @@ World3D::World3D() {
 
 World3D::~World3D() {
 
-	PhysicsServer::get_singleton()->free(space);
+	PHYSICS_3D(free, space);
 	VisualServer::get_singleton()->free(scenario);
 	SpatialSoundServer::get_singleton()->free(sound_space);
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 	memdelete( indexer );
 #endif
 

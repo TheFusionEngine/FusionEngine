@@ -26,6 +26,7 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
+
 #include "shape_line_2d.h"
 #include "servers/physics_2d_server.h"
 
@@ -34,7 +35,7 @@ void LineShape2D::_update_shape() {
 	Array arr;
 	arr.push_back(normal);
 	arr.push_back(d);
-	Physics2DServer::get_singleton()->shape_set_data(get_rid(),arr);
+	PHYSICS_2D(shape_set_data, get_rid(),arr);
 
 }
 
@@ -74,7 +75,7 @@ void LineShape2D::_bind_methods() {
 
 }
 
-LineShape2D::LineShape2D() : Shape2D( Physics2DServer::get_singleton()->shape_create(Physics2DServer::SHAPE_LINE)) {
+LineShape2D::LineShape2D() : Shape2D( PHYSICS_2D(shape_create, PhysicsServer2D::SHAPE_LINE)) {
 
 	normal=Vector2(0,-1);
 	d=0;

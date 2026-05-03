@@ -27,7 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 #include "collision_object.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "scene/scene_string_names.h"
 void CollisionObject3D::_update_shapes_from_children() {
 
@@ -49,9 +49,9 @@ void CollisionObject3D::_notification(int p_what) {
 
 			RID space = get_world()->get_space();
 			if (area) {
-				PhysicsServer::get_singleton()->area_set_space(rid,space);
+				PHYSICS_3D(area_set_space ,rid,space);
 			} else
-				PhysicsServer::get_singleton()->body_set_space(rid,space);
+				PHYSICS_3D(body_set_space, rid,space);
 
 			_update_pickable();
 		//get space
@@ -60,9 +60,9 @@ void CollisionObject3D::_notification(int p_what) {
 		case NOTIFICATION_TRANSFORM_CHANGED: {
 
 			if (area)
-				PhysicsServer::get_singleton()->area_set_transform(rid,get_global_transform());
+				PHYSICS_3D(area_set_transform, rid,get_global_transform());
 			else
-				PhysicsServer::get_singleton()->body_set_state(rid,PhysicsServer::BODY_STATE_TRANSFORM,get_global_transform());
+				PHYSICS_3D(body_set_state, rid,PhysicsServer3D::BODY_STATE_TRANSFORM,get_global_transform());
 
 		} break;
 		case NOTIFICATION_VISIBILITY_CHANGED: {
@@ -73,9 +73,9 @@ void CollisionObject3D::_notification(int p_what) {
 		case NOTIFICATION_EXIT_WORLD: {
 
 			if (area) {
-				PhysicsServer::get_singleton()->area_set_space(rid,RID());
+				PHYSICS_3D(area_set_space, rid,RID());
 			} else
-				PhysicsServer::get_singleton()->body_set_space(rid,RID());
+				PHYSICS_3D(body_set_space, rid,RID());
 
 		} break;
 	}
@@ -87,20 +87,20 @@ void CollisionObject3D::_update_shapes() {
 		return;
 
 	if (area)
-		PhysicsServer::get_singleton()->area_clear_shapes(rid);
+		PHYSICS_3D(area_clear_shapes, rid);
 	else
-		PhysicsServer::get_singleton()->body_clear_shapes(rid);
+		PHYSICS_3D(body_clear_shapes, rid);
 
 	for(int i=0;i<shapes.size();i++) {
 
 		if (shapes[i].shape.is_null())
 			continue;
 		if (area)
-			PhysicsServer::get_singleton()->area_add_shape(rid,shapes[i].shape->get_rid(),shapes[i].xform);
+			PHYSICS_3D(area_add_shape, rid,shapes[i].shape->get_rid(),shapes[i].xform);
 		else {
-			PhysicsServer::get_singleton()->body_add_shape(rid,shapes[i].shape->get_rid(),shapes[i].xform);
+			PHYSICS_3D(body_add_shape, rid,shapes[i].shape->get_rid(),shapes[i].xform);
 			if (shapes[i].trigger)
-				PhysicsServer::get_singleton()->body_set_shape_as_trigger(rid,i,shapes[i].trigger);
+				PHYSICS_3D(body_set_shape_as_trigger, rid,i,shapes[i].trigger);
 		}
 	}
 }
@@ -203,9 +203,9 @@ void CollisionObject3D::_update_pickable() {
 		return;
 	bool pickable = ray_pickable && is_inside_tree() && is_visible();
 	if (area)
-		PhysicsServer::get_singleton()->area_set_ray_pickable(rid,pickable);
+		PHYSICS_3D(area_set_ray_pickable, rid,pickable);
 	else
-		PhysicsServer::get_singleton()->body_set_ray_pickable(rid,pickable);
+		PHYSICS_3D(body_set_ray_pickable, rid,pickable);
 }
 
 void CollisionObject3D::set_ray_pickable(bool p_ray_pickable) {
@@ -312,7 +312,7 @@ void CollisionObject3D::set_shape_as_trigger(int p_shape_idx, bool p_trigger) {
     shapes[p_shape_idx].trigger=p_trigger;
     if (!area && rid.is_valid()) {
 
-        PhysicsServer::get_singleton()->body_set_shape_as_trigger(rid,p_shape_idx,p_trigger);
+        PHYSICS_3D(body_set_shape_as_trigger, rid,p_shape_idx,p_trigger);
 
     }
 }
@@ -330,9 +330,9 @@ CollisionObject3D::CollisionObject3D(RID p_rid, bool p_area) {
 	capture_input_on_drag=false;
 	ray_pickable=true;
 	if (p_area) {
-		PhysicsServer::get_singleton()->area_attach_object_instance_ID(rid,get_instance_ID());
+		PHYSICS_3D(area_attach_object_instance_ID,rid,get_instance_ID());
 	} else {
-		PhysicsServer::get_singleton()->body_attach_object_instance_ID(rid,get_instance_ID());
+		PHYSICS_3D(body_attach_object_instance_ID, rid,get_instance_ID());
 	}
 //	set_transform_notify(true);
 
@@ -363,5 +363,5 @@ CollisionObject3D::CollisionObject3D() {
 
 CollisionObject3D::~CollisionObject3D() {
 
-	PhysicsServer::get_singleton()->free(rid);
+	PHYSICS_3D(free, rid);
 }

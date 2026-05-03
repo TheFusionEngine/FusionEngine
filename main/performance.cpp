@@ -30,7 +30,7 @@
 #include "os/os.h"
 #include "servers/visual_server.h"
 #include "servers/physics_2d_server.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "message_queue.h"
 #include "scene/main/scene_main_loop.h"
 Performance *Performance::singleton=NULL;
@@ -149,13 +149,12 @@ float Performance::get_monitor(Monitor p_monitor) const {
 		case RENDER_TEXTURE_MEM_USED: return VS::get_singleton()->get_render_info(VS::INFO_TEXTURE_MEM_USED);
 		case RENDER_VERTEX_MEM_USED: return VS::get_singleton()->get_render_info(VS::INFO_VERTEX_MEM_USED);
 		case RENDER_USAGE_VIDEO_MEM_TOTAL: return VS::get_singleton()->get_render_info(VS::INFO_USAGE_VIDEO_MEM_TOTAL);
-		case PHYSICS_2D_ACTIVE_OBJECTS: return Physics2DServer::get_singleton()->get_process_info(Physics2DServer::INFO_ACTIVE_OBJECTS);
-		case PHYSICS_2D_COLLISION_PAIRS: return Physics2DServer::get_singleton()->get_process_info(Physics2DServer::INFO_COLLISION_PAIRS);
-		case PHYSICS_2D_ISLAND_COUNT: return Physics2DServer::get_singleton()->get_process_info(Physics2DServer::INFO_ISLAND_COUNT);
-		case PHYSICS_3D_ACTIVE_OBJECTS: return PhysicsServer::get_singleton()->get_process_info(PhysicsServer::INFO_ACTIVE_OBJECTS);
-		case PHYSICS_3D_COLLISION_PAIRS: return PhysicsServer::get_singleton()->get_process_info(PhysicsServer::INFO_COLLISION_PAIRS);
-		case PHYSICS_3D_ISLAND_COUNT: return PhysicsServer::get_singleton()->get_process_info(PhysicsServer::INFO_ISLAND_COUNT);
-
+		case PHYSICS_2D_ACTIVE_OBJECTS: return PHYSICS_2D(get_process_info, PhysicsServer2D::INFO_ACTIVE_OBJECTS);
+		case PHYSICS_2D_COLLISION_PAIRS: return PHYSICS_2D(get_process_info, PhysicsServer2D::INFO_COLLISION_PAIRS);
+		case PHYSICS_2D_ISLAND_COUNT: return PHYSICS_2D(get_process_info, PhysicsServer2D::INFO_ISLAND_COUNT);
+		case PHYSICS_3D_ACTIVE_OBJECTS: return PHYSICS_3D(get_process_info, PhysicsServer3D::INFO_ACTIVE_OBJECTS);
+		case PHYSICS_3D_COLLISION_PAIRS: return PHYSICS_3D(get_process_info, PhysicsServer3D::INFO_COLLISION_PAIRS);
+		case PHYSICS_3D_ISLAND_COUNT: return PHYSICS_3D(get_process_info, PhysicsServer3D::INFO_ISLAND_COUNT);
 		default: {}
 	}
 

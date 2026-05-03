@@ -26,6 +26,7 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
+#ifndef PHYSICS_2D_DISABLED
 #include "test_physics_2d.h"
 #include "servers/visual_server.h"
 #include "servers/physics_2d_server.h"
@@ -68,7 +69,7 @@ class TestPhysics2DMainLoop : public MainLoop {
 
 	void _create_body_shape_data() {
 		VisualServer *vs = VisualServer::get_singleton();
-		Physics2DServer *ps = Physics2DServer::get_singleton();
+		PhysicsServer2D *ps = PhysicsServer2D::get_singleton();
 
 		// SEGMENT
 
@@ -87,13 +88,13 @@ class TestPhysics2DMainLoop : public MainLoop {
 
 			Image image(32,2,0,Image::FORMAT_GRAYSCALE_ALPHA,pixels);
 
-			body_shape_data[Physics2DServer::SHAPE_SEGMENT].image=vs->texture_create_from_image(image);
+			body_shape_data[PhysicsServer2D::SHAPE_SEGMENT].image=vs->texture_create_from_image(image);
 
-			RID segment_shape = ps->shape_create(Physics2DServer::SHAPE_SEGMENT);
+			RID segment_shape = ps->shape_create(PhysicsServer2D::SHAPE_SEGMENT);
 			Rect2 sg(Point2(-16,0),Point2(16,0));
 			ps->shape_set_data(segment_shape,sg);
 
-			body_shape_data[Physics2DServer::SHAPE_SEGMENT].shape = segment_shape;
+			body_shape_data[PhysicsServer2D::SHAPE_SEGMENT].shape = segment_shape;
 
 		}
 		// CIRCLE
@@ -115,12 +116,12 @@ class TestPhysics2DMainLoop : public MainLoop {
 
 			Image image(32,32,0,Image::FORMAT_GRAYSCALE_ALPHA,pixels);
 
-			body_shape_data[Physics2DServer::SHAPE_CIRCLE].image=vs->texture_create_from_image(image);
+			body_shape_data[PhysicsServer2D::SHAPE_CIRCLE].image=vs->texture_create_from_image(image);
 
-			RID circle_shape = ps->shape_create(Physics2DServer::SHAPE_CIRCLE);
+			RID circle_shape = ps->shape_create(PhysicsServer2D::SHAPE_CIRCLE);
 			ps->shape_set_data(circle_shape,16);
 
-			body_shape_data[Physics2DServer::SHAPE_CIRCLE].shape = circle_shape;
+			body_shape_data[PhysicsServer2D::SHAPE_CIRCLE].shape = circle_shape;
 
 		}
 
@@ -143,12 +144,12 @@ class TestPhysics2DMainLoop : public MainLoop {
 
 			Image image(32,32,0,Image::FORMAT_GRAYSCALE_ALPHA,pixels);
 
-			body_shape_data[Physics2DServer::SHAPE_RECTANGLE].image=vs->texture_create_from_image(image);
+			body_shape_data[PhysicsServer2D::SHAPE_RECTANGLE].image=vs->texture_create_from_image(image);
 
-			RID rectangle_shape = ps->shape_create(Physics2DServer::SHAPE_RECTANGLE);
+			RID rectangle_shape = ps->shape_create(PhysicsServer2D::SHAPE_RECTANGLE);
 			ps->shape_set_data(rectangle_shape,Vector2(16,16));
 
-			body_shape_data[Physics2DServer::SHAPE_RECTANGLE].shape = rectangle_shape;
+			body_shape_data[PhysicsServer2D::SHAPE_RECTANGLE].shape = rectangle_shape;
 
 		}
 
@@ -175,12 +176,12 @@ class TestPhysics2DMainLoop : public MainLoop {
 
 			Image image(32,64,0,Image::FORMAT_GRAYSCALE_ALPHA,pixels);
 
-			body_shape_data[Physics2DServer::SHAPE_CAPSULE].image=vs->texture_create_from_image(image);
+			body_shape_data[PhysicsServer2D::SHAPE_CAPSULE].image=vs->texture_create_from_image(image);
 
-			RID capsule_shape = ps->shape_create(Physics2DServer::SHAPE_CAPSULE);
+			RID capsule_shape = ps->shape_create(PhysicsServer2D::SHAPE_CAPSULE);
 			ps->shape_set_data(capsule_shape,Vector2(16,32));
 
-			body_shape_data[Physics2DServer::SHAPE_CAPSULE].shape = capsule_shape;
+			body_shape_data[PhysicsServer2D::SHAPE_CAPSULE].shape = capsule_shape;
 
 		}
 
@@ -191,9 +192,9 @@ class TestPhysics2DMainLoop : public MainLoop {
 
 			Image image(convex_png);
 
-			body_shape_data[Physics2DServer::SHAPE_CONVEX_POLYGON].image=vs->texture_create_from_image(image);
+			body_shape_data[PhysicsServer2D::SHAPE_CONVEX_POLYGON].image=vs->texture_create_from_image(image);
 
-			RID convex_polygon_shape = ps->shape_create(Physics2DServer::SHAPE_CONVEX_POLYGON);
+			RID convex_polygon_shape = ps->shape_create(PhysicsServer2D::SHAPE_CONVEX_POLYGON);
 
 			DVector<Vector2> arr;
 			Point2 sb(32,32);
@@ -206,7 +207,7 @@ class TestPhysics2DMainLoop : public MainLoop {
 			arr.push_back(Point2(11,7)-sb);
 			ps->shape_set_data(convex_polygon_shape,arr);
 
-			body_shape_data[Physics2DServer::SHAPE_CONVEX_POLYGON].shape = convex_polygon_shape;
+			body_shape_data[PhysicsServer2D::SHAPE_CONVEX_POLYGON].shape = convex_polygon_shape;
 
 		}
 
@@ -218,7 +219,7 @@ class TestPhysics2DMainLoop : public MainLoop {
 
 	void _do_ray_query() {
 
-//		Physics2DServer *ps = Physics2DServer::get_singleton();
+//		PhysicsServer2D *ps = PhysicsServer2D::get_singleton();
 	//	ps->query_intersection_segment(ray_query,ray_from,ray_to);
 
 	}
@@ -262,16 +263,16 @@ protected:
 		}
 	}
 
-	RID _add_body(Physics2DServer::ShapeType p_shape, const Transform2D& p_xform) {
+	RID _add_body(PhysicsServer2D::ShapeType p_shape, const Transform2D& p_xform) {
 
 		VisualServer *vs = VisualServer::get_singleton();
-		Physics2DServer *ps = Physics2DServer::get_singleton();
+		PhysicsServer2D *ps = PhysicsServer2D::get_singleton();
 
 		RID body = ps->body_create();
 		ps->body_add_shape(body,body_shape_data[p_shape].shape);
 		ps->body_set_space(body,space);
-		ps->body_set_continuous_collision_detection_mode(body,Physics2DServer::CCD_MODE_CAST_SHAPE);
-		ps->body_set_state(body,Physics2DServer::BODY_STATE_TRANSFORM,p_xform);
+		ps->body_set_continuous_collision_detection_mode(body,PhysicsServer2D::CCD_MODE_CAST_SHAPE);
+		ps->body_set_state(body,PhysicsServer2D::BODY_STATE_TRANSFORM,p_xform);
 
 //		print_line("add body with xform: "+p_xform);
 		RID sprite = vs->canvas_item_create();
@@ -289,16 +290,16 @@ protected:
 
 	void _add_plane(const Vector2& p_normal, real_t p_d) {
 
-		Physics2DServer *ps = Physics2DServer::get_singleton();
+		PhysicsServer2D *ps = PhysicsServer2D::get_singleton();
 
 		Array arr;
 		arr.push_back(p_normal);
 		arr.push_back(p_d);
 
-		RID plane = ps->shape_create(Physics2DServer::SHAPE_LINE);
+		RID plane = ps->shape_create(PhysicsServer2D::SHAPE_LINE);
 		ps->shape_set_data(plane,arr);
 
-		RID plane_body = ps->body_create(Physics2DServer::BODY_MODE_STATIC);
+		RID plane_body = ps->body_create(PhysicsServer2D::BODY_MODE_STATIC);
 		ps->body_set_space(plane_body,space);
 		ps->body_add_shape(plane_body,plane);
 
@@ -306,15 +307,15 @@ protected:
 
 	void _add_concave(const Vector<Vector2>& p_points,const Transform2D& p_xform=Transform2D()) {
 
-		Physics2DServer *ps = Physics2DServer::get_singleton();
+		PhysicsServer2D *ps = PhysicsServer2D::get_singleton();
 		VisualServer *vs = VisualServer::get_singleton();
 
-		RID concave = ps->shape_create(Physics2DServer::SHAPE_CONCAVE_POLYGON);
+		RID concave = ps->shape_create(PhysicsServer2D::SHAPE_CONCAVE_POLYGON);
 		ps->shape_set_data(concave,p_points);
-		RID body = ps->body_create(Physics2DServer::BODY_MODE_STATIC);
+		RID body = ps->body_create(PhysicsServer2D::BODY_MODE_STATIC);
 		ps->body_set_space(body,space);
 		ps->body_add_shape(body,concave);
-		ps->body_set_state(body,Physics2DServer::BODY_STATE_TRANSFORM,p_xform);
+		ps->body_set_state(body,PhysicsServer2D::BODY_STATE_TRANSFORM,p_xform);
 
 
 		RID sprite = vs->canvas_item_create();
@@ -366,15 +367,15 @@ public:
 	virtual void init() {
 
 		VisualServer *vs = VisualServer::get_singleton();
-		Physics2DServer *ps = Physics2DServer::get_singleton();
+		PhysicsServer2D *ps = PhysicsServer2D::get_singleton();
 
 
 
 		space=ps->space_create();
 		ps->space_set_active(space,true);
 		ps->set_active(true);
-		ps->area_set_param(space,Physics2DServer::AREA_PARAM_GRAVITY_VECTOR,Vector2(0,1));
-		ps->area_set_param(space,Physics2DServer::AREA_PARAM_GRAVITY,98);
+		ps->area_set_param(space,PhysicsServer2D::AREA_PARAM_GRAVITY_VECTOR,Vector2(0,1));
+		ps->area_set_param(space,PhysicsServer2D::AREA_PARAM_GRAVITY,98);
 
 		{
 
@@ -400,23 +401,23 @@ public:
 
 		for(int i=0;i<32;i++) {
 
-			Physics2DServer::ShapeType types[4]={
-				Physics2DServer::SHAPE_CIRCLE,
-				Physics2DServer::SHAPE_CAPSULE,
-				Physics2DServer::SHAPE_RECTANGLE,
-				Physics2DServer::SHAPE_CONVEX_POLYGON,
+			PhysicsServer2D::ShapeType types[4]={
+				PhysicsServer2D::SHAPE_CIRCLE,
+				PhysicsServer2D::SHAPE_CAPSULE,
+				PhysicsServer2D::SHAPE_RECTANGLE,
+				PhysicsServer2D::SHAPE_CONVEX_POLYGON,
 
 			};
 
-			Physics2DServer::ShapeType type = types[i%4];
-//			type=Physics2DServer::SHAPE_SEGMENT;
+			PhysicsServer2D::ShapeType type = types[i%4];
+//			type=PhysicsServer2D::SHAPE_SEGMENT;
 			RID b = _add_body(type,Transform2D(i*0.8,Point2(152+i*40,100-40*i)));
 			//if (i==0)
-			//	ps->body_set_mode(b,Physics2DServer::BODY_MODE_STATIC);
+			//	ps->body_set_mode(b,PhysicsServer2D::BODY_MODE_STATIC);
 		}
 
-		//RID b= _add_body(Physics2DServer::SHAPE_CIRCLE,Transform2D(0,Point2(101,140)));
-		//ps->body_set_mode(b,Physics2DServer::BODY_MODE_STATIC);
+		//RID b= _add_body(PhysicsServer2D::SHAPE_CIRCLE,Transform2D(0,Point2(101,140)));
+		//ps->body_set_mode(b,PhysicsServer2D::BODY_MODE_STATIC);
 
 		Point2 prev;
 
@@ -465,3 +466,5 @@ MainLoop* test() {
 
 
 }
+
+#endif

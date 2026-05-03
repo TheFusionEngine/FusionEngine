@@ -8420,7 +8420,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="Physics2DServer" inherits="Object" category="Core">
+<class name="PhysicsServer2D" inherits="Object" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9172,7 +9172,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="Physics2DServerSW" inherits="Physics2DServer" category="Core">
+<class name="PhysicsServer2DSW" inherits="PhysicsServer2D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9288,7 +9288,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsDirectBodyState" inherits="Object" category="Core">
+<class name="Physics3DDirectBodyState" inherits="Object" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -9440,7 +9440,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsDirectBodyStateSW" inherits="PhysicsDirectBodyState" category="Core">
+<class name="Physics3DDirectBodyStateSW" inherits="Physics3DDirectBodyState" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -10018,7 +10018,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="PhysicsServerSW" inherits="PhysicsServer" category="Core">
+<class name="PhysicsServer3DSW" inherits="PhysicsServer" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>

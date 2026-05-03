@@ -30,7 +30,7 @@
 
 #include "os_wiiu.h"
 #include "print_string.h"
-#include "servers/physics/physics_server_sw.h"
+#include "servers/physics_3d_server.h"
 #include "servers/visual/rasterizer_dummy.h"
 
 #include "servers/visual/visual_server_raster.h"
@@ -208,9 +208,9 @@ void OS_WIIU::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 	visual_server->init();
 
 	//
-	physics_server = memnew( PhysicsServerSW );
+	physics_server = memnew( PhysicsServer3DSW );
 	physics_server->init();
-	physics_2d_server = memnew( Physics2DServerSW );
+	physics_2d_server = memnew( PhysicsServer2DSW );
 	physics_2d_server->init();
 
 	input = memnew(InputDefault);

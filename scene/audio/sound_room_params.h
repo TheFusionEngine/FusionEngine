@@ -33,7 +33,7 @@
 #include "servers/spatial_sound_server.h"
 
 
-#ifndef _3D_DISABLED
+#ifndef NODE_3D_DISABLED
 
 #include "scene/3d/room_instance.h"
 class SoundRoomParams : public Node {

@@ -36,7 +36,7 @@
 #include "servers/visual_server.h"
 #include "servers/visual/visual_server_wrap_mt.h"
 #include "servers/visual/rasterizer.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
 #include "servers/spatial_sound/spatial_sound_server_sw.h"
@@ -93,7 +93,7 @@ class OS_X11 : public OS_Unix {
 	PhysicsServer *physics_server;
 	unsigned int get_mouse_button_state(unsigned int p_x11_state);
 	InputModifierState get_key_modifier_state(unsigned int p_x11_state);
-	Physics2DServer *physics_2d_server;
+	PhysicsServer2D *physics_2d_server;
 
 	MouseMode mouse_mode;
 	Point2i center;

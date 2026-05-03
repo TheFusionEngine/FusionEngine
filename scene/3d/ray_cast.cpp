@@ -28,7 +28,7 @@
 /*************************************************************************/
 #include "ray_cast.h"
 
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "collision_object.h"
 void RayCast3D::set_cast_to(const Vector3& p_point) {
 
@@ -132,7 +132,7 @@ void RayCast3D::_notification(int p_what) {
 			Ref<World3D> w3d = get_world();
 			ERR_BREAK( w3d.is_null() );
 
-			PhysicsDirectSpaceState *dss = PhysicsServer::get_singleton()->space_get_direct_state(w3d->get_space());
+			Physics3DDirectSpaceState *dss = PHYSICS_3D(space_get_direct_state, w3d->get_space());
 			ERR_BREAK( !dss );
 
 			Transform3D gt = get_global_transform();
@@ -141,7 +141,7 @@ void RayCast3D::_notification(int p_what) {
 			if (to==Vector3())
 				to=Vector3(0,0.01,0);
 
-			PhysicsDirectSpaceState::RayResult rr;
+			Physics3DDirectSpaceState::RayResult rr;
 
 			if (dss->intersect_ray(gt.get_origin(),gt.xform(to),rr,exceptions)) {
 

@@ -30,7 +30,7 @@
 #define WORLD_H
 
 #include "resource.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "servers/visual_server.h"
 #include "servers/spatial_sound_server.h"
 #include "scene/resources/environment.h"

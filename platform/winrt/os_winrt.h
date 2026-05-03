@@ -33,7 +33,7 @@
 #include "os/os.h"
 #include "servers/visual_server.h"
 #include "servers/visual/rasterizer.h"
-#include "servers/physics/physics_server_sw.h"
+#include "servers/physics_3d_server.h"
 
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
@@ -90,7 +90,7 @@ class OSWinrt : public OS {
 	VisualServer *visual_server;
 	Rasterizer *rasterizer;
 	PhysicsServer *physics_server;
-	Physics2DServer *physics_2d_server;
+	PhysicsServer2D *physics_2d_server;
 	int pressrc;
 
 	ContextEGL* gl_context;

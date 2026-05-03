@@ -99,33 +99,49 @@ opts.Add('bits', 'Compile Target Bits (default/32/64).', "default")
 opts.Add('platform','Platform: '+str(platform_list)+'.',"")
 opts.Add('p','Platform (same as platform=).',"")
 opts.Add('tools','Build Tools (Including Editor): (yes/no)','yes')
+
 opts.Add('gdscript','Build GDSCript support: (yes/no)','yes')
-opts.Add('vorbis','Build Ogg Vorbis Support: (yes/no)','yes')
+
 opts.Add('pck','Build Godot PCK pack Support: (yes/no)','yes')
 opts.Add('minizip','Build Minizip Archive pack Support: (yes/no)','yes')
 opts.Add('small_pck','Build SmallPCK Support: (yes/no)','no')
 opts.Add('single_pack_source', 'Build the engine to only use one pack source: (yes/no)', 'no')
+
+opts.Add('freetype','Freetype support in editor','yes')
 opts.Add('squish','Squish BC Texture Compression in editor (yes/no)','yes')
+
 opts.Add('theora','Theora Video (yes/no)','yes')
 opts.Add('use_theoraplayer_binary', "Use precompiled binaries from libtheoraplayer for ogg/theora/vorbis (yes/no)", "no")
-opts.Add('freetype','Freetype support in editor','yes')
+
+opts.Add('vorbis','Build Ogg Vorbis Support: (yes/no)','yes')
 opts.Add('speex','Speex Audio (yes/no)','yes')
+opts.Add('musepack','Musepack Audio (yes/no)','yes')
+
 opts.Add('xml','XML Save/Load support (yes/no)','yes')
 opts.Add('png','PNG Image loader support (yes/no)','yes')
 opts.Add('jpg','JPG Image loader support (yes/no)','yes')
 opts.Add('webp','WEBP Image loader support (yes/no)','yes')
 opts.Add('dds','DDS Texture loader support (yes/no)','yes')
 opts.Add('pvr','PVR (PowerVR) Texture loader support (yes/no)','yes')
+
 opts.Add('builtin_zlib','Use built-in zlib (yes/no)','yes')
 opts.Add('openssl','Use OpenSSL (yes/no/builtin)','no')
-opts.Add('musepack','Musepack Audio (yes/no)','yes')
-opts.Add("CXX", "Compiler")
-opts.Add("CCFLAGS", "Custom flags for the C++ compiler")
-opts.Add("CFLAGS", "Custom flags for the C compiler")
-opts.Add("LINKFLAGS", "Custom flags for the linker")
-opts.Add('disable_3d', 'Disable 3D nodes for smaller executable (yes/no)', "no")
+
+opts.Add("CXX", "Compiler");
+opts.Add("CCFLAGS", "Custom flags for the C++ compiler");
+opts.Add("CFLAGS", "Custom flags for the C compiler");
+opts.Add("LINKFLAGS", "Custom flags for the linker");
+
+opts.Add('disable_3d', 'Disable Node3D-based nodes for smaller executable (yes/no)', "no")
+opts.Add('disable_2d', 'Disable Node2D-based nodes for smaller executable (yes/no)', "no")
 opts.Add('disable_advanced_gui', 'Disable advance 3D gui nodes and behaviors (yes/no)', "no")
 opts.Add("disable_classes", "Disable given classes (comma separated)", "")
+opts.Add('disable_2d_physics', 'Disable 2D physics and all related nodes (yes/no)', "no")
+opts.Add('disable_3d_physics', 'Disable 3D physics and all related nodes (yes/no)', "no")
+
+
+opts.Add('dummy_3d_physics', 'Compile the dummy implementation of Physics3DServer', "no")
+opts.Add('dummy_2d_physics', 'Compile the dummy implementation of PhysicsServer2D', "no")
 
 # add platform specific options
 
@@ -299,12 +315,24 @@ if selected_platform in platform_list:
 
 	methods.write_disabled_classes(env["disable_classes"].split(","))
 
-	if (env['disable_3d']=='yes'):
-		env.Append(CPPFLAGS=['-D_3D_DISABLED'])
 	if (env['gdscript']=='yes'):
 		env.Append(CPPFLAGS=['-DGDSCRIPT_ENABLED'])
+	if (env['disable_3d']=='yes'):
+		env.Append(CPPFLAGS=['-DNODE_3D_DISABLED'])
+	if (env['disable_2d']=='yes'):
+		env.Append(CPPFLAGS=['-DNODE_2D_DISABLED'])
 	if (env['disable_advanced_gui']=='yes'):
 		env.Append(CPPFLAGS=['-DADVANCED_GUI_DISABLED'])
+
+	if (env['disable_2d_physics']=='yes'):
+		env.Append(CPPFLAGS=['-DPHYSICS_2D_DISABLED'])
+	if (env['disable_3d_physics']=='yes'):
+		env.Append(CPPFLAGS=['-DPHYSICS_3D_DISABLED'])
+
+	if (env['dummy_2d_physics']=='yes'):
+		env.Append(CPPFLAGS=['-DDUMMY_2D_PHYSICS_ENABLED'])
+	if (env['dummy_3d_physics']=='yes'):
+		env.Append(CPPFLAGS=['-DDUMMY_3D_PHYSICS_ENABLED'])
 
 	if (env['pck'] == 'yes'):
 		env.Append(CPPFLAGS=['-DPCK_ENABLED'])

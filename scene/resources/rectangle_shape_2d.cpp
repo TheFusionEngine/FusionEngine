@@ -32,7 +32,7 @@
 
 void RectangleShape2D::_update_shape() {
 
-	Physics2DServer::get_singleton()->shape_set_data(get_rid(),extents);
+	PHYSICS_2D(shape_set_data, get_rid(),extents);
 	emit_changed();
 }
 
@@ -60,7 +60,7 @@ void RectangleShape2D::_bind_methods() {
 
 }
 
-RectangleShape2D::RectangleShape2D() : Shape2D( Physics2DServer::get_singleton()->shape_create(Physics2DServer::SHAPE_RECTANGLE)) {
+RectangleShape2D::RectangleShape2D() : Shape2D( PHYSICS_2D(shape_create, PhysicsServer2D::SHAPE_RECTANGLE)) {
 
 	extents=Vector2(10,10);
 	_update_shape();

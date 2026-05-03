@@ -36,13 +36,13 @@
 #include "servers/visual/rasterizer.h"
 // #include "servers/audio/audio_driver_dummy.h"
 #include "audio_driver_psp.h"
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
 #include "servers/spatial_sound/spatial_sound_server_sw.h"
 #include "servers/spatial_sound_2d/spatial_sound_2d_server_sw.h"
 #include "drivers/rtaudio/audio_driver_rtaudio.h"
-#include "servers/physics_2d/physics_2d_server_sw.h"
+//#include "servers/physics_2d/physics_2d_server_sw.h"
 #include <pspctrl.h>
 
 #undef CursorShape
@@ -59,9 +59,6 @@ class OS_PSP : public OS {
 
 	bool grab;
 	uint64_t ticks_start;
-	
-	PhysicsServer *physics_server;
-	Physics2DServer *physics_2d_server;
 
 	virtual void delete_main_loop();
 	// IP_Unix *ip_unix;

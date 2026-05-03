@@ -32,7 +32,7 @@
 #include "resource.h"
 
 #if 0
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
@@ -51,13 +51,13 @@ protected:
 public:
 
 	enum ShapeType {
-		SHAPE_PLANE = PhysicsServer::SHAPE_PLANE, ///< plane:"plane"
-		SHAPE_SPHERE = PhysicsServer::SHAPE_SPHERE, ///< float:"radius"
-		SHAPE_BOX = PhysicsServer::SHAPE_BOX, ///< vec3:"extents"
-		SHAPE_CYLINDER = PhysicsServer::SHAPE_CYLINDER, ///< dict(float:"radius", float:"height"):cylinder
-		SHAPE_CAPSULE = PhysicsServer::SHAPE_CAPSULE, ///< dict(float:"radius", float:"height"):capsule
-		SHAPE_CONVEX_POLYGON = PhysicsServer::SHAPE_CONVEX_POLYGON, ///< array of planes:"planes"
-		SHAPE_CONCAVE_POLYGON = PhysicsServer::SHAPE_CONCAVE_POLYGON, ///< vector3 array:"triangles"
+		SHAPE_PLANE = PhysicsServer3D::SHAPE_PLANE, ///< plane:"plane"
+		SHAPE_SPHERE = PhysicsServer3D::SHAPE_SPHERE, ///< float:"radius"
+		SHAPE_BOX = PhysicsServer3D::SHAPE_BOX, ///< vec3:"extents"
+		SHAPE_CYLINDER = PhysicsServer3D::SHAPE_CYLINDER, ///< dict(float:"radius", float:"height"):cylinder
+		SHAPE_CAPSULE = PhysicsServer3D::SHAPE_CAPSULE, ///< dict(float:"radius", float:"height"):capsule
+		SHAPE_CONVEX_POLYGON = PhysicsServer3D::SHAPE_CONVEX_POLYGON, ///< array of planes:"planes"
+		SHAPE_CONCAVE_POLYGON = PhysicsServer3D::SHAPE_CONCAVE_POLYGON, ///< vector3 array:"triangles"
 	};
 	
 	void add_shape(ShapeType p_shape_type, const Variant& p_data, const Transform3D& p_transform=Transform3D ());

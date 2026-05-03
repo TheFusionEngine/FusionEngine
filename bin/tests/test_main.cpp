@@ -84,16 +84,19 @@ MainLoop* test_main(String p_test,const List<String>& p_args) {
 	
 		return TestMath::test();
 	}
-  
+
+#ifndef PHYSICS_3D_DISABLED
 	if (p_test=="physics") {
 	
 		return TestPhysics::test();
 	}
-
+#endif
+#ifndef PHYSICS_2D_DISABLED
 	if (p_test=="physics_2d") {
 
 		return TestPhysics2D::test();
 	}
+#endif
 
   	if (p_test=="misc") {
 	
@@ -105,7 +108,7 @@ MainLoop* test_main(String p_test,const List<String>& p_args) {
 		return TestRender::test();
 	}
   
-	#ifndef _3D_DISABLED
+	#ifndef NODE_3D_DISABLED
 	if (p_test=="gui") {
 
 		return TestGUI::test();

@@ -28,7 +28,7 @@
 /*************************************************************************/
 #include "shape.h"
 
-#include "servers/physics_server.h"
+#include "servers/physics_3d_server.h"
 
 
 
@@ -47,5 +47,5 @@ Shape3D::Shape3D(RID p_shape) {
 
 Shape3D::~Shape3D() {
 
-	PhysicsServer::get_singleton()->free(shape);
+	PHYSICS_3D(free, shape);
 }

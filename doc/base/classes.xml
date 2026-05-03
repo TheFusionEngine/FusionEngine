@@ -611,9 +611,9 @@
 		</member>
 		<member name="PS" type="PhysicsServer">
 		</member>
-		<member name="Physics2DServer" type="Physics2DServer">
+		<member name="PhysicsServer2D" type="PhysicsServer2D">
 		</member>
-		<member name="PS2D" type="Physics2DServer">
+		<member name="PS2D" type="PhysicsServer2D">
 		</member>
 		<member name="SpatialSoundServer" type="SpatialSound2DServer">
 		</member>
@@ -18656,10 +18656,10 @@
 </class>
 <class name="Physics2DDirectBodyState" inherits="Object" category="Core">
 	<brief_description>
-	Direct access object to a physics body in the [Physics2DServer].
+	Direct access object to a physics body in the [PhysicsServer2D].
 	</brief_description>
 	<description>
-	Direct access object to a physics body in the [Physics2DServer]. This object is passed via the direct state callback of rigid/character bodies, and is intended for changing the direct state of that body.
+	Direct access object to a physics body in the [PhysicsServer2D]. This object is passed via the direct state callback of rigid/character bodies, and is intended for changing the direct state of that body.
 	</description>
 	<methods>
 		<method name="get_total_gravity" qualifiers="const" >
@@ -18874,10 +18874,10 @@
 </class>
 <class name="Physics2DDirectSpaceState" inherits="Object" category="Core">
 	<brief_description>
-	Direct access object to a space in the [Physics2DServer].
+	Direct access object to a space in the [PhysicsServer2D].
 	</brief_description>
 	<description>
-	Direct access object to a space in the [Physics2DServer]. It's used mainly to do queries against objects and areas residing in a given space.
+	Direct access object to a space in the [PhysicsServer2D]. It's used mainly to do queries against objects and areas residing in a given space.
 	</description>
 	<methods>
 		<method name="intersect_ray"  >
@@ -18958,7 +18958,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="Physics2DServer" inherits="Object" category="Core">
+<class name="PhysicsServer2D" inherits="Object" category="Core">
 	<brief_description>
 	Physics 2D Server.
 	</brief_description>
@@ -19754,7 +19754,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="Physics2DServerSW" inherits="Physics2DServer" category="Core">
+<class name="PhysicsServer2DSW" inherits="PhysicsServer2D" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -19982,7 +19982,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsDirectBodyState" inherits="Object" category="Core">
+<class name="Physics3DDirectBodyState" inherits="Object" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -20165,7 +20165,7 @@
 			</description>
 		</method>
 		<method name="get_space_state"  >
-			<return type="PhysicsDirectSpaceState">
+			<return type="Physics3DDirectSpaceState">
 			</return>
 			<description>
 			</description>
@@ -20174,7 +20174,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsDirectBodyStateSW" inherits="PhysicsDirectBodyState" category="Core">
+<class name="Physics3DDirectBodyStateSW" inherits="Physics3DDirectBodyState" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -20184,7 +20184,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsDirectSpaceState" inherits="Object" category="Core">
+<class name="Physics3DDirectSpaceState" inherits="Object" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -20209,7 +20209,7 @@
 		<method name="intersect_shape"  >
 			<return type="Array">
 			</return>
-			<argument index="0" name="shape" type="PhysicsShapeQueryParameters">
+			<argument index="0" name="shape" type="Physics3DShapeQueryParameters">
 			</argument>
 			<argument index="1" name="max_results" type="int" default="32">
 			</argument>
@@ -20219,7 +20219,7 @@
 		<method name="cast_motion"  >
 			<return type="Array">
 			</return>
-			<argument index="0" name="shape" type="PhysicsShapeQueryParameters">
+			<argument index="0" name="shape" type="Physics3DShapeQueryParameters">
 			</argument>
 			<argument index="1" name="motion" type="Vector3">
 			</argument>
@@ -20229,7 +20229,7 @@
 		<method name="collide_shape"  >
 			<return type="Array">
 			</return>
-			<argument index="0" name="shape" type="PhysicsShapeQueryParameters">
+			<argument index="0" name="shape" type="Physics3DShapeQueryParameters">
 			</argument>
 			<argument index="1" name="max_results" type="int" default="32">
 			</argument>
@@ -20239,7 +20239,7 @@
 		<method name="get_rest_info"  >
 			<return type="Dictionary">
 			</return>
-			<argument index="0" name="shape" type="PhysicsShapeQueryParameters">
+			<argument index="0" name="shape" type="Physics3DShapeQueryParameters">
 			</argument>
 			<description>
 			</description>
@@ -20339,7 +20339,7 @@
 			</description>
 		</method>
 		<method name="space_get_direct_state"  >
-			<return type="PhysicsDirectSpaceState">
+			<return type="Physics3DDirectSpaceState">
 			</return>
 			<argument index="0" name="space" type="RID">
 			</argument>
@@ -21324,7 +21324,7 @@
 		</constant>
 	</constants>
 </class>
-<class name="PhysicsServerSW" inherits="PhysicsServer" category="Core">
+<class name="PhysicsServer3DSW" inherits="PhysicsServer" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -21334,7 +21334,7 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsShapeQueryParameters" inherits="RefCounted" category="Core">
+<class name="Physics3DShapeQueryParameters" inherits="RefCounted" category="Core">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -21422,9 +21422,9 @@
 	<constants>
 	</constants>
 </class>
-<class name="PhysicsShapeQueryResult" inherits="RefCounted" category="Core">
+<class name="Physics3DShapeQueryResult" inherits="RefCounted" category="Core">
 	<brief_description>
-	Result of a shape query in Physics2DServer.
+	Result of a shape query in PhysicsServer2D.
 	</brief_description>
 	<description>
 	</description>
@@ -24012,7 +24012,7 @@
 	</description>
 	<methods>
 		<method name="_integrate_forces" qualifiers="virtual" >
-			<argument index="0" name="state" type="PhysicsDirectBodyState">
+			<argument index="0" name="state" type="Physics3DDirectBodyState">
 			</argument>
 			<description>
 			</description>
